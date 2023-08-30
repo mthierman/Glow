@@ -33,10 +33,11 @@ class App
     bool get_settings(ICoreWebView2*);
     void navigate();
 
-    winrt::com_ptr<ICoreWebView2Controller> webviewController;
-    winrt::com_ptr<ICoreWebView2Controller2> webviewController2;
-    winrt::com_ptr<ICoreWebView2> webviewCore;
-    winrt::com_ptr<ICoreWebView2Settings> webviewSettings;
+    winrt::com_ptr<ICoreWebView2Controller> controller;
+    winrt::com_ptr<ICoreWebView2Controller4> controller4;
+    winrt::com_ptr<ICoreWebView2> core;
+    winrt::com_ptr<ICoreWebView2_19> core19;
+    winrt::com_ptr<ICoreWebView2Settings> settings;
 
     std::string appName;
     std::string randomName;
@@ -71,11 +72,11 @@ App::App(std::string n, bool plugin, Bounds b)
     if (atom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    hwnd =
-        CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(),
-                        plugin ? WS_POPUP : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPCHILDREN,
-                        CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                        nullptr, GetModuleHandleW(nullptr), this);
+    hwnd = CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(),
+                           plugin ? WS_POPUP | WS_CLIPCHILDREN | WS_CLIPCHILDREN
+                                  : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPCHILDREN,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                           nullptr, GetModuleHandleW(nullptr), this);
 
     if (!hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
@@ -127,9 +128,7 @@ int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
     auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
     auto p{(LPRECT)lparam};
 
-    SetWindowPos(hwndChild, nullptr, 0, 0, p->right / 2, p->bottom, SWP_NOACTIVATE);
-
-    ShowWindow(hwndChild, SW_SHOW);
+    SetWindowPos(hwndChild, nullptr, 0, 0, p->right / 2, p->bottom, SWP_NOZORDER);
 
     return TRUE;
 }
@@ -142,14 +141,14 @@ __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
     {
         switch (msg)
         {
-        case WM_SIZE:
+        case WM_WINDOWPOSCHANGED:
         {
             RECT r;
             GetClientRect(hwnd, &r);
 
-            if (app->webviewController)
+            if (app->controller)
             {
-                app->webviewController->put_Bounds(r);
+                app->controller->put_Bounds(r);
             }
 
             return 0;
@@ -179,7 +178,7 @@ void App::make_child(std::string n, Bounds b)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = GetModuleHandleW(nullptr);
-    wcex.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
+    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
     wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hIcon = (HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                    LR_SHARED | LR_DEFAULTSIZE);
@@ -191,9 +190,9 @@ void App::make_child(std::string n, Bounds b)
     if (childAtom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    auto childHwnd{CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(), WS_CHILD,
-                                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hwnd,
-                                   nullptr, GetModuleHandleW(nullptr), this)};
+    auto childHwnd{CreateWindowExW(WS_EX_TRANSPARENT, wideRandomName.c_str(), wideName.c_str(),
+                                   WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                                   CW_USEDEFAULT, hwnd, nullptr, GetModuleHandleW(nullptr), this)};
 
     if (!childHwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
@@ -240,20 +239,21 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                 {
                     if (c)
                     {
-                        webviewController.attach(c);
-                        webviewController2 = webviewController.as<ICoreWebView2Controller2>();
+                        controller.attach(c);
+                        controller4 = controller.as<ICoreWebView2Controller4>();
 
                         COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                        webviewController2->put_DefaultBackgroundColor(bgColor);
+                        controller4->put_DefaultBackgroundColor(bgColor);
 
                         RECT bounds{0, 0, 0, 0};
                         GetClientRect(childHwnd, &bounds);
-                        webviewController2->put_Bounds(bounds);
+                        controller4->put_Bounds(bounds);
 
-                        if (get_core(webviewController2.get()))
+                        if (get_core(controller4.get()))
                         {
-                            // webviewCore.Get()->Navigate(L"https://google.com/");
-                            get_settings(webviewCore.get());
+                            core19 = core.as<ICoreWebView2_19>();
+                            core19->Navigate(L"https://google.com/");
+                            get_settings(core19.get());
                         }
                     }
 
@@ -269,7 +269,7 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
 
 bool App::get_core(ICoreWebView2Controller* c)
 {
-    if (SUCCEEDED(c->get_CoreWebView2(webviewCore.put())))
+    if (SUCCEEDED(c->get_CoreWebView2(core.put())))
         return true;
 
     else
@@ -278,20 +278,20 @@ bool App::get_core(ICoreWebView2Controller* c)
 
 bool App::get_settings(ICoreWebView2* c)
 {
-    if (SUCCEEDED(c->get_Settings(webviewSettings.put())))
+    if (SUCCEEDED(c->get_Settings(settings.put())))
     {
-        webviewSettings->put_AreDefaultContextMenusEnabled(false);
-        webviewSettings->put_AreDefaultScriptDialogsEnabled(true);
-        webviewSettings->put_AreHostObjectsAllowed(true);
-        webviewSettings->put_IsBuiltInErrorPageEnabled(true);
-        webviewSettings->put_IsScriptEnabled(true);
-        webviewSettings->put_IsStatusBarEnabled(false);
-        webviewSettings->put_IsWebMessageEnabled(true);
-        webviewSettings->put_IsZoomControlEnabled(false);
+        settings->put_AreDefaultContextMenusEnabled(true);
+        settings->put_AreDefaultScriptDialogsEnabled(true);
+        settings->put_AreHostObjectsAllowed(true);
+        settings->put_IsBuiltInErrorPageEnabled(true);
+        settings->put_IsScriptEnabled(true);
+        settings->put_IsStatusBarEnabled(true);
+        settings->put_IsWebMessageEnabled(true);
+        settings->put_IsZoomControlEnabled(true);
 #ifdef _DEBUG
-        webviewSettings->put_AreDevToolsEnabled(true);
+        settings->put_AreDevToolsEnabled(true);
 #else
-        webviewSettings->put_AreDevToolsEnabled(false);
+        settings->put_AreDevToolsEnabled(false);
 #endif
 
         return true;
@@ -301,5 +301,5 @@ bool App::get_settings(ICoreWebView2* c)
         return false;
 }
 
-void App::navigate() { webviewCore.get()->Navigate(L"http://localhost:8000/"); }
+void App::navigate() { core19->Navigate(L"http://google.com/"); }
 } // namespace glow
