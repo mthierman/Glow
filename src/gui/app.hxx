@@ -7,27 +7,34 @@
 
 namespace glow
 {
-struct App
+class App
 {
-    App(std::string, Bounds);
+  public:
+    App(std::string, bool, Bounds);
     ~App();
+
     HWND get_hwnd();
     void* get_hwnd_void();
 
   private:
-    std::string name;
-    Bounds bounds;
-    HWND hwnd;
     static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+
+    std::string appName;
+    std::string randomName;
+    Bounds bounds;
+    ATOM atom;
+    HWND hwnd;
 };
 
-App::App(std::string n, Bounds b) : name(n), bounds(b)
+App::App(std::string n, bool plugin, Bounds b)
+    : appName(n), randomName(glow::win32::randomize(n)), bounds(b)
 {
-    auto className{glow::win32::to_wstring(name)};
+    auto wideName{glow::win32::to_wstring(appName)};
+    auto wideRandomName{glow::win32::to_wstring(randomName)};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = className.c_str();
-    wcex.lpszMenuName = className.c_str();
+    wcex.lpszClassName = wideRandomName.c_str();
+    wcex.lpszMenuName = wideRandomName.c_str();
     wcex.lpfnWndProc = App::WndProc;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
@@ -40,26 +47,26 @@ App::App(std::string n, Bounds b) : name(n), bounds(b)
     wcex.hIconSm = (HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                      LR_SHARED | LR_DEFAULTSIZE);
 
-    auto atom{RegisterClassExW(&wcex)};
+    atom = RegisterClassExW(&wcex);
 
     if (atom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    hwnd = CreateWindowExW(0, className.c_str(), className.c_str(), WS_OVERLAPPEDWINDOW,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, GetModuleHandleW(nullptr), this);
+    hwnd = CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(),
+                           plugin ? WS_POPUP : WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                           GetModuleHandleW(nullptr), this);
 
     if (!hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
+
+    if (!(bounds.width == 0) || !(bounds.height == 0))
+        SetWindowPos(hwnd, nullptr, bounds.x, bounds.y, bounds.width, bounds.height, 0);
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
 }
 
 App::~App() {}
-
-HWND App::get_hwnd() { return hwnd; }
-
-void* App::get_hwnd_void() { return (void*)hwnd; }
 
 __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
@@ -81,4 +88,8 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
+
+HWND App::get_hwnd() { return hwnd; }
+
+void* App::get_hwnd_void() { return (void*)hwnd; }
 } // namespace glow

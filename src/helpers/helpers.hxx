@@ -80,7 +80,7 @@ std::wstring to_wstring(std::string in)
     return {};
 }
 
-std::wstring randomize_name(std::string in)
+std::string randomize(std::string in)
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -89,7 +89,7 @@ std::wstring randomize_name(std::string in)
     auto randomNumber{std::to_string(randomDouble)};
     std::erase(randomNumber, '.');
 
-    return glow::win32::to_wstring(in + randomNumber);
+    return (in + randomNumber);
 }
 
 } // namespace glow::win32

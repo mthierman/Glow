@@ -45,7 +45,7 @@ Window::Window(std::string n, Bounds b) : name(n), bounds(b)
     if (atom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    hwnd = CreateWindowExW(0, className.c_str(), className.c_str(), WS_POPUP, CW_USEDEFAULT,
+    hwnd = CreateWindowExW(0, className.c_str(), className.c_str(), WS_OVERLAPPED, CW_USEDEFAULT,
                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                            GetModuleHandleW(nullptr), this);
 
