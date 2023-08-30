@@ -1,8 +1,12 @@
-#include "Glow.hxx"
+#include "helpers/helpers.hxx"
+#include "gui/app.hxx"
+#include "gui/window.hxx"
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    glow::Window window("Glow", {0});
+    auto mainWindow{glow::App("Glow", {0})};
+
+    auto popupWindow{glow::Window("Popup", {0})};
 
     MSG msg;
     int r;
