@@ -56,8 +56,8 @@ endif()
 target_link_libraries(
     ${APP_NAME}
     PRIVATE
-    dwmapi.lib
 
+    # dwmapi.lib
     # gdiplus.lib
     # shcore.lib
 )
