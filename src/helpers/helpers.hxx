@@ -91,5 +91,4 @@ std::string randomize(std::string in)
 
     return (in + randomNumber);
 }
-
 } // namespace glow::win32

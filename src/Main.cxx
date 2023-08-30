@@ -4,7 +4,7 @@
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     auto app = glow::App("Glow", false, {0});
-    auto app2 = glow::App("Glow", false, {0, 0, 200, 200});
+    app.make_child("Child", {0});
 
     MSG msg;
     int r;
