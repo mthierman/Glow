@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <string>
 
+#include <winrt/windows.foundation.h>
+#include <winrt/windows.ui.viewmanagement.h>
 #include <wrl.h>
 #include <WebView2.h>
 
@@ -22,20 +24,19 @@ class App
 
   private:
     static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-    static __int64 __stdcall WebViewWndProc(HWND, UINT, WPARAM, LPARAM);
     static int __stdcall EnumChildProc(HWND, LPARAM);
+    static __int64 __stdcall WebViewWndProc(HWND, UINT, WPARAM, LPARAM);
 
     bool create_webview(HWND);
     bool create_controller(HWND, ICoreWebView2Environment*);
     bool get_core(ICoreWebView2Controller*);
     bool get_settings(ICoreWebView2*);
     void navigate();
-    void put_bounds(RECT);
 
-    Microsoft::WRL::ComPtr<ICoreWebView2Environment> webviewEnvironment;
-    Microsoft::WRL::ComPtr<ICoreWebView2Controller> webviewController;
-    Microsoft::WRL::ComPtr<ICoreWebView2> webviewCore;
-    Microsoft::WRL::ComPtr<ICoreWebView2Settings> webviewSettings;
+    winrt::com_ptr<ICoreWebView2Controller> webviewController;
+    winrt::com_ptr<ICoreWebView2Controller2> webviewController2;
+    winrt::com_ptr<ICoreWebView2> webviewCore;
+    winrt::com_ptr<ICoreWebView2Settings> webviewSettings;
 
     std::string appName;
     std::string randomName;
@@ -121,6 +122,18 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
+int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
+{
+    auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
+    auto p{(LPRECT)lparam};
+
+    SetWindowPos(hwndChild, nullptr, 0, 0, p->right / 2, p->bottom, SWP_NOACTIVATE);
+
+    ShowWindow(hwndChild, SW_SHOW);
+
+    return TRUE;
+}
+
 __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     App* app = InstanceFromWndProc<App>(hwnd, msg, lparam);
@@ -129,18 +142,6 @@ __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
     {
         switch (msg)
         {
-        case WM_CLOSE:
-        {
-            DestroyWindow(hwnd);
-            return 0;
-        }
-
-        case WM_DESTROY:
-        {
-            PostQuitMessage(0);
-            return 0;
-        }
-
         case WM_SIZE:
         {
             RECT r;
@@ -157,23 +158,6 @@ __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
     }
 
     return DefWindowProcW(hwnd, msg, wparam, lparam);
-}
-
-int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
-{
-    auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
-    auto p{(LPRECT)lparam};
-
-    RECT test;
-    GetClientRect(hwndChild, &test);
-
-    // MoveWindow(hwndChild, 0, 0, p->right / 2, p->bottom, TRUE);
-
-    SetWindowPos(hwndChild, nullptr, 0, 0, p->right / 2, p->bottom, SWP_NOACTIVATE);
-
-    // MoveWindow(hwndChild, 0, 0, test.right / 2, test.bottom, TRUE);
-
-    return TRUE;
 }
 
 HWND App::get_hwnd() { return hwnd; }
@@ -195,7 +179,7 @@ void App::make_child(std::string n, Bounds b)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = GetModuleHandleW(nullptr);
-    wcex.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wcex.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH);
     wcex.hCursor = (HCURSOR)LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hIcon = (HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                    LR_SHARED | LR_DEFAULTSIZE);
@@ -214,16 +198,16 @@ void App::make_child(std::string n, Bounds b)
     if (!childHwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    // auto bgBrush{(HBRUSH)GetStockObject(WHITE_BRUSH)};
-    // SetClassLongPtrW(childHwnd, GCLP_HBRBACKGROUND, (LONG_PTR)bgBrush);
+    create_webview(childHwnd);
 
     ShowWindow(childHwnd, SW_SHOWDEFAULT);
 
-    create_webview(childHwnd);
+    PostMessageW(hwnd, WM_SIZE, 0, 0);
 }
 
 bool App::create_webview(HWND childHwnd)
 {
+    // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
@@ -234,8 +218,7 @@ bool App::create_webview(HWND childHwnd)
                 {
                     if (e)
                     {
-                        webviewEnvironment = e;
-                        create_controller(childHwnd, webviewEnvironment.Get());
+                        create_controller(childHwnd, e);
                     }
 
                     return S_OK;
@@ -257,15 +240,20 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                 {
                     if (c)
                     {
-                        webviewController = c;
+                        webviewController.attach(c);
+                        webviewController2 = webviewController.as<ICoreWebView2Controller2>();
+
+                        COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                        webviewController2->put_DefaultBackgroundColor(bgColor);
+
                         RECT bounds{0, 0, 0, 0};
                         GetClientRect(childHwnd, &bounds);
-                        webviewController->put_Bounds(bounds);
+                        webviewController2->put_Bounds(bounds);
 
-                        if (get_core(webviewController.Get()))
+                        if (get_core(webviewController2.get()))
                         {
-                            webviewCore.Get()->Navigate(L"https://google.com/");
-                            get_settings(webviewCore.Get());
+                            // webviewCore.Get()->Navigate(L"https://google.com/");
+                            get_settings(webviewCore.get());
                         }
                     }
 
@@ -281,7 +269,7 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
 
 bool App::get_core(ICoreWebView2Controller* c)
 {
-    if (SUCCEEDED(c->get_CoreWebView2(&webviewCore)))
+    if (SUCCEEDED(c->get_CoreWebView2(webviewCore.put())))
         return true;
 
     else
@@ -290,7 +278,7 @@ bool App::get_core(ICoreWebView2Controller* c)
 
 bool App::get_settings(ICoreWebView2* c)
 {
-    if (SUCCEEDED(c->get_Settings(&webviewSettings)))
+    if (SUCCEEDED(c->get_Settings(webviewSettings.put())))
     {
         webviewSettings->put_AreDefaultContextMenusEnabled(false);
         webviewSettings->put_AreDefaultScriptDialogsEnabled(true);
@@ -313,13 +301,5 @@ bool App::get_settings(ICoreWebView2* c)
         return false;
 }
 
-void App::navigate() { webviewCore.Get()->Navigate(L"http://localhost:8000/"); }
-
-void App::put_bounds(RECT r)
-{
-    if (webviewController)
-    {
-        webviewController->put_Bounds(r);
-    }
-}
+void App::navigate() { webviewCore.get()->Navigate(L"http://localhost:8000/"); }
 } // namespace glow
