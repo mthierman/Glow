@@ -2,7 +2,7 @@
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    glow::Window window("Glow");
+    glow::Window window("Glow", {0});
 
     MSG msg;
     int r;

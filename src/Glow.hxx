@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <dwmapi.h>
 #include <string>
 
 namespace glow
@@ -8,18 +9,28 @@ namespace glow
 std::string to_string(std::wstring);
 std::wstring to_wstring(std::string);
 
+struct Bounds
+{
+    int x{0};
+    int y{0};
+    int width{0};
+    int height{0};
+};
+
 struct Window
 {
-    Window(std::string);
+    Window(std::string, Bounds);
     ~Window();
     HWND get_hwnd();
 
   private:
+    std::string name;
+    Bounds bounds;
     HWND hwnd;
     static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
 };
 
-Window::Window(std::string name)
+Window::Window(std::string n, Bounds b) : name(n), bounds(b)
 {
     auto className{to_wstring(name)};
 

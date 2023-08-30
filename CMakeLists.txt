@@ -15,11 +15,13 @@ math(EXPR BITNESS "${CMAKE_SIZEOF_VOID_P} * 8" OUTPUT_FORMAT DECIMAL)
 message(STATUS "${APP_NAME} v${APP_VERSION} (${BITNESS}-bit) [${CMAKE_BUILD_TYPE}]")
 
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/app.manifest" MANIFEST_FILE)
 
 add_executable(
     ${APP_NAME}
     WIN32
     "${SOURCES}"
+    "${MANIFEST_FILE}"
 )
 
 add_compile_definitions(
@@ -54,7 +56,8 @@ endif()
 target_link_libraries(
     ${APP_NAME}
     PRIVATE
-    # dwmapi.lib
+    dwmapi.lib
+
     # gdiplus.lib
     # shcore.lib
 )
