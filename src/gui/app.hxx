@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <string>
+#include <filesystem>
 
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.viewmanagement.h>
@@ -15,7 +16,7 @@ namespace glow
 class App
 {
   public:
-    App(std::string, bool, Bounds);
+    App(std::string, std::filesystem::path, bool, Bounds);
     ~App();
 
     HWND get_hwnd();
@@ -40,13 +41,14 @@ class App
 
     std::string appName;
     std::string randomName;
+    std::filesystem::path dataPath;
     Bounds bounds;
     ATOM atom;
     HWND hwnd;
 };
 
-App::App(std::string n, bool plugin, Bounds b)
-    : appName(n), randomName(glow::win32::randomize(n)), bounds(b)
+App::App(std::string n, std::filesystem::path p, bool plugin, Bounds b)
+    : appName(n), randomName(glow::win32::randomize(n)), dataPath(p), bounds(b)
 {
     auto wideName{glow::win32::to_wstring(appName)};
     auto wideRandomName{glow::win32::to_wstring(randomName)};
@@ -84,6 +86,8 @@ App::App(std::string n, bool plugin, Bounds b)
         SetWindowPos(hwnd, nullptr, bounds.x, bounds.y, bounds.width, bounds.height, 0);
 
     ShowWindow(hwnd, SW_SHOWDEFAULT);
+
+    make_child("WebView", {0});
 }
 
 App::~App() {}
@@ -251,7 +255,8 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                         if (get_core(controller4.get()))
                         {
                             core19 = core.as<ICoreWebView2_19>();
-                            core19->Navigate(L"https://www.google.com/");
+                            auto widePath{L"file:///" + dataPath.wstring()};
+                            core19->Navigate(widePath.c_str());
                             get_settings(core19.get());
                         }
                     }
