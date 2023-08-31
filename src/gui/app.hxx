@@ -262,9 +262,10 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                         if (get_core(controller4.get()))
                         {
                             core19 = core.as<ICoreWebView2_19>();
+                            get_settings(core19.get());
+
                             auto widePath{L"file:///" + dataPath.wstring()};
                             core19->Navigate(widePath.c_str());
-                            get_settings(core19.get());
                         }
                     }
 
@@ -291,14 +292,14 @@ bool App::get_settings(ICoreWebView2* c)
 {
     if (SUCCEEDED(c->get_Settings(settings.put())))
     {
-        settings->put_AreDefaultContextMenusEnabled(true);
+        settings->put_AreDefaultContextMenusEnabled(false);
         settings->put_AreDefaultScriptDialogsEnabled(true);
         settings->put_AreHostObjectsAllowed(true);
         settings->put_IsBuiltInErrorPageEnabled(true);
         settings->put_IsScriptEnabled(true);
-        settings->put_IsStatusBarEnabled(true);
+        settings->put_IsStatusBarEnabled(false);
         settings->put_IsWebMessageEnabled(true);
-        settings->put_IsZoomControlEnabled(true);
+        settings->put_IsZoomControlEnabled(false);
 #ifdef _DEBUG
         settings->put_AreDevToolsEnabled(true);
 #else
