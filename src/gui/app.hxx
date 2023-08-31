@@ -31,7 +31,6 @@ class App
     bool create_controller(HWND, ICoreWebView2Environment*);
     bool get_core(ICoreWebView2Controller*);
     bool get_settings(ICoreWebView2*);
-    void navigate(std::string);
 
     winrt::com_ptr<ICoreWebView2Controller> controller;
     winrt::com_ptr<ICoreWebView2Controller4> controller4;
@@ -128,7 +127,7 @@ int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
     auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
     auto p{(LPRECT)lparam};
 
-    SetWindowPos(hwndChild, nullptr, 0, 0, p->right / 2, p->bottom, SWP_NOZORDER);
+    SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
 
     return TRUE;
 }
@@ -252,7 +251,7 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                         if (get_core(controller4.get()))
                         {
                             core19 = core.as<ICoreWebView2_19>();
-                            navigate("https://www.google.com/");
+                            core19->Navigate(L"https://www.google.com/");
                             get_settings(core19.get());
                         }
                     }
@@ -299,14 +298,5 @@ bool App::get_settings(ICoreWebView2* c)
 
     else
         return false;
-}
-
-void App::navigate(std::string url)
-{
-    if (core19)
-    {
-        auto wideUrl{glow::win32::to_wstring(url)};
-        core19->Navigate(wideUrl.c_str());
-    }
 }
 } // namespace glow
