@@ -19,8 +19,8 @@ class WebView
 
   private:
     static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
-    bool create_webview(HWND);
-    bool create_controller(HWND, ICoreWebView2Environment*);
+    void create_webview(HWND);
+    void create_controller(HWND, ICoreWebView2Environment*);
     bool get_core(ICoreWebView2Controller*);
     bool get_settings(ICoreWebView2*);
 
@@ -100,103 +100,60 @@ __int64 __stdcall WebView::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lp
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-bool WebView::create_webview(HWND childHwnd)
+void WebView::create_webview(HWND childHwnd)
 {
     // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
-    if (SUCCEEDED(CreateCoreWebView2EnvironmentWithOptions(
-            nullptr, nullptr, nullptr,
-            Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-                [=, this](HRESULT, ICoreWebView2Environment* e) -> HRESULT
-                {
-                    if (e)
-                    {
-                        create_controller(childHwnd, e);
-                    }
+    winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, nullptr, nullptr,
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [=, this](HRESULT, ICoreWebView2Environment* e) -> HRESULT
+            {
+                if (e)
+                    winrt::check_hresult(e->CreateCoreWebView2Controller(
+                        childHwnd,
+                        Microsoft::WRL::Callback<
+                            ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                            [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
+                            {
+                                if (c)
+                                {
+                                    controller.attach(c);
+                                    controller4 = controller.as<ICoreWebView2Controller4>();
 
-                    return S_OK;
-                })
-                .Get())))
+                                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                                    controller4->put_DefaultBackgroundColor(bgColor);
 
-        return true;
+                                    RECT bounds{0, 0, 0, 0};
+                                    GetClientRect(childHwnd, &bounds);
+                                    controller4->put_Bounds(bounds);
 
-    else
-        return false;
+                                    winrt::check_hresult(c->get_CoreWebView2(core.put()));
+
+                                    core19 = core.as<ICoreWebView2_19>();
+
+                                    winrt::check_hresult(core19->get_Settings(settings.put()));
+
+                                    settings->put_AreDefaultContextMenusEnabled(true);
+                                    settings->put_AreDefaultScriptDialogsEnabled(true);
+                                    settings->put_AreHostObjectsAllowed(true);
+                                    settings->put_IsBuiltInErrorPageEnabled(true);
+                                    settings->put_IsScriptEnabled(true);
+                                    settings->put_IsStatusBarEnabled(false);
+                                    settings->put_IsWebMessageEnabled(true);
+                                    settings->put_IsZoomControlEnabled(false);
+                                    settings->put_AreDevToolsEnabled(true);
+
+                                    core19->Navigate(L"https://www.google.com/");
+                                }
+
+                                return S_OK;
+                            })
+                            .Get()));
+
+                return S_OK;
+            })
+            .Get()));
 }
-
-bool WebView::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
-{
-    if (SUCCEEDED(e->CreateCoreWebView2Controller(
-            childHwnd,
-            Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
-                {
-                    if (c)
-                    {
-                        controller.attach(c);
-                        controller4 = controller.as<ICoreWebView2Controller4>();
-
-                        COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                        controller4->put_DefaultBackgroundColor(bgColor);
-
-                        RECT bounds{0, 0, 0, 0};
-                        GetClientRect(childHwnd, &bounds);
-                        controller4->put_Bounds(bounds);
-
-                        if (get_core(controller4.get()))
-                        {
-                            core19 = core.as<ICoreWebView2_19>();
-                            get_settings(core19.get());
-
-                            // auto widePath{L"file:///" + sitePath.wstring()};
-                            // core19->Navigate(widePath.c_str());
-                            core19->Navigate(L"about:blank");
-                        }
-                    }
-
-                    return S_OK;
-                })
-                .Get())))
-
-        return true;
-
-    else
-        return false;
-}
-
-bool WebView::get_core(ICoreWebView2Controller* c)
-{
-    if (SUCCEEDED(c->get_CoreWebView2(core.put())))
-        return true;
-
-    else
-        return false;
-}
-
-bool WebView::get_settings(ICoreWebView2* c)
-{
-    if (SUCCEEDED(c->get_Settings(settings.put())))
-    {
-        settings->put_AreDefaultContextMenusEnabled(true);
-        settings->put_AreDefaultScriptDialogsEnabled(true);
-        settings->put_AreHostObjectsAllowed(true);
-        settings->put_IsBuiltInErrorPageEnabled(true);
-        settings->put_IsScriptEnabled(true);
-        settings->put_IsStatusBarEnabled(false);
-        settings->put_IsWebMessageEnabled(true);
-        settings->put_IsZoomControlEnabled(false);
-#ifdef _DEBUG
-        settings->put_AreDevToolsEnabled(true);
-#else
-        settings->put_AreDevToolsEnabled(false);
-#endif
-
-        return true;
-    }
-
-    else
-        return false;
-}
-} // namespace glow

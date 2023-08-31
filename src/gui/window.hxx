@@ -115,6 +115,6 @@ int __stdcall Window::EnumChildProc(HWND hwndChild, LPARAM lparam)
 
     SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
 
-    return TRUE;
+    return 1;
 }
 } // namespace glow
