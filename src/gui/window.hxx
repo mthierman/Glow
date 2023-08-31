@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "winrt/Windows.Foundation.h"
 #include "../helpers/helpers.hxx"
+#include "gui/webview.hxx"
 
 namespace glow
 {
@@ -13,6 +14,7 @@ class Window
   public:
     Window(std::string);
     ~Window();
+    void make_webview();
 
     HWND get_hwnd();
 
@@ -71,6 +73,8 @@ Window::Window(std::string name)
 }
 
 Window::~Window() {}
+
+void Window::make_webview() { auto webview{glow::WebView("Test", get_hwnd())}; }
 
 HWND Window::get_hwnd() { return m_hwnd; }
 

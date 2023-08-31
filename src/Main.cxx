@@ -1,12 +1,11 @@
 #include "helpers/helpers.hxx"
 #include "gui/window.hxx"
-#include "gui/webview.hxx"
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     auto window{glow::Window("Glow")};
 
-    auto webview{glow::WebView("Test", window.get_hwnd())};
+    window.make_webview();
 
     MSG msg;
     int r;

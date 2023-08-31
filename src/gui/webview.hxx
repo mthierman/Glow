@@ -157,3 +157,4 @@ void WebView::create_webview(HWND childHwnd)
             })
             .Get()));
 }
+} // namespace glow
