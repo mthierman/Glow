@@ -6,6 +6,7 @@
 #include "winrt/Windows.Foundation.h"
 // #include "winrt/Microsoft.Web.WebView2.Core.h"
 #include <WebView2.h>
+#include <wrl.h>
 #include "../helpers/helpers.hxx"
 
 namespace glow
@@ -18,6 +19,10 @@ class WebView
 
   private:
     static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+    bool create_webview(HWND);
+    bool create_controller(HWND, ICoreWebView2Environment*);
+    bool get_core(ICoreWebView2Controller*);
+    bool get_settings(ICoreWebView2*);
 
     HWND m_hwnd;
 
@@ -64,8 +69,6 @@ WebView::WebView(std::string name, HWND parentHwnd)
 
     create_webview(m_hwnd);
 
-    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
-
     glow::win32::set_darkmode(m_hwnd);
     glow::win32::set_darktitle();
     glow::win32::set_mica(m_hwnd);
@@ -75,6 +78,8 @@ WebView::WebView(std::string name, HWND parentHwnd)
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
     glow::win32::window_uncloak(m_hwnd);
+
+    PostMessageW(parentHwnd, WM_SIZE, 0, 0);
 }
 
 WebView::~WebView() {}
@@ -105,13 +110,13 @@ __int64 __stdcall WebView::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lp
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-bool App::create_webview(HWND childHwnd)
+bool WebView::create_webview(HWND childHwnd)
 {
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
     if (SUCCEEDED(CreateCoreWebView2EnvironmentWithOptions(
-            nullptr, dataPath.wstring().c_str(), nullptr,
+            nullptr, nullptr, nullptr,
             Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
                 [=, this](HRESULT, ICoreWebView2Environment* e) -> HRESULT
                 {
@@ -130,7 +135,7 @@ bool App::create_webview(HWND childHwnd)
         return false;
 }
 
-bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
+bool WebView::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
 {
     if (SUCCEEDED(e->CreateCoreWebView2Controller(
             childHwnd,
@@ -154,8 +159,9 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                             core19 = core.as<ICoreWebView2_19>();
                             get_settings(core19.get());
 
-                            auto widePath{L"file:///" + sitePath.wstring()};
-                            core19->Navigate(widePath.c_str());
+                            // auto widePath{L"file:///" + sitePath.wstring()};
+                            // core19->Navigate(widePath.c_str());
+                            core19->Navigate(L"https://www.google.com/");
                         }
                     }
 
@@ -169,7 +175,7 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
         return false;
 }
 
-bool App::get_core(ICoreWebView2Controller* c)
+bool WebView::get_core(ICoreWebView2Controller* c)
 {
     if (SUCCEEDED(c->get_CoreWebView2(core.put())))
         return true;
@@ -178,7 +184,7 @@ bool App::get_core(ICoreWebView2Controller* c)
         return false;
 }
 
-bool App::get_settings(ICoreWebView2* c)
+bool WebView::get_settings(ICoreWebView2* c)
 {
     if (SUCCEEDED(c->get_Settings(settings.put())))
     {

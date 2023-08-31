@@ -96,9 +96,9 @@ __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 
         case WM_SIZE:
         {
-            // RECT r;
-            // GetClientRect(hwnd, &r);
-            // EnumChildWindows(hwnd, EnumChildProc, (LPARAM)&r);
+            RECT r;
+            GetClientRect(hwnd, &r);
+            EnumChildWindows(hwnd, EnumChildProc, (LPARAM)&r);
 
             return 0;
         }
@@ -110,10 +110,10 @@ __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 
 int __stdcall Window::EnumChildProc(HWND hwndChild, LPARAM lparam)
 {
-    // auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
-    // auto p{(LPRECT)lparam};
+    auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
+    auto p{(LPRECT)lparam};
 
-    // SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
+    SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
 
     return TRUE;
 }
