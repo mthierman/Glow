@@ -69,15 +69,15 @@ WebView::WebView(std::string name, HWND parentHwnd)
 
     create_webview(m_hwnd);
 
-    glow::win32::set_darkmode(m_hwnd);
-    glow::win32::set_darktitle();
-    glow::win32::set_mica(m_hwnd);
+    // glow::win32::set_darkmode(m_hwnd);
+    // glow::win32::set_darktitle();
+    // glow::win32::set_mica(m_hwnd);
 
-    glow::win32::window_cloak(m_hwnd);
+    // glow::win32::window_cloak(m_hwnd);
 
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
-    glow::win32::window_uncloak(m_hwnd);
+    // glow::win32::window_uncloak(m_hwnd);
 
     PostMessageW(parentHwnd, WM_SIZE, 0, 0);
 }
@@ -161,7 +161,7 @@ bool WebView::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
 
                             // auto widePath{L"file:///" + sitePath.wstring()};
                             // core19->Navigate(widePath.c_str());
-                            core19->Navigate(L"https://www.google.com/");
+                            core19->Navigate(L"https://www.stripe.com/");
                         }
                     }
 

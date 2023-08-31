@@ -60,14 +60,14 @@ Window::Window(std::string name)
     if (!m_hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    glow::win32::set_darkmode(m_hwnd);
-    glow::win32::set_darktitle();
-    glow::win32::set_mica(m_hwnd);
-    glow::win32::window_cloak(m_hwnd);
+    // glow::win32::set_darkmode(m_hwnd);
+    // glow::win32::set_darktitle();
+    // glow::win32::set_mica(m_hwnd);
+    // glow::win32::window_cloak(m_hwnd);
 
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
-    glow::win32::window_uncloak(m_hwnd);
+    // glow::win32::window_uncloak(m_hwnd);
 }
 
 Window::~Window() {}
