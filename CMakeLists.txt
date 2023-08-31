@@ -104,4 +104,5 @@ target_link_libraries(
     ${APP_NAME}
     PRIVATE
     WebView2LoaderStatic.lib
+    dwmapi.lib
 )

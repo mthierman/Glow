@@ -3,12 +3,9 @@
 #include <Windows.h>
 #include <string>
 #include <filesystem>
-
 #include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.viewmanagement.h>
 #include <wrl.h>
 #include <WebView2.h>
-
 #include "../helpers/helpers.hxx"
 
 namespace glow
@@ -43,8 +40,10 @@ class App
     std::string randomName;
     std::filesystem::path dataPath;
     Bounds bounds;
-    ATOM atom;
-    HWND hwnd;
+    ATOM m_atom;
+    ATOM child_atom;
+    HWND m_hwnd;
+    HWND child_hwnd;
 };
 
 App::App(std::string n, std::filesystem::path p, bool plugin, Bounds b)
@@ -68,24 +67,32 @@ App::App(std::string n, std::filesystem::path p, bool plugin, Bounds b)
     wcex.hIconSm = (HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                      LR_SHARED | LR_DEFAULTSIZE);
 
-    atom = RegisterClassExW(&wcex);
+    m_atom = RegisterClassExW(&wcex);
 
-    if (atom == 0)
+    if (m_atom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    hwnd = CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(),
-                           plugin ? WS_POPUP | WS_CLIPCHILDREN | WS_CLIPCHILDREN
-                                  : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPCHILDREN,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, GetModuleHandleW(nullptr), this);
+    CreateWindowExW(0, wideRandomName.c_str(), wideName.c_str(),
+                    plugin ? WS_POPUP | WS_CLIPCHILDREN | WS_CLIPCHILDREN
+                           : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPCHILDREN,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                    GetModuleHandleW(nullptr), this);
 
-    if (!hwnd)
+    if (!m_hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
     if (!(bounds.width == 0) || !(bounds.height == 0))
-        SetWindowPos(hwnd, nullptr, bounds.x, bounds.y, bounds.width, bounds.height, 0);
+        SetWindowPos(m_hwnd, nullptr, bounds.x, bounds.y, bounds.width, bounds.height, 0);
 
-    ShowWindow(hwnd, SW_SHOWDEFAULT);
+    glow::win32::set_darkmode(m_hwnd);
+    glow::win32::set_darktitle();
+    glow::win32::set_mica(m_hwnd);
+
+    glow::win32::window_cloak(m_hwnd);
+
+    ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+
+    glow::win32::window_uncloak(m_hwnd);
 
     make_child("WebView", {0});
 }
@@ -94,7 +101,7 @@ App::~App() {}
 
 __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    App* app = InstanceFromWndProc<App>(hwnd, msg, lparam);
+    App* app = InstanceFromWndProc<App, App, &App::m_hwnd>(hwnd, msg, lparam);
 
     if (app)
     {
@@ -138,7 +145,7 @@ int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
 
 __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
-    App* app = InstanceFromWndProc<App>(hwnd, msg, lparam);
+    App* app = InstanceFromWndProc<App, App, &App::child_hwnd>(hwnd, msg, lparam);
 
     if (app)
     {
@@ -162,9 +169,9 @@ __int64 __stdcall App::WebViewWndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-HWND App::get_hwnd() { return hwnd; }
+HWND App::get_hwnd() { return m_hwnd; }
 
-void* App::get_hwnd_void() { return (void*)hwnd; }
+void* App::get_hwnd_void() { return (void*)m_hwnd; }
 
 void App::make_child(std::string n, Bounds b)
 {
@@ -188,23 +195,23 @@ void App::make_child(std::string n, Bounds b)
     wcex.hIconSm = (HICON)LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
                                      LR_SHARED | LR_DEFAULTSIZE);
 
-    auto childAtom{RegisterClassExW(&wcex)};
+    child_atom = RegisterClassExW(&wcex);
 
-    if (childAtom == 0)
+    if (child_atom == 0)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    auto childHwnd{CreateWindowExW(WS_EX_TRANSPARENT, wideRandomName.c_str(), wideName.c_str(),
-                                   WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                                   CW_USEDEFAULT, hwnd, nullptr, GetModuleHandleW(nullptr), this)};
+    CreateWindowExW(WS_EX_TRANSPARENT, wideRandomName.c_str(), wideName.c_str(), WS_CHILD,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwnd, nullptr,
+                    GetModuleHandleW(nullptr), this);
 
-    if (!childHwnd)
+    if (!child_hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    create_webview(childHwnd);
+    create_webview(child_hwnd);
 
-    ShowWindow(childHwnd, SW_SHOWDEFAULT);
+    ShowWindow(child_hwnd, SW_SHOWDEFAULT);
 
-    PostMessageW(hwnd, WM_SIZE, 0, 0);
+    PostMessageW(m_hwnd, WM_SIZE, 0, 0);
 }
 
 bool App::create_webview(HWND childHwnd)

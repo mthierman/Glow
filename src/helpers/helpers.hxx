@@ -1,8 +1,11 @@
 #pragma once
 
 #include <Windows.h>
+#include <dwmapi.h>
 #include <string>
 #include <random>
+#include <winrt/windows.foundation.h>
+#include <winrt/windows.ui.viewmanagement.h>
 
 namespace glow
 {
@@ -14,7 +17,8 @@ struct Bounds
     int height{0};
 };
 
-template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
+template <class T, class U, HWND(U::*m_hwnd)>
+T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 {
     T* pInstance;
 
@@ -23,6 +27,7 @@ template <class T> T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
         LPCREATESTRUCTW pCreateStruct = reinterpret_cast<LPCREATESTRUCTW>(lparam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
         SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        pInstance->*m_hwnd = hwnd;
     }
 
     else
@@ -90,5 +95,98 @@ std::string randomize(std::string in)
     std::erase(randomNumber, '.');
 
     return (in + randomNumber);
+}
+
+bool is_darkmode()
+{
+    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
+    auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
+
+    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
+        return true;
+
+    return false;
+}
+
+bool set_darkmode(HWND hwnd)
+{
+    auto dark{TRUE};
+    auto light{FALSE};
+
+    if (is_darkmode())
+    {
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+
+        return true;
+    }
+
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+
+    return false;
+}
+
+bool set_darktitle()
+{
+    enum PreferredAppMode
+    {
+        Default,
+        AllowDark,
+        ForceDark,
+        ForceLight,
+        Max
+    };
+
+    using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
+
+    auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+
+    if (!uxtheme)
+        return false;
+
+    auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
+
+    if (!ord135)
+        return false;
+
+    auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
+    SetPreferredAppMode(PreferredAppMode::AllowDark);
+    FreeLibrary(uxtheme);
+
+    return true;
+}
+
+bool set_mica(HWND hwnd)
+{
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
+
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
+        return false;
+
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+        return false;
+
+    return true;
+}
+
+bool window_cloak(HWND hwnd)
+{
+    auto cloak{TRUE};
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
+        return false;
+
+    return true;
+}
+
+bool window_uncloak(HWND hwnd)
+{
+    auto uncloak{FALSE};
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
+        return false;
+
+    return true;
 }
 } // namespace glow::win32
