@@ -65,19 +65,13 @@ WebView::WebView(std::string name, HWND parentHwnd)
     if (!m_hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
+    glow::win32::window_cloak(m_hwnd);
+
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
     create_webview(m_hwnd);
 
-    // glow::win32::set_darkmode(m_hwnd);
-    // glow::win32::set_darktitle();
-    // glow::win32::set_mica(m_hwnd);
-
-    // glow::win32::window_cloak(m_hwnd);
-
-    ShowWindow(m_hwnd, SW_SHOWDEFAULT);
-
-    // glow::win32::window_uncloak(m_hwnd);
+    glow::win32::window_uncloak(m_hwnd);
 
     PostMessageW(parentHwnd, WM_SIZE, 0, 0);
 }
@@ -112,6 +106,8 @@ __int64 __stdcall WebView::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lp
 
 bool WebView::create_webview(HWND childHwnd)
 {
+    // SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+    //                         L"--allow-file-access-from-files");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
