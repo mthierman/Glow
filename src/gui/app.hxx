@@ -96,7 +96,8 @@ App::App(std::string n, std::filesystem::path p, bool plugin, Bounds b)
 
     glow::win32::window_uncloak(m_hwnd);
 
-    make_child("WebView", {0});
+    make_child("WebView1", {0});
+    // make_child("WebView2", {0});
 }
 
 App::~App() {}
@@ -137,7 +138,7 @@ __int64 __stdcall App::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 
 int __stdcall App::EnumChildProc(HWND hwndChild, LPARAM lparam)
 {
-    auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
+    // auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
     auto p{(LPRECT)lparam};
 
     SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
@@ -293,7 +294,7 @@ bool App::get_settings(ICoreWebView2* c)
 {
     if (SUCCEEDED(c->get_Settings(settings.put())))
     {
-        settings->put_AreDefaultContextMenusEnabled(false);
+        settings->put_AreDefaultContextMenusEnabled(true);
         settings->put_AreDefaultScriptDialogsEnabled(true);
         settings->put_AreHostObjectsAllowed(true);
         settings->put_IsBuiltInErrorPageEnabled(true);

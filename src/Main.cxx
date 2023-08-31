@@ -3,7 +3,7 @@
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    auto app = glow::App("Glow", "D:/GitHub/Glow/src/index.html", true, {0, 0, 200, 200});
+    auto app = glow::App("Glow", "D:/GitHub/Glow/src/index.html", false, {0});
 
     MSG msg;
     int r;
