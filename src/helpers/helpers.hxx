@@ -1,9 +1,11 @@
 #pragma once
 
 #include <Windows.h>
+#include <ShlObj.h>
 #include <dwmapi.h>
 #include <string>
 #include <random>
+#include <filesystem>
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.viewmanagement.h>
 
@@ -188,5 +190,23 @@ bool window_uncloak(HWND hwnd)
         return false;
 
     return true;
+}
+
+std::filesystem::path path_appdata(std::string n)
+{
+    PWSTR buffer;
+    std::filesystem::path data{};
+
+    if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
+        return std::filesystem::path{};
+
+    data = std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wstring(n);
+
+    CoTaskMemFree(buffer);
+
+    if (!std::filesystem::exists(data))
+        std::filesystem::create_directory(data);
+
+    return data;
 }
 } // namespace glow::win32

@@ -38,6 +38,7 @@ class App
 
     std::string appName;
     std::string randomName;
+    std::filesystem::path sitePath;
     std::filesystem::path dataPath;
     Bounds bounds;
     ATOM m_atom;
@@ -47,7 +48,8 @@ class App
 };
 
 App::App(std::string n, std::filesystem::path p, bool plugin, Bounds b)
-    : appName(n), randomName(glow::win32::randomize(n)), dataPath(p), bounds(b)
+    : appName(n), randomName(glow::win32::randomize(n)), sitePath(p),
+      dataPath(glow::win32::path_appdata(appName)), bounds(b)
 {
     auto wideName{glow::win32::to_wstring(appName)};
     auto wideRandomName{glow::win32::to_wstring(randomName)};
@@ -216,12 +218,11 @@ void App::make_child(std::string n, Bounds b)
 
 bool App::create_webview(HWND childHwnd)
 {
-    // SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
     if (SUCCEEDED(CreateCoreWebView2EnvironmentWithOptions(
-            nullptr, nullptr, nullptr,
+            nullptr, dataPath.wstring().c_str(), nullptr,
             Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
                 [=, this](HRESULT, ICoreWebView2Environment* e) -> HRESULT
                 {
@@ -264,7 +265,7 @@ bool App::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
                             core19 = core.as<ICoreWebView2_19>();
                             get_settings(core19.get());
 
-                            auto widePath{L"file:///" + dataPath.wstring()};
+                            auto widePath{L"file:///" + sitePath.wstring()};
                             core19->Navigate(widePath.c_str());
                         }
                     }
