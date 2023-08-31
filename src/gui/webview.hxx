@@ -65,13 +65,9 @@ WebView::WebView(std::string name, HWND parentHwnd)
     if (!m_hwnd)
         MessageBoxW(nullptr, std::to_wstring(GetLastError()).c_str(), L"Error", 0);
 
-    glow::win32::window_cloak(m_hwnd);
-
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
     create_webview(m_hwnd);
-
-    glow::win32::window_uncloak(m_hwnd);
 
     PostMessageW(parentHwnd, WM_SIZE, 0, 0);
 }
@@ -106,8 +102,7 @@ __int64 __stdcall WebView::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lp
 
 bool WebView::create_webview(HWND childHwnd)
 {
-    // SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-    //                         L"--allow-file-access-from-files");
+    SetEnvironmentVariableW(L"WEBVIEW2_DEFAULT_BACKGROUND_COLOR", L"0");
     SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             L"--allow-file-access-from-files");
 
@@ -157,7 +152,7 @@ bool WebView::create_controller(HWND childHwnd, ICoreWebView2Environment* e)
 
                             // auto widePath{L"file:///" + sitePath.wstring()};
                             // core19->Navigate(widePath.c_str());
-                            core19->Navigate(L"https://www.stripe.com/");
+                            core19->Navigate(L"about:blank");
                         }
                     }
 
