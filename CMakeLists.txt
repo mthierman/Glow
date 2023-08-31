@@ -8,7 +8,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 include(FetchContent)
 
 option(ENV_LIBS OFF)
-option(EXPERIMENTAL_LIBS OFF)
 option(INSTALL OFF)
 option(CREATE_SYMLINKS OFF)
 
@@ -27,25 +26,46 @@ execute_process(
     OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
 )
 
-if(EXPERIMENTAL_LIBS)
-    set(WEBVIEW "Microsoft.Web.WebView2")
-    set(WEBVIEW_VERSION "1.0.1988-prerelease")
-else()
-    set(WEBVIEW "Microsoft.Web.WebView2")
-    set(WEBVIEW_VERSION "1.0.1938.49")
-endif()
+set(WEBVIEW "Microsoft.Web.WebView2")
+set(WEBVIEW_VERSION "1.0.1938.49")
+
+set(CPPWINRT "Microsoft.Windows.CppWinRT")
+set(CPPWINRT_VER "2.0.230706.1")
+
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VERSION "1.0.230824.2")
 
 if(ENV_LIBS)
     file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
+    file(TO_CMAKE_PATH "$ENV{LIBRARIES}/${WIL}.${WIL_VERSION}" WIL_PKG)
 else()
     execute_process(
         COMMAND
         nuget install "${WEBVIEW}" -Version "${WEBVIEW_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
     )
     file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+
+    execute_process(
+        COMMAND
+        nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+    )
+    file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
+
+    execute_process(
+        COMMAND
+        nuget install "${WIL}" -Version "${WIL_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+    )
+    file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WIL}.${WIL_VERSION}" WIL_PKG)
 endif()
 
 message(STATUS "WebView2 ${WEBVIEW_PKG}")
+message(STATUS "C++/WinRT ${CPPWINRT_PKG}")
+message(STATUS "WIL ${WIL_PKG}")
+
+execute_process(
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
+)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc" RC_FILE)
@@ -92,6 +112,9 @@ target_include_directories(
     ${APP_NAME}
     PRIVATE
     "${WEBVIEW_PKG}/build/native/include"
+
+    # "${WEBVIEW_PKG}/lib"
+    "${WIL_PKG}/include"
 )
 
 target_link_directories(
@@ -106,3 +129,8 @@ target_link_libraries(
     WebView2LoaderStatic.lib
     dwmapi.lib
 )
+
+# add_custom_command(
+# TARGET ${APP_NAME} POST_BUILD
+# COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+# )

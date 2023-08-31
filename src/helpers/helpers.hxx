@@ -6,8 +6,8 @@
 #include <string>
 #include <random>
 #include <filesystem>
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.viewmanagement.h>
+#include "winrt/Windows.Foundation.h"
+#include "winrt/Windows.UI.ViewManagement.h"
 
 namespace glow
 {

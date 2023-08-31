@@ -1,9 +1,12 @@
 #include "helpers/helpers.hxx"
-#include "gui/app.hxx"
+#include "gui/window.hxx"
+#include "gui/webview.hxx"
 
 int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    auto app = glow::App("Glow", "D:/GitHub/Glow/src/index.html", false, {0});
+    auto window{glow::Window("Glow")};
+
+    auto webview{glow::WebView("Test", window.get_hwnd())};
 
     MSG msg;
     int r;
