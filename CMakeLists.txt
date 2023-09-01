@@ -111,26 +111,26 @@ endif()
 target_include_directories(
     ${APP_NAME}
     PRIVATE
-    "${WEBVIEW_PKG}/build/native/include"
 
-    # "${WEBVIEW_PKG}/lib"
+    # "${WEBVIEW_PKG}/build/native/include"
+    "${WEBVIEW_PKG}/lib"
     "${WIL_PKG}/include"
 )
 
-target_link_directories(
-    ${APP_NAME}
-    PRIVATE
-    "${WEBVIEW_PKG}/build/native/x64"
-)
-
+# target_link_directories(
+# ${APP_NAME}
+# PRIVATE
+# "${WEBVIEW_PKG}/build/native/x64"
+# )
 target_link_libraries(
     ${APP_NAME}
     PRIVATE
-    WebView2LoaderStatic.lib
+
+    # WebView2LoaderStatic.lib
     dwmapi.lib
 )
 
-# add_custom_command(
-# TARGET ${APP_NAME} POST_BUILD
-# COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-# )
+add_custom_command(
+    TARGET ${APP_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+)

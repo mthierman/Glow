@@ -5,7 +5,8 @@
 #include <filesystem>
 #include "winrt/Windows.Foundation.h"
 #include "../helpers/helpers.hxx"
-#include "gui/webview.hxx"
+// #include "gui/webview.hxx"
+#include "gui/webviewrt.hxx"
 
 namespace glow
 {
@@ -73,6 +74,8 @@ Window::Window(std::string name)
 }
 
 Window::~Window() {}
+
+// void Window::make_webview() { auto webview{glow::WebView("Test", get_hwnd())}; }
 
 void Window::make_webview() { auto webview{glow::WebView("Test", get_hwnd())}; }
 
