@@ -15,12 +15,12 @@ class Window
   public:
     Window(std::string);
     ~Window();
-    void make_webview();
 
     HWND get_hwnd();
 
   private:
-    static __int64 __stdcall WndProc(HWND, UINT, WPARAM, LPARAM);
+    static __int64 __stdcall WndProcCallback(HWND, UINT, WPARAM, LPARAM);
+    virtual __int64 WndProc(HWND, UINT, WPARAM, LPARAM);
     static int __stdcall EnumChildProc(HWND, LPARAM);
 
     HWND m_hwnd;
@@ -40,7 +40,7 @@ Window::Window(std::string name)
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = wideRandomName.c_str();
     wcex.lpszMenuName = wideRandomName.c_str();
-    wcex.lpfnWndProc = Window::WndProc;
+    wcex.lpfnWndProc = WndProcCallback;
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
@@ -75,11 +75,19 @@ Window::Window(std::string name)
 
 Window::~Window() {}
 
-// void Window::make_webview() { auto webview{glow::WebView("Test", get_hwnd())}; }
-
-void Window::make_webview() { auto webview{glow::WebView("Test", get_hwnd())}; }
-
 HWND Window::get_hwnd() { return m_hwnd; }
+
+__int64 __stdcall Window::WndProcCallback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+    Window* window = InstanceFromWndProc<Window, Window, &Window::m_hwnd>(hwnd, msg, lparam);
+
+    if (window)
+    {
+        return window->WndProc(hwnd, msg, wparam, lparam);
+    }
+
+    return ::DefWindowProcW(hwnd, msg, wparam, lparam);
+}
 
 __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
