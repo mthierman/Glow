@@ -37,6 +37,13 @@ T* InstanceFromWndProc(HWND hwnd, UINT msg, LPARAM lparam)
 
     return pInstance;
 }
+
+template <class T, class U, HWND(U::*m_hwnd)> T* InstanceFromEnumChildProc(HWND hwnd)
+{
+    T* pInstance;
+
+    return reinterpret_cast<T*>(GetWindowLongPtrW(hwnd, GWLP_USERDATA));
+}
 } // namespace glow
 
 namespace glow::win32

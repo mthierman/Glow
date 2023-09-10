@@ -21,7 +21,8 @@ class Window
   private:
     static __int64 __stdcall WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual __int64 WndProc(HWND, UINT, WPARAM, LPARAM);
-    static int __stdcall EnumChildProc(HWND, LPARAM);
+    static int __stdcall EnumChildProcCallback(HWND, LPARAM);
+    virtual int EnumChildProc(HWND, LPARAM);
 
     HWND m_hwnd;
 };
@@ -113,7 +114,7 @@ __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
         {
             RECT r;
             GetClientRect(hwnd, &r);
-            EnumChildWindows(hwnd, EnumChildProc, (LPARAM)&r);
+            EnumChildWindows(hwnd, EnumChildProcCallback, (LPARAM)&r);
 
             return 0;
         }
@@ -123,12 +124,24 @@ __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
     return DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-int __stdcall Window::EnumChildProc(HWND hwndChild, LPARAM lparam)
+int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
 {
-    auto child{GetWindowLongPtrW(hwndChild, GWL_ID)};
+    Window* window = InstanceFromEnumChildProc<Window, Window, &Window::m_hwnd>(hwnd);
+
+    if (window)
+    {
+        return window->EnumChildProc(hwnd, lparam);
+    }
+
+    return 1;
+}
+
+int __stdcall Window::EnumChildProc(HWND hwnd, LPARAM lparam)
+{
+    auto child{GetWindowLongPtrW(hwnd, GWL_ID)};
     auto p{(LPRECT)lparam};
 
-    SetWindowPos(hwndChild, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
+    SetWindowPos(hwnd, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
 
     return 1;
 }
