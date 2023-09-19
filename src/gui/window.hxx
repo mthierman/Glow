@@ -5,7 +5,6 @@
 #include <filesystem>
 #include "winrt/Windows.Foundation.h"
 #include "../helpers/helpers.hxx"
-// #include "gui/webview.hxx"
 #include "gui/webviewrt.hxx"
 
 namespace glow
@@ -16,15 +15,14 @@ class Window
     Window(std::string);
     ~Window();
 
+    HWND m_hwnd;
     HWND get_hwnd();
 
   private:
     static __int64 __stdcall WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual __int64 WndProc(HWND, UINT, WPARAM, LPARAM);
     static int __stdcall EnumChildProcCallback(HWND, LPARAM);
-    virtual int EnumChildProc(HWND, LPARAM);
-
-    HWND m_hwnd;
+    // virtual int EnumChildProc(HWND, LPARAM);
 };
 
 Window::Window(std::string name)
@@ -72,6 +70,8 @@ Window::Window(std::string name)
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
     glow::win32::window_uncloak(m_hwnd);
+
+    auto webview{glow::WebView("WebView", m_hwnd)};
 }
 
 Window::~Window() {}
@@ -126,18 +126,6 @@ __int64 __stdcall Window::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 
 int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
 {
-    Window* window = InstanceFromEnumChildProc<Window, Window, &Window::m_hwnd>(hwnd);
-
-    if (window)
-    {
-        return window->EnumChildProc(hwnd, lparam);
-    }
-
-    return 1;
-}
-
-int __stdcall Window::EnumChildProc(HWND hwnd, LPARAM lparam)
-{
     auto child{GetWindowLongPtrW(hwnd, GWL_ID)};
     auto p{(LPRECT)lparam};
 
@@ -145,4 +133,26 @@ int __stdcall Window::EnumChildProc(HWND hwnd, LPARAM lparam)
 
     return 1;
 }
+
+// int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
+// {
+//     Window* window = InstanceFromWndProc<Window, Window, &Window::m_hwnd>(hwnd, 0, lparam);
+
+//     if (window)
+//     {
+//         return window->EnumChildProc(hwnd, lparam);
+//     }
+
+//     return 1;
+// }
+
+// int __stdcall Window::EnumChildProc(HWND hwnd, LPARAM lparam)
+// {
+//     auto child{GetWindowLongPtrW(hwnd, GWL_ID)};
+//     auto p{(LPRECT)lparam};
+
+//     SetWindowPos(hwnd, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
+
+//     return 1;
+// }
 } // namespace glow

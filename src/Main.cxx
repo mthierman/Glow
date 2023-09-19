@@ -5,8 +5,6 @@ int __stdcall wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdL
 {
     auto window{glow::Window("Glow")};
 
-    // window.make_webview();
-
     MSG msg;
     int r;
 

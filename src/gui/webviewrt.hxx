@@ -52,7 +52,8 @@ WebView::WebView(std::string name, HWND h) : parentHwnd(h)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = ::GetModuleHandleW(nullptr);
-    wcex.hbrBackground = (HBRUSH)::GetStockObject(BLACK_BRUSH);
+    // wcex.hbrBackground = (HBRUSH)::GetStockObject(BLACK_BRUSH);
+    wcex.hbrBackground = (HBRUSH)::GetStockObject(WHITE_BRUSH);
     wcex.hCursor =
         (HCURSOR)::LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED);
     wcex.hIcon = (HICON)::LoadImageW(nullptr, (LPCWSTR)IDI_APPLICATION, IMAGE_ICON, 0, 0,
@@ -74,7 +75,7 @@ WebView::WebView(std::string name, HWND h) : parentHwnd(h)
 
     ::ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
-    create_webview();
+    // create_webview();
 }
 
 WebView::~WebView() {}
@@ -105,44 +106,48 @@ __int64 WebView::WndProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 
 winrt::IAsyncAction WebView::create_webview()
 {
-    auto windowRef{winrt::CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
-        reinterpret_cast<uint64_t>(m_hwnd))};
+    if (m_hwnd)
+        auto windowRef{winrt::CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
+            reinterpret_cast<uint64_t>(m_hwnd))};
 
-    auto environmentOptions{winrt::CoreWebView2EnvironmentOptions()};
+    else
+        co_return;
 
-    environmentOptions.AdditionalBrowserArguments(L"--allow-file-access-from-files");
+    // auto environmentOptions{winrt::CoreWebView2EnvironmentOptions()};
 
-    environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
-        L"", L"", environmentOptions);
+    // environmentOptions.AdditionalBrowserArguments(L"--allow-file-access-from-files");
 
-    controller = co_await environment.CreateCoreWebView2ControllerAsync(windowRef);
+    // environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
+    //     L"", L"", environmentOptions);
 
-    auto bg{winrt::Color(0, 255, 255, 255)};
-    controller.DefaultBackgroundColor(bg);
+    // controller = co_await environment.CreateCoreWebView2ControllerAsync(windowRef);
 
-    core = controller.CoreWebView2();
+    // auto bg{winrt::Color(0, 255, 255, 255)};
+    // controller.DefaultBackgroundColor(bg);
 
-    auto webviewSettings{core.Settings()};
+    // core = controller.CoreWebView2();
 
-    webviewSettings.AreBrowserAcceleratorKeysEnabled(true);
-    webviewSettings.AreDefaultContextMenusEnabled(true);
-    webviewSettings.AreDefaultScriptDialogsEnabled(true);
-    webviewSettings.AreDevToolsEnabled(true);
-    webviewSettings.AreHostObjectsAllowed(true);
-    webviewSettings.IsBuiltInErrorPageEnabled(true);
-    webviewSettings.IsGeneralAutofillEnabled(true);
-    webviewSettings.IsPasswordAutosaveEnabled(true);
-    webviewSettings.IsPinchZoomEnabled(true);
-    webviewSettings.IsReputationCheckingRequired(true);
-    webviewSettings.IsScriptEnabled(true);
-    webviewSettings.IsStatusBarEnabled(true);
-    webviewSettings.IsSwipeNavigationEnabled(true);
-    webviewSettings.IsWebMessageEnabled(true);
-    webviewSettings.IsZoomControlEnabled(true);
+    // auto webviewSettings{core.Settings()};
 
-    core.Navigate(winrt::hstring(L"https://www.google.com/").c_str());
+    // webviewSettings.AreBrowserAcceleratorKeysEnabled(true);
+    // webviewSettings.AreDefaultContextMenusEnabled(true);
+    // webviewSettings.AreDefaultScriptDialogsEnabled(true);
+    // webviewSettings.AreDevToolsEnabled(true);
+    // webviewSettings.AreHostObjectsAllowed(true);
+    // webviewSettings.IsBuiltInErrorPageEnabled(true);
+    // webviewSettings.IsGeneralAutofillEnabled(true);
+    // webviewSettings.IsPasswordAutosaveEnabled(true);
+    // webviewSettings.IsPinchZoomEnabled(true);
+    // webviewSettings.IsReputationCheckingRequired(true);
+    // webviewSettings.IsScriptEnabled(true);
+    // webviewSettings.IsStatusBarEnabled(true);
+    // webviewSettings.IsSwipeNavigationEnabled(true);
+    // webviewSettings.IsWebMessageEnabled(true);
+    // webviewSettings.IsZoomControlEnabled(true);
 
-    PostMessageW(parentHwnd, WM_SIZE, 0, 0);
+    // core.Navigate(winrt::hstring(L"https://www.google.com/").c_str());
+
+    // PostMessageW(parentHwnd, WM_SIZE, 0, 0);
 }
 
 winrt::Rect WebView::panel_full(RECT bounds)
