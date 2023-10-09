@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Glow")
 set(APP_VERSION "0.0.1")
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
 
 include(FetchContent)
@@ -27,7 +27,7 @@ execute_process(
 )
 
 set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.1938.49")
+set(WEBVIEW_VERSION "1.0.2045.28")
 
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
