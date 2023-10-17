@@ -9,8 +9,73 @@
 #include "winrt/Windows.Foundation.h"
 #include "winrt/Windows.UI.ViewManagement.h"
 
-namespace glow::win32
+namespace glow
 {
+template <class T, class U, HWND(U::*m_hWnd)>
+T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+{
+    T* pInstance;
+    if (uMsg == WM_NCCREATE)
+    {
+        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
+        ::SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        pInstance->*m_hWnd = hWnd;
+    }
+    else
+    {
+        pInstance = reinterpret_cast<T*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));
+    }
+
+    return pInstance;
+}
+
+std::string narrow(std::wstring in)
+{
+    if (!in.empty())
+    {
+        auto inSize{static_cast<int>(in.size())};
+
+        auto outSize{::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                           in.data(), inSize, nullptr, 0, nullptr, nullptr)};
+
+        if (outSize > 0)
+        {
+            std::string out;
+            out.resize(static_cast<size_t>(outSize));
+
+            if (::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                      in.data(), inSize, out.data(), outSize, nullptr, nullptr) > 0)
+                return out;
+        }
+    }
+
+    return {};
+}
+
+std::wstring widen(std::string in)
+{
+    if (!in.empty())
+    {
+        auto inSize{static_cast<int>(in.size())};
+
+        auto outSize{
+            ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, nullptr, 0)};
+
+        if (outSize > 0)
+        {
+            std::wstring out;
+            out.resize(static_cast<size_t>(outSize));
+
+            if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, out.data(),
+                                      outSize) > 0)
+                return out;
+        }
+    }
+
+    return {};
+}
+
 struct Bounds
 {
     int x{0};
@@ -132,7 +197,7 @@ std::filesystem::path path_appdata(std::string n)
     if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
         return std::filesystem::path{};
 
-    data = std::wstring(buffer) + std::filesystem::path::preferred_separator + to_wstring(n);
+    data = std::wstring(buffer) + std::filesystem::path::preferred_separator + widen(n);
 
     CoTaskMemFree(buffer);
 
@@ -141,4 +206,4 @@ std::filesystem::path path_appdata(std::string n)
 
     return data;
 }
-} // namespace glow::win32
+} // namespace glow
