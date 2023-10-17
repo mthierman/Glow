@@ -95,57 +95,17 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         switch (uMsg)
         {
-        case WM_ACTIVATE:
-            return pPopupWindow->_OnActivate(hWnd);
         case WM_CLOSE:
             return pPopupWindow->_OnClose(hWnd);
-        case WM_CREATE:
-            return pPopupWindow->_OnCreate(hWnd);
-        case WM_DESTROY:
-            return pPopupWindow->_OnDestroy();
-        case WM_SIZE:
-            return pPopupWindow->_OnSize(hWnd);
         }
     }
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int PopupWindow::_OnActivate(HWND hWnd)
-{
-    // MARGINS m{0, 0, 0, 0};
-
-    // if (!SUCCEEDED(DwmExtendFrameIntoClientArea(hWnd, &m)))
-    //     ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
-
-    return 0;
-}
-
 int PopupWindow::_OnClose(HWND hWnd)
 {
     ::DestroyWindow(hWnd);
-    return 0;
-}
-
-int PopupWindow::_OnCreate(HWND hWnd)
-{
-    RECT r;
-    GetWindowRect(hWnd, &r);
-    // SetWindowPos(hWnd, 0, r.left, r.top, (r.right - r.left), (r.bottom - r.top),
-    // SWP_FRAMECHANGED);
-    return 0;
-}
-
-int PopupWindow::_OnDestroy()
-{
-    // ::PostQuitMessage(0);
-    return 0;
-}
-
-int PopupWindow::_OnSize(HWND hWnd)
-{
-    RECT r;
-    ::GetClientRect(hWnd, &r);
 
     return 0;
 }

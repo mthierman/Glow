@@ -86,7 +86,6 @@ MainWindow::MainWindow(std::string t)
         ::InsertMenuItemW(hMenu, 1, TRUE, &seperator);
         ::InsertMenuItemW(hMenu, 2, TRUE, &settings);
         ::InsertMenuItemW(hMenu, 3, TRUE, &seperator);
-        // ::AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
     }
 }
 
@@ -114,8 +113,6 @@ LRESULT MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
         switch (uMsg)
         {
-        case WM_ACTIVATE:
-            return pMainWindow->_OnActivate(hWnd);
         case WM_CLOSE:
             return pMainWindow->_OnClose(hWnd);
         case WM_CREATE:
@@ -132,19 +129,10 @@ LRESULT MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int MainWindow::_OnActivate(HWND hWnd)
-{
-    // MARGINS m{0, 0, 0, 0};
-
-    // if (!SUCCEEDED(DwmExtendFrameIntoClientArea(hWnd, &m)))
-    //     ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
-
-    return 0;
-}
-
 int MainWindow::_OnClose(HWND hWnd)
 {
     ::DestroyWindow(hWnd);
+
     return 0;
 }
 
@@ -152,14 +140,14 @@ int MainWindow::_OnCreate(HWND hWnd)
 {
     RECT r;
     GetWindowRect(hWnd, &r);
-    // SetWindowPos(hWnd, 0, r.left, r.top, (r.right - r.left), (r.bottom - r.top),
-    // SWP_FRAMECHANGED);
+
     return 0;
 }
 
 int MainWindow::_OnDestroy()
 {
     ::PostQuitMessage(0);
+
     return 0;
 }
 
