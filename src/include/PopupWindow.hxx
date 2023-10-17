@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <dwmapi.h>
 #include <string>
 #include "Helpers.hxx"
 
@@ -14,6 +13,8 @@ class PopupWindow
     ~PopupWindow();
 
     HWND get_hwnd();
+    void show();
+    void hide();
 
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
@@ -67,13 +68,21 @@ PopupWindow::PopupWindow(std::string t)
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::ShowWindow(m_hWnd, SW_SHOWNORMAL);
+    ::ShowWindow(m_hWnd, SW_HIDE);
     SetWindowPos(m_hWnd, 0, 0, 0, 400, 400, 0);
 }
 
 PopupWindow::~PopupWindow() {}
 
 HWND PopupWindow::get_hwnd() { return m_hWnd; }
+
+void PopupWindow::show()
+{
+    ShowWindow(m_hWnd, SW_SHOW);
+    BringWindowToTop(m_hWnd);
+}
+
+void PopupWindow::hide() { ShowWindow(m_hWnd, SW_HIDE); }
 
 LRESULT CALLBACK PopupWindow::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -105,7 +114,8 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int PopupWindow::_OnClose(HWND hWnd)
 {
-    ::DestroyWindow(hWnd);
+    // ::DestroyWindow(hWnd);
+    ShowWindow(m_hWnd, SW_HIDE);
 
     return 0;
 }

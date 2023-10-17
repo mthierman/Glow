@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Windows.h>
-#include <dwmapi.h>
 #include <string>
 #include "Helpers.hxx"
+#include "include/PopupWindow.hxx"
 
 #define IDM_SETTINGS 1001
 
@@ -29,6 +29,8 @@ class MainWindow
     int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
 
     HWND m_hWnd;
+
+    glow::PopupWindow popupWindow{"Settings"};
 };
 
 MainWindow::MainWindow(std::string t)
@@ -162,7 +164,8 @@ int MainWindow::_OnSize(HWND hWnd)
 int MainWindow::_OnSysCommand(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if (wParam == IDM_SETTINGS)
-        ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
+        // ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
+        popupWindow.show();
 
     ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 

@@ -1,12 +1,10 @@
 #include <Windows.h>
 #include "include/MainWindow.hxx"
-#include "include/PopupWindow.hxx"
+// #include "include/PopupWindow.hxx"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     glow::MainWindow mainWindow{"Glow"};
-
-    glow::PopupWindow popupWindow{"Settings"};
 
     MSG msg;
     int r;
