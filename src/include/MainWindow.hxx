@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <dwmapi.h>
 #include <string>
 // #include <filesystem>
 // #include "winrt/Windows.Foundation.h"
@@ -87,6 +88,11 @@ class Window
 
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
+    int _OnActivate(HWND);
+    int _OnClose(HWND);
+    int _OnCreate(HWND);
+    int _OnDestroy();
+    int _OnSize(HWND);
     // static BOOL CALLBACK EnumChildProcCallback(HWND, LPARAM);
     // virtual BOOL EnumChildProc(HWND, LPARAM);
 
@@ -97,13 +103,13 @@ Window::Window(std::string t)
 {
     auto name{glow::widen(t)};
     auto className{glow::widen("MainWindow")};
+    auto hInstance = ::GetModuleHandleW(nullptr);
 
-    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(::GetModuleHandleW(nullptr),
-                                                    glow::widen("APP_ICON").c_str(), IMAGE_ICON, 0,
-                                                    0, LR_DEFAULTSIZE))};
+    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(hInstance, glow::widen("APP_ICON").c_str(),
+                                                    IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 
-    auto hCursor{reinterpret_cast<HCURSOR>(
-        ::LoadImageW(nullptr, (LPCWSTR)IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED))};
+    auto hCursor{reinterpret_cast<HCURSOR>(::LoadImageW(
+        nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED))};
 
     auto hBrush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
 
@@ -114,15 +120,13 @@ Window::Window(std::string t)
     wcex.style = CS_HREDRAW | CS_VREDRAW;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandleW(nullptr);
+    wcex.hInstance = hInstance;
     wcex.hbrBackground = hBrush;
     wcex.hCursor = hCursor;
     wcex.hIcon = hIcon;
     wcex.hIconSm = hIcon;
 
-    auto atom{::RegisterClassExW(&wcex)};
-
-    if (atom == 0)
+    if (::RegisterClassExW(&wcex) == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
     ::CreateWindowExW(0, className.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
@@ -150,48 +154,75 @@ HWND Window::get_hwnd() { return m_hWnd; }
 
 LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    Window* window = InstanceFromWndProc<Window, Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
+    Window* pMainWindow = InstanceFromWndProc<Window, Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
 
-    if (window)
-    {
-        return window->WndProc(hWnd, uMsg, wParam, lParam);
-    }
+    if (pMainWindow)
+        return pMainWindow->WndProc(hWnd, uMsg, wParam, lParam);
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    Window* window = InstanceFromWndProc<Window, Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
+    Window* pMainWindow = InstanceFromWndProc<Window, Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
 
-    if (window)
+    if (pMainWindow)
     {
         switch (uMsg)
         {
+        case WM_ACTIVATE:
+            return pMainWindow->_OnActivate(hWnd);
         case WM_CLOSE:
-        {
-            ::DestroyWindow(hWnd);
-            return 0;
-        }
-
+            return pMainWindow->_OnClose(hWnd);
+        case WM_CREATE:
+            return pMainWindow->_OnCreate(hWnd);
         case WM_DESTROY:
-        {
-            ::PostQuitMessage(0);
-            return 0;
-        }
-
-            // case WM_SIZE:
-            // {
-            //     RECT r;
-            //     ::GetClientRect(hWnd, &r);
-            //     ::EnumChildWindows(hWnd, EnumChildProcCallback, (LPARAM)&r);
-
-            //     return 0;
-            // }
+            return pMainWindow->_OnDestroy();
+        case WM_SIZE:
+            return pMainWindow->_OnSize(hWnd);
         }
     }
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
+}
+
+int Window::_OnActivate(HWND hWnd)
+{
+    MARGINS m{0, 0, 0, 0};
+
+    if (!SUCCEEDED(DwmExtendFrameIntoClientArea(hWnd, &m)))
+        ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
+
+    return 0;
+}
+
+int Window::_OnClose(HWND hWnd)
+{
+    ::DestroyWindow(hWnd);
+    return 0;
+}
+
+int Window::_OnCreate(HWND hWnd)
+{
+    RECT r;
+    GetWindowRect(hWnd, &r);
+    SetWindowPos(hWnd, 0, r.left, r.top, (r.right - r.left), (r.bottom - r.top), SWP_FRAMECHANGED);
+    return 0;
+}
+
+int Window::_OnDestroy()
+{
+    ::PostQuitMessage(0);
+    return 0;
+}
+
+int Window::_OnSize(HWND hWnd)
+{
+    RECT r;
+    ::GetClientRect(hWnd, &r);
+    // ::EnumChildWindows(hWnd, EnumChildProcCallback, (LPARAM)&r);
+
+    return 0;
 }
 
 // int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
