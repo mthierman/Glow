@@ -3,9 +3,8 @@
 #include <Windows.h>
 #include <dwmapi.h>
 #include <string>
-// #include <filesystem>
-// #include "winrt/Windows.Foundation.h"
-// #include "helpers.hxx"
+
+#define IDM_SETTINGS 1001
 
 namespace glow
 {
@@ -83,18 +82,15 @@ class Window
     HWND get_hwnd();
 
   private:
-    // static LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-    // static BOOL CALLBACK EnumChildProc(HWND, LPARAM);
-
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
+
     int _OnActivate(HWND);
     int _OnClose(HWND);
     int _OnCreate(HWND);
     int _OnDestroy();
     int _OnSize(HWND);
-    // static BOOL CALLBACK EnumChildProcCallback(HWND, LPARAM);
-    // virtual BOOL EnumChildProc(HWND, LPARAM);
+    int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
 
     HWND m_hWnd;
 };
@@ -136,16 +132,15 @@ Window::Window(std::string t)
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    // glow::win32::set_darkmode(m_hwnd);
-    // glow::win32::set_darktitle();
-    // glow::win32::set_mica(m_hwnd);
-    // glow::win32::window_cloak(m_hwnd);
-
     ::ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 
-    // glow::win32::window_uncloak(m_hwnd);
+    auto hMenu{GetSystemMenu(m_hWnd, FALSE)};
 
-    // auto webview{glow::WebView("WebView", m_hwnd)};
+    if (hMenu != INVALID_HANDLE_VALUE)
+    {
+        AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
+        AppendMenuW(hMenu, MF_STRING, IDM_SETTINGS, L"Settings");
+    }
 }
 
 Window::~Window() {}
@@ -180,6 +175,8 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             return pMainWindow->_OnDestroy();
         case WM_SIZE:
             return pMainWindow->_OnSize(hWnd);
+        case WM_SYSCOMMAND:
+            return pMainWindow->_OnSysCommand(hWnd, uMsg, wParam, lParam);
         }
     }
 
@@ -220,40 +217,17 @@ int Window::_OnSize(HWND hWnd)
 {
     RECT r;
     ::GetClientRect(hWnd, &r);
-    // ::EnumChildWindows(hWnd, EnumChildProcCallback, (LPARAM)&r);
 
     return 0;
 }
 
-// int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
-// {
-//     auto child{GetWindowLongPtrW(hwnd, GWL_ID)};
-//     auto p{(LPRECT)lparam};
+int Window::_OnSysCommand(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    if (wParam == IDM_SETTINGS)
+        ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-//     SetWindowPos(hwnd, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
+    ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 
-//     return 1;
-// }
-
-// int __stdcall Window::EnumChildProcCallback(HWND hwnd, LPARAM lparam)
-// {
-//     Window* window = InstanceFromWndProc<Window, Window, &Window::m_hwnd>(hwnd, 0, lparam);
-
-//     if (window)
-//     {
-//         return window->EnumChildProc(hwnd, lparam);
-//     }
-
-//     return 1;
-// }
-
-// int __stdcall Window::EnumChildProc(HWND hwnd, LPARAM lparam)
-// {
-//     auto child{GetWindowLongPtrW(hwnd, GWL_ID)};
-//     auto p{(LPRECT)lparam};
-
-//     SetWindowPos(hwnd, nullptr, 0, 0, p->right, p->bottom, SWP_NOZORDER);
-
-//     return 1;
-// }
+    return 0;
+}
 } // namespace glow
