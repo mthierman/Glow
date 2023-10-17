@@ -3,9 +3,6 @@
 #include <Windows.h>
 #include <string>
 #include "Helpers.hxx"
-#include "include/PopupWindow.hxx"
-
-#define IDM_SETTINGS 1001
 
 namespace glow
 {
@@ -29,8 +26,6 @@ class MainWindow
     int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
 
     HWND m_hWnd;
-
-    glow::PopupWindow popupWindow{"Settings"};
 };
 
 MainWindow::MainWindow(std::string t)
@@ -71,24 +66,6 @@ MainWindow::MainWindow(std::string t)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
     ::ShowWindow(m_hWnd, SW_SHOWDEFAULT);
-
-    auto hMenu{::GetSystemMenu(m_hWnd, FALSE)};
-
-    MENUITEMINFOW settings{sizeof(MENUITEMINFOW)};
-    settings.fMask = MIIM_STRING | MIIM_ID;
-    settings.wID = IDM_SETTINGS;
-    settings.dwTypeData = const_cast<LPWSTR>(L"Settings");
-
-    MENUITEMINFOW seperator{sizeof(MENUITEMINFOW)};
-    seperator.fMask = MIIM_FTYPE;
-    seperator.fType = MFT_SEPARATOR;
-
-    if (hMenu != INVALID_HANDLE_VALUE)
-    {
-        ::InsertMenuItemW(hMenu, 1, TRUE, &seperator);
-        ::InsertMenuItemW(hMenu, 2, TRUE, &settings);
-        ::InsertMenuItemW(hMenu, 3, TRUE, &seperator);
-    }
 }
 
 MainWindow::~MainWindow() {}
@@ -117,12 +94,8 @@ LRESULT MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case WM_CLOSE:
             return pMainWindow->_OnClose(hWnd);
-        case WM_CREATE:
-            return pMainWindow->_OnCreate(hWnd);
         case WM_DESTROY:
             return pMainWindow->_OnDestroy();
-        case WM_SIZE:
-            return pMainWindow->_OnSize(hWnd);
         case WM_SYSCOMMAND:
             return pMainWindow->_OnSysCommand(hWnd, uMsg, wParam, lParam);
         }
@@ -138,14 +111,6 @@ int MainWindow::_OnClose(HWND hWnd)
     return 0;
 }
 
-int MainWindow::_OnCreate(HWND hWnd)
-{
-    RECT r;
-    GetWindowRect(hWnd, &r);
-
-    return 0;
-}
-
 int MainWindow::_OnDestroy()
 {
     ::PostQuitMessage(0);
@@ -153,19 +118,11 @@ int MainWindow::_OnDestroy()
     return 0;
 }
 
-int MainWindow::_OnSize(HWND hWnd)
-{
-    RECT r;
-    ::GetClientRect(hWnd, &r);
-
-    return 0;
-}
-
 int MainWindow::_OnSysCommand(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    if (wParam == IDM_SETTINGS)
-        // ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
-        popupWindow.show();
+    // if (wParam == IDM_SETTINGS)
+    // ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
+    // popupWindow.show();
 
     ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 

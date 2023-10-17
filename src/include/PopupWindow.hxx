@@ -20,12 +20,8 @@ class PopupWindow
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
-    int _OnActivate(HWND);
     int _OnClose(HWND);
     int _OnCreate(HWND);
-    int _OnDestroy();
-    int _OnSize(HWND);
-    int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
 
     HWND m_hWnd;
 };
@@ -68,7 +64,7 @@ PopupWindow::PopupWindow(std::string t)
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::ShowWindow(m_hWnd, SW_HIDE);
+    ::ShowWindow(m_hWnd, SW_SHOW);
     SetWindowPos(m_hWnd, 0, 0, 0, 400, 400, 0);
 }
 
@@ -106,6 +102,8 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case WM_CLOSE:
             return pPopupWindow->_OnClose(hWnd);
+        case WM_CREATE:
+            return pPopupWindow->_OnCreate(hWnd);
         }
     }
 
@@ -114,8 +112,22 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int PopupWindow::_OnClose(HWND hWnd)
 {
-    // ::DestroyWindow(hWnd);
     ShowWindow(m_hWnd, SW_HIDE);
+
+    return 0;
+}
+
+int PopupWindow::_OnCreate(HWND hWnd)
+{
+    auto xpos{100};
+    auto ypos{100};
+    auto nwidth{100};
+    auto nheight{100};
+
+    HWND hWndComboBox =
+        CreateWindowW(WC_COMBOBOX, TEXT(""),
+                      CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, xpos,
+                      ypos, nwidth, nheight, hWnd, NULL, ::GetModuleHandleW(nullptr), NULL);
 
     return 0;
 }

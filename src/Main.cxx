@@ -1,6 +1,5 @@
 #include <Windows.h>
 #include "include/MainWindow.hxx"
-// #include "include/PopupWindow.hxx"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
