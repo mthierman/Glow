@@ -136,10 +136,21 @@ Window::Window(std::string t)
 
     auto hMenu{GetSystemMenu(m_hWnd, FALSE)};
 
+    MENUITEMINFOW settings{sizeof(MENUITEMINFOW)};
+    settings.fMask = MIIM_STRING | MIIM_ID;
+    settings.wID = IDM_SETTINGS;
+    settings.dwTypeData = const_cast<LPWSTR>(L"Settings");
+
+    MENUITEMINFOW seperator{sizeof(MENUITEMINFOW)};
+    seperator.fMask = MIIM_FTYPE;
+    seperator.fType = MFT_SEPARATOR;
+
     if (hMenu != INVALID_HANDLE_VALUE)
     {
-        AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
-        AppendMenuW(hMenu, MF_STRING, IDM_SETTINGS, L"Settings");
+        InsertMenuItemW(hMenu, 1, TRUE, &seperator);
+        InsertMenuItemW(hMenu, 2, TRUE, &settings);
+        InsertMenuItemW(hMenu, 3, TRUE, &seperator);
+        // AppendMenuW(hMenu, MF_SEPARATOR, 0, 0);
     }
 }
 
