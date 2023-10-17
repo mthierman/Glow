@@ -96,8 +96,6 @@ LRESULT MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             return pMainWindow->_OnClose(hWnd);
         case WM_DESTROY:
             return pMainWindow->_OnDestroy();
-        case WM_SYSCOMMAND:
-            return pMainWindow->_OnSysCommand(hWnd, uMsg, wParam, lParam);
         }
     }
 
@@ -114,17 +112,6 @@ int MainWindow::_OnClose(HWND hWnd)
 int MainWindow::_OnDestroy()
 {
     ::PostQuitMessage(0);
-
-    return 0;
-}
-
-int MainWindow::_OnSysCommand(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    // if (wParam == IDM_SETTINGS)
-    // ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
-    // popupWindow.show();
-
-    ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 
     return 0;
 }

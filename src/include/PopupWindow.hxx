@@ -102,8 +102,6 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
         case WM_CLOSE:
             return pPopupWindow->_OnClose(hWnd);
-        case WM_CREATE:
-            return pPopupWindow->_OnCreate(hWnd);
         }
     }
 
@@ -113,21 +111,6 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int PopupWindow::_OnClose(HWND hWnd)
 {
     ShowWindow(m_hWnd, SW_HIDE);
-
-    return 0;
-}
-
-int PopupWindow::_OnCreate(HWND hWnd)
-{
-    auto xpos{100};
-    auto ypos{100};
-    auto nwidth{100};
-    auto nheight{100};
-
-    HWND hWndComboBox =
-        CreateWindowW(WC_COMBOBOX, TEXT(""),
-                      CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE, xpos,
-                      ypos, nwidth, nheight, hWnd, NULL, ::GetModuleHandleW(nullptr), NULL);
 
     return 0;
 }
