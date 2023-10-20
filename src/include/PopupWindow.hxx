@@ -12,27 +12,25 @@ namespace glow
 class PopupWindow
 {
   public:
-    PopupWindow(std::string);
+    PopupWindow();
     ~PopupWindow();
 
-    HWND get_hwnd();
     void show();
     void hide();
+
+    HWND m_hWnd;
 
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
-    int _OnClose(HWND);
-    int _OnCreate(HWND);
-
-    HWND m_hWnd;
+    int _OnClose(HWND, UINT, WPARAM, LPARAM);
 };
 
-PopupWindow::PopupWindow(std::string t)
+PopupWindow::PopupWindow()
 {
-    auto name{glow::widen(t)};
     auto className{glow::widen("PopupWindow")};
+
     auto hInstance = ::GetModuleHandleW(nullptr);
 
     auto hIcon{reinterpret_cast<HICON>(::LoadImageW(hInstance, glow::widen("APP_ICON").c_str(),
@@ -59,7 +57,7 @@ PopupWindow::PopupWindow(std::string t)
     if (::RegisterClassExW(&wcex) == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::CreateWindowExW(0, className.c_str(), name.c_str(),
+    ::CreateWindowExW(0, className.c_str(), className.c_str(),
                       WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                       ::GetModuleHandleW(nullptr), this);
@@ -72,8 +70,6 @@ PopupWindow::PopupWindow(std::string t)
 }
 
 PopupWindow::~PopupWindow() {}
-
-HWND PopupWindow::get_hwnd() { return m_hWnd; }
 
 void PopupWindow::show()
 {
@@ -104,33 +100,16 @@ LRESULT PopupWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (uMsg)
         {
         case WM_CLOSE:
-            return pPopupWindow->_OnClose(hWnd);
-        case WM_CREATE:
-            return pPopupWindow->_OnCreate(hWnd);
+            return pPopupWindow->_OnClose(hWnd, uMsg, wParam, lParam);
         }
     }
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int PopupWindow::_OnClose(HWND hWnd)
+int PopupWindow::_OnClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    ShowWindow(m_hWnd, SW_HIDE);
-
-    return 0;
-}
-
-int PopupWindow::_OnCreate(HWND hWnd)
-{
-    auto xpos{100};
-    auto ypos{100};
-    auto nwidth{100};
-    auto nheight{100};
-
-    HWND hWndComboBox = CreateWindowW(
-        WC_COMBOBOX, TEXT(""),
-        CBS_DROPDOWN | CBS_HASSTRINGS | WS_CHILD | WS_OVERLAPPED | WS_VISIBLE | WS_TABSTOP, xpos,
-        ypos, nwidth, nheight, hWnd, NULL, ::GetModuleHandleW(nullptr), NULL);
+    ShowWindow(hWnd, SW_HIDE);
 
     return 0;
 }

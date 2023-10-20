@@ -18,11 +18,11 @@ class MainWindow
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
-    int _OnActivate(HWND);
-    int _OnClose(HWND);
-    int _OnCreate(HWND);
-    int _OnDestroy();
-    int _OnSize(HWND);
+    int _OnActivate(HWND, UINT, WPARAM, LPARAM);
+    int _OnClose(HWND, UINT, WPARAM, LPARAM);
+    int _OnCreate(HWND, UINT, WPARAM, LPARAM);
+    int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
+    int _OnSize(HWND, UINT, WPARAM, LPARAM);
     int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
 };
 
@@ -90,23 +90,23 @@ LRESULT MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch (uMsg)
         {
         case WM_CLOSE:
-            return pMainWindow->_OnClose(hWnd);
+            return pMainWindow->_OnClose(hWnd, uMsg, wParam, lParam);
         case WM_DESTROY:
-            return pMainWindow->_OnDestroy();
+            return pMainWindow->_OnDestroy(hWnd, uMsg, wParam, lParam);
         }
     }
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int MainWindow::_OnClose(HWND hWnd)
+int MainWindow::_OnClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     ::DestroyWindow(hWnd);
 
     return 0;
 }
 
-int MainWindow::_OnDestroy()
+int MainWindow::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     ::PostQuitMessage(0);
 
