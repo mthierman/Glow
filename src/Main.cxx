@@ -1,11 +1,12 @@
 #include <Windows.h>
-#include "include/MainWindow.hxx"
-#include "include/PopupWindow.hxx"
+#include "include/Window.hxx"
+// #include "include/MainWindow.hxx"
+// #include "include/PopupWindow.hxx"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    glow::MainWindow m;
-    glow::PopupWindow p;
+    glow::Window w;
+    // glow::PopupWindow p;
 
     MSG msg;
     int r;
