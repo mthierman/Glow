@@ -11,8 +11,7 @@
 
 namespace glow
 {
-template <class T, class U, HWND(U::*m_hWnd)>
-T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance;
     if (uMsg == WM_NCCREATE)
