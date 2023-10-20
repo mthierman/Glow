@@ -19,13 +19,11 @@ T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
     {
         LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        ::SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
         pInstance->*m_hWnd = hWnd;
+        ::SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
     else
-    {
         pInstance = reinterpret_cast<T*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));
-    }
 
     return pInstance;
 }

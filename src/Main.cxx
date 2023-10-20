@@ -3,7 +3,7 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    glow::MainWindow mainWindow{"Glow"};
+    glow::MainWindow mainWindow;
 
     MSG msg;
     int r;

@@ -9,10 +9,10 @@ namespace glow
 class MainWindow
 {
   public:
-    MainWindow(std::string);
+    MainWindow();
     ~MainWindow();
 
-    HWND get_hwnd();
+    HWND m_hWnd;
 
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
@@ -24,15 +24,13 @@ class MainWindow
     int _OnDestroy();
     int _OnSize(HWND);
     int _OnSysCommand(HWND, UINT, WPARAM, LPARAM);
-
-    HWND m_hWnd;
 };
 
-MainWindow::MainWindow(std::string t)
+MainWindow::MainWindow()
 {
-    auto name{glow::widen(t)};
     auto className{glow::widen("MainWindow")};
-    auto hInstance = ::GetModuleHandleW(nullptr);
+
+    auto hInstance{::GetModuleHandleW(nullptr)};
 
     auto hIcon{reinterpret_cast<HICON>(::LoadImageW(hInstance, glow::widen("APP_ICON").c_str(),
                                                     IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
@@ -58,9 +56,10 @@ MainWindow::MainWindow(std::string t)
     if (::RegisterClassExW(&wcex) == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::CreateWindowExW(0, className.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                      ::GetModuleHandleW(nullptr), this);
+    ::CreateWindowExW(0, className.c_str(), className.c_str(),
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, ::GetModuleHandleW(nullptr),
+                      this);
 
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
@@ -69,8 +68,6 @@ MainWindow::MainWindow(std::string t)
 }
 
 MainWindow::~MainWindow() {}
-
-HWND MainWindow::get_hwnd() { return m_hWnd; }
 
 LRESULT CALLBACK MainWindow::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

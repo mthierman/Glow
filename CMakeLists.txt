@@ -128,9 +128,10 @@ target_link_libraries(
 
     # WebView2LoaderStatic.lib
     dwmapi.lib
+    Comctl32.lib
 )
 
-add_custom_command(
-    TARGET ${APP_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
-)
+# add_custom_command(
+# TARGET ${APP_NAME} POST_BUILD
+# COMMAND ${CMAKE_COMMAND} -E copy "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}"
+# )
