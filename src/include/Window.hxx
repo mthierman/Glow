@@ -21,9 +21,6 @@ class Window
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-
-    int _OnClose(HWND, UINT, WPARAM, LPARAM);
-    int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
 };
 
 Window::Window(bool popup)
@@ -83,15 +80,7 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
     Window* pWindow = InstanceFromWndProc<Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
 
     if (pWindow)
-        switch (uMsg)
-        {
-        case WM_CLOSE:
-            return pWindow->_OnClose(hWnd, uMsg, wParam, lParam);
-        case WM_DESTROY:
-            return pWindow->_OnDestroy(hWnd, uMsg, wParam, lParam);
-        default:
-            return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
-        }
+        return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
@@ -99,19 +88,5 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
-}
-
-int Window::_OnClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    ::DestroyWindow(hWnd);
-
-    return 0;
-}
-
-int Window::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    ::PostQuitMessage(0);
-
-    return 0;
 }
 } // namespace glow
