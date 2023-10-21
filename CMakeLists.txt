@@ -13,6 +13,31 @@ project(
     LANGUAGES C CXX ASM
 )
 
+file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cxx)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc RC_FILE)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/app.manifest MANIFEST_FILE)
+
+add_executable(
+    ${APP_NAME}
+    WIN32
+    ${SOURCES}
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+add_compile_definitions(
+    UNICODE
+    APP_NAME="${APP_NAME}"
+    APP_VERSION="${APP_VERSION}"
+)
+
+target_link_libraries(
+    ${APP_NAME}
+    PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+)
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     add_compile_options(
         /EHsc
@@ -35,28 +60,3 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         -fcoroutines
     )
 endif()
-
-file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cxx)
-file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc RC_FILE)
-file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/app.manifest MANIFEST_FILE)
-
-add_executable(
-    ${APP_NAME}
-    WIN32
-    ${SOURCES}
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
-
-add_compile_definitions(
-    UNICODE
-    APP_NAME=${APP_NAME}
-    APP_VERSION=${APP_VERSION}
-)
-
-target_link_libraries(
-    ${APP_NAME}
-    PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-)

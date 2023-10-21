@@ -10,7 +10,6 @@ class Window
 {
   public:
     Window(bool);
-    // Window() = default;
     ~Window();
 
     void show();
@@ -28,7 +27,6 @@ class Window
 };
 
 Window::Window(bool popup)
-// Window::Window()
 {
     auto className{glow::randomize(L"Window")};
 
@@ -58,16 +56,11 @@ Window::Window(bool popup)
     if (::RegisterClassExW(&wcex) == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::CreateWindowExW(0, className.c_str(), className.c_str(),
+    ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
                       popup ? WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
                             : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                       ::GetModuleHandleW(nullptr), this);
-
-    // ::CreateWindowExW(0, className.c_str(), className.c_str(),
-    //                   WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-    //                   CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-    //                   ::GetModuleHandleW(nullptr), this);
 
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
