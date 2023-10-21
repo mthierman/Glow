@@ -9,10 +9,15 @@ namespace glow
 class Window
 {
   public:
-    Window();
+    Window(bool);
+    // Window() = default;
     ~Window();
 
+    void show();
+    void hide();
+
     HWND m_hWnd;
+    ATOM m_class;
 
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
@@ -22,9 +27,10 @@ class Window
     int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
 };
 
-Window::Window()
+Window::Window(bool popup)
+// Window::Window()
 {
-    auto className{glow::widen("MainWindow")};
+    auto className{glow::randomize(L"Window")};
 
     auto hInstance{::GetModuleHandleW(nullptr)};
 
@@ -53,9 +59,15 @@ Window::Window()
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
     ::CreateWindowExW(0, className.c_str(), className.c_str(),
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, ::GetModuleHandleW(nullptr),
-                      this);
+                      popup ? WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
+                            : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                      ::GetModuleHandleW(nullptr), this);
+
+    // ::CreateWindowExW(0, className.c_str(), className.c_str(),
+    //                   WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+    //                   CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+    //                   ::GetModuleHandleW(nullptr), this);
 
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
@@ -64,6 +76,14 @@ Window::Window()
 }
 
 Window::~Window() {}
+
+void Window::show()
+{
+    ShowWindow(m_hWnd, SW_SHOW);
+    BringWindowToTop(m_hWnd);
+}
+
+void Window::hide() { ShowWindow(m_hWnd, SW_HIDE); }
 
 LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

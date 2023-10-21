@@ -83,13 +83,13 @@ struct Bounds
     int height{0};
 };
 
-std::string randomize(std::string in)
+std::wstring randomize(std::wstring in)
 {
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(1.0, 10.0);
     auto randomDouble{dist(mt)};
-    auto randomNumber{std::to_string(randomDouble)};
+    auto randomNumber{std::to_wstring(randomDouble)};
     std::erase(randomNumber, '.');
 
     return (in + randomNumber);

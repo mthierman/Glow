@@ -1,13 +1,20 @@
 #include <Windows.h>
 #include "include/Window.hxx"
+#include <memory>
 
-class AppWindow : public glow::Window
+class App : public glow::Window
 {
+  public:
+    App(bool);
+
+  private:
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
     int _OnNotify(HWND, UINT, WPARAM, LPARAM);
 };
 
-LRESULT AppWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+App::App(bool popup) : glow::Window(popup) {}
+
+LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -18,7 +25,7 @@ LRESULT AppWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int AppWindow::_OnNotify(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int App::_OnNotify(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     ::MessageBoxW(nullptr, L"Virtual WndProc Success!", L"Test", 0);
 
@@ -27,9 +34,15 @@ int AppWindow::_OnNotify(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    AppWindow w;
+    // auto window = glow::Window(false);
+    // auto app = App(false);
+    // auto w{AppWindow(false)};
+    // auto w{AppWindow(false)};
+    // auto w{std::make_unique<AppWindow>(false)};
 
-    SendMessage(w.m_hWnd, WM_NOTIFY, 0, 0);
+    auto app{App(false)};
+
+    SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
 
     MSG msg;
     int r;
