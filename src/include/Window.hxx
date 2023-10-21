@@ -103,14 +103,9 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
 
     case Style::Child:
         m_parenthWnd = h.value();
-        // SIZEBOX???
-        // ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
-        //                   WS_CHILD | WS_BORDER | WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
-        //                   CW_USEDEFAULT, CW_USEDEFAULT, m_parenthWnd, nullptr,
-        //                   ::GetModuleHandleW(nullptr), this);
-        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD,
-                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_parenthWnd,
-                          nullptr, ::GetModuleHandleW(nullptr), this);
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
+                          WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+                          CW_USEDEFAULT, m_parenthWnd, nullptr, ::GetModuleHandleW(nullptr), this);
         break;
     }
 
@@ -140,11 +135,13 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
             return pWindow->_OnClose(hWnd, uMsg, wParam, lParam);
         case WM_DESTROY:
             return pWindow->_OnDestroy(hWnd, uMsg, wParam, lParam);
+        default:
+            return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
         }
-        return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
     }
 
-    return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
+    else
+        return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

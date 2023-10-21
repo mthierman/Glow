@@ -2,15 +2,13 @@
 #include "include/App.hxx"
 #include "include/WebView.hxx"
 
+#define ID_CHILD_1 100
+#define ID_CHILD_2 101
+
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     App app{glow::Style::Main, std::nullopt};
-    // SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
-
-    WebView wv{glow::Style::Child, app.m_hWnd};
-
-    // App popup{glow::Style::Popup, std::nullopt};
-    // App child{glow::Style::Child, app.m_hWnd};
+    WebView wv1{glow::Style::Child, app.m_hWnd};
 
     MSG msg;
     int r;
