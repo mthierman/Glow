@@ -104,9 +104,9 @@ void Window::initialize()
         break;
 
     case Style::Child:
-        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
-                          WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, m_parent, nullptr, ::GetModuleHandleW(nullptr), this);
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD | WS_BORDER,
+                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_parent,
+                          nullptr, ::GetModuleHandleW(nullptr), this);
         break;
     }
 

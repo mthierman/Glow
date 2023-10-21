@@ -11,6 +11,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     wv.initialize();
 
+    // SendMessage(app.m_hWnd, WM_SIZE, 0, 0);
+
     MSG msg;
     int r;
 

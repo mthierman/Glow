@@ -13,7 +13,7 @@ class App : public glow::Window
 
   private:
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-    int _OnSize(HWND, UINT, WPARAM, LPARAM);
+    int _OnPaint(HWND, UINT, WPARAM, LPARAM);
     static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lparam);
 };
 
@@ -25,14 +25,14 @@ LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     switch (uMsg)
     {
-    case WM_SIZE:
-        return _OnSize(hWnd, uMsg, wParam, lParam);
+    case WM_PAINT:
+        return _OnPaint(hWnd, uMsg, wParam, lParam);
     }
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int App::_OnSize(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int App::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     RECT r;
     ::GetClientRect(hWnd, &r);
