@@ -36,7 +36,7 @@ class Window
 
     int _OnClose(HWND, UINT, WPARAM, LPARAM);
     int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
-    int _OnPaint(HWND, UINT, WPARAM, LPARAM);
+    // int _OnPaint(HWND, UINT, WPARAM, LPARAM);
 };
 
 Window::Window(Style s, std::optional<HWND> h) : style(s)
@@ -51,7 +51,20 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
     auto hCursor{reinterpret_cast<HCURSOR>(::LoadImageW(
         nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED))};
 
-    m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
+    switch (style)
+    {
+    case Style::Main:
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH));
+        break;
+
+    case Style::Popup:
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
+        break;
+
+    case Style::Child:
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH));
+        break;
+    }
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = className.c_str();
@@ -61,7 +74,8 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    wcex.hbrBackground = 0;
+    // wcex.hbrBackground = (style == Style::Child) ? m_hBrush : 0;
+    wcex.hbrBackground = m_hBrush;
     wcex.hCursor = hCursor;
     wcex.hIcon = hIcon;
     wcex.hIconSm = hIcon;
@@ -79,19 +93,24 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
                           CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                           ::GetModuleHandleW(nullptr), this);
         break;
+
     case Style::Popup:
         ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
                           WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
                           nullptr, ::GetModuleHandleW(nullptr), this);
         break;
+
     case Style::Child:
-        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD,
-                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                          nullptr, ::GetModuleHandleW(nullptr), this);
         m_parenthWnd = h.value();
-        if (m_parenthWnd)
-            OutputDebugStringW(L"parent hwnd is OK!");
+        // SIZEBOX???
+        // ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
+        //                   WS_CHILD | WS_BORDER | WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
+        //                   CW_USEDEFAULT, CW_USEDEFAULT, m_parenthWnd, nullptr,
+        //                   ::GetModuleHandleW(nullptr), this);
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD,
+                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_parenthWnd,
+                          nullptr, ::GetModuleHandleW(nullptr), this);
         break;
     }
 
@@ -121,8 +140,6 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
             return pWindow->_OnClose(hWnd, uMsg, wParam, lParam);
         case WM_DESTROY:
             return pWindow->_OnDestroy(hWnd, uMsg, wParam, lParam);
-        case WM_PAINT:
-            return pWindow->_OnPaint(hWnd, uMsg, wParam, lParam);
         }
         return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
     }
@@ -150,13 +167,13 @@ int Window::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-int Window::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT ps;
-    HDC hdc{::BeginPaint(hWnd, &ps)};
-    ::FillRect(hdc, &ps.rcPaint, m_hBrush);
-    ::EndPaint(hWnd, &ps);
+// int Window::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+// {
+//     PAINTSTRUCT ps;
+//     HDC hdc{::BeginPaint(hWnd, &ps)};
+//     ::FillRect(hdc, &ps.rcPaint, m_hBrush);
+//     ::EndPaint(hWnd, &ps);
 
-    return 0;
-}
+//     return 0;
+// }
 } // namespace glow

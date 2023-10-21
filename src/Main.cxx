@@ -1,13 +1,16 @@
 #include <Windows.h>
 #include "include/App.hxx"
+#include "include/WebView.hxx"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     App app{glow::Style::Main, std::nullopt};
-    App popup{glow::Style::Popup, std::nullopt};
-    App child{glow::Style::Child, app.m_hWnd};
+    // SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
 
-    SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
+    WebView wv{glow::Style::Child, app.m_hWnd};
+
+    // App popup{glow::Style::Popup, std::nullopt};
+    // App child{glow::Style::Child, app.m_hWnd};
 
     MSG msg;
     int r;
