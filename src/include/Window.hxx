@@ -36,7 +36,6 @@ class Window
 
     int _OnClose(HWND, UINT, WPARAM, LPARAM);
     int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
-    // int _OnPaint(HWND, UINT, WPARAM, LPARAM);
 };
 
 Window::Window(Style s, std::optional<HWND> h) : style(s)
@@ -54,7 +53,7 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
     switch (style)
     {
     case Style::Main:
-        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH));
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH));
         break;
 
     case Style::Popup:
@@ -62,7 +61,7 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
         break;
 
     case Style::Child:
-        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH));
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH));
         break;
     }
 
@@ -74,7 +73,6 @@ Window::Window(Style s, std::optional<HWND> h) : style(s)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = hInstance;
-    // wcex.hbrBackground = (style == Style::Child) ? m_hBrush : 0;
     wcex.hbrBackground = m_hBrush;
     wcex.hCursor = hCursor;
     wcex.hIcon = hIcon;
@@ -135,17 +133,10 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
             return pWindow->_OnClose(hWnd, uMsg, wParam, lParam);
         case WM_DESTROY:
             return pWindow->_OnDestroy(hWnd, uMsg, wParam, lParam);
-        default:
-            return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
         }
+        return pWindow->WndProc(hWnd, uMsg, wParam, lParam);
     }
 
-    else
-        return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
-}
-
-LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
@@ -163,14 +154,4 @@ int Window::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     return 0;
 }
-
-// int Window::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-// {
-//     PAINTSTRUCT ps;
-//     HDC hdc{::BeginPaint(hWnd, &ps)};
-//     ::FillRect(hdc, &ps.rcPaint, m_hBrush);
-//     ::EndPaint(hWnd, &ps);
-
-//     return 0;
-// }
 } // namespace glow
