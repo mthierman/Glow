@@ -16,6 +16,5 @@ WebView::WebView(glow::Style s, std::optional<HWND> h) : glow::Window(s, h) {}
 
 LRESULT WebView::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }

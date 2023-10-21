@@ -20,7 +20,7 @@ class Window
     Window(Style, std::optional<HWND>);
     ~Window();
 
-    void create();
+    void initialize();
     void show();
     void hide();
     void focus();
@@ -44,10 +44,9 @@ Window::Window(Style s, std::optional<HWND> h) : style(s), m_parent(h.value_or(n
 {
     className = glow::randomize(L"Window");
 
-    auto hInstance{::GetModuleHandleW(nullptr)};
-
-    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(hInstance, glow::widen("APP_ICON").c_str(),
-                                                    IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(::GetModuleHandleW(nullptr),
+                                                    glow::widen("APP_ICON").c_str(), IMAGE_ICON, 0,
+                                                    0, LR_DEFAULTSIZE))};
 
     auto hCursor{reinterpret_cast<HCURSOR>(::LoadImageW(
         nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED))};
@@ -74,7 +73,7 @@ Window::Window(Style s, std::optional<HWND> h) : style(s), m_parent(h.value_or(n
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = hInstance;
+    wcex.hInstance = ::GetModuleHandleW(nullptr);
     wcex.hbrBackground = m_hBrush;
     wcex.hCursor = hCursor;
     wcex.hIcon = hIcon;
@@ -86,7 +85,7 @@ Window::Window(Style s, std::optional<HWND> h) : style(s), m_parent(h.value_or(n
 
 Window::~Window() {}
 
-void Window::create()
+void Window::initialize()
 {
     switch (style)
     {
@@ -105,7 +104,6 @@ void Window::create()
         break;
 
     case Style::Child:
-        // auto parentHwnd{m_parent.value()};
         ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
                           WS_CHILD | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                           CW_USEDEFAULT, m_parent, nullptr, ::GetModuleHandleW(nullptr), this);
@@ -126,7 +124,7 @@ void Window::focus() { BringWindowToTop(m_hWnd); }
 
 LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    OutputDebugStringW(L"Window WndProcCallback\n");
+    // OutputDebugStringW(L"Window WndProcCallback\n");
 
     Window* pWindow = InstanceFromWndProc<Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
 
@@ -147,7 +145,7 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    OutputDebugStringW(L"Window WndProc\n");
+    // OutputDebugStringW(L"Window WndProc\n");
 
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }

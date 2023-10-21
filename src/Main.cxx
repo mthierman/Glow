@@ -5,7 +5,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     App app{glow::Style::Main, std::nullopt};
 
-    app.create();
+    app.initialize();
+
+    WebView wv{glow::Style::Child, app.m_hWnd};
+
+    wv.initialize();
 
     MSG msg;
     int r;
