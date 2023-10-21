@@ -1,13 +1,10 @@
 #include <Windows.h>
-#include <memory>
 #include "include/App.hxx"
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     App app{false};
     App popup{true};
-
-    // app.hide();
 
     SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
 
