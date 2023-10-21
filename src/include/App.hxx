@@ -13,8 +13,8 @@ class App : public glow::Window
 
   private:
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-    int _OnSize(HWND, UINT, WPARAM, LPARAM);
-    static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lparam);
+    // int _OnSize(HWND, UINT, WPARAM, LPARAM);
+    // static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lparam);
 };
 
 App::App(glow::Style s, std::optional<HWND> h) : glow::Window(s, h) {}
@@ -26,7 +26,8 @@ LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     // case WM_SIZE:
     //     return _OnSize(hWnd, uMsg, wParam, lParam);
     // }
-    OutputDebugStringW(L"App WndProc");
+    OutputDebugStringW(L"App WndProc\n");
+
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 

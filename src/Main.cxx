@@ -5,6 +5,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     App app{glow::Style::Main, std::nullopt};
 
+    app.create();
+
     MSG msg;
     int r;
 
