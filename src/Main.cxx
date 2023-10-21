@@ -3,8 +3,9 @@
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    App app{false};
-    App popup{true};
+    App app{glow::Style::Main, std::nullopt};
+    App popup{glow::Style::Popup, std::nullopt};
+    App child{glow::Style::Child, app.m_hWnd};
 
     SendMessage(app.m_hWnd, WM_NOTIFY, 0, 0);
 

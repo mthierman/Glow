@@ -1,11 +1,10 @@
 #include <Windows.h>
 #include "Window.hxx"
-#include <memory>
 
 class App : public glow::Window
 {
   public:
-    App(bool);
+    App(glow::Style, std::optional<HWND>);
 
   private:
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -13,7 +12,7 @@ class App : public glow::Window
     int _OnNotify(HWND, UINT, WPARAM, LPARAM);
 };
 
-App::App(bool popup) : glow::Window(popup) {}
+App::App(glow::Style s, std::optional<HWND> h) : glow::Window(s, h) {}
 
 LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {

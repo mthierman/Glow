@@ -2,24 +2,33 @@
 
 #include <Windows.h>
 #include <string>
+#include <optional>
 #include "Helpers.hxx"
 
 namespace glow
 {
+enum class Style
+{
+    Main,
+    Popup,
+    Child
+};
+
 class Window
 {
   public:
-    Window(bool);
+    Window(Style, std::optional<HWND>);
     ~Window();
 
     void show();
     void hide();
     void focus();
 
+    Style style;
     HWND m_hWnd;
+    HWND m_parenthWnd;
     ATOM m_atom;
     HBRUSH m_hBrush;
-    bool isPopup;
 
   private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
@@ -30,7 +39,7 @@ class Window
     int _OnPaint(HWND, UINT, WPARAM, LPARAM);
 };
 
-Window::Window(bool popup) : isPopup(popup)
+Window::Window(Style s, std::optional<HWND> h) : style(s)
 {
     auto className{glow::randomize(L"Window")};
 
@@ -62,11 +71,29 @@ Window::Window(bool popup) : isPopup(popup)
     if (m_atom == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
 
-    ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
-                      isPopup ? WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX
-                              : WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                      ::GetModuleHandleW(nullptr), this);
+    switch (style)
+    {
+    case Style::Main:
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
+                          WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                          CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                          ::GetModuleHandleW(nullptr), this);
+        break;
+    case Style::Popup:
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
+                          WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
+                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                          nullptr, ::GetModuleHandleW(nullptr), this);
+        break;
+    case Style::Child:
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD,
+                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                          nullptr, ::GetModuleHandleW(nullptr), this);
+        m_parenthWnd = h.value();
+        if (m_parenthWnd)
+            OutputDebugStringW(L"parent hwnd is OK!");
+        break;
+    }
 
     if (!m_hWnd)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
@@ -117,7 +144,8 @@ int Window::_OnClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int Window::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    isPopup ? void() : ::PostQuitMessage(0);
+    if (style == Style::Main)
+        ::PostQuitMessage(0);
 
     return 0;
 }
