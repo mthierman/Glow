@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Glow")
-set(APP_VERSION "0.0.0")
+set(APP_VERSION "0.0.1")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
@@ -12,6 +12,15 @@ project(
     VERSION ${APP_VERSION}
     LANGUAGES C CXX ASM
 )
+
+set(WEBVIEW "Microsoft.Web.WebView2")
+set(WEBVIEW_VERSION "1.0.2088.41")
+
+execute_process(
+    COMMAND
+    nuget install "${WEBVIEW}" -Version "${WEBVIEW_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cxx)
 file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc RC_FILE)
@@ -31,9 +40,22 @@ add_compile_definitions(
     APP_VERSION="${APP_VERSION}"
 )
 
+target_include_directories(
+    ${APP_NAME}
+    PRIVATE
+    ${WEBVIEW_PKG}/build/native/include
+)
+
+target_link_directories(
+    ${APP_NAME}
+    PRIVATE
+    ${WEBVIEW_PKG}/build/native/x64
+)
+
 target_link_libraries(
     ${APP_NAME}
     PRIVATE
+    WebView2LoaderStatic.lib
     dwmapi.lib
     Comctl32.lib
 )

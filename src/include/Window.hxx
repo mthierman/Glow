@@ -20,10 +20,10 @@ class Window
     Window(Style, std::optional<HWND>, std::optional<int>);
     ~Window();
 
-    void initialize();
-    void show();
-    void hide();
-    void focus();
+    virtual void initialize();
+    virtual void show();
+    virtual void hide();
+    virtual void focus();
 
     Style style;
     UINT_PTR id;
@@ -37,8 +37,8 @@ class Window
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
-    int _OnClose(HWND, UINT, WPARAM, LPARAM);
-    int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
+    virtual int _OnClose(HWND, UINT, WPARAM, LPARAM);
+    virtual int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
 };
 
 Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
@@ -106,10 +106,9 @@ void Window::initialize()
         break;
 
     case Style::Child:
-        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
-                          WS_CHILD | WS_BORDER | WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
-                          CW_USEDEFAULT, CW_USEDEFAULT, m_parent, reinterpret_cast<HMENU>(id),
-                          ::GetModuleHandleW(nullptr), this);
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD,
+                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_parent,
+                          reinterpret_cast<HMENU>(id), ::GetModuleHandleW(nullptr), this);
         break;
     }
 
