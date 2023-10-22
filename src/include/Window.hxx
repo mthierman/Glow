@@ -17,7 +17,7 @@ enum class Style
 class Window
 {
   public:
-    Window(Style, std::optional<HWND>);
+    Window(Style, std::optional<HWND>, std::optional<int>);
     ~Window();
 
     void initialize();
@@ -26,6 +26,7 @@ class Window
     void focus();
 
     Style style;
+    UINT_PTR id;
     std::wstring className;
     HWND m_hWnd;
     HWND m_parent;
@@ -40,7 +41,8 @@ class Window
     int _OnDestroy(HWND, UINT, WPARAM, LPARAM);
 };
 
-Window::Window(Style s, std::optional<HWND> h) : style(s), m_parent(h.value_or(nullptr))
+Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
+    : style(s), m_parent(h.value_or(nullptr)), id(i.value_or(0))
 {
     className = glow::randomize(L"Window");
 
@@ -104,9 +106,10 @@ void Window::initialize()
         break;
 
     case Style::Child:
-        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(), WS_CHILD | WS_BORDER,
-                          CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_parent,
-                          nullptr, ::GetModuleHandleW(nullptr), this);
+        ::CreateWindowExW(0, className.c_str(), glow::widen(APP_NAME).c_str(),
+                          WS_CHILD | WS_BORDER | WS_SIZEBOX, CW_USEDEFAULT, CW_USEDEFAULT,
+                          CW_USEDEFAULT, CW_USEDEFAULT, m_parent, reinterpret_cast<HMENU>(id),
+                          ::GetModuleHandleW(nullptr), this);
         break;
     }
 
@@ -124,8 +127,6 @@ void Window::focus() { BringWindowToTop(m_hWnd); }
 
 LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    // OutputDebugStringW(L"Window WndProcCallback\n");
-
     Window* pWindow = InstanceFromWndProc<Window, &Window::m_hWnd>(hWnd, uMsg, lParam);
 
     if (pWindow)
@@ -145,8 +146,6 @@ LRESULT CALLBACK Window::WndProcCallback(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 
 LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    // OutputDebugStringW(L"Window WndProc\n");
-
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 

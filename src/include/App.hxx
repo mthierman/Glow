@@ -1,7 +1,5 @@
 #include <Windows.h>
 #include "Window.hxx"
-#include "Helpers.hxx"
-#include "WebView.hxx"
 
 #define ID_CHILD_1 100
 #define ID_CHILD_2 101
@@ -9,7 +7,7 @@
 class App : public glow::Window
 {
   public:
-    App(glow::Style, std::optional<HWND>);
+    App(glow::Style, std::optional<HWND>, std::optional<int>);
 
   private:
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -17,12 +15,10 @@ class App : public glow::Window
     static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lparam);
 };
 
-App::App(glow::Style s, std::optional<HWND> h) : glow::Window(s, h) {}
+App::App(glow::Style s, std::optional<HWND> h, std::optional<int> i) : glow::Window(s, h, i) {}
 
 LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    // OutputDebugStringW(L"App WndProc\n");
-
     switch (uMsg)
     {
     case WM_PAINT:
@@ -43,10 +39,16 @@ int App::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 BOOL CALLBACK App::EnumChildProc(HWND hwnd, LPARAM lparam)
 {
-    auto child{::GetWindowLongPtrW(hwnd, GWL_ID)};
-    auto p{(LPRECT)lparam};
+    auto childId{::GetWindowLongPtrW(hwnd, GWL_ID)};
 
-    ::SetWindowPos(hwnd, nullptr, 0, 0, (p->right / 2), p->bottom, SWP_NOZORDER);
+    auto rcParent{(LPRECT)lparam};
+
+    if (childId == ID_CHILD_1)
+        ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right / 2), rcParent->bottom, SWP_NOZORDER);
+
+    else if (childId == ID_CHILD_2)
+        ::SetWindowPos(hwnd, nullptr, (rcParent->right / 2), 0, (rcParent->right / 2),
+                       rcParent->bottom, SWP_NOZORDER);
 
     return 1;
 }
