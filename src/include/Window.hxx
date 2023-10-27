@@ -46,9 +46,8 @@ Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
 {
     className = glow::randomize(L"Window");
 
-    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(::GetModuleHandleW(nullptr),
-                                                    glow::widen("APP_ICON").c_str(), IMAGE_ICON, 0,
-                                                    0, LR_DEFAULTSIZE))};
+    auto hIcon{reinterpret_cast<HICON>(::LoadImageW(
+        ::GetModuleHandleW(nullptr), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 
     auto hCursor{reinterpret_cast<HCURSOR>(::LoadImageW(
         nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW), IMAGE_CURSOR, 0, 0, LR_SHARED))};
