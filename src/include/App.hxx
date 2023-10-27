@@ -28,7 +28,7 @@ LRESULT App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int App::_OnPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int App::_OnPaint(HWND hWnd, UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     RECT r;
     ::GetClientRect(hWnd, &r);

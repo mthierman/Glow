@@ -147,14 +147,14 @@ LRESULT Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return ::DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
-int Window::_OnClose(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int Window::_OnClose(HWND hWnd, UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     ::DestroyWindow(hWnd);
 
     return 0;
 }
 
-int Window::_OnDestroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+int Window::_OnDestroy(HWND /*hWnd*/, UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {
     if (style == Style::Main)
         ::PostQuitMessage(0);
