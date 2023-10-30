@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 set(APP_NAME "Glow")
 set(APP_VERSION "0.0.1")
+set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
@@ -22,46 +23,41 @@ execute_process(
 )
 file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
 
-file(GLOB SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cxx)
-file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/res$<$<CONFIG:Debug>:_debug>$<$<CONFIG:Release>:_release>.rc RC_FILE)
-file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/app.manifest MANIFEST_FILE)
+add_library(common INTERFACE)
 
-add_executable(
-    ${APP_NAME}
-    WIN32
-    ${SOURCES}
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
-
-add_compile_definitions(
+target_compile_definitions(
+    common
+    INTERFACE
     UNICODE
     APP_NAME="${APP_NAME}"
     APP_VERSION="${APP_VERSION}"
 )
 
 target_include_directories(
-    ${APP_NAME}
-    PRIVATE
+    common
+    INTERFACE
     ${WEBVIEW_PKG}/build/native/include
 )
 
 target_link_directories(
-    ${APP_NAME}
-    PRIVATE
+    common
+    INTERFACE
     ${WEBVIEW_PKG}/build/native/x64
 )
 
 target_link_libraries(
-    ${APP_NAME}
-    PRIVATE
+    common
+    INTERFACE
     WebView2LoaderStatic.lib
     dwmapi.lib
     Comctl32.lib
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    add_compile_options(
+    target_compile_options(
+        common
+        INTERFACE
+        /diagnostics:caret
         /EHsc
         /Zc:__cplusplus
         /await:strict
@@ -72,13 +68,34 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         /WX
     )
 
-    add_link_options(
+    target_link_options(
+        common
+        INTERFACE
         /WX
     )
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(
+    target_compile_options(
+        common
+        INTERFACE
         -fcoroutines
     )
 endif()
+
+file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
+
+add_executable(
+    ${APP_NAME}
+    WIN32
+    ${SOURCES}
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET ${APP_NAME}
+    APPEND PROPERTY LINK_LIBRARIES common
+)
