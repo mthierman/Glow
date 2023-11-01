@@ -4,12 +4,14 @@
 #include "WebView2.h"
 #include "Window.hxx"
 
+#include <iostream>
+
 class WebView : public glow::Window
 {
   public:
     WebView(glow::Style, std::optional<HWND>, std::optional<int>);
 
-    void create_webview();
+    void create();
 
     winrt::com_ptr<ICoreWebView2Controller> controller;
     winrt::com_ptr<ICoreWebView2Controller4> controller4;
@@ -21,13 +23,15 @@ class WebView : public glow::Window
     LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
     int _OnWindowPosChanged(HWND, UINT, WPARAM, LPARAM);
+
+    bool initialized{false};
 };
 
 WebView::WebView(glow::Style s, std::optional<HWND> h, std::optional<int> i) : glow::Window(s, h, i)
 {
 }
 
-void WebView::create_webview()
+void WebView::create()
 {
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -36,45 +40,67 @@ void WebView::create_webview()
             {
                 if (e)
                     winrt::check_hresult(e->CreateCoreWebView2Controller(
-                        m_hWnd, Microsoft::WRL::Callback<
-                                    ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                                    [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
-                                    {
-                                        if (c)
-                                        {
-                                            controller.attach(c);
-                                            controller4 = controller.as<ICoreWebView2Controller4>();
+                        m_hWnd,
+                        Microsoft::WRL::Callback<
+                            ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                            [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
+                            {
+                                if (c)
+                                {
+                                    ShowWindow(this->m_hWnd, SW_HIDE);
+                                    controller.attach(c);
+                                    controller4 = controller.as<ICoreWebView2Controller4>();
 
-                                            COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                                            controller4->put_DefaultBackgroundColor(bgColor);
+                                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                                    controller4->put_DefaultBackgroundColor(bgColor);
 
-                                            RECT bounds{0, 0, 0, 0};
-                                            GetClientRect(m_hWnd, &bounds);
-                                            controller4->put_Bounds(bounds);
+                                    RECT bounds{0, 0, 0, 0};
+                                    GetClientRect(m_hWnd, &bounds);
+                                    controller4->put_Bounds(bounds);
 
-                                            winrt::check_hresult(c->get_CoreWebView2(core.put()));
+                                    winrt::check_hresult(c->get_CoreWebView2(core.put()));
 
-                                            core19 = core.as<ICoreWebView2_19>();
+                                    core19 = core.as<ICoreWebView2_19>();
 
-                                            winrt::check_hresult(
-                                                core19->get_Settings(settings.put()));
+                                    winrt::check_hresult(core19->get_Settings(settings.put()));
 
-                                            settings->put_AreDefaultContextMenusEnabled(true);
-                                            settings->put_AreDefaultScriptDialogsEnabled(true);
-                                            settings->put_AreHostObjectsAllowed(true);
-                                            settings->put_IsBuiltInErrorPageEnabled(true);
-                                            settings->put_IsScriptEnabled(true);
-                                            settings->put_IsStatusBarEnabled(false);
-                                            settings->put_IsWebMessageEnabled(true);
-                                            settings->put_IsZoomControlEnabled(false);
-                                            settings->put_AreDevToolsEnabled(true);
+                                    settings->put_AreDefaultContextMenusEnabled(true);
+                                    settings->put_AreDefaultScriptDialogsEnabled(true);
+                                    settings->put_AreHostObjectsAllowed(true);
+                                    settings->put_IsBuiltInErrorPageEnabled(true);
+                                    settings->put_IsScriptEnabled(true);
+                                    settings->put_IsStatusBarEnabled(false);
+                                    settings->put_IsWebMessageEnabled(true);
+                                    settings->put_IsZoomControlEnabled(false);
+                                    settings->put_AreDevToolsEnabled(true);
 
-                                            core19->Navigate(L"https://www.google.com/");
-                                        }
+                                    core19->Navigate(L"https://www.google.com/");
 
-                                        return S_OK;
-                                    })
-                                    .Get()));
+                                    EventRegistrationToken token;
+                                    core19->add_NavigationCompleted(
+                                        Microsoft::WRL::Callback<
+                                            ICoreWebView2NavigationCompletedEventHandler>(
+                                            [=, this](
+                                                ICoreWebView2* /*webview*/,
+                                                ICoreWebView2NavigationCompletedEventArgs* /*args*/)
+                                                -> HRESULT
+                                            {
+                                                if (!initialized)
+                                                {
+                                                    std::cout << "TEST" << std::endl;
+                                                    ShowWindow(this->m_hWnd, SW_SHOW);
+                                                    initialized = true;
+                                                }
+
+                                                return S_OK;
+                                            })
+                                            .Get(),
+                                        &token);
+                                }
+
+                                return S_OK;
+                            })
+                            .Get()));
 
                 return S_OK;
             })
@@ -98,9 +124,7 @@ int WebView::_OnWindowPosChanged(HWND hWnd, UINT /*uMsg*/, WPARAM /*wParam*/, LP
     ::GetClientRect(hWnd, &r);
 
     if (controller4)
-    {
         controller4->put_Bounds(r);
-    }
 
     return 0;
 }

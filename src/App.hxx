@@ -1,8 +1,9 @@
 #include <Windows.h>
-#include "Window.hxx"
+#include "include/Window.hxx"
+#include "include/WebView.hxx"
 
-#define ID_CHILD_1 100
-#define ID_CHILD_2 101
+#define ID_WEBVIEW_1 100
+#define ID_WEBVIEW_2 101
 
 class App : public glow::Window
 {
@@ -43,10 +44,10 @@ BOOL CALLBACK App::EnumChildProc(HWND hwnd, LPARAM lparam)
 
     auto rcParent{(LPRECT)lparam};
 
-    if (childId == ID_CHILD_1)
+    if (childId == ID_WEBVIEW_1)
         ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right / 2), rcParent->bottom, SWP_NOZORDER);
 
-    else if (childId == ID_CHILD_2)
+    if (childId == ID_WEBVIEW_2)
         ::SetWindowPos(hwnd, nullptr, (rcParent->right / 2), 0, (rcParent->right / 2),
                        rcParent->bottom, SWP_NOZORDER);
 

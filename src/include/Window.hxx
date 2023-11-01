@@ -20,7 +20,6 @@ class Window
     Window(Style, std::optional<HWND>, std::optional<int>);
     ~Window();
 
-    virtual void initialize();
     virtual void show();
     virtual void hide();
     virtual void focus();
@@ -55,7 +54,7 @@ Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
     switch (style)
     {
     case Style::Main:
-        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH));
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
         break;
 
     case Style::Popup:
@@ -63,7 +62,7 @@ Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
         break;
 
     case Style::Child:
-        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH));
+        m_hBrush = reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
         break;
     }
 
@@ -82,12 +81,7 @@ Window::Window(Style s, std::optional<HWND> h, std::optional<int> i)
 
     if (::RegisterClassExW(&wcex) == 0)
         ::MessageBoxW(nullptr, std::to_wstring(::GetLastError()).c_str(), L"Error", 0);
-}
 
-Window::~Window() {}
-
-void Window::initialize()
-{
     switch (style)
     {
     case Style::Main:
@@ -116,6 +110,8 @@ void Window::initialize()
 
     ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 }
+
+Window::~Window() {}
 
 void Window::show() { ShowWindow(m_hWnd, SW_SHOW); }
 
