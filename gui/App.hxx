@@ -6,6 +6,9 @@
 
 #include "../include/Helpers.hxx"
 
+#define ID_WEBVIEW_1 100
+#define ID_WEBVIEW_2 101
+
 namespace glow::gui
 {
 struct App
@@ -13,22 +16,28 @@ struct App
     App(std::string);
     ~App();
 
-  private:
     HWND appHwnd;
+
+  private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
+    virtual int OnPaint(HWND);
     virtual int OnClose(HWND);
     virtual int OnDestroy();
+
+    static BOOL CALLBACK EnumChildProc(HWND, LPARAM);
 };
 
 App::App(std::string n)
 {
-    auto b{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
-    auto c{reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
-                                                  IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    auto i{reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
-                                                IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+    auto cursor{
+        reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
+                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    auto icon{
+        reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
+                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = L"App";
@@ -38,10 +47,10 @@ App::App(std::string n)
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = ::GetModuleHandleW(nullptr);
-    wcex.hbrBackground = b;
-    wcex.hCursor = c;
-    wcex.hIcon = i;
-    wcex.hIconSm = i;
+    wcex.hbrBackground = brush;
+    wcex.hCursor = cursor;
+    wcex.hIcon = icon;
+    wcex.hIconSm = icon;
 
     ::RegisterClassExW(&wcex);
 
@@ -62,6 +71,8 @@ LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     {
         switch (m)
         {
+        case WM_PAINT:
+            return app->OnPaint(h);
         case WM_CLOSE:
             return app->OnClose(h);
         case WM_DESTROY:
@@ -76,6 +87,15 @@ LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
 
 LRESULT App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) { return ::DefWindowProcW(h, m, w, l); }
 
+int App::OnPaint(HWND h)
+{
+    RECT r;
+    ::GetClientRect(h, &r);
+    ::EnumChildWindows(h, EnumChildProc, (LPARAM)&r);
+
+    return 0;
+}
+
 int App::OnClose(HWND h)
 {
     ::DestroyWindow(h);
@@ -89,4 +109,18 @@ int App::OnDestroy()
 
     return 0;
 }
+
+BOOL CALLBACK App::EnumChildProc(HWND h, LPARAM l)
+{
+    auto childId{::GetWindowLongPtrW(h, GWL_ID)};
+
+    auto rcParent{(LPRECT)l};
+
+    if (childId == ID_WEBVIEW_1)
+        ::SetWindowPos(h, nullptr, 0, 0, (rcParent->right - rcParent->left),
+                       (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+
+    return 1;
+}
+
 } // namespace glow::gui

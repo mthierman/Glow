@@ -17,6 +17,10 @@ struct WebView
     WebView(std::string, HWND, int);
     ~WebView();
 
+    HWND parentHwnd;
+    UINT_PTR id;
+    HWND webviewHwnd;
+
     winrt::com_ptr<ICoreWebView2Controller> controller;
     winrt::com_ptr<ICoreWebView2Controller4> controller4;
     winrt::com_ptr<ICoreWebView2> core;
@@ -24,43 +28,45 @@ struct WebView
     winrt::com_ptr<ICoreWebView2Settings> settings;
 
   private:
-    HWND parentHwnd;
-    int id;
-    HWND webviewHwnd;
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
 
     virtual int OnClose(HWND);
+    virtual int OnWindowPosChanged(HWND);
 };
 
 WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 {
-    auto b{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
-    auto c{reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
-                                                  IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    auto i{reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
-                                                IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH))};
+    auto cursor{
+        reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
+                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    auto icon{
+        reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
+                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
     auto className{glow::randomize(L"WebView")};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = className.c_str();
     wcex.lpszMenuName = className.c_str();
-    wcex.lpfnWndProc = App::WndProcCallback;
+    wcex.lpfnWndProc = WebView::WndProcCallback;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
     wcex.hInstance = ::GetModuleHandleW(nullptr);
-    wcex.hbrBackground = b;
-    wcex.hCursor = c;
-    wcex.hIcon = i;
-    wcex.hIconSm = i;
+    wcex.hbrBackground = brush;
+    wcex.hCursor = cursor;
+    wcex.hIcon = icon;
+    wcex.hIconSm = icon;
 
     ::RegisterClassExW(&wcex);
 
     ::CreateWindowExW(0, className.c_str(), widen(n).c_str(), WS_CHILD, CW_USEDEFAULT,
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd,
                       reinterpret_cast<HMENU>(id), ::GetModuleHandleW(nullptr), this);
+
+    ShowWindow(webviewHwnd, SW_SHOWDEFAULT);
 
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -105,14 +111,15 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 
                                     core19->Navigate(L"https://www.google.com/");
 
+                                    ShowWindow(webviewHwnd, SW_HIDE);
+
                                     EventRegistrationToken token;
                                     core19->add_NavigationCompleted(
                                         Microsoft::WRL::Callback<
                                             ICoreWebView2NavigationCompletedEventHandler>(
-                                            [=, this](
-                                                ICoreWebView2* /*webview*/,
-                                                ICoreWebView2NavigationCompletedEventArgs* /*args*/)
-                                                -> HRESULT
+                                            [=, this](ICoreWebView2* /*webview*/,
+                                                      ICoreWebView2NavigationCompletedEventArgs*
+                                                      /*args*/) -> HRESULT
                                             {
                                                 // if (!initialized)
                                                 // {
@@ -134,8 +141,6 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                 return S_OK;
             })
             .Get()));
-
-    ShowWindow(webviewHwnd, SW_SHOWDEFAULT);
 };
 
 WebView::~WebView() {}
@@ -150,8 +155,8 @@ LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
         {
         case WM_CLOSE:
             return webview->OnClose(h);
-        case WM_DESTROY:
-            return ::DefWindowProcW(h, m, w, l);
+        case WM_WINDOWPOSCHANGED:
+            return webview->OnWindowPosChanged(h);
         }
 
         return webview->WndProc(h, m, w, l);
@@ -160,11 +165,25 @@ LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     return ::DefWindowProcW(h, m, w, l);
 }
 
-LRESULT App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) { return ::DefWindowProcW(h, m, w, l); }
+LRESULT WebView::WndProc(HWND h, UINT m, WPARAM w, LPARAM l)
+{
+    return ::DefWindowProcW(h, m, w, l);
+}
 
-int App::OnClose(HWND h)
+int WebView::OnClose(HWND h)
 {
     ::DestroyWindow(h);
+
+    return 0;
+}
+
+int WebView::OnWindowPosChanged(HWND h)
+{
+    RECT r;
+    ::GetClientRect(h, &r);
+
+    if (controller4)
+        controller4->put_Bounds(r);
 
     return 0;
 }
