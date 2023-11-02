@@ -3,11 +3,13 @@
 #include <Windows.h>
 #include <ShlObj.h>
 #include <dwmapi.h>
+
+#include <winrt/windows.foundation.h>
+#include <winrt/windows.ui.viewmanagement.h>
+
 #include <string>
 #include <random>
 #include <filesystem>
-#include "winrt/Windows.Foundation.h"
-#include "winrt/Windows.UI.ViewManagement.h"
 
 namespace glow
 {
