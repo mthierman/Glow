@@ -4,7 +4,7 @@
 #include <wrl.h>
 #include <windows.foundation.h>
 
-#include <WebView2.h>
+#include "WebView2.h"
 
 #include <string>
 
@@ -65,6 +65,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                       reinterpret_cast<HMENU>(id), ::GetModuleHandleW(nullptr), this);
 
     window_cloak(webviewHwnd);
+    window_mica(webviewHwnd);
 
     ::ShowWindow(webviewHwnd, SW_SHOW);
 

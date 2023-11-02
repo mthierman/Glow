@@ -7,6 +7,7 @@
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.viewmanagement.h>
 
+#include <iostream>
 #include <string>
 #include <random>
 #include <filesystem>
@@ -97,7 +98,35 @@ std::wstring randomize(std::wstring in)
     return (in + randomNumber);
 }
 
-bool is_darkmode()
+FILE* create_console()
+{
+    FILE* dummyFile{nullptr};
+
+#ifdef _DEBUG
+    AllocConsole();
+    SetConsoleTitleW(L"Console");
+    // SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
+    freopen_s(&dummyFile, "CONOUT$", "w", stdout);
+    freopen_s(&dummyFile, "CONOUT$", "w", stderr);
+    freopen_s(&dummyFile, "CONIN$", "r", stdin);
+    std::cout.clear();
+    std::clog.clear();
+    std::cerr.clear();
+    std::cin.clear();
+#endif
+
+    return dummyFile;
+}
+
+void remove_console(FILE* console)
+{
+#ifdef _DEBUG
+    fclose(console);
+    FreeConsole();
+#endif
+}
+
+bool check_theme()
 {
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
@@ -113,7 +142,7 @@ bool set_darkmode(HWND hwnd)
     auto dark{TRUE};
     auto light{FALSE};
 
-    if (is_darkmode())
+    if (check_theme())
     {
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
@@ -188,6 +217,101 @@ bool window_uncloak(HWND hwnd)
         return false;
 
     return true;
+}
+
+bool window_mica(HWND hwnd)
+{
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
+
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
+        return false;
+
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+        return false;
+
+    return true;
+}
+
+bool window_maximize(HWND hwnd)
+{
+    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
+
+    WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
+    GetWindowPlacement(hwnd, &wp);
+
+    if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3)
+    {
+        ShowWindow(hwnd, SW_SHOWNORMAL);
+
+        return false;
+    }
+
+    else
+    {
+        ShowWindow(hwnd, SW_MAXIMIZE);
+
+        return true;
+    }
+}
+
+bool window_fullscreen(HWND hwnd)
+{
+    static RECT pos;
+
+    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
+
+    if (style & WS_OVERLAPPEDWINDOW)
+    {
+        MONITORINFO mi = {sizeof(mi)};
+        GetWindowRect(hwnd, &pos);
+        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        {
+            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                         mi.rcMonitor.right - mi.rcMonitor.left,
+                         mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
+        }
+
+        return true;
+    }
+
+    else
+    {
+        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
+                     (pos.bottom - pos.top), SWP_FRAMECHANGED);
+
+        return false;
+    }
+}
+
+bool window_topmost(HWND hwnd)
+{
+    FLASHWINFO fwi{sizeof(FLASHWINFO)};
+    fwi.hwnd = hwnd;
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    auto style{GetWindowLongPtrW(hwnd, GWL_EXSTYLE)};
+
+    if (style & WS_EX_TOPMOST)
+    {
+        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+
+        return false;
+    }
+
+    else
+    {
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        FlashWindowEx(&fwi);
+
+        return true;
+    }
 }
 
 std::filesystem::path path_appdata(std::string n)

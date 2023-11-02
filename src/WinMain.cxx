@@ -6,6 +6,8 @@
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
+    auto console{glow::create_console()};
+
     glow::gui::App app("Glow");
 
     glow::gui::WebView wv("WebView", app.appHwnd, 1);
@@ -24,6 +26,8 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
             DispatchMessageW(&msg);
         }
     }
+
+    glow::remove_console(console);
 
     return 0;
 }
