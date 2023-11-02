@@ -105,7 +105,10 @@ FILE* create_console()
 #ifdef _DEBUG
     AllocConsole();
     SetConsoleTitleW(L"Console");
-    // SetWindowPos(hwnd, nullptr, 0, 0, 400, 400, SWP_SHOWWINDOW);
+    ::EnableMenuItem(::GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+    ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+    ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     freopen_s(&dummyFile, "CONOUT$", "w", stdout);
     freopen_s(&dummyFile, "CONOUT$", "w", stderr);
     freopen_s(&dummyFile, "CONIN$", "r", stdin);
