@@ -22,6 +22,7 @@ struct App
     virtual int OnPaint(HWND);
     virtual int OnClose(HWND);
     virtual int OnDestroy();
+    virtual int OnWindowPosChanged(HWND);
 
     static BOOL EnumChildProc(HWND, LPARAM);
 };
@@ -71,12 +72,10 @@ LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     {
         switch (m)
         {
-        case WM_PAINT:
-            return app->OnPaint(h);
-        case WM_CLOSE:
-            return app->OnClose(h);
-        case WM_DESTROY:
-            return app->OnDestroy();
+        case WM_PAINT: return app->OnPaint(h);
+        case WM_CLOSE: return app->OnClose(h);
+        case WM_DESTROY: return app->OnDestroy();
+        case WM_WINDOWPOSCHANGED: return app->OnWindowPosChanged(h);
         }
 
         return app->WndProc(h, m, w, l);
@@ -106,6 +105,16 @@ int App::OnClose(HWND h)
 int App::OnDestroy()
 {
     ::PostQuitMessage(0);
+
+    return 0;
+}
+
+int App::OnWindowPosChanged(HWND h)
+{
+    RECT appRect{0, 0, 0, 0};
+    ::GetWindowRect(h, &appRect);
+    ::SetWindowPos(::GetConsoleWindow(), nullptr, appRect.left, appRect.bottom,
+                   (appRect.right - appRect.left), 200, SWP_NOZORDER | SWP_ASYNCWINDOWPOS);
 
     return 0;
 }

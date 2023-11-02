@@ -26,8 +26,7 @@ template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg
         ::SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else
-        pInstance = reinterpret_cast<T*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));
 
     return pInstance;
 }
@@ -107,8 +106,22 @@ FILE* create_console()
     SetConsoleTitleW(L"Console");
     ::EnableMenuItem(::GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-    ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    ::EnableMenuItem(::GetSystemMenu(GetConsoleWindow(), FALSE), SC_MOVE,
+                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+
+    // ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE);
+
+    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
+    //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_CAPTION &
+    //                         ~WS_SIZEBOX);
+
+    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
+    //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_MINIMIZEBOX &
+    //                         ~WS_MAXIMIZEBOX);
+
+    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+
+    // ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     freopen_s(&dummyFile, "CONOUT$", "w", stdout);
     freopen_s(&dummyFile, "CONOUT$", "w", stderr);
     freopen_s(&dummyFile, "CONIN$", "r", stdin);
@@ -134,8 +147,7 @@ bool check_theme()
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 
-    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128))
-        return true;
+    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) return true;
 
     return false;
 }
@@ -172,13 +184,11 @@ bool set_darktitle()
 
     auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-    if (!uxtheme)
-        return false;
+    if (!uxtheme) return false;
 
     auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
 
-    if (!ord135)
-        return false;
+    if (!ord135) return false;
 
     auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
     SetPreferredAppMode(PreferredAppMode::AllowDark);
@@ -192,8 +202,7 @@ bool set_mica(HWND hwnd)
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
-        return false;
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
 
     if (FAILED(
             DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
@@ -206,8 +215,7 @@ bool window_cloak(HWND hwnd)
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak))))
-        return false;
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak)))) return false;
 
     return true;
 }
@@ -216,8 +224,7 @@ bool window_uncloak(HWND hwnd)
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak))))
-        return false;
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak)))) return false;
 
     return true;
 }
@@ -227,8 +234,7 @@ bool window_mica(HWND hwnd)
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m)))
-        return false;
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
 
     if (FAILED(
             DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
@@ -329,8 +335,7 @@ std::filesystem::path path_appdata(std::string n)
 
     CoTaskMemFree(buffer);
 
-    if (!std::filesystem::exists(data))
-        std::filesystem::create_directory(data);
+    if (!std::filesystem::exists(data)) std::filesystem::create_directory(data);
 
     return data;
 }

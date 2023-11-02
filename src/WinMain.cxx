@@ -4,6 +4,14 @@
 #include "../gui/App.hxx"
 #include "../gui/WebView.hxx"
 
+#define IDM_AUDIO_IN 1001
+#define IDM_AUDIO_OUT 1002
+#define IDM_MIDI_IN 1003
+#define IDM_MIDI_OUT 1004
+#define IDM_SAVE_STATE 1005
+#define IDM_LOAD_STATE 1006
+#define IDM_RESET_STATE 1007
+
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
@@ -18,8 +26,7 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
 
     while ((r = GetMessageW(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1)
-            return 0;
+        if (r == -1) return 0;
 
         else
         {

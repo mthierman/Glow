@@ -14,6 +14,7 @@ namespace glow::gui
 {
 struct WebView
 {
+  public:
     WebView(std::string, HWND, int);
     ~WebView();
 
@@ -150,10 +151,8 @@ LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     {
         switch (m)
         {
-        case WM_CLOSE:
-            return webview->OnClose(h);
-        case WM_WINDOWPOSCHANGED:
-            return webview->OnWindowPosChanged(h);
+        case WM_CLOSE: return webview->OnClose(h);
+        case WM_WINDOWPOSCHANGED: return webview->OnWindowPosChanged(h);
         }
 
         return webview->WndProc(h, m, w, l);
@@ -179,8 +178,7 @@ int WebView::OnWindowPosChanged(HWND h)
     RECT r;
     ::GetClientRect(h, &r);
 
-    if (controller4)
-        controller4->put_Bounds(r);
+    if (controller4) controller4->put_Bounds(r);
 
     return 0;
 }
