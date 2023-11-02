@@ -1,11 +1,13 @@
 #include <Windows.h>
 
 #include "../gui/App.hxx"
+#include "../gui/WebView.hxx"
 
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
     glow::gui::App app("Glow");
+    glow::gui::WebView wv("WebViewTest");
 
     MSG msg;
     int r;
