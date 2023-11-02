@@ -1,12 +1,13 @@
 #include <Windows.h>
 
+#include "../helpers/Helpers.hxx"
 #include "../gui/App.hxx"
 #include "../gui/WebView.hxx"
 
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
-    auto console{glow::create_console()};
+    // auto console{glow::create_console()};
 
     glow::gui::App app("Glow");
 
@@ -27,7 +28,7 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
         }
     }
 
-    glow::remove_console(console);
+    // glow::remove_console(console);
 
     return 0;
 }

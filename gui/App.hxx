@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "../include/Helpers.hxx"
+#include "../helpers/Helpers.hxx"
 
 namespace glow::gui
 {
