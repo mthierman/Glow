@@ -6,9 +6,6 @@
 
 #include "../include/Helpers.hxx"
 
-#define ID_WEBVIEW_1 100
-#define ID_WEBVIEW_2 101
-
 namespace glow::gui
 {
 struct App
@@ -26,7 +23,7 @@ struct App
     virtual int OnClose(HWND);
     virtual int OnDestroy();
 
-    static BOOL CALLBACK EnumChildProc(HWND, LPARAM);
+    static BOOL EnumChildProc(HWND, LPARAM);
 };
 
 App::App(std::string n)
@@ -116,11 +113,10 @@ BOOL CALLBACK App::EnumChildProc(HWND h, LPARAM l)
 
     auto rcParent{(LPRECT)l};
 
-    if (childId == ID_WEBVIEW_1)
+    if (childId == 1)
         ::SetWindowPos(h, nullptr, 0, 0, (rcParent->right - rcParent->left),
                        (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     return 1;
 }
-
 } // namespace glow::gui
