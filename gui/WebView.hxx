@@ -17,27 +17,25 @@ struct WebView
     WebView(std::string, HWND, int);
     ~WebView();
 
-    HWND parentHwnd;
-    UINT_PTR id;
-    HWND webviewHwnd;
-
-    winrt::com_ptr<ICoreWebView2Controller> controller;
-    winrt::com_ptr<ICoreWebView2Controller4> controller4;
-    winrt::com_ptr<ICoreWebView2> core;
-    winrt::com_ptr<ICoreWebView2_19> core19;
-    winrt::com_ptr<ICoreWebView2Settings> settings;
-
-  private:
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-
     virtual int OnClose(HWND);
     virtual int OnWindowPosChanged(HWND);
+
+    HWND parentHwnd{nullptr};
+    HWND webviewHwnd{nullptr};
+    UINT_PTR id{0};
+    bool initialized{false};
+    winrt::com_ptr<ICoreWebView2Controller> controller{nullptr};
+    winrt::com_ptr<ICoreWebView2Controller4> controller4{nullptr};
+    winrt::com_ptr<ICoreWebView2> core{nullptr};
+    winrt::com_ptr<ICoreWebView2_19> core19{nullptr};
+    winrt::com_ptr<ICoreWebView2Settings> settings{nullptr};
 };
 
 WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 {
-    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH))};
+    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
     auto cursor{
         reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
                                                IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -45,7 +43,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
         reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
                                              IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
-    auto className{glow::randomize(L"WebView")};
+    auto className{randomize(widen(n))};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = className.c_str();
@@ -66,7 +64,9 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd,
                       reinterpret_cast<HMENU>(id), ::GetModuleHandleW(nullptr), this);
 
-    ShowWindow(webviewHwnd, SW_SHOWDEFAULT);
+    window_cloak(webviewHwnd);
+
+    ::ShowWindow(webviewHwnd, SW_SHOW);
 
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -82,7 +82,6 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                             {
                                 if (c)
                                 {
-                                    // ShowWindow(this->webviewHwnd, SW_HIDE);
                                     controller.attach(c);
                                     controller4 = controller.as<ICoreWebView2Controller4>();
 
@@ -111,9 +110,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 
                                     core19->Navigate(L"https://www.google.com/");
 
-                                    // ShowWindow(webviewHwnd, SW_HIDE);
-
-                                    EventRegistrationToken token;
+                                    EventRegistrationToken navigationCompletedToken;
                                     core19->add_NavigationCompleted(
                                         Microsoft::WRL::Callback<
                                             ICoreWebView2NavigationCompletedEventHandler>(
@@ -121,17 +118,16 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                                                       ICoreWebView2NavigationCompletedEventArgs*
                                                       /*args*/) -> HRESULT
                                             {
-                                                // if (!initialized)
-                                                // {
-                                                //     std::cout << "TEST" << std::endl;
-                                                //     ShowWindow(this->m_hWnd, SW_SHOW);
-                                                //     initialized = true;
-                                                // }
+                                                if (!initialized)
+                                                {
+                                                    window_uncloak(webviewHwnd);
+                                                    initialized = true;
+                                                }
 
                                                 return S_OK;
                                             })
                                             .Get(),
-                                        &token);
+                                        &navigationCompletedToken);
                                 }
 
                                 return S_OK;

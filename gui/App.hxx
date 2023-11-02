@@ -55,7 +55,7 @@ App::App(std::string n)
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                       ::GetModuleHandleW(nullptr), this);
 
-    ShowWindow(appHwnd, SW_SHOWDEFAULT);
+    ::ShowWindow(appHwnd, SW_SHOWDEFAULT);
 };
 
 App::~App() {}
