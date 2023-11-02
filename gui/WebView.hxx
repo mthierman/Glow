@@ -111,7 +111,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 
                                     core19->Navigate(L"https://www.google.com/");
 
-                                    ShowWindow(webviewHwnd, SW_HIDE);
+                                    // ShowWindow(webviewHwnd, SW_HIDE);
 
                                     EventRegistrationToken token;
                                     core19->add_NavigationCompleted(
