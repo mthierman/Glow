@@ -4,9 +4,9 @@
 #include <wrl.h>
 #include <windows.foundation.h>
 
-#include <string>
+#include <WebView2.h>
 
-#include "WebView2.h"
+#include <string>
 
 #include "../include/Helpers.hxx"
 
