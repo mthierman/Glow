@@ -99,46 +99,36 @@ std::wstring randomize(std::wstring in)
 
 FILE* create_console()
 {
-    FILE* dummyFile{nullptr};
+    FILE* f{nullptr};
 
 #ifdef _DEBUG
-    AllocConsole();
-    SetConsoleTitleW(L"Console");
-    ::EnableMenuItem(::GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+    ::AllocConsole();
+    ::SetConsoleTitleW(L"Console");
+    ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    ::EnableMenuItem(::GetSystemMenu(GetConsoleWindow(), FALSE), SC_MOVE,
-                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-
     // ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE);
-
     // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
     //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_CAPTION &
-    //                         ~WS_SIZEBOX);
-
-    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
-    //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_MINIMIZEBOX &
-    //                         ~WS_MAXIMIZEBOX);
-
+    //                         ~WS_SIZEBOX & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX);
     // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-
     // ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    freopen_s(&dummyFile, "CONOUT$", "w", stdout);
-    freopen_s(&dummyFile, "CONOUT$", "w", stderr);
-    freopen_s(&dummyFile, "CONIN$", "r", stdin);
+    ::freopen_s(&f, "CONOUT$", "w", stdout);
+    ::freopen_s(&f, "CONOUT$", "w", stderr);
+    ::freopen_s(&f, "CONIN$", "r", stdin);
     std::cout.clear();
     std::clog.clear();
     std::cerr.clear();
     std::cin.clear();
 #endif
 
-    return dummyFile;
+    return f;
 }
 
-void remove_console(FILE* console)
+void remove_console(FILE* f)
 {
 #ifdef _DEBUG
-    fclose(console);
-    FreeConsole();
+    ::fclose(f);
+    ::FreeConsole();
 #endif
 }
 
@@ -159,12 +149,12 @@ bool set_darkmode(HWND hwnd)
 
     if (check_theme())
     {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
+        ::DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
 
         return true;
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
+    ::DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
 
     return false;
 }
@@ -182,31 +172,17 @@ bool set_darktitle()
 
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
 
-    auto uxtheme{LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+    auto uxtheme{::LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
     if (!uxtheme) return false;
 
-    auto ord135{GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
+    auto ord135{::GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
 
     if (!ord135) return false;
 
     auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
     SetPreferredAppMode(PreferredAppMode::AllowDark);
-    FreeLibrary(uxtheme);
-
-    return true;
-}
-
-bool set_mica(HWND hwnd)
-{
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
-
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
-
-    if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
-        return false;
+    ::FreeLibrary(uxtheme);
 
     return true;
 }
@@ -215,7 +191,7 @@ bool window_cloak(HWND hwnd)
 {
     auto cloak{TRUE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak)))) return false;
+    if (FAILED(::DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak)))) return false;
 
     return true;
 }
@@ -224,20 +200,20 @@ bool window_uncloak(HWND hwnd)
 {
     auto uncloak{FALSE};
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak)))) return false;
+    if (FAILED(::DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak)))) return false;
 
     return true;
 }
 
 bool window_mica(HWND hwnd)
 {
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    MARGINS m{0, 0, 0, ::GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
+    if (FAILED(::DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
 
     if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+            ::DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
         return false;
 
     return true;
@@ -245,21 +221,21 @@ bool window_mica(HWND hwnd)
 
 bool window_maximize(HWND hwnd)
 {
-    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
+    auto style{::GetWindowLongPtrW(hwnd, GWL_STYLE)};
 
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
-    GetWindowPlacement(hwnd, &wp);
+    ::GetWindowPlacement(hwnd, &wp);
 
     if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3)
     {
-        ShowWindow(hwnd, SW_SHOWNORMAL);
+        ::ShowWindow(hwnd, SW_SHOWNORMAL);
 
         return false;
     }
 
     else
     {
-        ShowWindow(hwnd, SW_MAXIMIZE);
+        ::ShowWindow(hwnd, SW_MAXIMIZE);
 
         return true;
     }
@@ -269,18 +245,18 @@ bool window_fullscreen(HWND hwnd)
 {
     static RECT pos;
 
-    auto style{GetWindowLongPtrW(hwnd, GWL_STYLE)};
+    auto style{::GetWindowLongPtrW(hwnd, GWL_STYLE)};
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
-        GetWindowRect(hwnd, &pos);
-        if (GetMonitorInfoW(MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        ::GetWindowRect(hwnd, &pos);
+        if (::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
-            SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
-                         mi.rcMonitor.right - mi.rcMonitor.left,
-                         mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
+            ::SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            ::SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+                           mi.rcMonitor.right - mi.rcMonitor.left,
+                           mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
         }
 
         return true;
@@ -288,9 +264,9 @@ bool window_fullscreen(HWND hwnd)
 
     else
     {
-        SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
-        SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
-                     (pos.bottom - pos.top), SWP_FRAMECHANGED);
+        ::SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        ::SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
+                       (pos.bottom - pos.top), SWP_FRAMECHANGED);
 
         return false;
     }
@@ -304,39 +280,37 @@ bool window_topmost(HWND hwnd)
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style{GetWindowLongPtrW(hwnd, GWL_EXSTYLE)};
+    auto style{::GetWindowLongPtrW(hwnd, GWL_EXSTYLE)};
 
     if (style & WS_EX_TOPMOST)
     {
-        SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
+        ::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        ::FlashWindowEx(&fwi);
 
         return false;
     }
 
     else
     {
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-        FlashWindowEx(&fwi);
+        ::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        ::FlashWindowEx(&fwi);
 
         return true;
     }
 }
 
-std::filesystem::path path_appdata(std::string n)
+std::filesystem::path known_folder(const KNOWNFOLDERID& id)
 {
-    PWSTR buffer;
-    std::filesystem::path data{};
+    wchar_t* buffer{nullptr};
 
-    if (FAILED(SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, nullptr, &buffer)))
-        return std::filesystem::path{};
+    if (SUCCEEDED(SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
+    {
+        std::filesystem::path data = std::wstring(buffer);
+        CoTaskMemFree(buffer);
 
-    data = std::wstring(buffer) + std::filesystem::path::preferred_separator + widen(n);
+        return data;
+    }
 
-    CoTaskMemFree(buffer);
-
-    if (!std::filesystem::exists(data)) std::filesystem::create_directory(data);
-
-    return data;
+    else return std::filesystem::path{};
 }
 } // namespace glow
