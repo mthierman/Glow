@@ -99,3 +99,22 @@ set_property(
     TARGET ${APP_NAME}
     APPEND PROPERTY LINK_LIBRARIES common
 )
+
+add_executable(
+    Composition
+    WIN32
+    ${CMAKE_SOURCE_DIR}/composition/composition.cxx
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET Composition
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_link_libraries(
+    Composition
+    PRIVATE
+    WindowsApp.lib
+)
