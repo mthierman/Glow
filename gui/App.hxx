@@ -56,7 +56,7 @@ App::App(std::string n)
                       CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                       ::GetModuleHandleW(nullptr), this);
 
-    window_mica(appHwnd);
+    // window_mica(appHwnd);
     set_darkmode(appHwnd);
 
     ::ShowWindow(appHwnd, SW_SHOWDEFAULT);
