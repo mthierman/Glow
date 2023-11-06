@@ -13,26 +13,11 @@
 #include "../gui/App.hxx"
 #include "../composition/WebView.hxx"
 
-namespace winrt
-{
-using namespace winrt::Microsoft::Web::WebView2::Core;
-using namespace winrt::Windows::Foundation;
-using namespace winrt::Windows::Foundation::Numerics;
-using namespace winrt::Windows::System;
-using namespace winrt::Windows::UI;
-using namespace winrt::Windows::UI::Composition;
-using namespace winrt::Windows::UI::Composition::Desktop;
-}; // namespace winrt
-
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
     glow::gui::App app("Glow");
-
-    // create_webview(app.appHwnd, compHost);
-
     glow::gui::WebView wv("Webview", app.appHwnd, 1);
-
     wv.create_webview(app.appHwnd);
 
     MSG msg;

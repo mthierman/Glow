@@ -107,8 +107,6 @@ void CompositionHost::CreateCompositionRoot()
     auto root = m_compositor.CreateContainerVisual();
     root.RelativeSizeAdjustment({1.0f, 1.0f});
     root.Offset({0, 0, 0});
-    // root.RotationAngle(70);
-    root.BorderMode(winrt::CompositionBorderMode::Soft);
 
     m_target.Root(root);
 }
