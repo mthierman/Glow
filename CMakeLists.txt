@@ -31,12 +31,6 @@ execute_process(
 )
 file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
 
-if(WEBVIEW_WINRT)
-    execute_process(
-    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
-)
-endif()
-
 add_library(common INTERFACE)
 
 target_compile_definitions(
@@ -47,19 +41,6 @@ target_compile_definitions(
     APP_VERSION="${APP_VERSION}"
 )
 
-target_include_directories(
-    common
-    INTERFACE
-    ${WEBVIEW_PKG}/build/native/include
-    ${WEBVIEW_PKG}/lib
-)
-
-target_link_directories(
-    common
-    INTERFACE
-    ${WEBVIEW_PKG}/build/native/x64
-)
-
 target_link_libraries(
     common
     INTERFACE
@@ -67,8 +48,31 @@ target_link_libraries(
     Comctl32.lib
 )
 
+if(WEBVIEW_WINRT)
+    execute_process(
+        COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
+    )
 
-if(NOT WEBVIEW_WINRT)
+    target_include_directories(
+        common
+        INTERFACE
+        ${WEBVIEW_PKG}/lib
+    )
+
+    file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+else()
+    target_include_directories(
+        common
+        INTERFACE
+        ${WEBVIEW_PKG}/build/native/include
+    )
+
+    target_link_directories(
+        common
+        INTERFACE
+        ${WEBVIEW_PKG}/build/native/x64
+    )
+
     target_link_libraries(
         common
         INTERFACE
@@ -110,38 +114,36 @@ file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
-# add_executable(
-#     ${APP_NAME}
-#     WIN32
-#     ${SOURCES}
-#     ${RC_FILE}
-#     ${MANIFEST_FILE}
-# )
-
-# set_property(
-#     TARGET ${APP_NAME}
-#     APPEND PROPERTY LINK_LIBRARIES common
-# )
-
 add_executable(
-    Composition
+    ${APP_NAME}
     WIN32
-    ${CMAKE_SOURCE_DIR}/composition/composition.cxx
+    ${SOURCES}
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
 
 set_property(
-    TARGET Composition
+    TARGET ${APP_NAME}
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-target_link_libraries(
-    Composition
-    PRIVATE
-    WindowsApp.lib
-)
-
 if(WEBVIEW_WINRT)
-    file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    add_executable(
+        Composition
+        WIN32
+        ${CMAKE_SOURCE_DIR}/composition/composition.cxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
+
+    set_property(
+        TARGET Composition
+        APPEND PROPERTY LINK_LIBRARIES common
+    )
+
+    target_link_libraries(
+        Composition
+        PRIVATE
+        WindowsApp.lib
+    )
 endif()
