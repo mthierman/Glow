@@ -33,9 +33,12 @@ App::App(std::string n)
     auto cursor{
         reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
                                                IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    auto icon{
-        reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
-                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    // auto icon{
+    //     reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
+    //                                          IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+
+    auto icon{reinterpret_cast<HICON>(::LoadImageW(::GetModuleHandleW(nullptr), MAKEINTRESOURCE(1),
+                                                   IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 
     WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = L"App";
