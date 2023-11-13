@@ -32,7 +32,6 @@ auto create_console() -> FILE*
 {
     FILE* f{nullptr};
 
-#ifdef _DEBUG
     ::AllocConsole();
     ::SetConsoleTitleW(L"Console");
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
@@ -50,16 +49,13 @@ auto create_console() -> FILE*
     std::clog.clear();
     std::cerr.clear();
     std::cin.clear();
-#endif
 
     return f;
 }
 
 auto remove_console(FILE* f) -> void
 {
-#ifdef _DEBUG
     ::fclose(f);
     ::FreeConsole();
-#endif
 }
 } // namespace glow::console
