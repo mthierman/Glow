@@ -53,13 +53,13 @@ auto widen(std::string in) -> std::wstring
     return {};
 }
 
-auto randomize(std::wstring in) -> std::wstring
+auto randomize(std::string in) -> std::string
 {
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(1.0, 10.0);
     auto randomDouble{dist(mt)};
-    auto randomNumber{std::to_wstring(randomDouble)};
+    auto randomNumber{std::to_string(randomDouble)};
     std::erase(randomNumber, '.');
 
     return (in + randomNumber);

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "../text/strings.hxx"
+#include "../text/text.hxx"
 
 namespace glow::console
 {

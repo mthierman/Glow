@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.26)
-set(APP_NAME "Glow")
-set(APP_VERSION "0.0.1")
+set(LIB_NAME "Glow")
+set(LIB_VERSION "0.0.1")
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${APP_NAME}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
 
 include(FetchContent)
 
 option(WEBVIEW_WINRT OFF)
 
 project(
-    ${APP_NAME}
-    VERSION ${APP_VERSION}
+    ${LIB_NAME}
+    VERSION ${LIB_VERSION}
     LANGUAGES C CXX ASM
 )
 
@@ -36,9 +36,8 @@ add_library(common INTERFACE)
 target_compile_definitions(
     common
     INTERFACE
-    UNICODE
-    APP_NAME="${APP_NAME}"
-    APP_VERSION="${APP_VERSION}"
+    LIB_NAME="${LIB_NAME}"
+    LIB_VERSION="${LIB_VERSION}"
 )
 
 target_link_libraries(
@@ -46,6 +45,7 @@ target_link_libraries(
     INTERFACE
     dwmapi.lib
     Comctl32.lib
+    gdiplus.lib
 )
 
 if(WEBVIEW_WINRT)
@@ -110,20 +110,19 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     )
 endif()
 
-file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*.cxx")
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
 add_executable(
-    ${APP_NAME}
+    MainWindow
     WIN32
-    ${SOURCES}
+    ${CMAKE_SOURCE_DIR}/tests/MainWindow.cxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
 
 set_property(
-    TARGET ${APP_NAME}
+    TARGET MainWindow
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
@@ -131,7 +130,7 @@ if(WEBVIEW_WINRT)
     add_executable(
         Composition
         WIN32
-        ${CMAKE_SOURCE_DIR}/composition/composition.cxx
+        ${CMAKE_SOURCE_DIR}/tests/Composition.cxx
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
