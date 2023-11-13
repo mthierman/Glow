@@ -8,8 +8,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
 
 include(FetchContent)
 
-option(WEBVIEW_WINRT OFF)
-
 project(
     ${LIB_NAME}
     VERSION ${LIB_VERSION}
@@ -40,45 +38,11 @@ target_compile_definitions(
     LIB_VERSION="${LIB_VERSION}"
 )
 
-target_link_libraries(
-    common
-    INTERFACE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
+execute_process(
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
 )
 
-if(WEBVIEW_WINRT)
-    execute_process(
-        COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
-    )
-
-    target_include_directories(
-        common
-        INTERFACE
-        ${WEBVIEW_PKG}/lib
-    )
-
-    file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-else()
-    target_include_directories(
-        common
-        INTERFACE
-        ${WEBVIEW_PKG}/build/native/include
-    )
-
-    target_link_directories(
-        common
-        INTERFACE
-        ${WEBVIEW_PKG}/build/native/x64
-    )
-
-    target_link_libraries(
-        common
-        INTERFACE
-        WebView2LoaderStatic.lib
-    )
-endif()
+file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(
@@ -113,36 +77,84 @@ endif()
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
+# WebView
 add_executable(
-    MainWindow
+    WebView
     WIN32
-    ${CMAKE_SOURCE_DIR}/tests/MainWindow.cxx
+    ${CMAKE_SOURCE_DIR}/tests/WebView.cxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
 
 set_property(
-    TARGET MainWindow
+    TARGET WebView
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-if(WEBVIEW_WINRT)
-    add_executable(
-        Composition
-        WIN32
-        ${CMAKE_SOURCE_DIR}/tests/Composition.cxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
+target_include_directories(
+    WebView
+    PRIVATE
+    ${WEBVIEW_PKG}/build/native/include
+)
 
-    set_property(
-        TARGET Composition
-        APPEND PROPERTY LINK_LIBRARIES common
-    )
+target_link_directories(
+    WebView
+    PRIVATE
+    ${WEBVIEW_PKG}/build/native/x64
+)
 
-    target_link_libraries(
-        Composition
-        PRIVATE
-        WindowsApp.lib
-    )
-endif()
+target_link_libraries(
+    WebView
+    PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
+    WebView2LoaderStatic.lib
+)
+
+# IconConverter
+add_executable(
+    IconConverter
+    ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET IconConverter
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_link_libraries(
+    IconConverter
+    PRIVATE
+    gdiplus.lib
+)
+
+# WebViewComposition
+add_executable(
+    WebViewComposition
+    WIN32
+    ${CMAKE_SOURCE_DIR}/tests/WebViewComposition.cxx
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET WebViewComposition
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_include_directories(
+    WebViewComposition
+    PRIVATE
+    ${WEBVIEW_PKG}/lib
+)
+
+target_link_libraries(
+    WebViewComposition
+    PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
+    WindowsApp.lib
+)

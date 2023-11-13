@@ -13,8 +13,6 @@
 
 #include <string>
 
-#include "../helpers/Helpers.hxx"
-
 namespace winrt
 {
 using namespace winrt::Microsoft::Web::WebView2::Core;
@@ -149,7 +147,6 @@ winrt::IAsyncAction WebView::create_webview(HWND h)
     environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
         L"", L"", environmentOptions);
     comp = co_await environment.CreateCoreWebView2CompositionControllerAsync(windowRef);
-    // comp.
 
     comp.RootVisualTarget(compHost->m_target.Root());
 
@@ -183,34 +180,35 @@ winrt::IAsyncAction WebView::create_webview(HWND h)
 
 WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 {
-    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(LTGRAY_BRUSH))};
+    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
     auto cursor{
-        reinterpret_cast<HCURSOR>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDC_ARROW),
-                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+        reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
+                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     auto icon{
-        reinterpret_cast<HICON>(::LoadImageW(nullptr, reinterpret_cast<LPCWSTR>(IDI_APPLICATION),
-                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+        reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
+                                            IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
-    auto className{randomize(widen(n))};
+    auto name{glow::text::randomize(n)};
 
-    WNDCLASSEXW wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = className.c_str();
-    wcex.lpszMenuName = className.c_str();
+    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
+    wcex.lpszClassName = name.c_str();
+    wcex.lpszMenuName = name.c_str();
     wcex.lpfnWndProc = WebView::WndProcCallback;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandleW(nullptr);
+    wcex.hInstance = ::GetModuleHandle(nullptr);
     wcex.hbrBackground = brush;
     wcex.hCursor = cursor;
     wcex.hIcon = icon;
     wcex.hIconSm = icon;
 
-    ::RegisterClassExW(&wcex);
+    ::RegisterClassEx(&wcex);
 
-    ::CreateWindowExW(0, className.c_str(), widen(n).c_str(), WS_CHILD, CW_USEDEFAULT,
-                      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd,
-                      reinterpret_cast<HMENU>(id), ::GetModuleHandleW(nullptr), this);
+    ::CreateWindowEx(0, name.c_str(), name.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
+                     CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd, reinterpret_cast<HMENU>(id),
+                     ::GetModuleHandle(nullptr), this);
 
     window_cloak(webviewHwnd);
     window_mica(webviewHwnd);
@@ -235,13 +233,10 @@ LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
         return webview->WndProc(h, m, w, l);
     }
 
-    return ::DefWindowProcW(h, m, w, l);
+    return ::DefWindowProc(h, m, w, l);
 }
 
-LRESULT WebView::WndProc(HWND h, UINT m, WPARAM w, LPARAM l)
-{
-    return ::DefWindowProcW(h, m, w, l);
-}
+LRESULT WebView::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) { return ::DefWindowProc(h, m, w, l); }
 
 int WebView::OnClose(HWND h)
 {

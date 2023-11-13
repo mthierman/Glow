@@ -38,6 +38,7 @@ struct WebView
 WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 {
     auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
     auto cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
