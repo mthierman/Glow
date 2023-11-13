@@ -1,11 +1,12 @@
 #pragma once
 
 #include <Windows.h>
+#include <ShlObj.h>
 
 #include <filesystem>
 #include <string>
 
-namespace glow::filesystem
+namespace glow::fs
 {
 auto known_folder(const KNOWNFOLDERID& id) -> std::filesystem::path
 {
@@ -31,4 +32,4 @@ auto path_portable() -> std::filesystem::path
 
     return std::filesystem::canonical(exe.remove_filename());
 }
-} // namespace glow::filesystem
+} // namespace glow::fs

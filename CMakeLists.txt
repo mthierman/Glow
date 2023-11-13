@@ -158,3 +158,25 @@ target_link_libraries(
     gdiplus.lib
     WindowsApp.lib
 )
+
+# Console
+add_executable(
+    Console
+    ${CMAKE_SOURCE_DIR}/tests/Console.cxx
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET Console
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_link_libraries(
+    Console
+    PRIVATE
+    # dwmapi.lib
+    # Comctl32.lib
+    # gdiplus.lib
+    # WebView2LoaderStatic.lib
+    # WindowsApp.lib
+)
