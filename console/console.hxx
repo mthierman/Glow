@@ -27,7 +27,7 @@ auto get_argv() -> std::vector<std::string>
     return argv;
 }
 
-FILE* create_console()
+auto create_console() -> FILE*
 {
     FILE* f{nullptr};
 
@@ -54,7 +54,7 @@ FILE* create_console()
     return f;
 }
 
-void remove_console(FILE* f)
+auto remove_console(FILE* f) -> void
 {
 #ifdef _DEBUG
     ::fclose(f);

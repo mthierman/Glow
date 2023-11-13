@@ -39,7 +39,7 @@ struct Bounds
     int height{0};
 };
 
-bool check_theme()
+auto check_theme() -> bool
 {
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
@@ -49,7 +49,7 @@ bool check_theme()
     return false;
 }
 
-bool set_darkmode(HWND hwnd)
+auto set_darkmode(HWND hwnd) -> bool
 {
     auto dark{TRUE};
     auto light{FALSE};
@@ -66,7 +66,7 @@ bool set_darkmode(HWND hwnd)
     return false;
 }
 
-bool set_darktitle()
+auto set_darktitle() -> bool
 {
     enum PreferredAppMode
     {
@@ -94,7 +94,7 @@ bool set_darktitle()
     return true;
 }
 
-bool window_cloak(HWND hwnd)
+auto window_cloak(HWND hwnd) -> bool
 {
     auto cloak{TRUE};
 
@@ -103,7 +103,7 @@ bool window_cloak(HWND hwnd)
     return true;
 }
 
-bool window_uncloak(HWND hwnd)
+auto window_uncloak(HWND hwnd) -> bool
 {
     auto uncloak{FALSE};
 
@@ -112,7 +112,7 @@ bool window_uncloak(HWND hwnd)
     return true;
 }
 
-bool window_mica(HWND hwnd)
+auto window_mica(HWND hwnd) -> bool
 {
     MARGINS m{0, 0, 0, ::GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
@@ -126,7 +126,7 @@ bool window_mica(HWND hwnd)
     return true;
 }
 
-bool window_maximize(HWND hwnd)
+auto window_maximize(HWND hwnd) -> bool
 {
     auto style{::GetWindowLongPtrW(hwnd, GWL_STYLE)};
 
@@ -148,7 +148,7 @@ bool window_maximize(HWND hwnd)
     }
 }
 
-bool window_fullscreen(HWND hwnd)
+auto window_fullscreen(HWND hwnd) -> bool
 {
     static RECT pos;
 
@@ -179,7 +179,7 @@ bool window_fullscreen(HWND hwnd)
     }
 }
 
-bool window_topmost(HWND hwnd)
+auto window_topmost(HWND hwnd) -> bool
 {
     FLASHWINFO fwi{sizeof(FLASHWINFO)};
     fwi.hwnd = hwnd;
@@ -205,4 +205,4 @@ bool window_topmost(HWND hwnd)
         return true;
     }
 }
-} // namespace glow
+} // namespace glow::gui

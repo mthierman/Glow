@@ -2,11 +2,12 @@
 
 #include <Windows.h>
 
+#include <filesystem>
 #include <string>
 
 namespace glow::filesystem
 {
-std::filesystem::path known_folder(const KNOWNFOLDERID& id)
+auto known_folder(const KNOWNFOLDERID& id) -> std::filesystem::path
 {
     wchar_t* buffer{nullptr};
 
@@ -19,5 +20,15 @@ std::filesystem::path known_folder(const KNOWNFOLDERID& id)
     }
 
     else return {};
+}
+
+auto path_portable() -> std::filesystem::path
+{
+    wchar_t* wpgmptr{nullptr};
+    _get_wpgmptr(&wpgmptr);
+
+    std::filesystem::path exe{wpgmptr};
+
+    return std::filesystem::canonical(exe.remove_filename());
 }
 } // namespace glow::filesystem

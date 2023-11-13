@@ -6,11 +6,13 @@
 #include <vector>
 #include <string>
 
+#include "../filesystem/filesystem.hxx"
+
 namespace fs = std::filesystem;
 
 namespace glow::audio
 {
-std::vector<std::wstring> split_clap_path(const std::wstring& in, const std::wstring& sep)
+auto split_clap_path(const std::wstring& in, const std::wstring& sep) -> std::vector<std::wstring>
 {
     std::vector<std::wstring> res;
     std::wstringstream ss(in);
@@ -22,15 +24,15 @@ std::vector<std::wstring> split_clap_path(const std::wstring& in, const std::wst
     return res;
 }
 
-std::vector<fs::path> getValidCLAPSearchPaths()
+auto get_clap_search_paths() -> std::vector<std::filesystem::path>
 {
-    std::vector<fs::path> res;
+    std::vector<std::filesystem::path> res;
 
-    auto p{windows_path(FOLDERID_ProgramFilesCommon)};
-    if (fs::exists(p)) res.emplace_back(p / "CLAP");
+    auto p{glow::filesystem::known_folder(FOLDERID_ProgramFilesCommon)};
+    if (std::filesystem::exists(p)) res.emplace_back(p / "CLAP");
 
-    auto q{windows_path(FOLDERID_LocalAppData)};
-    if (fs::exists(q)) res.emplace_back(q / "Programs" / "Common" / "CLAP");
+    auto q{glow::filesystem::known_folder(FOLDERID_LocalAppData)};
+    if (std::filesystem::exists(q)) res.emplace_back(q / "Programs" / "Common" / "CLAP");
 
     std::wstring cp;
     auto len{::GetEnvironmentVariableW(L"CLAP_PATH", NULL, 0)};
@@ -43,7 +45,7 @@ std::vector<fs::path> getValidCLAPSearchPaths()
 
         for (const auto& path : paths)
         {
-            if (fs::exists(path)) res.emplace_back(path);
+            if (std::filesystem::exists(path)) res.emplace_back(path);
         }
     }
 
@@ -52,28 +54,28 @@ std::vector<fs::path> getValidCLAPSearchPaths()
     {
         try
         {
-            for (auto subdirectory : fs::recursive_directory_iterator(
-                     path, fs::directory_options::follow_directory_symlink |
-                               fs::directory_options::skip_permission_denied))
+            for (auto subdirectory : std::filesystem::recursive_directory_iterator(
+                     path, std::filesystem::directory_options::follow_directory_symlink |
+                               std::filesystem::directory_options::skip_permission_denied))
             {
                 try
                 {
                     if (subdirectory.is_directory()) res.emplace_back(subdirectory.path());
                 }
-                catch (const fs::filesystem_error& e)
+                catch (const std::filesystem::filesystem_error& e)
                 {}
             }
         }
-        catch (const fs::filesystem_error& e)
+        catch (const std::filesystem::filesystem_error& e)
         {}
     }
 
     return res;
 }
 
-void list()
+auto list_clap_paths() -> void
 {
-    auto paths{getValidCLAPSearchPaths()};
+    auto paths{get_clap_search_paths()};
 
     for (const auto& path : paths)
         std::println("{}", path.string());
