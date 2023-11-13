@@ -12,12 +12,12 @@ std::filesystem::path known_folder(const KNOWNFOLDERID& id)
 
     if (SUCCEEDED(SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
     {
-        std::filesystem::path data = std::wstring(buffer);
+        std::filesystem::path data{std::wstring(buffer)};
         CoTaskMemFree(buffer);
 
         return data;
     }
 
-    else return std::filesystem::path{};
+    else return {};
 }
 } // namespace glow::filesystem

@@ -10,23 +10,6 @@ namespace fs = std::filesystem;
 
 namespace glow::audio
 {
-fs::path windows_path(const KNOWNFOLDERID& id)
-{
-    std::wstring path;
-    wchar_t* buffer;
-
-    if (SUCCEEDED(SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
-    {
-        fs::path data = std::wstring(buffer);
-        CoTaskMemFree(buffer);
-
-        return data;
-    }
-
-    else
-        return fs::path{};
-}
-
 std::vector<std::wstring> split_clap_path(const std::wstring& in, const std::wstring& sep)
 {
     std::vector<std::wstring> res;
@@ -44,12 +27,10 @@ std::vector<fs::path> getValidCLAPSearchPaths()
     std::vector<fs::path> res;
 
     auto p{windows_path(FOLDERID_ProgramFilesCommon)};
-    if (fs::exists(p))
-        res.emplace_back(p / "CLAP");
+    if (fs::exists(p)) res.emplace_back(p / "CLAP");
 
     auto q{windows_path(FOLDERID_LocalAppData)};
-    if (fs::exists(q))
-        res.emplace_back(q / "Programs" / "Common" / "CLAP");
+    if (fs::exists(q)) res.emplace_back(q / "Programs" / "Common" / "CLAP");
 
     std::wstring cp;
     auto len{::GetEnvironmentVariableW(L"CLAP_PATH", NULL, 0)};
@@ -62,8 +43,7 @@ std::vector<fs::path> getValidCLAPSearchPaths()
 
         for (const auto& path : paths)
         {
-            if (fs::exists(path))
-                res.emplace_back(path);
+            if (fs::exists(path)) res.emplace_back(path);
         }
     }
 
@@ -78,17 +58,14 @@ std::vector<fs::path> getValidCLAPSearchPaths()
             {
                 try
                 {
-                    if (subdirectory.is_directory())
-                        res.emplace_back(subdirectory.path());
+                    if (subdirectory.is_directory()) res.emplace_back(subdirectory.path());
                 }
                 catch (const fs::filesystem_error& e)
-                {
-                }
+                {}
             }
         }
         catch (const fs::filesystem_error& e)
-        {
-        }
+        {}
     }
 
     return res;
