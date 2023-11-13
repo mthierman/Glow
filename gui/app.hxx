@@ -17,15 +17,15 @@ struct App
     HWND appHwnd;
 
   private:
-    static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
-    virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
+    static auto CALLBACK WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT;
+    virtual auto WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT;
 
-    virtual int OnPaint(HWND);
-    virtual int OnClose(HWND);
-    virtual int OnDestroy();
-    virtual int OnWindowPosChanged(HWND);
+    virtual auto OnClose(HWND h) -> int;
+    virtual auto OnDestroy() -> int;
+    virtual auto OnWindowPosChanged(HWND h) -> int;
 
-    static BOOL EnumChildProc(HWND, LPARAM);
+    static auto EnumChildProcCallback(HWND h, LPARAM l) -> BOOL;
+    // virtual auto EnumChildProc(HWND h, LPARAM l) -> BOOL;
 };
 
 App::App(std::string n)
@@ -66,7 +66,7 @@ App::App(std::string n)
 
 App::~App() {}
 
-LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
+auto CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
 {
     App* app = InstanceFromWndProc<App, &App::appHwnd>(h, m, l);
 
@@ -74,7 +74,6 @@ LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     {
         switch (m)
         {
-        case WM_PAINT: return app->OnPaint(h);
         case WM_CLOSE: return app->OnClose(h);
         case WM_DESTROY: return app->OnDestroy();
         case WM_WINDOWPOSCHANGED: return app->OnWindowPosChanged(h);
@@ -86,42 +85,40 @@ LRESULT CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     return ::DefWindowProc(h, m, w, l);
 }
 
-LRESULT App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) { return ::DefWindowProc(h, m, w, l); }
-
-int App::OnPaint(HWND h)
+auto App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
 {
-    RECT r;
-    ::GetClientRect(h, &r);
-    ::EnumChildWindows(h, EnumChildProc, (LPARAM)&r);
-
-    return 0;
+    return ::DefWindowProc(h, m, w, l);
 }
 
-int App::OnClose(HWND h)
+auto App::OnClose(HWND h) -> int
 {
     ::DestroyWindow(h);
 
     return 0;
 }
 
-int App::OnDestroy()
+auto App::OnDestroy() -> int
 {
     ::PostQuitMessage(0);
 
     return 0;
 }
 
-int App::OnWindowPosChanged(HWND h)
+auto App::OnWindowPosChanged(HWND h) -> int
 {
-    RECT appRect{0, 0, 0, 0};
-    ::GetWindowRect(h, &appRect);
-    ::SetWindowPos(::GetConsoleWindow(), nullptr, appRect.left, appRect.bottom,
-                   (appRect.right - appRect.left), 200, SWP_NOZORDER | SWP_ASYNCWINDOWPOS);
+    RECT windowRect{0};
+    ::GetWindowRect(h, &windowRect);
+    ::SetWindowPos(::GetConsoleWindow(), nullptr, windowRect.left, windowRect.bottom,
+                   (windowRect.right - windowRect.left), 200, SWP_NOZORDER | SWP_ASYNCWINDOWPOS);
+
+    RECT clientRect{0};
+    ::GetClientRect(h, &clientRect);
+    ::EnumChildWindows(h, EnumChildProcCallback, (LPARAM)&clientRect);
 
     return 0;
 }
 
-BOOL CALLBACK App::EnumChildProc(HWND h, LPARAM l)
+auto CALLBACK App::EnumChildProcCallback(HWND h, LPARAM l) -> BOOL
 {
     auto childId{::GetWindowLongPtr(h, GWL_ID)};
 
@@ -133,4 +130,6 @@ BOOL CALLBACK App::EnumChildProc(HWND h, LPARAM l)
 
     return 1;
 }
+
+// auto CALLBACK App::EnumChildProc(HWND h, LPARAM l) -> BOOL { return 1; }
 } // namespace glow::gui
