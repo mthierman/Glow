@@ -12,7 +12,7 @@
 #include <random>
 #include <filesystem>
 
-namespace glow
+namespace glow::gui
 {
 template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
@@ -31,52 +31,6 @@ template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg
     return pInstance;
 }
 
-std::string narrow(std::wstring in)
-{
-    if (!in.empty())
-    {
-        auto inSize{static_cast<int>(in.size())};
-
-        auto outSize{::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                           in.data(), inSize, nullptr, 0, nullptr, nullptr)};
-
-        if (outSize > 0)
-        {
-            std::string out;
-            out.resize(static_cast<size_t>(outSize));
-
-            if (::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                      in.data(), inSize, out.data(), outSize, nullptr, nullptr) > 0)
-                return out;
-        }
-    }
-
-    return {};
-}
-
-std::wstring widen(std::string in)
-{
-    if (!in.empty())
-    {
-        auto inSize{static_cast<int>(in.size())};
-
-        auto outSize{
-            ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, nullptr, 0)};
-
-        if (outSize > 0)
-        {
-            std::wstring out;
-            out.resize(static_cast<size_t>(outSize));
-
-            if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, in.data(), inSize, out.data(),
-                                      outSize) > 0)
-                return out;
-        }
-    }
-
-    return {};
-}
-
 struct Bounds
 {
     int x{0};
@@ -84,53 +38,6 @@ struct Bounds
     int width{0};
     int height{0};
 };
-
-std::wstring randomize(std::wstring in)
-{
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(1.0, 10.0);
-    auto randomDouble{dist(mt)};
-    auto randomNumber{std::to_wstring(randomDouble)};
-    std::erase(randomNumber, '.');
-
-    return (in + randomNumber);
-}
-
-FILE* create_console()
-{
-    FILE* f{nullptr};
-
-#ifdef _DEBUG
-    ::AllocConsole();
-    ::SetConsoleTitleW(L"Console");
-    ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
-                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    // ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE);
-    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
-    //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_CAPTION &
-    //                         ~WS_SIZEBOX & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX);
-    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-    // ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    ::freopen_s(&f, "CONOUT$", "w", stdout);
-    ::freopen_s(&f, "CONOUT$", "w", stderr);
-    ::freopen_s(&f, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
-#endif
-
-    return f;
-}
-
-void remove_console(FILE* f)
-{
-#ifdef _DEBUG
-    ::fclose(f);
-    ::FreeConsole();
-#endif
-}
 
 bool check_theme()
 {
@@ -297,20 +204,5 @@ bool window_topmost(HWND hwnd)
 
         return true;
     }
-}
-
-std::filesystem::path known_folder(const KNOWNFOLDERID& id)
-{
-    wchar_t* buffer{nullptr};
-
-    if (SUCCEEDED(SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
-    {
-        std::filesystem::path data = std::wstring(buffer);
-        CoTaskMemFree(buffer);
-
-        return data;
-    }
-
-    else return std::filesystem::path{};
 }
 } // namespace glow
