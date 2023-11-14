@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include <string>
+#include <print>
 
 #include "../gui/gui.hxx"
 #include "../text/text.hxx"
@@ -20,12 +21,8 @@ struct App
     static auto CALLBACK WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT;
     virtual auto WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT;
 
-    virtual auto OnClose(HWND h) -> int;
-    virtual auto OnDestroy() -> int;
-    virtual auto OnWindowPosChanged(HWND h) -> int;
-
-    static auto EnumChildProcCallback(HWND h, LPARAM l) -> BOOL;
-    // virtual auto EnumChildProc(HWND h, LPARAM l) -> BOOL;
+    auto OnClose(HWND h) -> int;
+    auto OnDestroy() -> int;
 };
 
 App::App(std::string n)
@@ -76,17 +73,10 @@ auto CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESUL
         {
         case WM_CLOSE: return app->OnClose(h);
         case WM_DESTROY: return app->OnDestroy();
-        case WM_WINDOWPOSCHANGED: return app->OnWindowPosChanged(h);
+        default: return app->WndProc(h, m, w, l);
         }
-
-        return app->WndProc(h, m, w, l);
     }
 
-    return ::DefWindowProc(h, m, w, l);
-}
-
-auto App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
-{
     return ::DefWindowProc(h, m, w, l);
 }
 
@@ -104,32 +94,8 @@ auto App::OnDestroy() -> int
     return 0;
 }
 
-auto App::OnWindowPosChanged(HWND h) -> int
+auto App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
 {
-    RECT windowRect{0};
-    ::GetWindowRect(h, &windowRect);
-    ::SetWindowPos(::GetConsoleWindow(), nullptr, windowRect.left, windowRect.bottom,
-                   (windowRect.right - windowRect.left), 200, SWP_NOZORDER | SWP_ASYNCWINDOWPOS);
-
-    RECT clientRect{0};
-    ::GetClientRect(h, &clientRect);
-    ::EnumChildWindows(h, EnumChildProcCallback, (LPARAM)&clientRect);
-
-    return 0;
+    return ::DefWindowProc(h, m, w, l);
 }
-
-auto CALLBACK App::EnumChildProcCallback(HWND h, LPARAM l) -> BOOL
-{
-    auto childId{::GetWindowLongPtr(h, GWL_ID)};
-
-    auto rcParent{(LPRECT)l};
-
-    if (childId == 1)
-        ::SetWindowPos(h, nullptr, 0, 0, (rcParent->right - rcParent->left),
-                       (rcParent->bottom - rcParent->top), SWP_NOZORDER);
-
-    return 1;
-}
-
-// auto CALLBACK App::EnumChildProc(HWND h, LPARAM l) -> BOOL { return 1; }
 } // namespace glow::gui

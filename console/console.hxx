@@ -31,17 +31,9 @@ auto get_argv() -> std::vector<std::string>
 auto create_console() -> FILE*
 {
     FILE* f{nullptr};
-
     ::AllocConsole();
-    ::SetConsoleTitleW(L"Console");
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    // ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE);
-    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE,
-    //                     ::GetWindowLongPtrW(::GetConsoleWindow(), GWL_STYLE) & ~WS_CAPTION &
-    //                         ~WS_SIZEBOX & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX);
-    // ::SetWindowLongPtrW(::GetConsoleWindow(), GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-    // ::SetWindowPos(::GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     ::freopen_s(&f, "CONOUT$", "w", stdout);
     ::freopen_s(&f, "CONOUT$", "w", stderr);
     ::freopen_s(&f, "CONIN$", "r", stdin);

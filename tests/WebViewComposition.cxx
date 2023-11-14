@@ -12,6 +12,7 @@
 #include "../gui/app.hxx"
 #include "../gui/webview_composition.hxx"
 #include "../console/console.hxx"
+#include "WebView.hxx"
 
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
@@ -20,7 +21,7 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
     auto console{glow::console::create_console()};
 #endif
 
-    auto app{std::make_unique<glow::gui::App>("WebViewComposition")};
+    auto app{std::make_unique<glow::App>("WebViewComposition")};
 
     auto wv{std::make_unique<glow::gui::WebView>("WebView", app->appHwnd, 1)};
     wv->create_webview(app->appHwnd);

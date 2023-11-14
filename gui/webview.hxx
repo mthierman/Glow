@@ -68,7 +68,6 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                      ::GetModuleHandle(nullptr), this);
 
     window_cloak(webviewHwnd);
-    window_mica(webviewHwnd);
 
     ::ShowWindow(webviewHwnd, SW_SHOW);
 
@@ -125,6 +124,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
                                                 if (!initialized)
                                                 {
                                                     window_uncloak(webviewHwnd);
+                                                    SendMessage(parentHwnd, WM_NOTIFY, 0, 0);
                                                     initialized = true;
                                                 }
 

@@ -20,6 +20,7 @@ template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg
 
     if (uMsg == WM_NCCREATE)
     {
+        // std::println("{}", std::to_string(uMsg));
         LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
         pInstance->*m_hWnd = hWnd;

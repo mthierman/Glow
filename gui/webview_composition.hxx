@@ -176,6 +176,8 @@ winrt::IAsyncAction WebView::create_webview(HWND h)
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
     controller.Bounds(displayWebView);
+
+    SendMessage(parentHwnd, WM_NOTIFY, 0, 0);
 }
 
 WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
@@ -209,9 +211,6 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
     ::CreateWindowEx(0, name.c_str(), name.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
                      CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd, reinterpret_cast<HMENU>(id),
                      ::GetModuleHandle(nullptr), this);
-
-    window_cloak(webviewHwnd);
-    window_mica(webviewHwnd);
 
     ::ShowWindow(webviewHwnd, SW_SHOW);
 };

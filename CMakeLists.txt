@@ -77,6 +77,28 @@ endif()
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
+# App
+add_executable(
+    App
+    WIN32
+    ${CMAKE_SOURCE_DIR}/tests/App.cxx
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET App
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_link_libraries(
+    App
+    PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
+)
+
 # WebView
 add_executable(
     WebView
@@ -110,24 +132,6 @@ target_link_libraries(
     Comctl32.lib
     gdiplus.lib
     WebView2LoaderStatic.lib
-)
-
-# IconConverter
-add_executable(
-    IconConverter
-    ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
-    ${MANIFEST_FILE}
-)
-
-set_property(
-    TARGET IconConverter
-    APPEND PROPERTY LINK_LIBRARIES common
-)
-
-target_link_libraries(
-    IconConverter
-    PRIVATE
-    gdiplus.lib
 )
 
 # WebViewComposition
@@ -171,12 +175,20 @@ set_property(
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
+# IconConverter
+add_executable(
+    IconConverter
+    ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET IconConverter
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
 target_link_libraries(
-    Console
+    IconConverter
     PRIVATE
-    # dwmapi.lib
-    # Comctl32.lib
-    # gdiplus.lib
-    # WebView2LoaderStatic.lib
-    # WindowsApp.lib
+    gdiplus.lib
 )
