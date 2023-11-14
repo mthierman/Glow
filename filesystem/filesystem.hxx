@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <string>
 
-namespace glow::fs
+namespace glow::filesystem
 {
 auto known_folder(const KNOWNFOLDERID& id) -> std::filesystem::path
 {
@@ -25,11 +25,11 @@ auto known_folder(const KNOWNFOLDERID& id) -> std::filesystem::path
 
 auto path_portable() -> std::filesystem::path
 {
-    wchar_t* wpgmptr{nullptr};
-    _get_wpgmptr(&wpgmptr);
+    char* pgmptr{nullptr};
+    _get_pgmptr(&pgmptr);
 
-    std::filesystem::path exe{wpgmptr};
+    std::filesystem::path exe{pgmptr};
 
     return std::filesystem::canonical(exe.remove_filename());
 }
-} // namespace glow::fs
+} // namespace glow::filesystem
