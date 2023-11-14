@@ -58,23 +58,13 @@ auto main() -> int
         Gdiplus::Bitmap inputBitmap(inputCanonical.wstring().c_str());
 
         std::vector<std::vector<char>> bitmaps;
-        std::vector<int> bitmapSizes{256, 128, 96, 80, 72, 64, 60, 48, 40, 36, 32, 30, 24, 20, 16};
+        std::vector<int> bitmapSizes{256, 48, 32, 24, 16};
 
         bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[0], &pngClsid));
         bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[1], &pngClsid));
         bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[2], &pngClsid));
         bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[3], &pngClsid));
         bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[4], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[5], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[6], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[7], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[8], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[9], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[10], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[11], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[12], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[13], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[14], &pngClsid));
 
         std::vector<uint32_t> sizes;
         sizes.reserve(bitmaps.size());
@@ -84,7 +74,7 @@ auto main() -> int
         }
 
         std::ofstream outputStream;
-        uint16_t count{15};
+        uint16_t count{5};
         uint32_t offset{6 + (16 * static_cast<uint32_t>(count))};
 
         std::vector<uint32_t> positions;
@@ -93,28 +83,6 @@ auto main() -> int
         positions.push_back(offset + sizes[0] + sizes[1]);
         positions.push_back(offset + sizes[0] + sizes[1] + sizes[2]);
         positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8] + sizes[9]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8] + sizes[9] + sizes[10]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8] + sizes[9] + sizes[10] +
-                            sizes[11]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8] + sizes[9] + sizes[10] +
-                            sizes[11] + sizes[12]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3] + sizes[4] +
-                            sizes[5] + sizes[6] + sizes[7] + sizes[8] + sizes[9] + sizes[10] +
-                            sizes[11] + sizes[12] + sizes[13]);
 
         std::vector<uint8_t> dimensions;
         dimensions.reserve(sizes.size());
@@ -128,12 +96,12 @@ auto main() -> int
         write_header(outputStream, count);
 
         write_entry(outputStream, bitmaps[0], 0, positions[0]);
-        for (int i = 1; i < 15; i++)
+        for (int i = 1; i < 5; i++)
         {
             write_entry(outputStream, bitmaps[i], dimensions[i], positions[i]);
         }
 
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 5; i++)
         {
             write_bitmap(outputStream, bitmaps[i]);
         }
