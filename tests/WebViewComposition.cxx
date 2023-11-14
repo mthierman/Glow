@@ -18,7 +18,7 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
                     int /*nCmdShow*/)
 {
 #ifdef _DEBUG
-    auto console{glow::console::create_console()};
+    glow::console::Console console;
 #endif
 
     auto app{std::make_unique<glow::App>("WebViewComposition")};
@@ -39,10 +39,6 @@ int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR 
             DispatchMessage(&msg);
         }
     }
-
-#ifdef _DEBUG
-    glow::console::remove_console(console);
-#endif
 
     return 0;
 }

@@ -7,7 +7,7 @@ auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR
                      int /*nCmdShow*/) -> int
 {
 #ifdef _DEBUG
-    auto console{glow::console::create_console()};
+    glow::console::Console console;
 #endif
 
     auto app{std::make_unique<glow::gui::App>("App")};
@@ -25,10 +25,6 @@ auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR
             DispatchMessage(&msg);
         }
     }
-
-#ifdef _DEBUG
-    glow::console::remove_console(console);
-#endif
 
     return 0;
 }

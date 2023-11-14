@@ -10,6 +10,33 @@
 
 namespace glow::console
 {
+struct Console
+{
+    Console();
+    ~Console();
+    FILE* f;
+};
+
+Console::Console()
+{
+    ::AllocConsole();
+    ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
+                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+    ::freopen_s(&f, "CONOUT$", "w", stdout);
+    ::freopen_s(&f, "CONOUT$", "w", stderr);
+    ::freopen_s(&f, "CONIN$", "r", stdin);
+    std::cout.clear();
+    std::clog.clear();
+    std::cerr.clear();
+    std::cin.clear();
+}
+
+Console::~Console()
+{
+    ::fclose(f);
+    ::FreeConsole();
+}
+
 auto get_argv() -> std::vector<std::string>
 {
     int argc{0};
@@ -26,28 +53,5 @@ auto get_argv() -> std::vector<std::string>
     ::LocalFree(wideArgs);
 
     return argv;
-}
-
-auto create_console() -> FILE*
-{
-    FILE* f{nullptr};
-    ::AllocConsole();
-    ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
-                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    ::freopen_s(&f, "CONOUT$", "w", stdout);
-    ::freopen_s(&f, "CONOUT$", "w", stderr);
-    ::freopen_s(&f, "CONIN$", "r", stdin);
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
-    std::cin.clear();
-
-    return f;
-}
-
-auto remove_console(FILE* f) -> void
-{
-    ::fclose(f);
-    ::FreeConsole();
 }
 } // namespace glow::console
