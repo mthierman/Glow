@@ -14,19 +14,19 @@
 
 namespace glow::gui
 {
-template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND h, UINT m, LPARAM l)
 {
     T* pInstance;
 
     if (uMsg == WM_NCCREATE)
     {
-        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(l);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        pInstance->*m_hWnd = hWnd;
-        ::SetWindowLongPtrW(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        pInstance->*m_hWnd = h;
+        ::SetWindowLongPtr(h, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtrW(hWnd, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(h, GWLP_USERDATA));
 
     return pInstance;
 }
@@ -79,7 +79,7 @@ auto set_darktitle() -> bool
 
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
 
-    auto uxtheme{::LoadLibraryExW(L"uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+    auto uxtheme{::LoadLibraryEx("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
     if (!uxtheme) return false;
 
@@ -128,7 +128,7 @@ auto window_mica(HWND hwnd) -> bool
 
 auto window_maximize(HWND hwnd) -> bool
 {
-    auto style{::GetWindowLongPtrW(hwnd, GWL_STYLE)};
+    auto style{::GetWindowLongPtr(hwnd, GWL_STYLE)};
 
     WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
     ::GetWindowPlacement(hwnd, &wp);
@@ -152,15 +152,15 @@ auto window_fullscreen(HWND hwnd) -> bool
 {
     static RECT pos;
 
-    auto style{::GetWindowLongPtrW(hwnd, GWL_STYLE)};
+    auto style{::GetWindowLongPtr(hwnd, GWL_STYLE)};
 
     if (style & WS_OVERLAPPEDWINDOW)
     {
         MONITORINFO mi = {sizeof(mi)};
         ::GetWindowRect(hwnd, &pos);
-        if (::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
+        if (::GetMonitorInfo(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi))
         {
-            ::SetWindowLongPtrW(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            ::SetWindowLongPtr(hwnd, GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
             ::SetWindowPos(hwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                            mi.rcMonitor.right - mi.rcMonitor.left,
                            mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
@@ -171,7 +171,7 @@ auto window_fullscreen(HWND hwnd) -> bool
 
     else
     {
-        ::SetWindowLongPtrW(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        ::SetWindowLongPtr(hwnd, GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
         ::SetWindowPos(hwnd, nullptr, pos.left, pos.top, (pos.right - pos.left),
                        (pos.bottom - pos.top), SWP_FRAMECHANGED);
 
@@ -187,7 +187,7 @@ auto window_topmost(HWND hwnd) -> bool
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style{::GetWindowLongPtrW(hwnd, GWL_EXSTYLE)};
+    auto style{::GetWindowLongPtr(hwnd, GWL_EXSTYLE)};
 
     if (style & WS_EX_TOPMOST)
     {
