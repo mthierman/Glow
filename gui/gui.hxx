@@ -18,7 +18,7 @@ template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND h, UINT m, LPAR
 {
     T* pInstance;
 
-    if (uMsg == WM_NCCREATE)
+    if (m == WM_NCCREATE)
     {
         LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(l);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
