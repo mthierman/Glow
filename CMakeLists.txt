@@ -15,19 +15,22 @@ project(
 )
 
 set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VERSION "1.0.2088.41")
+set(WEBVIEW_VER "1.0.2151.40")
+
+set(CPPWINRT "Microsoft.Windows.CppWinRT")
+set(CPPWINRT_VER "2.0.230706.1")
 
 execute_process(
     COMMAND
-    nuget install "${WEBVIEW}" -Version "${WEBVIEW_VERSION}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+    nuget install "${WEBVIEW}" -Version "${WEBVIEW_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${WEBVIEW}.${WEBVIEW_VERSION}" WEBVIEW_PKG)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WEBVIEW}.${WEBVIEW_VER}" WEBVIEW_PKG)
 
 execute_process(
     COMMAND
-    nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/_deps"
+    nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/_deps/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
 
 add_library(common INTERFACE)
 
@@ -74,8 +77,41 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     )
 endif()
 
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.rc" RC_FILE)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
+
+# IconConverter
+add_executable(
+    IconConverter
+    ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET IconConverter
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+target_link_libraries(
+    IconConverter
+    PRIVATE
+    gdiplus.lib
+)
+
+file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/res.rc" RC_FILE)
+set(PNG_FILE ${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
+set(ICO_FILE ${CMAKE_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+
+add_custom_command(
+    OUTPUT ${ICO_FILE}
+    COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
+    COMMENT "Running IconConverter..."
+)
+
+add_custom_target(
+    MakeIcon ALL
+    DEPENDS ${ICO_FILE}
+)
 
 # App
 add_executable(
@@ -97,6 +133,18 @@ target_link_libraries(
     dwmapi.lib
     Comctl32.lib
     gdiplus.lib
+)
+
+# Console
+add_executable(
+    Console
+    ${CMAKE_SOURCE_DIR}/tests/Console.cxx
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET Console
+    APPEND PROPERTY LINK_LIBRARIES common
 )
 
 # WebView
@@ -163,32 +211,7 @@ target_link_libraries(
     WindowsApp.lib
 )
 
-# Console
-add_executable(
-    Console
-    ${CMAKE_SOURCE_DIR}/tests/Console.cxx
-    ${MANIFEST_FILE}
-)
-
-set_property(
-    TARGET Console
-    APPEND PROPERTY LINK_LIBRARIES common
-)
-
-# IconConverter
-add_executable(
-    IconConverter
-    ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
-    ${MANIFEST_FILE}
-)
-
-set_property(
-    TARGET IconConverter
-    APPEND PROPERTY LINK_LIBRARIES common
-)
-
-target_link_libraries(
-    IconConverter
-    PRIVATE
-    gdiplus.lib
-)
+add_dependencies(App MakeIcon)
+add_dependencies(Console MakeIcon)
+add_dependencies(WebView MakeIcon)
+add_dependencies(WebViewComposition MakeIcon)
