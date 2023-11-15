@@ -17,6 +17,13 @@ project(
     LANGUAGES C CXX ASM
 )
 
+file(WRITE "${CMAKE_BINARY_DIR}/version.txt" "v${LIB_VERSION}")
+execute_process(
+    COMMAND
+    git --no-pager log -5 --oneline --no-decorate
+    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+)
+
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
@@ -63,6 +70,11 @@ FetchContent_MakeAvailable(sqlite3)
 add_library(sqlite "${sqlite3_SOURCE_DIR}/sqlite3.c" "${sqlite3_SOURCE_DIR}/sqlite3.h")
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
+execute_process(
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${webview_SOURCE_DIR}/lib"
+)
+file(COPY "${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
 add_library(
     common
     INTERFACE
@@ -92,12 +104,6 @@ target_link_libraries(
     gdiplus.lib
     gdiplus.lib
 )
-
-execute_process(
-    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${webview_SOURCE_DIR}/lib"
-)
-
-file(COPY "${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(
