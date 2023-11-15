@@ -32,13 +32,41 @@ execute_process(
 )
 file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
 
-add_library(common INTERFACE)
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
+add_library(
+    common
+    INTERFACE
+)
 
 target_compile_definitions(
     common
     INTERFACE
     LIB_NAME="${LIB_NAME}"
     LIB_VERSION="${LIB_VERSION}"
+    NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
+)
+
+target_include_directories(
+    common
+    INTERFACE
+    ${json_SOURCE_DIR}
+    ${WEBVIEW_PKG}/lib
+    ${WEBVIEW_PKG}/build/native/include
+)
+
+target_link_libraries(
+    common
+    INTERFACE
+    nlohmann_json::nlohmann_json
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
+    gdiplus.lib
 )
 
 execute_process(
@@ -80,6 +108,11 @@ endif()
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
 # IconConverter
+file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/res.rc" RC_FILE)
+set(PNG_FILE ${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
+set(ICO_FILE ${CMAKE_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+
 add_executable(
     IconConverter
     ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
@@ -91,17 +124,6 @@ set_property(
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-target_link_libraries(
-    IconConverter
-    PRIVATE
-    gdiplus.lib
-)
-
-file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/res.rc" RC_FILE)
-set(PNG_FILE ${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-set(ICO_FILE ${CMAKE_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-
 add_custom_command(
     OUTPUT ${ICO_FILE}
     COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
@@ -111,6 +133,29 @@ add_custom_command(
 add_custom_target(
     MakeIcon ALL
     DEPENDS ${ICO_FILE}
+)
+
+# Glow
+file(GLOB HEADERS_CONSOLE CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/console/*.hxx")
+file(GLOB HEADERS_FILESYSTEM CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/filesystem/*.hxx")
+file(GLOB HEADERS_GUI CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/gui/*.hxx")
+file(GLOB HEADERS_SETTINGS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/settings/*.hxx")
+file(GLOB HEADERS_TEXT CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/text/*.hxx")
+
+add_library(
+    ${LIB_NAME}
+    STATIC
+    ${CMAKE_SOURCE_DIR}/src/Glow.cxx
+    ${HEADERS_CONSOLE}
+    ${HEADERS_FILESYSTEM}
+    ${HEADERS_GUI}
+    ${HEADERS_SETTINGS}
+    ${HEADERS_TEXT}
+)
+
+set_property(
+    TARGET ${LIB_NAME}
+    APPEND PROPERTY LINK_LIBRARIES common
 )
 
 # App
@@ -127,23 +172,29 @@ set_property(
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-target_link_libraries(
-    App
-    PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
-)
-
 # Console
 add_executable(
     Console
     ${CMAKE_SOURCE_DIR}/tests/Console.cxx
+    ${RC_FILE}
     ${MANIFEST_FILE}
 )
 
 set_property(
     TARGET Console
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
+# Settings
+add_executable(
+    Settings
+    ${CMAKE_SOURCE_DIR}/tests/Settings.cxx
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET Settings
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
@@ -161,12 +212,6 @@ set_property(
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-target_include_directories(
-    WebView
-    PRIVATE
-    ${WEBVIEW_PKG}/build/native/include
-)
-
 target_link_directories(
     WebView
     PRIVATE
@@ -176,9 +221,6 @@ target_link_directories(
 target_link_libraries(
     WebView
     PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
     WebView2LoaderStatic.lib
 )
 
@@ -196,22 +238,14 @@ set_property(
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
-target_include_directories(
-    WebViewComposition
-    PRIVATE
-    ${WEBVIEW_PKG}/lib
-)
-
 target_link_libraries(
     WebViewComposition
     PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
     WindowsApp.lib
 )
 
 add_dependencies(App MakeIcon)
 add_dependencies(Console MakeIcon)
+add_dependencies(Settings MakeIcon)
 add_dependencies(WebView MakeIcon)
 add_dependencies(WebViewComposition MakeIcon)
