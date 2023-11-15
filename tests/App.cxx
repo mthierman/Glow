@@ -1,7 +1,7 @@
 #include <Windows.h>
 
-#include "../gui/app.hxx"
-#include "../console/console.hxx"
+#include <console/console.hxx>
+#include <gui/app.hxx>
 
 auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                      int /*nCmdShow*/) -> int

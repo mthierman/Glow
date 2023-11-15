@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-#include "../../gui/app.hxx"
+#include <gui/app.hxx>
 
 namespace glow
 {

@@ -2,8 +2,8 @@
 
 #include <print>
 
-#include "../filesystem/filesystem.hxx"
-#include "../text/text.hxx"
+#include <filesystem/filesystem.hxx>
+#include <text/text.hxx>
 
 using std::println;
 
@@ -14,6 +14,7 @@ auto main() -> int
     std::println("{}", glow::text::randomize("Randomized!"));
 
     println("{}", std::string(WEBVIEW));
+    println("{}", std::string(CPPWINRT_VERSION));
 
     return 0;
 }

@@ -32,6 +32,12 @@ set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230824.2")
 
 configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in GlowConfig.h)
+file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
+# file(GLOB HEADERS_CONSOLE CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/console")
+# file(GLOB HEADERS_FILESYSTEM CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/filesystem")
+# file(GLOB HEADERS_GUI CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/gui")
+# file(GLOB HEADERS_SETTINGS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/settings")
+# file(GLOB HEADERS_TEXT CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/text")
 
 execute_process(
     COMMAND
@@ -75,13 +81,13 @@ FetchContent_MakeAvailable(sqlite)
 # )
 # FetchContent_MakeAvailable(curl)
 
-add_library(sqlite "${sqlite_SOURCE_DIR}/sqlite3.c" "${sqlite_SOURCE_DIR}/sqlite3.h")
-set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
-
 execute_process(
     COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${webview_SOURCE_DIR}/lib"
 )
 file(COPY "${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+
+add_library(sqlite "${sqlite_SOURCE_DIR}/sqlite3.c" "${sqlite_SOURCE_DIR}/sqlite3.h")
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 add_library(
     common
@@ -97,7 +103,13 @@ target_compile_definitions(
 target_include_directories(
     common
     INTERFACE
+    ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
+    # ${HEADERS_CONSOLE}
+    # ${HEADERS_FILESYSTEM}
+    # ${HEADERS_GUI}
+    # ${HEADERS_SETTINGS}
+    # ${HEADERS_TEXT}
     ${sqlite_SOURCE_DIR}
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
@@ -152,7 +164,18 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     )
 endif()
 
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
+# Glow
+add_library(
+    ${LIB_NAME}
+    STATIC
+    ${CMAKE_SOURCE_DIR}/src/Glow.cxx
+    ${CMAKE_SOURCE_DIR}/src/PCH.cxx
+)
+
+set_property(
+    TARGET ${LIB_NAME}
+    APPEND PROPERTY LINK_LIBRARIES common
+)
 
 # IconConverter
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
@@ -180,31 +203,6 @@ add_custom_command(
 add_custom_target(
     MakeIcon ALL
     DEPENDS ${ICO_FILE}
-)
-
-# Glow
-file(GLOB GLOW_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*")
-file(GLOB HEADERS_CONSOLE CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/console/*.hxx")
-file(GLOB HEADERS_FILESYSTEM CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/filesystem/*.hxx")
-file(GLOB HEADERS_GUI CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/gui/*.hxx")
-file(GLOB HEADERS_SETTINGS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/settings/*.hxx")
-file(GLOB HEADERS_TEXT CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/text/*.hxx")
-
-add_library(
-    ${LIB_NAME}
-    STATIC
-    ${GLOW_SOURCES}
-    ${CMAKE_BINARY_DIR}/GlowConfig.h
-    ${HEADERS_CONSOLE}
-    ${HEADERS_FILESYSTEM}
-    ${HEADERS_GUI}
-    ${HEADERS_SETTINGS}
-    ${HEADERS_TEXT}
-)
-
-set_property(
-    TARGET ${LIB_NAME}
-    APPEND PROPERTY LINK_LIBRARIES common
 )
 
 # App

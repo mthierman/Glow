@@ -1,26 +1,28 @@
 #include <Windows.h>
-#include <wrl.h>
-#include <Unknwn.h>
-#include <winrt/base.h>
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.composition.desktop.h>
-#include <windows.ui.composition.interop.h>
 #include <DispatcherQueue.h>
+#include <Unknwn.h>
+#include <wrl.h>
 
-#include "winrt/Microsoft.Web.WebView2.Core.h"
+#include <winrt/base.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.Composition.Desktop.h>
 
-#include "../gui/app.hxx"
-#include "../gui/webview_composition.hxx"
-#include "../console/console.hxx"
+#include <windows.ui.composition.interop.h>
+
+#include <winrt/Microsoft.Web.WebView2.Core.h>
+
+#include <console/console.hxx>
+#include <gui/app.hxx>
+#include <gui/webview_composition.hxx>
 
 #include "include/WebView.hxx"
 
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
-// #ifdef _DEBUG
-//     glow::console::Console console;
-// #endif
+    // #ifdef _DEBUG
+    //     glow::console::Console console;
+    // #endif
 
     auto app{std::make_unique<glow::App>("WebViewComposition")};
 

@@ -2,14 +2,15 @@
 
 #include <Windows.h>
 #include <wrl.h>
-#include <windows.foundation.h>
 
-#include "WebView2.h"
+#include <winrt/Windows.Foundation.h>
+
+#include <WebView2.h>
 
 #include <string>
 
-#include "../gui/gui.hxx"
-#include "../text/text.hxx"
+#include <gui/gui.hxx>
+#include <text/text.hxx>
 
 namespace glow::gui
 {

@@ -1,15 +1,17 @@
 #pragma once
 
 #include <Windows.h>
-#include <wrl.h>
-#include <Unknwn.h>
-#include <winrt/base.h>
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.composition.desktop.h>
-#include <windows.ui.composition.interop.h>
 #include <DispatcherQueue.h>
+#include <Unknwn.h>
+#include <wrl.h>
 
-#include "winrt/Microsoft.Web.WebView2.Core.h"
+#include <winrt/base.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.Composition.Desktop.h>
+
+#include <windows.ui.composition.interop.h>
+
+#include <winrt/Microsoft.Web.WebView2.Core.h>
 
 #include <string>
 

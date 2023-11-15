@@ -1,17 +1,17 @@
 #include <Windows.h>
 
-#include "nlohmann/json.hpp"
-#include "toml++/toml.hpp"
+#include <nlohmann/json.hpp>
+#include <toml++/toml.hpp>
 
-#include <string>
-#include <sstream>
 #include <filesystem>
-#include <print>
 #include <iostream>
+#include <print>
+#include <sstream>
+#include <string>
 
-#include "../filesystem/filesystem.hxx"
-#include "../settings/settings.hxx"
-#include "../text/text.hxx"
+#include <filesystem/filesystem.hxx>
+#include <settings/settings.hxx>
+#include <text/text.hxx>
 
 using json = nlohmann::json;
 using std::println;

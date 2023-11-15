@@ -13,8 +13,8 @@
 #include <utility>
 #include <vector>
 
-#include "../text/text.hxx"
-#include "../console/console.hxx"
+#include <console/console.hxx>
+#include <text/text.hxx>
 
 auto get_encoder_clsid(const std::wstring& format, CLSID* pClsid) -> bool;
 auto get_bitmap(Gdiplus::Bitmap& bitmap, const int& size, CLSID* pClsid) -> std::vector<char>;

@@ -2,11 +2,11 @@
 
 #include <Windows.h>
 
-#include <string>
 #include <print>
+#include <string>
 
-#include "../gui/gui.hxx"
-#include "../text/text.hxx"
+#include <gui/gui.hxx>
+#include <text/text.hxx>
 
 namespace glow::gui
 {

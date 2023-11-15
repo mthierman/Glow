@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Windows.h>
-#include <ShlObj.h>
 #include <dwmapi.h>
+#include <ShlObj.h>
 
-#include <winrt/windows.foundation.h>
-#include <winrt/windows.ui.viewmanagement.h>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.ViewManagement.h>
 
 #include <filesystem>
 #include <iostream>

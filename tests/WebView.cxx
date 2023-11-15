@@ -1,8 +1,8 @@
 #include <Windows.h>
 
-#include "../gui/app.hxx"
-#include "../gui/webview.hxx"
-#include "../console/console.hxx"
+#include <console/console.hxx>
+#include <gui/app.hxx>
+#include <gui/webview.hxx>
 
 #include "include/WebView.hxx"
 
