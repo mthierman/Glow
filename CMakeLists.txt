@@ -33,11 +33,6 @@ set(WIL_VER "1.0.230824.2")
 
 configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in GlowConfig.h)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
-# file(GLOB HEADERS_CONSOLE CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/console")
-# file(GLOB HEADERS_FILESYSTEM CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/filesystem")
-# file(GLOB HEADERS_GUI CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/gui")
-# file(GLOB HEADERS_SETTINGS CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/settings")
-# file(GLOB HEADERS_TEXT CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/text")
 
 execute_process(
     COMMAND
@@ -105,11 +100,6 @@ target_include_directories(
     INTERFACE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
-    # ${HEADERS_CONSOLE}
-    # ${HEADERS_FILESYSTEM}
-    # ${HEADERS_GUI}
-    # ${HEADERS_SETTINGS}
-    # ${HEADERS_TEXT}
     ${sqlite_SOURCE_DIR}
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
