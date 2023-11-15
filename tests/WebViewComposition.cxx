@@ -18,9 +18,9 @@
 int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                     int /*nCmdShow*/)
 {
-#ifdef _DEBUG
-    glow::console::Console console;
-#endif
+// #ifdef _DEBUG
+//     glow::console::Console console;
+// #endif
 
     auto app{std::make_unique<glow::App>("WebViewComposition")};
 

@@ -19,27 +19,49 @@ project(
 
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
-
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
+set(WIL "Microsoft.Windows.ImplementationLibrary")
+set(WIL_VER "1.0.230824.2")
 
 execute_process(
     COMMAND
     nuget install "${WEBVIEW}" -Version "${WEBVIEW_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WEBVIEW}.${WEBVIEW_VER}" WEBVIEW_PKG)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WEBVIEW}.${WEBVIEW_VER}" webview_SOURCE_DIR)
 
 execute_process(
     COMMAND
     nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER}" CPPWINRT_PKG)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER}" cppwinrt_SOURCE_DIR)
+
+execute_process(
+    COMMAND
+    nuget install "${WIL}" -Version "${WIL_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
+)
+file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WIL}.${WIL_VER}" wil_SOURCE_DIR)
 
 FetchContent_Declare(
     json
     URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
 )
 FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+    sqlite3
+    URL https://www.sqlite.org/2023/sqlite-amalgamation-3440000.zip
+)
+FetchContent_MakeAvailable(sqlite3)
+
+# FetchContent_Declare(
+#     curl
+#     URL https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz
+# )
+# FetchContent_MakeAvailable(curl)
+
+add_library(sqlite "${sqlite3_SOURCE_DIR}/sqlite3.c" "${sqlite3_SOURCE_DIR}/sqlite3.h")
+set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 add_library(
     common
@@ -57,8 +79,8 @@ target_compile_definitions(
 target_include_directories(
     common
     INTERFACE
-    ${WEBVIEW_PKG}/lib
-    ${WEBVIEW_PKG}/build/native/include
+    ${webview_SOURCE_DIR}/lib
+    ${webview_SOURCE_DIR}/build/native/include
 )
 
 target_link_libraries(
@@ -72,10 +94,10 @@ target_link_libraries(
 )
 
 execute_process(
-    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${WEBVIEW_PKG}/lib"
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${webview_SOURCE_DIR}/lib"
 )
 
-file(COPY "${WEBVIEW_PKG}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+file(COPY "${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(
@@ -218,7 +240,7 @@ set_property(
 target_link_directories(
     WebView
     PRIVATE
-    ${WEBVIEW_PKG}/build/native/x64
+    ${webview_SOURCE_DIR}/build/native/x64
 )
 
 target_link_libraries(
