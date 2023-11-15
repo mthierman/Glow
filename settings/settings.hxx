@@ -1,13 +1,15 @@
 #pragma once
 
+#include "GlowConfig.h"
+
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;
 
 struct settings
 {
-    std::string name{LIB_NAME};
-    std::string version{LIB_VERSION};
+    std::string name;
+    std::string version;
     int width{0};
     int height{0};
 };

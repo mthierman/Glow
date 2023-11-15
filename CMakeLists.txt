@@ -31,6 +31,8 @@ set(CPPWINRT_VER "2.0.230706.1")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230824.2")
 
+configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in GlowConfig.h)
+
 execute_process(
     COMMAND
     nuget install "${WEBVIEW}" -Version "${WEBVIEW_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
@@ -95,14 +97,13 @@ target_precompile_headers(
 target_compile_definitions(
     common
     INTERFACE
-    LIB_NAME="${LIB_NAME}"
-    LIB_VERSION="${LIB_VERSION}"
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
 target_include_directories(
     common
     INTERFACE
+    ${CMAKE_BINARY_DIR}
     ${sqlite_SOURCE_DIR}
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
@@ -193,6 +194,7 @@ add_library(
     ${LIB_NAME}
     STATIC
     ${GLOW_SOURCES}
+    ${CMAKE_BINARY_DIR}/GlowConfig.h
     ${HEADERS_CONSOLE}
     ${HEADERS_FILESYSTEM}
     ${HEADERS_GUI}

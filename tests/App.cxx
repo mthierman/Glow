@@ -1,3 +1,5 @@
+#include "GlowConfig.h"
+
 #include <Windows.h>
 
 #include "../gui/app.hxx"
@@ -6,9 +8,9 @@
 auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                      int /*nCmdShow*/) -> int
 {
-// #ifdef _DEBUG
-//     glow::console::Console console;
-// #endif
+    // #ifdef _DEBUG
+    //     glow::console::Console console;
+    // #endif
 
     auto app{std::make_unique<glow::gui::App>("App")};
 

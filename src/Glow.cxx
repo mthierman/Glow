@@ -1,3 +1,5 @@
+#include "GlowConfig.h"
+
 #include "../console/console.hxx"
 #include "../filesystem/filesystem.hxx"
 #include "../gui/app.hxx"
