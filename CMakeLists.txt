@@ -1,28 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
+
 set(LIB_NAME "Glow")
 set(LIB_VERSION "0.0.1")
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/PDB")
-
-include(FetchContent)
-
-project(
-    ${LIB_NAME}
-    VERSION ${LIB_VERSION}
-    LANGUAGES C CXX ASM
-)
-
-file(WRITE "${CMAKE_BINARY_DIR}/version.txt" "v${LIB_VERSION}")
-execute_process(
-    COMMAND
-    git --no-pager log -5 --oneline --no-decorate
-    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
-)
 
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
@@ -31,7 +10,31 @@ set(CPPWINRT_VER "2.0.230706.1")
 set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.230824.2")
 
-configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in GlowConfig.h)
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
+set(CMAKE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/PDB")
+
+option(BUILD_EXAMPLES OFF)
+
+project(
+    ${LIB_NAME}
+    VERSION ${LIB_VERSION}
+    LANGUAGES C CXX ASM
+)
+
+include(FetchContent)
+
+file(WRITE "${CMAKE_BINARY_DIR}/version.txt" "v${LIB_VERSION}")
+execute_process(
+    COMMAND git --no-pager log -5 --oneline --no-decorate
+    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+)
+
+configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in ${CMAKE_BINARY_DIR}/config/GlowConfig.h)
 file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
 
 execute_process(
@@ -99,7 +102,7 @@ target_include_directories(
     common
     INTERFACE
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR}/config
     ${sqlite_SOURCE_DIR}
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
@@ -109,20 +112,6 @@ target_link_directories(
     common
     INTERFACE
     ${webview_SOURCE_DIR}/build/native/x64
-)
-
-target_link_libraries(
-    common
-    INTERFACE
-    nlohmann_json::nlohmann_json
-    tomlplusplus::tomlplusplus
-    sqlite
-)
-
-target_precompile_headers(
-    common
-    INTERFACE
-    ${CMAKE_SOURCE_DIR}/src/PCH.hxx
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -156,14 +145,16 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     )
 endif()
 
-# Glow
-# add_library(
-#     ${LIB_NAME}
-#     ${CMAKE_SOURCE_DIR}/src/Glow.cxx
-#     ${CMAKE_SOURCE_DIR}/src/PCH.cxx
-# )
+add_library(
+    ${LIB_NAME}
+    ${CMAKE_SOURCE_DIR}/src/Glow.cxx
+)
 
-# IconConverter
+set_property(
+    TARGET ${LIB_NAME}
+    APPEND PROPERTY LINK_LIBRARIES common
+)
+
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
 file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/res.rc" RC_FILE)
 set(PNG_FILE ${CMAKE_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
@@ -173,6 +164,11 @@ add_executable(
     IconConverter
     ${CMAKE_SOURCE_DIR}/tools/IconConverter.cxx
     ${MANIFEST_FILE}
+)
+
+set_property(
+    TARGET IconConverter
+    APPEND PROPERTY LINK_LIBRARIES common
 )
 
 target_link_libraries(
@@ -192,88 +188,76 @@ add_custom_target(
     DEPENDS ${ICO_FILE}
 )
 
-# Console
-add_executable(
-    Console
-    ${CMAKE_SOURCE_DIR}/tests/Console.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
+if(BUILD_EXAMPLES)
+    add_executable(
+        Console
+        ${CMAKE_SOURCE_DIR}/tests/Console.cxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
 
-# Settings
-add_executable(
-    Settings
-    ${CMAKE_SOURCE_DIR}/tests/Settings.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
+    target_link_libraries(
+        Console
+        PRIVATE
+        nlohmann_json::nlohmann_json
+        tomlplusplus::tomlplusplus
+    )
 
-# App
-add_executable(
-    App
-    WIN32
-    ${CMAKE_SOURCE_DIR}/tests/App.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
+    add_executable(
+        Win32
+        WIN32
+        ${CMAKE_SOURCE_DIR}/tests/App.cxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
 
-target_link_libraries(
-    App
-    PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-)
+    target_link_libraries(
+        Win32
+        PRIVATE
+        dwmapi.lib
+        Comctl32.lib
+    )
 
-# WebView
-add_executable(
-    WebView
-    WIN32
-    ${CMAKE_SOURCE_DIR}/tests/WebView.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
+    add_executable(
+        WebView
+        WIN32
+        ${CMAKE_SOURCE_DIR}/tests/WebView.cxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
 
-target_link_libraries(
-    WebView
-    PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
-    WebView2LoaderStatic.lib
-)
+    target_link_libraries(
+        WebView
+        PRIVATE
+        dwmapi.lib
+        Comctl32.lib
+        WebView2LoaderStatic.lib
+    )
 
-# WebViewComposition
-add_executable(
-    WebViewComposition
-    WIN32
-    ${CMAKE_SOURCE_DIR}/tests/WebViewComposition.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
+    add_executable(
+        WebViewComposition
+        WIN32
+        ${CMAKE_SOURCE_DIR}/tests/WebViewComposition.cxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
 
-# set_property(
-#     TARGET ${LIB_NAME} IconConverter Console Settings App WebView WebViewComposition
-#     APPEND PROPERTY LINK_LIBRARIES common
-# )
+    target_link_libraries(
+        WebViewComposition
+        PRIVATE
+        dwmapi.lib
+        Comctl32.lib
+        CoreMessaging.lib
+        WebView2LoaderStatic.lib
+    )
 
-set_property(
-    TARGET IconConverter Console Settings App WebView WebViewComposition
-    APPEND PROPERTY LINK_LIBRARIES common
-)
+    set_property(
+        TARGET Console Win32 WebView WebViewComposition
+        APPEND PROPERTY LINK_LIBRARIES common
+    )
 
-target_link_libraries(
-    WebViewComposition
-    PRIVATE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
-    WindowsApp.lib
-    CoreMessaging.lib
-    WebView2LoaderStatic.lib
-)
-
-add_dependencies(Console MakeIcon)
-add_dependencies(Settings MakeIcon)
-add_dependencies(App MakeIcon)
-add_dependencies(WebView MakeIcon)
-add_dependencies(WebViewComposition MakeIcon)
+    add_dependencies(Console MakeIcon)
+    add_dependencies(Win32 MakeIcon)
+    add_dependencies(WebView MakeIcon)
+    add_dependencies(WebViewComposition MakeIcon)
+endif()

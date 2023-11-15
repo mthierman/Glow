@@ -4,5 +4,5 @@
 #include <gui/gui.hxx>
 #include <gui/webview_composition.hxx>
 #include <gui/webview.hxx>
-#include <settings/settings.hxx>
+// #include <settings/settings.hxx>
 #include <text/text.hxx>
