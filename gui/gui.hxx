@@ -7,10 +7,10 @@
 #include <winrt/windows.foundation.h>
 #include <winrt/windows.ui.viewmanagement.h>
 
-#include <iostream>
-#include <string>
-#include <random>
 #include <filesystem>
+#include <iostream>
+#include <random>
+#include <string>
 
 namespace glow::gui
 {

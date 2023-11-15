@@ -86,6 +86,12 @@ add_library(
     INTERFACE
 )
 
+target_precompile_headers(
+    common
+    INTERFACE
+    ${CMAKE_SOURCE_DIR}/src/PCH.hxx
+)
+
 target_compile_definitions(
     common
     INTERFACE
@@ -176,6 +182,7 @@ add_custom_target(
 )
 
 # Glow
+file(GLOB GLOW_SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*")
 file(GLOB HEADERS_CONSOLE CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/console/*.hxx")
 file(GLOB HEADERS_FILESYSTEM CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/filesystem/*.hxx")
 file(GLOB HEADERS_GUI CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/gui/*.hxx")
@@ -185,7 +192,7 @@ file(GLOB HEADERS_TEXT CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/text/*.hxx")
 add_library(
     ${LIB_NAME}
     STATIC
-    ${CMAKE_SOURCE_DIR}/src/Glow.cxx
+    ${GLOW_SOURCES}
     ${HEADERS_CONSOLE}
     ${HEADERS_FILESYSTEM}
     ${HEADERS_GUI}
