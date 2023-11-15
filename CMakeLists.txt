@@ -105,13 +105,15 @@ target_include_directories(
     ${webview_SOURCE_DIR}/build/native/include
 )
 
+target_link_directories(
+    common
+    INTERFACE
+    ${webview_SOURCE_DIR}/build/native/x64
+)
+
 target_link_libraries(
     common
     INTERFACE
-    dwmapi.lib
-    Comctl32.lib
-    gdiplus.lib
-    gdiplus.lib
     nlohmann_json::nlohmann_json
     tomlplusplus::tomlplusplus
     sqlite
@@ -155,17 +157,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Glow
-add_library(
-    ${LIB_NAME}
-    STATIC
-    ${CMAKE_SOURCE_DIR}/src/Glow.cxx
-    ${CMAKE_SOURCE_DIR}/src/PCH.cxx
-)
-
-set_property(
-    TARGET ${LIB_NAME}
-    APPEND PROPERTY LINK_LIBRARIES common
-)
+# add_library(
+#     ${LIB_NAME}
+#     ${CMAKE_SOURCE_DIR}/src/Glow.cxx
+#     ${CMAKE_SOURCE_DIR}/src/PCH.cxx
+# )
 
 # IconConverter
 file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
@@ -179,9 +175,10 @@ add_executable(
     ${MANIFEST_FILE}
 )
 
-set_property(
-    TARGET IconConverter
-    APPEND PROPERTY LINK_LIBRARIES common
+target_link_libraries(
+    IconConverter
+    PRIVATE
+    gdiplus.lib
 )
 
 add_custom_command(
@@ -195,31 +192,12 @@ add_custom_target(
     DEPENDS ${ICO_FILE}
 )
 
-# App
-add_executable(
-    App
-    WIN32
-    ${CMAKE_SOURCE_DIR}/tests/App.cxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
-
-set_property(
-    TARGET App
-    APPEND PROPERTY LINK_LIBRARIES common
-)
-
 # Console
 add_executable(
     Console
     ${CMAKE_SOURCE_DIR}/tests/Console.cxx
     ${RC_FILE}
     ${MANIFEST_FILE}
-)
-
-set_property(
-    TARGET Console
-    APPEND PROPERTY LINK_LIBRARIES common
 )
 
 # Settings
@@ -230,9 +208,20 @@ add_executable(
     ${MANIFEST_FILE}
 )
 
-set_property(
-    TARGET Settings
-    APPEND PROPERTY LINK_LIBRARIES common
+# App
+add_executable(
+    App
+    WIN32
+    ${CMAKE_SOURCE_DIR}/tests/App.cxx
+    ${RC_FILE}
+    ${MANIFEST_FILE}
+)
+
+target_link_libraries(
+    App
+    PRIVATE
+    dwmapi.lib
+    Comctl32.lib
 )
 
 # WebView
@@ -244,20 +233,12 @@ add_executable(
     ${MANIFEST_FILE}
 )
 
-set_property(
-    TARGET WebView
-    APPEND PROPERTY LINK_LIBRARIES common
-)
-
-target_link_directories(
-    WebView
-    PRIVATE
-    ${webview_SOURCE_DIR}/build/native/x64
-)
-
 target_link_libraries(
     WebView
     PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
     WebView2LoaderStatic.lib
 )
 
@@ -270,19 +251,29 @@ add_executable(
     ${MANIFEST_FILE}
 )
 
+# set_property(
+#     TARGET ${LIB_NAME} IconConverter Console Settings App WebView WebViewComposition
+#     APPEND PROPERTY LINK_LIBRARIES common
+# )
+
 set_property(
-    TARGET WebViewComposition
+    TARGET IconConverter Console Settings App WebView WebViewComposition
     APPEND PROPERTY LINK_LIBRARIES common
 )
 
 target_link_libraries(
     WebViewComposition
     PRIVATE
+    dwmapi.lib
+    Comctl32.lib
+    gdiplus.lib
     WindowsApp.lib
+    CoreMessaging.lib
+    WebView2LoaderStatic.lib
 )
 
-add_dependencies(App MakeIcon)
 add_dependencies(Console MakeIcon)
 add_dependencies(Settings MakeIcon)
+add_dependencies(App MakeIcon)
 add_dependencies(WebView MakeIcon)
 add_dependencies(WebViewComposition MakeIcon)

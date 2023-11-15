@@ -34,3 +34,4 @@
 
 #include <nlohmann/json.hpp>
 #include <toml++/toml.hpp>
+#include <sqlite3.h>
