@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GlowConfig.h"
-
 #include <Windows.h>
 
 #include "../../gui/app.hxx"

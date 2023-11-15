@@ -1,6 +1,6 @@
 #pragma once
 
-#define GDIPVER 0x0110
+#include "GlowConfig.h"
 
 #include <Windows.h>
 #include <ShlObj.h>

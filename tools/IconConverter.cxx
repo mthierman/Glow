@@ -1,4 +1,6 @@
-#include "GlowConfig.h"
+#ifndef GDIPVER
+#define GDIPVER 0x0110
+#endif
 
 #include <Windows.h>
 #include <gdiplus.h>

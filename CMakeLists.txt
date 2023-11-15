@@ -88,12 +88,6 @@ add_library(
     INTERFACE
 )
 
-target_precompile_headers(
-    common
-    INTERFACE
-    ${CMAKE_SOURCE_DIR}/src/PCH.hxx
-)
-
 target_compile_definitions(
     common
     INTERFACE
@@ -119,6 +113,12 @@ target_link_libraries(
     nlohmann_json::nlohmann_json
     tomlplusplus::tomlplusplus
     sqlite
+)
+
+target_precompile_headers(
+    common
+    INTERFACE
+    ${CMAKE_SOURCE_DIR}/src/PCH.hxx
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")

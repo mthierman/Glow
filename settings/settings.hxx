@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GlowConfig.h"
-
 #include "nlohmann/json.hpp"
 
 using json = nlohmann::json;

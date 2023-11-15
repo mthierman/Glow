@@ -1,5 +1,3 @@
-#include "GlowConfig.h"
-
 #include <Windows.h>
 
 #include "nlohmann/json.hpp"
