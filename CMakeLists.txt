@@ -56,10 +56,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
-    sqlite3
+    toml
+    URL https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.zip
+)
+FetchContent_MakeAvailable(toml)
+
+FetchContent_Declare(
+    sqlite
     URL https://www.sqlite.org/2023/sqlite-amalgamation-3440000.zip
 )
-FetchContent_MakeAvailable(sqlite3)
+FetchContent_MakeAvailable(sqlite)
 
 # FetchContent_Declare(
 #     curl
@@ -67,7 +73,7 @@ FetchContent_MakeAvailable(sqlite3)
 # )
 # FetchContent_MakeAvailable(curl)
 
-add_library(sqlite "${sqlite3_SOURCE_DIR}/sqlite3.c" "${sqlite3_SOURCE_DIR}/sqlite3.h")
+add_library(sqlite "${sqlite_SOURCE_DIR}/sqlite3.c" "${sqlite_SOURCE_DIR}/sqlite3.h")
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 execute_process(
@@ -91,6 +97,7 @@ target_compile_definitions(
 target_include_directories(
     common
     INTERFACE
+    ${sqlite_SOURCE_DIR}
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
 )
@@ -98,11 +105,13 @@ target_include_directories(
 target_link_libraries(
     common
     INTERFACE
-    nlohmann_json::nlohmann_json
     dwmapi.lib
     Comctl32.lib
     gdiplus.lib
     gdiplus.lib
+    nlohmann_json::nlohmann_json
+    tomlplusplus::tomlplusplus
+    sqlite
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
