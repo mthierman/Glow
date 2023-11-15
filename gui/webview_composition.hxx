@@ -111,10 +111,10 @@ void CompositionHost::CreateCompositionRoot()
 
 namespace glow::gui
 {
-struct WebView
+struct WebViewComp
 {
-    WebView(std::string, HWND, int);
-    ~WebView();
+    WebViewComp(std::string, HWND, int);
+    ~WebViewComp();
 
     static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
     virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -135,7 +135,7 @@ struct WebView
     winrt::CoreWebView2 core{nullptr};
 };
 
-winrt::IAsyncAction WebView::create_webview(HWND h)
+winrt::IAsyncAction WebViewComp::create_webview(HWND h)
 {
     CompositionHost* compHost = CompositionHost::GetInstance();
     compHost->Initialize(webviewHwnd);
@@ -180,7 +180,7 @@ winrt::IAsyncAction WebView::create_webview(HWND h)
     SendMessage(parentHwnd, WM_NOTIFY, 0, 0);
 }
 
-WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
+WebViewComp::WebViewComp(std::string n, HWND h, int i) : parentHwnd(h), id(i)
 {
     auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
 
@@ -196,7 +196,7 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = name.c_str();
     wcex.lpszMenuName = name.c_str();
-    wcex.lpfnWndProc = WebView::WndProcCallback;
+    wcex.lpfnWndProc = WebViewComp::WndProcCallback;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
@@ -215,11 +215,11 @@ WebView::WebView(std::string n, HWND h, int i) : parentHwnd(h), id(i)
     ::ShowWindow(webviewHwnd, SW_SHOW);
 };
 
-WebView::~WebView() {}
+WebViewComp::~WebViewComp() {}
 
-LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
+LRESULT CALLBACK WebViewComp::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
 {
-    WebView* webview = InstanceFromWndProc<WebView, &WebView::webviewHwnd>(h, m, l);
+    WebViewComp* webview = InstanceFromWndProc<WebViewComp, &WebViewComp::webviewHwnd>(h, m, l);
 
     if (webview)
     {
@@ -235,16 +235,19 @@ LRESULT CALLBACK WebView::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
     return ::DefWindowProc(h, m, w, l);
 }
 
-LRESULT WebView::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) { return ::DefWindowProc(h, m, w, l); }
+LRESULT WebViewComp::WndProc(HWND h, UINT m, WPARAM w, LPARAM l)
+{
+    return ::DefWindowProc(h, m, w, l);
+}
 
-int WebView::OnClose(HWND h)
+int WebViewComp::OnClose(HWND h)
 {
     ::DestroyWindow(h);
 
     return 0;
 }
 
-int WebView::OnWindowPosChanged(HWND h)
+int WebViewComp::OnWindowPosChanged(HWND h)
 {
     if (controller)
     {

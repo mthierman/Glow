@@ -3,7 +3,8 @@
 #include "../gui/app.hxx"
 #include "../gui/webview.hxx"
 #include "../console/console.hxx"
-#include "WebView.hxx"
+
+#include "include/WebView.hxx"
 
 auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
                      int /*nCmdShow*/) -> int
@@ -11,7 +12,6 @@ auto WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR
 #ifdef _DEBUG
     glow::console::Console console;
 #endif
-
 
     auto app{std::make_unique<glow::App>("WebView")};
 
