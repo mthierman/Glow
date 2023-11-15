@@ -2,19 +2,22 @@
 
 #include "nlohmann/json.hpp"
 
+#include <filesystem>
 #include <print>
 
 #include "../filesystem/filesystem.hxx"
 #include "../settings/settings.hxx"
 #include "../text/text.hxx"
 
+using json = nlohmann::json;
+
 auto main() -> int
 {
-    std::println("{}", glow::filesystem::known_folder(FOLDERID_LocalAppData).string());
-    std::println("{}", glow::filesystem::path_portable().string());
-    std::println("{}", glow::text::randomize("Randomized!"));
-
-    nlohmann::json j{};
+    settings s;
+    json j = s;
+    std::println("{}", j.dump());
+    settings test = j;
+    std::println("{}", test.name);
 
     return 0;
 }
