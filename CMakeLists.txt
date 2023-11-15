@@ -54,7 +54,6 @@ target_compile_definitions(
 target_include_directories(
     common
     INTERFACE
-    ${json_SOURCE_DIR}
     ${WEBVIEW_PKG}/lib
     ${WEBVIEW_PKG}/build/native/include
 )
