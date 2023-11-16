@@ -22,7 +22,6 @@
 #include <toml++/toml.hpp>
 
 #include <filesystem/filesystem.hxx>
-#include <settings/settings.hxx>
 #include <text/text.hxx>
 
 using json = nlohmann::json;
