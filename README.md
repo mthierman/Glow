@@ -7,6 +7,15 @@
 - Text handling
 - Attachable console
 
+## Requirements:
+
+- C++ 23 Compiler (MSVC/Clang)
+- Nuget package manager CLI
+    - Included with Visual Studio
+    - https://www.nuget.org/downloads
+    - winget CLI (part of App Installer) (https://apps.microsoft.com/detail/9NBLGGH4NNS1)
+        - `winget install Microsoft.NuGet`
+
 ## Example usage
 
 ### Git submodule:
