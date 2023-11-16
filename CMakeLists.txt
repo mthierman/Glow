@@ -12,11 +12,11 @@ set(WIL_VER "1.0.230824.2")
 
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${LIB_NAME}")
-set(CMAKE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/PDB")
+set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>DLL)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_NAME})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIB_NAME})
+set(CMAKE_PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/PDB)
 
 option(BUILD_EXAMPLES OFF)
 
@@ -28,32 +28,32 @@ project(
 
 include(FetchContent)
 
-file(WRITE "${CMAKE_BINARY_DIR}/version.txt" "v${LIB_VERSION}")
+file(WRITE ${CMAKE_BINARY_DIR}/version.txt v${LIB_VERSION})
 execute_process(
     COMMAND git --no-pager log -5 --oneline --no-decorate
-    OUTPUT_FILE "${CMAKE_BINARY_DIR}/release_notes.txt"
+    OUTPUT_FILE ${CMAKE_BINARY_DIR}/release_notes.txt
 )
 
 configure_file(${CMAKE_SOURCE_DIR}/config/GlowConfig.h.in ${CMAKE_BINARY_DIR}/config/GlowConfig.h)
-file(TO_CMAKE_PATH "${CMAKE_SOURCE_DIR}/data/app.manifest" MANIFEST_FILE)
+file(TO_CMAKE_PATH ${CMAKE_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
 
 execute_process(
     COMMAND
-    nuget install "${WEBVIEW}" -Version "${WEBVIEW_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
+    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/Nuget
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WEBVIEW}.${WEBVIEW_VER}" webview_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/Nuget/${WEBVIEW}.${WEBVIEW_VER} webview_SOURCE_DIR)
 
 execute_process(
     COMMAND
-    nuget install "${CPPWINRT}" -Version "${CPPWINRT_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
+    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/Nuget
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER}" cppwinrt_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/Nuget/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
 
 execute_process(
     COMMAND
-    nuget install "${WIL}" -Version "${WIL_VER}" -OutputDirectory "${CMAKE_BINARY_DIR}/Nuget"
+    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}/Nuget
 )
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/Nuget/${WIL}.${WIL_VER}" wil_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/Nuget/${WIL}.${WIL_VER} wil_SOURCE_DIR)
 
 FetchContent_Declare(
     json
@@ -80,11 +80,12 @@ FetchContent_MakeAvailable(sqlite)
 # FetchContent_MakeAvailable(curl)
 
 execute_process(
-    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk WORKING_DIRECTORY "${webview_SOURCE_DIR}/lib"
+    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk
+    WORKING_DIRECTORY ${webview_SOURCE_DIR}/lib
 )
-file(COPY "${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+file(COPY ${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
-add_library(sqlite "${sqlite_SOURCE_DIR}/sqlite3.c" "${sqlite_SOURCE_DIR}/sqlite3.h")
+add_library(sqlite ${sqlite_SOURCE_DIR}/sqlite3.c ${sqlite_SOURCE_DIR}/sqlite3.h)
 set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
 
 add_library(
