@@ -1,3 +1,11 @@
+// ╔──────────────────────╗
+// │                      │
+// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
+// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman mthierman@gmail.com
+// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
+// │                      │
+// ╚──────────────────────╝
+
 #ifndef GDIPVER
 #define GDIPVER 0x0110
 #endif
