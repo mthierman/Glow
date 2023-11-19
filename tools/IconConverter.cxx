@@ -14,6 +14,8 @@
 
 #include <Windows.h>
 #include <gdiplus.h>
+#include <wil/com.h>
+#include <wil/resource.h>
 
 #include <algorithm>
 #include <filesystem>
@@ -27,7 +29,8 @@
 #include <text/text.hxx>
 
 auto get_encoder_clsid(const std::wstring& format, CLSID* pClsid) -> bool;
-auto get_bitmap(Gdiplus::Bitmap& bitmap, const int& size, CLSID* pClsid) -> std::vector<char>;
+auto get_bitmap(const std::filesystem::path& inputCanonical, const int& size, CLSID* pClsid)
+    -> std::vector<char>;
 auto write_header(std::ofstream& outputStream, uint16_t count) -> void;
 auto write_entry(std::ofstream& outputStream, std::vector<char>& bitmap, uint8_t size,
                  uint32_t offset) -> void;
@@ -35,10 +38,10 @@ auto write_bitmap(std::ofstream& outputStream, std::vector<char>& bitmap) -> voi
 
 auto main() -> int
 {
-    ULONG_PTR gdiplusToken{0};
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
+    auto gdiplusStartupInput{std::make_unique<Gdiplus::GdiplusStartupInput>()};
 
-    if (Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr) !=
+    if (Gdiplus::GdiplusStartup(&gdiplusToken, gdiplusStartupInput.get(), nullptr) !=
         Gdiplus::Status::Ok)
         return 0;
 
@@ -63,20 +66,18 @@ auto main() -> int
 
         if (inputCanonical.empty()) return 0;
 
-        CLSID pngClsid;
+        auto pngClsid{std::make_unique<CLSID>()};
 
-        if (!get_encoder_clsid(L"image/png", &pngClsid)) return 0;
-
-        Gdiplus::Bitmap inputBitmap(inputCanonical.wstring().c_str());
+        if (!get_encoder_clsid(L"image/png", pngClsid.get())) return 0;
 
         std::vector<std::vector<char>> bitmaps;
-        std::vector<int> bitmapSizes{256, 48, 32, 24, 16};
+        std::vector<int> bitmapSizes{256, 128, 96, 80, 72, 64, 60, 48, 40, 36, 32, 30, 24, 20, 16};
 
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[0], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[1], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[2], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[3], &pngClsid));
-        bitmaps.push_back(get_bitmap(inputBitmap, bitmapSizes[4], &pngClsid));
+        for (auto i = 0; i < bitmapSizes.size(); i++)
+        {
+            bitmaps.push_back(
+                get_bitmap(inputCanonical.wstring().c_str(), bitmapSizes[i], pngClsid.get()));
+        }
 
         std::vector<uint32_t> sizes;
         sizes.reserve(bitmaps.size());
@@ -86,15 +87,17 @@ auto main() -> int
         }
 
         std::ofstream outputStream;
-        uint16_t count{5};
+        uint16_t count{static_cast<uint16_t>(bitmapSizes.size())};
         uint32_t offset{6 + (16 * static_cast<uint32_t>(count))};
 
         std::vector<uint32_t> positions;
         positions.push_back(offset);
-        positions.push_back(offset + sizes[0]);
-        positions.push_back(offset + sizes[0] + sizes[1]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2]);
-        positions.push_back(offset + sizes[0] + sizes[1] + sizes[2] + sizes[3]);
+        auto cumulate{offset};
+        for (auto i = 0; i < sizes.size(); ++i)
+        {
+            cumulate += sizes[i];
+            positions.push_back(cumulate);
+        }
 
         std::vector<uint8_t> dimensions;
         dimensions.reserve(sizes.size());
@@ -108,12 +111,12 @@ auto main() -> int
         write_header(outputStream, count);
 
         write_entry(outputStream, bitmaps[0], 0, positions[0]);
-        for (int i = 1; i < 5; i++)
+        for (int i = 1; i < static_cast<int>(bitmapSizes.size()); i++)
         {
             write_entry(outputStream, bitmaps[i], dimensions[i], positions[i]);
         }
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < static_cast<int>(bitmapSizes.size()); i++)
         {
             write_bitmap(outputStream, bitmaps[i]);
         }
@@ -147,34 +150,40 @@ auto get_encoder_clsid(const std::wstring& format, CLSID* pClsid) -> bool
     return false;
 }
 
-auto get_bitmap(Gdiplus::Bitmap& bitmap, const int& size, CLSID* pClsid) -> std::vector<char>
+auto get_bitmap(const std::filesystem::path& inputCanonical, const int& size, CLSID* pClsid)
+    -> std::vector<char>
 {
-    auto newBitmap{std::make_unique<Gdiplus::Bitmap>(size, size)};
-    Gdiplus::Image* img = newBitmap.get();
-    Gdiplus::Graphics g(img);
+    auto src{std::unique_ptr<Gdiplus::Image>(
+        Gdiplus::Image::FromFile(inputCanonical.wstring().c_str()))};
+    auto dst{std::make_unique<Gdiplus::Bitmap>(size, size)};
+    auto g{std::unique_ptr<Gdiplus::Graphics>(Gdiplus::Graphics::FromImage(dst.get()))};
 
-    g.SetSmoothingMode(Gdiplus::SmoothingMode::SmoothingModeAntiAlias8x8);
-    g.SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
-    g.SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
+    // https://photosauce.net/blog/post/image-scaling-with-gdi-part-3-drawimage-and-the-settings-that-affect-it
+    g->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias8x8);
+    g->SetInterpolationMode(Gdiplus::InterpolationModeBicubic);
+    g->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
+    g->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
+    g->SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
 
-    g.ScaleTransform((static_cast<float>(size) / static_cast<float>(bitmap.GetWidth())) *
-                         (bitmap.GetHorizontalResolution() / img->GetHorizontalResolution()),
-                     (static_cast<float>(size) / static_cast<float>(bitmap.GetHeight())) *
-                         (bitmap.GetVerticalResolution() / img->GetVerticalResolution()));
+    auto attr{std::make_unique<Gdiplus::ImageAttributes>()};
+    attr->SetWrapMode(Gdiplus::WrapModeTileFlipXY);
+    auto rect{Gdiplus::Rect(0, 0, size, size)};
 
-    g.DrawImage(&bitmap, 0, 0);
+    g->DrawImage(src.get(), rect, 0, 0, src->GetWidth(), src->GetHeight(), Gdiplus::Unit::UnitPixel,
+                 attr.get(), 0, 0);
 
-    IStream* istream{nullptr};
-    if (FAILED(::CreateStreamOnHGlobal(nullptr, TRUE, &istream))) return {};
+    wil::unique_hglobal hglobal;
+    wil::com_ptr<IStream> istream;
 
-    img->Save(istream, pClsid);
+    if (FAILED(::CreateStreamOnHGlobal(hglobal.get(), TRUE, &istream))) return {};
 
-    HGLOBAL hGlobal{nullptr};
-    if (FAILED(::GetHGlobalFromStream(istream, &hGlobal))) return {};
+    dst->Save(istream.get(), pClsid);
 
-    auto bufsize{::GlobalSize(hGlobal)};
+    if (FAILED(::GetHGlobalFromStream(istream.get(), &hglobal))) return {};
 
-    auto* ptr{::GlobalLock(hGlobal)};
+    auto bufsize{::GlobalSize(hglobal.get())};
+    auto* ptr{::GlobalLock(hglobal.get())};
+
     if (ptr == nullptr) return {};
 
     std::vector<char> vec;
@@ -182,8 +191,7 @@ auto get_bitmap(Gdiplus::Bitmap& bitmap, const int& size, CLSID* pClsid) -> std:
 
     std::copy(static_cast<char*>(ptr), (static_cast<char*>(ptr) + bufsize), vec.begin());
 
-    ::GlobalUnlock(hGlobal);
-    istream->Release();
+    ::GlobalUnlock(hglobal.get());
 
     return vec;
 }

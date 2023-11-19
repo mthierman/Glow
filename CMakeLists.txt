@@ -40,21 +40,21 @@ file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
 
 execute_process(
     COMMAND
-    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_BINARY_DIR}
+    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
 )
-file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/${WEBVIEW}.${WEBVIEW_VER} webview_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${WEBVIEW}.${WEBVIEW_VER} webview_SOURCE_DIR)
 
 execute_process(
     COMMAND
-    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${CMAKE_BINARY_DIR}
+    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
 )
-file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
 
 execute_process(
     COMMAND
-    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_BINARY_DIR}
+    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
 )
-file(TO_CMAKE_PATH ${CMAKE_BINARY_DIR}/${WIL}.${WIL_VER} wil_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${WIL}.${WIL_VER} wil_SOURCE_DIR)
 
 FetchContent_Declare(
     json
@@ -128,7 +128,7 @@ target_include_directories(
     ${webview_SOURCE_DIR}/lib
     ${webview_SOURCE_DIR}/build/native/include
     ${cppwinrt_SOURCE_DIR}
-    ${wil_SOURCE_DIR}
+    ${wil_SOURCE_DIR}/include
     ${sqlite_SOURCE_DIR}
 )
 target_compile_definitions(
@@ -168,11 +168,6 @@ target_link_libraries(
     glow::glow_libs
 )
 
-file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/res.rc" CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
-file(TO_CMAKE_PATH "${CMAKE_BINARY_DIR}/res.rc" RC_FILE)
-set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-set(ICO_FILE ${CMAKE_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-
 add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
@@ -189,18 +184,31 @@ target_link_libraries(
     gdiplus.lib
 )
 
-add_custom_command(
-    OUTPUT ${ICO_FILE}
-    COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
-    COMMENT "Running IconConverter..."
-)
-
-add_custom_target(
-    MakeIcon ALL
-    DEPENDS ${ICO_FILE}
-)
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    target_link_options(
+        IconConverter
+        PRIVATE
+        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/IconConverter.ilk
+    )
+endif()
 
 if(BUILD_EXAMPLES)
+    file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
+    file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/res.rc RC_FILE)
+    set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
+    set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+
+    add_custom_command(
+        OUTPUT ${ICO_FILE}
+        COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
+        COMMENT "Running IconConverter..."
+    )
+
+    add_custom_target(
+        MakeIcon ALL
+        DEPENDS ${ICO_FILE}
+    )
+
     add_library(glow_glow_examples INTERFACE)
     add_library(glow::glow_examples ALIAS glow_glow_examples)
     target_link_libraries(
@@ -242,6 +250,32 @@ if(BUILD_EXAMPLES)
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    target_link_options(
+        Console
+        PRIVATE
+        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/Console.ilk
+    )
+
+    target_link_options(
+        Win32
+        PRIVATE
+        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/Win32.ilk
+    )
+
+    target_link_options(
+        WebView
+        PRIVATE
+        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/WebView.ilk
+    )
+
+    target_link_options(
+        WebViewComposition
+        PRIVATE
+        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/WebViewComposition.ilk
+    )
+endif()
 
     target_link_libraries(Console PRIVATE glow::glow_examples)
     target_link_libraries(Win32 PRIVATE glow::glow_examples)
