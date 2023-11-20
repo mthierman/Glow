@@ -160,7 +160,7 @@ auto get_bitmap(const std::filesystem::path& inputCanonical, const int& size, CL
 
     // https://photosauce.net/blog/post/image-scaling-with-gdi-part-3-drawimage-and-the-settings-that-affect-it
     g->SetSmoothingMode(Gdiplus::SmoothingModeAntiAlias8x8);
-    g->SetInterpolationMode(Gdiplus::InterpolationModeBicubic);
+    g->SetInterpolationMode(Gdiplus::InterpolationModeHighQualityBicubic);
     g->SetPixelOffsetMode(Gdiplus::PixelOffsetModeHighQuality);
     g->SetCompositingMode(Gdiplus::CompositingModeSourceOver);
     g->SetCompositingQuality(Gdiplus::CompositingQualityHighQuality);
