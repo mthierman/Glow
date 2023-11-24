@@ -27,8 +27,8 @@
 
 #include "include/WebView.hxx"
 
-int WINAPI wWinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PWSTR /*pCmdLine*/,
-                    int /*nCmdShow*/)
+int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PSTR /*pCmdLine*/,
+                   int /*nCmdShow*/)
 {
     // #ifdef _DEBUG
     //     glow::console::Console console;
