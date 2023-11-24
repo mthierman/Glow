@@ -23,8 +23,6 @@ set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
-set(WIL "Microsoft.Windows.ImplementationLibrary")
-set(WIL_VER "1.0.230824.2")
 
 include(FetchContent)
 
@@ -50,11 +48,11 @@ execute_process(
 )
 file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
 
-execute_process(
-    COMMAND
-    nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
+FetchContent_Declare(
+    wil
+    URL https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.zip
 )
-file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${WIL}.${WIL_VER} wil_SOURCE_DIR)
+FetchContent_Populate(wil)
 
 FetchContent_Declare(
     json
@@ -81,8 +79,8 @@ FetchContent_MakeAvailable(sqlite)
 # FetchContent_MakeAvailable(curl)
 
 execute_process(
-    COMMAND cppwinrt -input Microsoft.Web.WebView2.Core.winmd sdk
-    WORKING_DIRECTORY ${webview_SOURCE_DIR}/lib
+    COMMAND cppwinrt -input ${webview_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd sdk -output ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
 )
 file(COPY ${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
@@ -125,9 +123,8 @@ target_include_directories(
     INTERFACE
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_BINARY_DIR}
-    ${webview_SOURCE_DIR}/lib
+    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
     ${webview_SOURCE_DIR}/build/native/include
-    ${cppwinrt_SOURCE_DIR}
     ${wil_SOURCE_DIR}/include
     ${sqlite_SOURCE_DIR}
 )
@@ -172,7 +169,6 @@ add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
     ${MANIFEST_FILE}
-    ${PROJECT_SOURCE_DIR}/data/IconConverter.rc
 )
 
 target_link_libraries(
@@ -181,7 +177,7 @@ target_link_libraries(
     glow::glow_compile_features
     glow::glow_compile_options
     glow::glow_settings
-    gdiplus.lib
+    windowscodecs.lib
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
