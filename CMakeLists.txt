@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 
+include(FetchContent)
+
 set(LIB_NAME "Glow")
 set(LIB_VERSION "0.0.1")
 
@@ -16,25 +18,13 @@ if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
 endif()
 
-option(BUILD_EXAMPLES OFF)
-option(BUILD_SHARED_LIBS OFF)
+option(GLOW_BUILD_EXAMPLES OFF)
+option(GLOW_BUILD_SHARED_LIBS OFF)
 
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
 set(CPPWINRT_VER "2.0.230706.1")
-
-include(FetchContent)
-
-file(WRITE ${PROJECT_BINARY_DIR}/version.txt v${PROJECT_VERSION})
-execute_process(
-    COMMAND git --no-pager log -5 --oneline --no-decorate
-    OUTPUT_FILE ${PROJECT_BINARY_DIR}/release_notes.txt
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
-
-configure_file(${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in ${PROJECT_BINARY_DIR}/GlowConfig.h)
-file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
 
 execute_process(
     COMMAND
@@ -116,10 +106,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     )
 endif()
 
-add_library(glow_glow_settings INTERFACE)
-add_library(glow::glow_settings ALIAS glow_glow_settings)
+add_library(glow_glow_includes INTERFACE)
+add_library(glow::glow_includes ALIAS glow_glow_includes)
 target_include_directories(
-    glow_glow_settings
+    glow_glow_includes
     INTERFACE
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_BINARY_DIR}
@@ -129,7 +119,7 @@ target_include_directories(
     ${sqlite_SOURCE_DIR}
 )
 target_compile_definitions(
-    glow_glow_settings
+    glow_glow_includes
     INTERFACE
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
@@ -161,9 +151,12 @@ target_link_libraries(
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_settings
+    glow::glow_includes
     glow::glow_libs
 )
+
+configure_file(${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in ${PROJECT_BINARY_DIR}/GlowConfig.h)
+file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
 
 add_executable(
     IconConverter
@@ -176,7 +169,7 @@ target_link_libraries(
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_settings
+    glow::glow_includes
     windowscodecs.lib
 )
 
@@ -188,7 +181,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     )
 endif()
 
-if(BUILD_EXAMPLES)
+if(GLOW_BUILD_EXAMPLES)
     file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
     file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/res.rc RC_FILE)
     set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
@@ -212,7 +205,7 @@ if(BUILD_EXAMPLES)
         INTERFACE
         glow::glow_compile_features
         glow::glow_compile_options
-        glow::glow_settings
+        glow::glow_includes
         glow::glow_libs
     )
 
