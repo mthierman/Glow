@@ -21,6 +21,7 @@
 #include <nlohmann/json.hpp>
 #include <toml++/toml.hpp>
 
+#include <logging/logging.hxx>
 #include <filesystem/filesystem.hxx>
 #include <text/text.hxx>
 
@@ -54,6 +55,11 @@ auto main() -> int
     std::println("{}", glow::filesystem::known_folder(FOLDERID_LocalAppData).string());
     std::println("{}", glow::filesystem::path_portable().string());
     std::println("{}", glow::text::randomize("Randomized!"));
+
+    glow::logging::debug("debug() test");
+    glow::logging::debugln("debugln() test");
+    glow::logging::msgbox("msgbox() test");
+    glow::logging::errorbox("errorbox() test");
 
     settings s;
     json j = s;

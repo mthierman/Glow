@@ -16,11 +16,27 @@
 #include <string>
 #include <system_error>
 
+#include <text/text.hxx>
+
 namespace glow::logging
 {
-auto hr(HRESULT hr) -> void
+void debug(std::string in) { ::OutputDebugString(in.c_str()); }
+
+void debugln(std::string in) { ::OutputDebugString((in + "\n").c_str()); }
+
+void msgbox(std::string in) { ::MessageBox(nullptr, in.c_str(), "Message", 0); };
+
+int errorbox(std::string in)
 {
-    std::string msg{std::system_category().message(hr)};
-    std::println("{}", msg);
+    std::string error = in + ". Error: " + std::to_string(GetLastError());
+    ::MessageBox(nullptr, error.c_str(), "Error", 0);
+
+    return 0;
+};
+
+auto hr(HRESULT hresult) -> void
+{
+    std::string errormsg{std::system_category().message(hresult)};
+    std::println("{}", errormsg);
 }
 } // namespace glow::logging
