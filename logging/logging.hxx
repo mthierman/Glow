@@ -18,7 +18,6 @@
 
 namespace glow::logging
 {
-
 auto hr(HRESULT hr) -> void
 {
     std::string msg{std::system_category().message(hr)};
