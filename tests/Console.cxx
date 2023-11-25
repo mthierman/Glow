@@ -57,7 +57,6 @@ auto main() -> int
     std::println("{}", glow::text::randomize("Randomized!"));
 
     glow::logging::debug("debug() test");
-    glow::logging::debugln("debugln() test");
     glow::logging::msgbox("msgbox() test");
     glow::logging::errorbox("errorbox() test");
 
