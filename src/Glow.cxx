@@ -14,4 +14,5 @@
 #include <gui/gui.hxx>
 #include <gui/webview_composition.hxx>
 #include <gui/webview.hxx>
+#include <logging/logging.hxx>
 #include <text/text.hxx>
