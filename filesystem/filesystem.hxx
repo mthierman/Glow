@@ -18,14 +18,14 @@
 
 namespace glow::filesystem
 {
-auto known_folder(const KNOWNFOLDERID& id) -> std::filesystem::path
+auto known_folder(KNOWNFOLDERID id) -> std::filesystem::path
 {
     wchar_t* buffer{nullptr};
 
-    if (SUCCEEDED(SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
+    if (SUCCEEDED(::SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
     {
         std::filesystem::path data{std::wstring(buffer)};
-        CoTaskMemFree(buffer);
+        ::CoTaskMemFree(buffer);
 
         return data;
     }

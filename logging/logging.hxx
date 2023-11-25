@@ -35,7 +35,7 @@ void msgbox(std::string in) { ::MessageBox(nullptr, in.c_str(), "Message", 0); }
 
 int errorbox(std::string in)
 {
-    std::string error = in + ". Error: " + std::to_string(GetLastError());
+    std::string error = in + ". Error: " + std::to_string(::GetLastError());
     ::MessageBox(nullptr, error.c_str(), "Error", 0);
 
     return 0;
