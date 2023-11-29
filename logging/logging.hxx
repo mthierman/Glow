@@ -13,7 +13,6 @@
 #include <Windows.h>
 
 #include <print>
-#include <string>
 #include <source_location>
 #include <string>
 #include <system_error>
@@ -31,19 +30,19 @@ void debug(std::string in, std::source_location location = std::source_location:
     ::OutputDebugString((in + "\n").c_str());
 }
 
-void msgbox(std::string in) { ::MessageBox(nullptr, in.c_str(), "Message", 0); };
+void msgbox(std::string string) { ::MessageBox(nullptr, string.c_str(), "Message", 0); };
 
-int errorbox(std::string in)
+int errorbox(std::string string)
 {
-    std::string error = in + ". Error: " + std::to_string(::GetLastError());
+    std::string error = string + ". Error: " + std::to_string(::GetLastError());
     ::MessageBox(nullptr, error.c_str(), "Error", 0);
 
     return 0;
 };
 
-auto hr(HRESULT hresult) -> void
+auto hr(HRESULT hResult) -> void
 {
-    std::string errormsg{std::system_category().message(hresult)};
-    std::println("{}", errormsg);
+    std::string errorMsg{std::system_category().message(hResult)};
+    std::println("{}", errorMsg);
 }
 } // namespace glow::logging

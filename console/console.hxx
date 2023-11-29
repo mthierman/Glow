@@ -24,7 +24,7 @@ struct Console
 {
     Console();
     ~Console();
-    FILE* f;
+    FILE* file;
 };
 
 Console::Console()
@@ -32,9 +32,9 @@ Console::Console()
     ::AllocConsole();
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    ::freopen_s(&f, "CONOUT$", "w", stdout);
-    ::freopen_s(&f, "CONOUT$", "w", stderr);
-    ::freopen_s(&f, "CONIN$", "r", stdin);
+    ::freopen_s(&file, "CONOUT$", "w", stdout);
+    ::freopen_s(&file, "CONOUT$", "w", stderr);
+    ::freopen_s(&file, "CONIN$", "r", stdin);
     std::cout.clear();
     std::clog.clear();
     std::cerr.clear();
@@ -43,7 +43,7 @@ Console::Console()
 
 Console::~Console()
 {
-    ::fclose(f);
+    ::fclose(file);
     ::FreeConsole();
 }
 

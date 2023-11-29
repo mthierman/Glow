@@ -96,6 +96,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         /diagnostics:caret
         /W4
         /WX
+        /wd4100
         /Zc:__cplusplus
     )
 
@@ -105,6 +106,23 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         /WX
     )
 endif()
+# if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+#     target_compile_options(
+#         glow_glow_compile_options
+#         INTERFACE
+#         -Wall
+#         -Wextra
+#         -Wpedantic
+#         -Wno-unused-parameters
+#         # -Werror
+#     )
+
+#     target_link_options(
+#         glow_glow_compile_options
+#         INTERFACE
+#         # --fatal-warnings
+#     )
+# endif()
 
 add_library(glow_glow_includes INTERFACE)
 add_library(glow::glow_includes ALIAS glow_glow_includes)

@@ -53,7 +53,7 @@ void from_json(const json& j, settings& s)
 auto main() -> int
 {
     std::println("{}", glow::filesystem::known_folder(FOLDERID_LocalAppData).string());
-    std::println("{}", glow::filesystem::path_portable().string());
+    std::println("{}", glow::filesystem::get_pgmptr().string());
     std::println("{}", glow::text::randomize("Randomized!"));
 
     glow::logging::debug("debug() test");

@@ -23,7 +23,7 @@ namespace glow::gui
 struct App
 {
     App(std::string n);
-    ~App();
+    virtual ~App();
 
     HWND appHwnd;
 

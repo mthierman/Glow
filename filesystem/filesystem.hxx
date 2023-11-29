@@ -15,30 +15,39 @@
 
 #include <filesystem>
 #include <string>
+#include <vector>
 
 namespace glow::filesystem
 {
-auto known_folder(KNOWNFOLDERID id) -> std::filesystem::path
+auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 {
-    wchar_t* buffer{nullptr};
+    std::vector<wchar_t> vec;
+    auto buffer = vec.data();
 
-    if (SUCCEEDED(::SHGetKnownFolderPath(id, 0, nullptr, &buffer)))
-    {
-        std::filesystem::path data{std::wstring(buffer)};
-        ::CoTaskMemFree(buffer);
-
-        return data;
-    }
+    if (SUCCEEDED(::SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer)))
+        return std::filesystem::path(buffer);
 
     else return {};
 }
 
-auto path_portable() -> std::filesystem::path
+auto get_pgmptr() -> std::filesystem::path
 {
-    char* pgmptr{nullptr};
-    _get_pgmptr(&pgmptr);
+    std::vector<char> vec;
+    auto buffer = vec.data();
+    _get_pgmptr(&buffer);
 
-    std::filesystem::path exe{pgmptr};
+    std::filesystem::path exe{buffer};
+
+    return std::filesystem::canonical(exe.remove_filename());
+}
+
+auto get_wpgmptr() -> std::filesystem::path
+{
+    std::vector<wchar_t> vec;
+    auto buffer = vec.data();
+    _get_wpgmptr(&buffer);
+
+    std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
 }
