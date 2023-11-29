@@ -21,8 +21,8 @@ namespace glow::filesystem
 {
 auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 {
-    std::vector<wchar_t> vec;
-    auto buffer = vec.data();
+    std::wstring wstring;
+    auto buffer{wstring.data()};
 
     if (SUCCEEDED(::SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer)))
         return std::filesystem::path(buffer);
@@ -32,8 +32,9 @@ auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 
 auto get_pgmptr() -> std::filesystem::path
 {
-    std::vector<char> vec;
-    auto buffer = vec.data();
+    std::string string;
+    auto buffer{string.data()};
+
     _get_pgmptr(&buffer);
 
     std::filesystem::path exe{buffer};
@@ -43,8 +44,9 @@ auto get_pgmptr() -> std::filesystem::path
 
 auto get_wpgmptr() -> std::filesystem::path
 {
-    std::vector<wchar_t> vec;
-    auto buffer = vec.data();
+    std::wstring wstring;
+    auto buffer{wstring.data()};
+
     _get_wpgmptr(&buffer);
 
     std::filesystem::path exe{buffer};
