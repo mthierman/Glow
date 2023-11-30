@@ -101,7 +101,7 @@ target_link_libraries(
     INTERFACE
     nlohmann_json::nlohmann_json
     tomlplusplus::tomlplusplus
-    sqlite
+    ${SQLITE_NAME}
     dwmapi.lib
     Comctl32.lib
     gdiplus.lib
@@ -123,19 +123,23 @@ set(
     ${PROJECT_SOURCE_DIR}/text/text.hxx
 )
 add_library(
-    glow_glow
+    ${LIB_NAME}
     ${GLOW_SOURCES}
 )
-add_library(glow::glow ALIAS glow_glow)
+# add_library(glow::glow ALIAS ${LIB_NAME})
 target_link_libraries(
-    glow_glow
+    ${LIB_NAME}
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
     glow::glow_include_directories
     glow::glow_link_libraries
 )
-set_target_properties(glow_glow PROPERTIES OUTPUT_NAME ${LIB_NAME})
+set_target_properties(
+    ${LIB_NAME}
+    PROPERTIES
+    OUTPUT_NAME ${LIB_NAME}
+)
 
 # IconConverter
 add_executable(

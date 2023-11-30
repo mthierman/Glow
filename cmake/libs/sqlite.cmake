@@ -1,13 +1,19 @@
+set(SQLITE_NAME "SQLite")
 add_library(
-    sqlite_sqlite
+    ${SQLITE_NAME}
     ${sqlite_SOURCE_DIR}/sqlite3.c
     ${sqlite_SOURCE_DIR}/sqlite3.h
 )
-add_library(sqlite::sqlite ALIAS sqlite_sqlite)
+# add_library(sqlite::sqlite ALIAS ${SQLITE_NAME})
 target_link_libraries(
-    sqlite_sqlite
+    ${SQLITE_NAME}
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
 )
-set_target_properties(sqlite_sqlite PROPERTIES LINKER_LANGUAGE C OUTPUT_NAME "SQLite")
+set_target_properties(
+    ${SQLITE_NAME}
+    PROPERTIES
+    LINKER_LANGUAGE C
+    OUTPUT_NAME ${SQLITE_NAME}
+)
