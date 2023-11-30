@@ -14,7 +14,7 @@
 namespace glow::gui
 {
 WebView::WebView(std::string name, HWND parentHwnd, int id)
-    : m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), id(id)
+    : m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
     register_window();
     create_window();
@@ -72,11 +72,11 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
                                                    ICoreWebView2NavigationCompletedEventArgs* args)
                                                 -> HRESULT
                                             {
-                                                if (!initialized)
+                                                if (!m_initialized)
                                                 {
                                                     window_uncloak(m_hwnd);
                                                     ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
-                                                    initialized = true;
+                                                    m_initialized = true;
                                                 }
 
                                                 return S_OK;
@@ -118,7 +118,7 @@ auto WebView::register_window() -> void
 auto WebView::create_window() -> void
 {
     ::CreateWindowEx(0, m_class.c_str(), m_class.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent, reinterpret_cast<HMENU>(id),
+                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent, reinterpret_cast<HMENU>(m_id),
                      ::GetModuleHandle(nullptr), this);
 }
 
@@ -154,10 +154,12 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 //==============================================================================
 auto WebView::on_window_pos_changed() -> int
 {
-    RECT rect{};
-    ::GetClientRect(m_hwnd, &rect);
-
-    if (controller4) controller4->put_Bounds(rect);
+    if (controller4)
+    {
+        RECT rect{};
+        ::GetClientRect(m_hwnd, &rect);
+        controller4->put_Bounds(rect);
+    }
 
     return 0;
 }

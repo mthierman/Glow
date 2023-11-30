@@ -10,6 +10,7 @@
 
 #include <gui/webview_composition.hxx>
 
+//==============================================================================
 namespace glow::gui
 {
 CompositionHost::CompositionHost() {}
@@ -22,7 +23,8 @@ CompositionHost* CompositionHost::GetInstance()
 
 CompositionHost::~CompositionHost() {}
 
-void CompositionHost::Initialize(HWND hwnd)
+//==============================================================================
+auto CompositionHost::Initialize(HWND hwnd) -> void
 {
     EnsureDispatcherQueue();
     if (m_dispatcherQueueController) m_compositor = winrt::Compositor();
@@ -35,7 +37,8 @@ void CompositionHost::Initialize(HWND hwnd)
     }
 }
 
-void CompositionHost::EnsureDispatcherQueue()
+//==============================================================================
+auto CompositionHost::EnsureDispatcherQueue() -> void
 {
     namespace abi = ABI::Windows::System;
 
@@ -55,33 +58,72 @@ void CompositionHost::EnsureDispatcherQueue()
     }
 }
 
-void CompositionHost::CreateDesktopWindowTarget(HWND window)
+auto CompositionHost::CreateDesktopWindowTarget(HWND window) -> void
 {
     namespace abi = ABI::Windows::UI::Composition::Desktop;
 
-    auto interop = m_compositor.as<abi::ICompositorDesktopInterop>();
+    auto interop{m_compositor.as<abi::ICompositorDesktopInterop>()};
     winrt::DesktopWindowTarget target{nullptr};
     winrt::check_hresult(interop->CreateDesktopWindowTarget(
         window, false, reinterpret_cast<abi::IDesktopWindowTarget**>(winrt::put_abi(target))));
     m_target = target;
 }
 
-void CompositionHost::CreateCompositionRoot()
+auto CompositionHost::CreateCompositionRoot() -> void
 {
-    auto root = m_compositor.CreateContainerVisual();
+    auto root{m_compositor.CreateContainerVisual()};
     root.RelativeSizeAdjustment({1.0f, 1.0f});
     root.Offset({0, 0, 0});
 
     m_target.Root(root);
 }
 
-winrt::IAsyncAction WebViewComp::create_webview(HWND h)
+//==============================================================================
+WebViewComp::WebViewComp(std::string name, HWND hwnd, int id) : m_hwndParent(hwnd), m_id(id)
 {
-    CompositionHost* compHost = CompositionHost::GetInstance();
-    compHost->Initialize(webviewHwnd);
+    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
+    auto cursor{
+        reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
+                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    auto icon{
+        reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
+                                            IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+
+    m_class = glow::text::randomize(name);
+
+    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
+    wcex.lpszClassName = m_class.c_str();
+    wcex.lpszMenuName = m_class.c_str();
+    wcex.lpfnWndProc = WebViewComp::wnd_proc;
+    wcex.style = 0;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = ::GetModuleHandle(nullptr);
+    wcex.hbrBackground = brush;
+    wcex.hCursor = cursor;
+    wcex.hIcon = icon;
+    wcex.hIconSm = icon;
+
+    ::RegisterClassEx(&wcex);
+
+    ::CreateWindowEx(0, m_class.c_str(), name.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
+                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent, reinterpret_cast<HMENU>(m_id),
+                     ::GetModuleHandle(nullptr), this);
+
+    ::ShowWindow(m_hwnd, SW_SHOW);
+}
+
+WebViewComp::~WebViewComp() {}
+
+auto WebViewComp::create_webview() -> winrt::IAsyncAction
+{
+    CompositionHost* compHost{CompositionHost::GetInstance()};
+    compHost->Initialize(m_hwnd);
 
     auto windowRef{winrt::CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
-        reinterpret_cast<uint64_t>(h))};
+        reinterpret_cast<uint64_t>(m_hwndParent))};
+
     auto environmentOptions{winrt::CoreWebView2EnvironmentOptions()};
     environmentOptions.AdditionalBrowserArguments(L"--allow-file-access-from-files");
     environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
@@ -111,92 +153,42 @@ winrt::IAsyncAction WebViewComp::create_webview(HWND h)
     core.Navigate(winrt::to_hstring(std::string("https://www.google.com/")));
 
     RECT bounds{0, 0, 0, 0};
-    GetClientRect(h, &bounds);
+    ::GetClientRect(m_hwndParent, &bounds);
     winrt::Windows::Foundation::Rect displayWebView{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
     controller.Bounds(displayWebView);
 
-    SendMessage(parentHwnd, WM_NOTIFY, 0, 0);
+    ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
 }
 
-WebViewComp::WebViewComp(std::string n, HWND h, int i) : parentHwnd(h), id(i)
+auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+    WebViewComp* self = InstanceFromWndProc<WebViewComp, &WebViewComp::m_hwnd>(hwnd, uMsg, lParam);
 
-    auto cursor{
-        reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
-                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    auto icon{
-        reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
-                                            IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-    auto name{glow::text::randomize(n)};
-
-    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = name.c_str();
-    wcex.lpszMenuName = name.c_str();
-    wcex.lpfnWndProc = WebViewComp::WndProcCallback;
-    wcex.style = 0;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandle(nullptr);
-    wcex.hbrBackground = brush;
-    wcex.hCursor = cursor;
-    wcex.hIcon = icon;
-    wcex.hIconSm = icon;
-
-    ::RegisterClassEx(&wcex);
-
-    ::CreateWindowEx(0, name.c_str(), name.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, parentHwnd, reinterpret_cast<HMENU>(id),
-                     ::GetModuleHandle(nullptr), this);
-
-    ::ShowWindow(webviewHwnd, SW_SHOW);
-}
-
-WebViewComp::~WebViewComp() {}
-
-LRESULT CALLBACK WebViewComp::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l)
-{
-    WebViewComp* webview = InstanceFromWndProc<WebViewComp, &WebViewComp::webviewHwnd>(h, m, l);
-
-    if (webview)
+    if (self)
     {
-        switch (m)
+        switch (uMsg)
         {
-        case WM_CLOSE: return webview->OnClose(h);
-        case WM_WINDOWPOSCHANGED: return webview->OnWindowPosChanged(h);
+        case WM_WINDOWPOSCHANGED: return self->on_window_pos_changed();
         }
-
-        return webview->WndProc(h, m, w, l);
     }
 
-    return ::DefWindowProc(h, m, w, l);
+    return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-LRESULT WebViewComp::WndProc(HWND h, UINT m, WPARAM w, LPARAM l)
-{
-    return ::DefWindowProc(h, m, w, l);
-}
-
-int WebViewComp::OnClose(HWND h)
-{
-    ::DestroyWindow(h);
-
-    return 0;
-}
-
-int WebViewComp::OnWindowPosChanged(HWND h)
+auto WebViewComp::on_window_pos_changed() -> int
 {
     if (controller)
     {
-        RECT bounds{0, 0, 0, 0};
-        GetClientRect(h, &bounds);
-        winrt::Windows::Foundation::Rect displayWebView{
-            static_cast<float>(bounds.left), static_cast<float>(bounds.top),
-            static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
-        controller.Bounds(displayWebView);
+        RECT rect{0, 0, 0, 0};
+        ::GetClientRect(m_hwnd, &rect);
+
+        winrt::Windows::Foundation::Rect rectWv{
+            static_cast<float>(rect.left), static_cast<float>(rect.top),
+            static_cast<float>(rect.right), static_cast<float>(rect.bottom)};
+
+        controller.Bounds(rectWv);
     }
 
     return 0;

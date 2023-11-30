@@ -15,7 +15,6 @@
 #include <Unknwn.h>
 #include <wrl.h>
 
-#include <winrt/base.h>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.Composition.Desktop.h>
 
@@ -28,6 +27,7 @@
 #include <gui/gui.hxx>
 #include <text/text.hxx>
 
+//==============================================================================
 namespace winrt
 {
 using namespace winrt::Microsoft::Web::WebView2::Core;
@@ -39,6 +39,7 @@ using namespace winrt::Windows::UI::Composition;
 using namespace winrt::Windows::UI::Composition::Desktop;
 }; // namespace winrt
 
+//==============================================================================
 namespace glow::gui
 {
 class CompositionHost
@@ -47,9 +48,11 @@ class CompositionHost
     ~CompositionHost();
     static CompositionHost* GetInstance();
 
-    void Initialize(HWND hwnd);
-    void AddElement(float size, float x, float y);
+    //==============================================================================
+    auto Initialize(HWND hwnd) -> void;
+    // auto AddElement(float size, float x, float y) -> void;
 
+    //==============================================================================
     winrt::Compositor m_compositor{nullptr};
     winrt::ContainerVisual m_container{nullptr};
     winrt::DesktopWindowTarget m_target{nullptr};
@@ -58,28 +61,32 @@ class CompositionHost
   private:
     CompositionHost();
 
-    void CreateDesktopWindowTarget(HWND window);
-    void EnsureDispatcherQueue();
-    void CreateCompositionRoot();
+    //==============================================================================
+    auto EnsureDispatcherQueue() -> void;
+    auto CreateDesktopWindowTarget(HWND window) -> void;
+    auto CreateCompositionRoot() -> void;
 };
 
 struct WebViewComp
 {
-    WebViewComp(std::string, HWND, int);
+    WebViewComp(std::string name, HWND hwnd, int id);
     ~WebViewComp();
 
-    static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
-    virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-    virtual int OnClose(HWND);
-    virtual int OnWindowPosChanged(HWND);
+    //==============================================================================
+    auto create_webview() -> winrt::IAsyncAction;
 
-    HWND parentHwnd{nullptr};
-    HWND webviewHwnd{nullptr};
-    UINT_PTR id{0};
-    bool initialized{false};
+    //==============================================================================
+    static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto on_window_pos_changed() -> int;
 
-    winrt::IAsyncAction create_webview(HWND);
+    //==============================================================================
+    HWND m_hwndParent{nullptr};
+    HWND m_hwnd{nullptr};
+    std::string m_class;
+    UINT_PTR m_id{0};
+    bool m_initialized{false};
 
+    //==============================================================================
     winrt::CoreWebView2Environment environment{nullptr};
     winrt::CoreWebView2Profile profile{nullptr};
     winrt::CoreWebView2Controller controller{nullptr};

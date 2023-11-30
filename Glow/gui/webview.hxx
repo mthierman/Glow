@@ -63,8 +63,8 @@ struct WebView
     HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
 
     //==============================================================================
-    UINT_PTR id{0};
-    bool initialized{false};
+    UINT_PTR m_id{0};
+    bool m_initialized{false};
     winrt::com_ptr<ICoreWebView2Controller> controller{nullptr};
     winrt::com_ptr<ICoreWebView2Controller4> controller4{nullptr};
     winrt::com_ptr<ICoreWebView2> core{nullptr};

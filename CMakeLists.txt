@@ -22,7 +22,7 @@ set(
     ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.cxx
     ${PROJECT_SOURCE_DIR}/glow/gui/app.cxx
     ${PROJECT_SOURCE_DIR}/glow/gui/gui.cxx
-    # ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.cxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.cxx
     ${PROJECT_SOURCE_DIR}/glow/gui/webview.cxx
     ${PROJECT_SOURCE_DIR}/glow/logging/logging.cxx
     ${PROJECT_SOURCE_DIR}/glow/text/text.cxx
@@ -33,7 +33,7 @@ set(
     ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
     ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
     ${PROJECT_SOURCE_DIR}/glow/gui/gui.hxx
-    # ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
     ${PROJECT_SOURCE_DIR}/glow/gui/webview.hxx
     ${PROJECT_SOURCE_DIR}/glow/logging/logging.hxx
     ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
