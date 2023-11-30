@@ -63,18 +63,25 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
     App* self = InstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam);
 
-    if (self) return self->handle_message(hwnd, uMsg, wParam, lParam);
-
+    if (self)
+    {
+        switch (uMsg)
+        {
+        case WM_CLOSE: return self->on_close();
+        case WM_DESTROY: return self->on_destroy();
+        }
+        return self->handle_message(hwnd, uMsg, wParam, lParam);
+    }
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    switch (uMsg)
-    {
-    case WM_CLOSE: return on_close();
-    case WM_DESTROY: return on_destroy();
-    }
+    // switch (uMsg)
+    // {
+    // case WM_CLOSE: return on_close();
+    // case WM_DESTROY: return on_destroy();
+    // }
 
     return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 }

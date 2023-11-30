@@ -26,7 +26,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     auto app{std::make_unique<glow::App>("WebView")};
 
-    auto wv{std::make_unique<glow::gui::WebView>("WebView", app->get_hwnd(), 1)};
+    // auto wv{std::make_unique<glow::gui::WebView>("WebView", app->get_hwnd(), 1)};
 
     MSG msg{nullptr};
     int r{0};

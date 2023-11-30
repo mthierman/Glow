@@ -20,22 +20,22 @@ struct App : glow::gui::App
     using glow::gui::App::App;
 
     //==============================================================================
-    auto get_hwnd() -> HWND;
+    // auto get_hwnd() -> HWND;
 
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+    // static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     //==============================================================================
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
 
     //==============================================================================
-    HWND m_hwnd{nullptr};
+    // HWND m_hwnd{nullptr};
 };
 
 //==============================================================================
-auto App::get_hwnd() -> HWND { return m_hwnd; }
+// auto App::get_hwnd() -> HWND { return m_hwnd; }
 
 //==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -65,7 +65,7 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 //==============================================================================
 auto App::on_notify() -> int
 {
-
+    OutputDebugString("WM_NOTIFY");
     RECT clientRect{0};
     ::GetClientRect(m_hwnd, &clientRect);
     ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
@@ -75,6 +75,7 @@ auto App::on_notify() -> int
 
 auto App::on_window_pos_changed() -> int
 {
+    OutputDebugString("WM_WINDOWPOSCHANGED");
     RECT clientRect{0};
     ::GetClientRect(m_hwnd, &clientRect);
     ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));

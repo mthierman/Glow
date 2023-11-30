@@ -28,27 +28,27 @@ namespace glow::gui
 struct WebView
 {
     WebView(std::string name, HWND parentHwnd, int id);
-    virtual ~WebView();
+    ~WebView();
 
     //==============================================================================
-    virtual auto get_hwnd() -> HWND;
+    auto get_hwnd() -> HWND;
 
   private:
-    virtual auto register_window() -> void;
-    virtual auto create_window() -> void;
+    auto register_window() -> void;
+    auto create_window() -> void;
 
     //==============================================================================
-    virtual auto show_window_default() -> void;
-    virtual auto show_window() -> void;
-    virtual auto hide_window() -> void;
+    auto show_window_default() -> void;
+    auto show_window() -> void;
+    auto hide_window() -> void;
 
     //==============================================================================
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     //==============================================================================
-    virtual auto on_close() -> int;
-    virtual auto on_window_pos_changed() -> int;
+    auto on_close() -> int;
+    auto on_window_pos_changed() -> int;
 
     //==============================================================================
     HWND m_hwndParent{nullptr};
@@ -62,7 +62,7 @@ struct WebView
                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
                                                      IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-    HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+    HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH))};
 
     //==============================================================================
     UINT_PTR id{0};
