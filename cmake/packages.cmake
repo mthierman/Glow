@@ -1,33 +1,38 @@
+set(SCRIPTS_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 include(FetchContent)
 
-include(
-    ${PROJECT_SOURCE_DIR}/cmake/versions.cmake
-)
+include(${SCRIPTS_PATH}/versions.cmake)
 
 # Nuget
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/wil.cmake
+    ${SCRIPTS_PATH}/deps/wil.cmake
 )
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/webview.cmake
+    ${SCRIPTS_PATH}/deps/webview.cmake
 )
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/cppwinrt.cmake
-)
-include(
-    ${PROJECT_SOURCE_DIR}/cmake/runcppwinrt.cmake
+    ${SCRIPTS_PATH}/deps/cppwinrt.cmake
 )
 
 # FetchContent
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/json.cmake
+    ${SCRIPTS_PATH}/deps/json.cmake
 )
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/toml.cmake
+    ${SCRIPTS_PATH}/deps/toml.cmake
 )
 include(
-    ${PROJECT_SOURCE_DIR}/cmake/sqlite.cmake
+    ${SCRIPTS_PATH}/deps/sqlite.cmake
 )
 # include(
-#     ${PROJECT_SOURCE_DIR}/cmake/curl.cmake
+#     ${SCRIPTS_PATH}/deps/curl.cmake
 # )
+
+# Libraries
+include(
+    ${SCRIPTS_PATH}/libs/sqlite.cmake
+)
+include(
+    ${SCRIPTS_PATH}/libs/webview.cmake
+)

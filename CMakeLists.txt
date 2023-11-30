@@ -110,7 +110,22 @@ target_link_libraries(
 )
 
 # glow
-add_library(glow_glow ${PROJECT_SOURCE_DIR}/src/Glow.cxx)
+set(
+    GLOW_SOURCES
+    ${PROJECT_SOURCE_DIR}/src/Glow.cxx
+    ${PROJECT_SOURCE_DIR}/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
+    ${PROJECT_SOURCE_DIR}/gui/app.hxx
+    ${PROJECT_SOURCE_DIR}/gui/gui.hxx
+    ${PROJECT_SOURCE_DIR}/gui/webview_composition.hxx
+    ${PROJECT_SOURCE_DIR}/gui/webview.hxx
+    ${PROJECT_SOURCE_DIR}/logging/logging.hxx
+    ${PROJECT_SOURCE_DIR}/text/text.hxx
+)
+add_library(
+    glow_glow
+    ${GLOW_SOURCES}
+)
 add_library(glow::glow ALIAS glow_glow)
 target_link_libraries(
     glow_glow
@@ -120,11 +135,15 @@ target_link_libraries(
     glow::glow_include_directories
     glow::glow_link_libraries
 )
+set_target_properties(glow_glow PROPERTIES OUTPUT_NAME ${LIB_NAME})
 
 # IconConverter
 add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
+    ${PROJECT_SOURCE_DIR}/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
+    ${PROJECT_SOURCE_DIR}/text/text.hxx
     ${MANIFEST_FILE}
 )
 target_link_libraries(
@@ -166,8 +185,23 @@ if(GLOW_BUILD_EXAMPLES)
     )
 
     add_executable(
+        App
+        WIN32
+        ${PROJECT_SOURCE_DIR}/tests/App.cxx
+        ${PROJECT_SOURCE_DIR}/console/console.hxx
+        ${PROJECT_SOURCE_DIR}/gui/app.hxx
+        ${RC_FILE}
+        ${MANIFEST_FILE}
+    )
+    target_link_libraries(App PRIVATE glow::glow_examples)
+    add_dependencies(App MakeIcon)
+
+    add_executable(
         Console
         ${PROJECT_SOURCE_DIR}/tests/Console.cxx
+        ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
+        ${PROJECT_SOURCE_DIR}/logging/logging.hxx
+        ${PROJECT_SOURCE_DIR}/text/text.hxx
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
@@ -175,19 +209,13 @@ if(GLOW_BUILD_EXAMPLES)
     add_dependencies(Console MakeIcon)
 
     add_executable(
-        Win32
-        WIN32
-        ${PROJECT_SOURCE_DIR}/tests/App.cxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(Win32 PRIVATE glow::glow_examples)
-    add_dependencies(Win32 MakeIcon)
-
-    add_executable(
         WebView
         WIN32
         ${PROJECT_SOURCE_DIR}/tests/WebView.cxx
+        ${PROJECT_SOURCE_DIR}/console/console.hxx
+        ${PROJECT_SOURCE_DIR}/gui/app.hxx
+        ${PROJECT_SOURCE_DIR}/gui/webview.hxx
+        ${PROJECT_SOURCE_DIR}/tests/include/WebView.hxx
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
@@ -198,6 +226,10 @@ if(GLOW_BUILD_EXAMPLES)
         WebViewComposition
         WIN32
         ${PROJECT_SOURCE_DIR}/tests/WebViewComposition.cxx
+        ${PROJECT_SOURCE_DIR}/console/console.hxx
+        ${PROJECT_SOURCE_DIR}/gui/app.hxx
+        ${PROJECT_SOURCE_DIR}/gui/webview_composition.hxx
+        ${PROJECT_SOURCE_DIR}/tests/include/WebView.hxx
         ${RC_FILE}
         ${MANIFEST_FILE}
     )

@@ -21,8 +21,8 @@
 #include <nlohmann/json.hpp>
 #include <toml++/toml.hpp>
 
-#include <logging/logging.hxx>
 #include <filesystem/filesystem.hxx>
+#include <logging/logging.hxx>
 #include <text/text.hxx>
 
 using json = nlohmann::json;
