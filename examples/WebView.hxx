@@ -56,7 +56,6 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 //==============================================================================
 auto App::on_notify() -> int
 {
-    OutputDebugString("DERIVED APP CLASS: WM_NOTIFY");
     RECT clientRect{0};
     ::GetClientRect(m_hwnd, &clientRect);
     ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
@@ -66,7 +65,6 @@ auto App::on_notify() -> int
 
 auto App::on_window_pos_changed() -> int
 {
-    OutputDebugString("DERIVED: WM_WINDOWPOSCHANGED");
     RECT clientRect{0};
     ::GetClientRect(m_hwnd, &clientRect);
     ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
