@@ -124,3 +124,6 @@ endif()
 if(GLOW_BUILD_EXAMPLES)
     add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
 endif()
+
+enable_testing()
+add_subdirectory(tests)
