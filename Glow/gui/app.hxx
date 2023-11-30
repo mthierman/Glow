@@ -43,8 +43,8 @@ struct App
     virtual auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     //==============================================================================
-    auto on_close() -> int;
-    auto on_destroy() -> int;
+    virtual auto on_close() -> int;
+    virtual auto on_destroy() -> int;
 
     //==============================================================================
     std::string m_class;

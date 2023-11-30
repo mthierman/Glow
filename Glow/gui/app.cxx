@@ -81,6 +81,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 //==============================================================================
 auto App::on_close() -> int
 {
+    OutputDebugString("BASE: WM_CLOSE\n");
     ::DestroyWindow(m_hwnd);
 
     return 0;
@@ -88,6 +89,7 @@ auto App::on_close() -> int
 
 auto App::on_destroy() -> int
 {
+    OutputDebugString("BASE: WM_DESTROY\n");
     ::PostQuitMessage(0);
 
     return 0;

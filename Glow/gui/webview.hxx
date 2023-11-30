@@ -28,7 +28,7 @@ namespace glow::gui
 struct WebView
 {
     WebView(std::string name, HWND parentHwnd, int id);
-    ~WebView();
+    virtual ~WebView();
 
     //==============================================================================
     HWND m_hwndParent{nullptr};
@@ -45,11 +45,11 @@ struct WebView
 
     //==============================================================================
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     //==============================================================================
-    auto on_close() -> int;
-    auto on_window_pos_changed() -> int;
+    virtual auto on_close() -> int;
+    virtual auto on_window_pos_changed() -> int;
 
     //==============================================================================
     std::string m_class;
@@ -61,7 +61,7 @@ struct WebView
                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
                                                      IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-    HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(WHITE_BRUSH))};
+    HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
 
     //==============================================================================
     UINT_PTR id{0};
