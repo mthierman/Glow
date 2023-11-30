@@ -2,19 +2,19 @@
 
 # C++ Library for Windows
 
-- App & WebView2 classes
-- Filesystem functions
-- Text handling
-- Attachable console
+-   App & WebView2 classes
+-   Filesystem functions
+-   Text handling
+-   Attachable console
 
 ## Requirements:
 
-- C++ 23 Compiler (MSVC/Clang)
-- Nuget package manager CLI
-    - Included with Visual Studio
-    - https://www.nuget.org/downloads
-    - winget CLI (part of App Installer) (https://apps.microsoft.com/detail/9NBLGGH4NNS1)
-        - `winget install Microsoft.NuGet`
+-   C++ 23 Compiler (MSVC/Clang)
+-   Nuget package manager CLI
+    -   Included with Visual Studio
+    -   https://www.nuget.org/downloads
+    -   winget CLI (part of App Installer) (https://apps.microsoft.com/detail/9NBLGGH4NNS1)
+        -   `winget install Microsoft.NuGet`
 
 ## Example usage
 
@@ -40,7 +40,8 @@ target_link_libraries(
     glow::glow
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_settings
+    glow::glow_include_directories
+    glow::glow_link_libraries
 )
 ```
 
@@ -66,6 +67,7 @@ target_link_libraries(
     glow::glow
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_settings
+    glow::glow_include_directories
+    glow::glow_link_libraries
 )
 ```
