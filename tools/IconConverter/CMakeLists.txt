@@ -1,9 +1,9 @@
 add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter/IconConverter.cxx
-    ${PROJECT_SOURCE_DIR}/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
-    ${PROJECT_SOURCE_DIR}/text/text.hxx
+    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
+    ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
     ${MANIFEST_FILE}
 )
 target_link_libraries(

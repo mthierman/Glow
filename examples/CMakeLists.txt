@@ -42,8 +42,8 @@ add_executable(
     App
     WIN32
     ${PROJECT_SOURCE_DIR}/examples/App.cxx
-    ${PROJECT_SOURCE_DIR}/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/gui/app.hxx
+    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
@@ -52,9 +52,9 @@ target_link_libraries(App PRIVATE glow::glow_examples)
 add_executable(
     Console
     ${PROJECT_SOURCE_DIR}/examples/Console.cxx
-    ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
-    ${PROJECT_SOURCE_DIR}/logging/logging.hxx
-    ${PROJECT_SOURCE_DIR}/text/text.hxx
+    ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
+    ${PROJECT_SOURCE_DIR}/glow/logging/logging.hxx
+    ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
@@ -65,23 +65,22 @@ add_executable(
     WIN32
     ${PROJECT_SOURCE_DIR}/examples/WebView.cxx
     ${PROJECT_SOURCE_DIR}/examples/WebView.hxx
-    ${PROJECT_SOURCE_DIR}/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/gui/app.hxx
-    ${PROJECT_SOURCE_DIR}/gui/webview.hxx
+    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview.hxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
 target_link_libraries(WebView PRIVATE glow::glow_examples)
-
 
 add_executable(
     WebViewComposition
     WIN32
     ${PROJECT_SOURCE_DIR}/examples/WebViewComposition.cxx
     ${PROJECT_SOURCE_DIR}/examples/WebView.hxx
-    ${PROJECT_SOURCE_DIR}/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/gui/app.hxx
-    ${PROJECT_SOURCE_DIR}/gui/webview_composition.hxx
+    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
     ${RC_FILE}
     ${MANIFEST_FILE}
 )
