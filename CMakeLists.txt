@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.26)
 
-include(FetchContent)
-
 set(LIB_NAME "Glow")
 set(LIB_VERSION "0.0.1")
+option(GLOW_BUILD_EXAMPLES OFF)
 
 project(
     ${LIB_NAME}
@@ -18,64 +17,7 @@ if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
 endif()
 
-option(GLOW_BUILD_EXAMPLES OFF)
-option(GLOW_BUILD_SHARED_LIBS OFF)
-
-set(WEBVIEW "Microsoft.Web.WebView2")
-set(WEBVIEW_VER "1.0.2151.40")
-set(CPPWINRT "Microsoft.Windows.CppWinRT")
-set(CPPWINRT_VER "2.0.230706.1")
-
-execute_process(
-    COMMAND
-    nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
-)
-file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${WEBVIEW}.${WEBVIEW_VER} webview_SOURCE_DIR)
-
-execute_process(
-    COMMAND
-    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget
-)
-file(TO_CMAKE_PATH ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/Nuget/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
-
-FetchContent_Declare(
-    wil
-    URL https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.zip
-)
-FetchContent_Populate(wil)
-
-FetchContent_Declare(
-    json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-)
-FetchContent_MakeAvailable(json)
-
-FetchContent_Declare(
-    toml
-    URL https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.zip
-)
-FetchContent_MakeAvailable(toml)
-
-FetchContent_Declare(
-    sqlite
-    URL https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip
-)
-FetchContent_MakeAvailable(sqlite)
-
-# FetchContent_Declare(
-#     curl
-#     URL https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz
-# )
-# FetchContent_MakeAvailable(curl)
-
-execute_process(
-    COMMAND cppwinrt -input ${webview_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd sdk -output ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-    WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
-)
-file(COPY ${webview_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-add_library(sqlite ${sqlite_SOURCE_DIR}/sqlite3.c ${sqlite_SOURCE_DIR}/sqlite3.h)
-set_target_properties(sqlite PROPERTIES LINKER_LANGUAGE C)
+include(cmake/packages.cmake)
 
 add_library(glow_glow_compile_features INTERFACE)
 add_library(glow::glow_compile_features ALIAS glow_glow_compile_features)
