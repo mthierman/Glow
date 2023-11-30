@@ -30,21 +30,21 @@ struct App
     auto get_hwnd() -> HWND;
 
   private:
-    virtual auto register_window() -> void;
-    virtual auto create_window(std::string name) -> void;
+    auto register_window() -> void;
+    auto create_window(std::string name) -> void;
 
     //==============================================================================
-    virtual auto show_window_default() -> void;
-    virtual auto show_window() -> void;
-    virtual auto hide_window() -> void;
+    auto show_window_default() -> void;
+    auto show_window() -> void;
+    auto hide_window() -> void;
 
     //==============================================================================
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     //==============================================================================
-    virtual auto on_close() -> int;
-    virtual auto on_destroy() -> int;
+    auto on_close() -> int;
+    auto on_destroy() -> int;
 
     //==============================================================================
     HWND m_hwnd{nullptr};

@@ -11,7 +11,6 @@
 #pragma once
 
 #include <gui/app.hxx>
-#include <gui/gui.hxx>
 
 //==============================================================================
 namespace glow
@@ -19,9 +18,6 @@ namespace glow
 struct App : glow::gui::App
 {
     using glow::gui::App::App;
-
-    //==============================================================================
-    // auto get_hwnd() -> HWND;
 
   private:
     auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
@@ -36,23 +32,15 @@ struct App : glow::gui::App
 };
 
 //==============================================================================
-// auto App::get_hwnd() -> HWND { return m_hwnd; }
-
-//==============================================================================
 auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    if (this)
+    switch (uMsg)
     {
-        switch (uMsg)
-        {
-        case WM_NOTIFY: return on_notify();
-        case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
-        }
-
-        return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+    case WM_NOTIFY: return on_notify();
+    case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
     }
 
-    else return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+    return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 }
 
 auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
