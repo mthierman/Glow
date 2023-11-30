@@ -10,6 +10,8 @@
 
 #include <gui/webview_composition.hxx>
 
+namespace glow::gui
+{
 CompositionHost::CompositionHost() {}
 
 CompositionHost* CompositionHost::GetInstance()
@@ -73,8 +75,6 @@ void CompositionHost::CreateCompositionRoot()
     m_target.Root(root);
 }
 
-namespace glow::gui
-{
 winrt::IAsyncAction WebViewComp::create_webview(HWND h)
 {
     CompositionHost* compHost = CompositionHost::GetInstance();

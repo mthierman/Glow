@@ -39,6 +39,8 @@ using namespace winrt::Windows::UI::Composition;
 using namespace winrt::Windows::UI::Composition::Desktop;
 }; // namespace winrt
 
+namespace glow::gui
+{
 class CompositionHost
 {
   public:
@@ -61,8 +63,6 @@ class CompositionHost
     void CreateCompositionRoot();
 };
 
-namespace glow::gui
-{
 struct WebViewComp
 {
     WebViewComp(std::string, HWND, int);
