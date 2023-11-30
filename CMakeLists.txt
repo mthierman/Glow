@@ -12,13 +12,15 @@ project(
 option(GLOW_BUILD_EXAMPLES OFF)
 option(GLOW_BUILD_ICONCONVERTER OFF)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
 endif()
 
-include(cmake/packages.cmake)
+include(Dependencies)
 
 configure_file(${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in ${PROJECT_BINARY_DIR}/include/GlowConfig.h)
 file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
@@ -78,9 +80,6 @@ target_include_directories(
     INTERFACE
     ${PROJECT_SOURCE_DIR}
     ${PROJECT_BINARY_DIR}/include
-    ${webview_SOURCE_DIR}/build/native/include
-    ${wil_SOURCE_DIR}/include
-    ${sqlite_SOURCE_DIR}
 )
 target_compile_definitions(
     glow_glow_include_directories
@@ -101,7 +100,7 @@ target_link_libraries(
     INTERFACE
     nlohmann_json::nlohmann_json
     tomlplusplus::tomlplusplus
-    ${SQLITE_NAME}
+    sqlite::sqlite
     dwmapi.lib
     Comctl32.lib
     gdiplus.lib
@@ -142,116 +141,9 @@ set_target_properties(
 )
 
 if(GLOW_BUILD_ICONCONVERTER)
-    add_executable(
-        IconConverter
-        ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
-        ${PROJECT_SOURCE_DIR}/console/console.hxx
-        ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
-        ${PROJECT_SOURCE_DIR}/text/text.hxx
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(
-        IconConverter
-        PRIVATE
-        glow::glow_compile_features
-        glow::glow_compile_options
-        glow::glow_include_directories
-        windowscodecs.lib
-    )
+    add_subdirectory(${PROJECT_SOURCE_DIR}/tools/IconConverter)
 endif()
 
 if(GLOW_BUILD_EXAMPLES)
-    file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/data/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
-    file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/data/res.rc RC_FILE)
-
-    if(GLOW_BUILD_ICONCONVERTER)
-        set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-        set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-        add_custom_command(
-            OUTPUT ${ICO_FILE}
-            COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
-            COMMENT "Running IconConverter..."
-        )
-        add_custom_target(
-            MakeIcon ALL
-            DEPENDS ${ICO_FILE}
-        )
-    else()
-        set(ICO_SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-        set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-        add_custom_command(
-            OUTPUT ${ICO_FILE}
-            COMMAND ${CMAKE_COMMAND} -E copy ${ICO_SOURCE_FILE} ${PROJECT_BINARY_DIR}
-            COMMENT "Copying icon..."
-        )
-        add_custom_target(
-            MakeIcon ALL
-            DEPENDS ${ICO_FILE}
-        )
-    endif()
-
-    add_library(glow_glow_examples INTERFACE)
-    add_library(glow::glow_examples ALIAS glow_glow_examples)
-    target_link_libraries(
-        glow_glow_examples
-        INTERFACE
-        glow::glow_compile_features
-        glow::glow_compile_options
-        glow::glow_include_directories
-        glow::glow_link_libraries
-    )
-
-    add_executable(
-        App
-        WIN32
-        ${PROJECT_SOURCE_DIR}/tests/App.cxx
-        ${PROJECT_SOURCE_DIR}/console/console.hxx
-        ${PROJECT_SOURCE_DIR}/gui/app.hxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(App PRIVATE glow::glow_examples)
-
-    add_executable(
-        Console
-        ${PROJECT_SOURCE_DIR}/tests/Console.cxx
-        ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
-        ${PROJECT_SOURCE_DIR}/logging/logging.hxx
-        ${PROJECT_SOURCE_DIR}/text/text.hxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(Console PRIVATE glow::glow_examples)
-
-    add_executable(
-        WebView
-        WIN32
-        ${PROJECT_SOURCE_DIR}/tests/WebView.cxx
-        ${PROJECT_SOURCE_DIR}/console/console.hxx
-        ${PROJECT_SOURCE_DIR}/gui/app.hxx
-        ${PROJECT_SOURCE_DIR}/gui/webview.hxx
-        ${PROJECT_SOURCE_DIR}/tests/include/WebView.hxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(WebView PRIVATE glow::glow_examples)
-
-
-    add_executable(
-        WebViewComposition
-        WIN32
-        ${PROJECT_SOURCE_DIR}/tests/WebViewComposition.cxx
-        ${PROJECT_SOURCE_DIR}/console/console.hxx
-        ${PROJECT_SOURCE_DIR}/gui/app.hxx
-        ${PROJECT_SOURCE_DIR}/gui/webview_composition.hxx
-        ${PROJECT_SOURCE_DIR}/tests/include/WebView.hxx
-        ${RC_FILE}
-        ${MANIFEST_FILE}
-    )
-    target_link_libraries(WebViewComposition PRIVATE glow::glow_examples)
-
-    add_dependencies(App MakeIcon)
-    add_dependencies(Console MakeIcon)
-    add_dependencies(WebView MakeIcon)
-    add_dependencies(WebViewComposition MakeIcon)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
 endif()
