@@ -12,8 +12,8 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if (PROJECT_IS_TOP_LEVEL)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME}_artifacts)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME}_artifacts)
 endif()
 
 set(
@@ -115,25 +115,7 @@ target_link_libraries(
     WebView2LoaderStatic.lib
 )
 
-add_library(
-    ${LIB_NAME}
-    ${PROJECT_SOURCE_DIR}/glow/Glow.cxx
-    ${GLOW_HEADERS}
-)
-add_library(glow::glow ALIAS ${LIB_NAME})
-target_link_libraries(
-    ${LIB_NAME}
-    PRIVATE
-    glow::glow_compile_features
-    glow::glow_compile_options
-    glow::glow_include_directories
-    glow::glow_link_libraries
-)
-set_target_properties(
-    ${LIB_NAME}
-    PROPERTIES
-    OUTPUT_NAME ${LIB_NAME}
-)
+add_subdirectory(Glow)
 
 if(GLOW_BUILD_ICONCONVERTER)
     add_subdirectory(${PROJECT_SOURCE_DIR}/tools/IconConverter)
