@@ -13,6 +13,7 @@
 #include <console/console.hxx>
 #include <gui/app.hxx>
 
+//==============================================================================
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {

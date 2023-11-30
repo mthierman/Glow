@@ -74,20 +74,20 @@ add_executable(
 )
 target_link_libraries(WebView PRIVATE glow::glow_examples)
 
-add_executable(
-    WebViewComposition
-    WIN32
-    ${PROJECT_SOURCE_DIR}/examples/WebViewComposition.cxx
-    ${PROJECT_SOURCE_DIR}/examples/WebView.hxx
-    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
-    ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
-    ${RC_FILE}
-    ${MANIFEST_FILE}
-)
-target_link_libraries(WebViewComposition PRIVATE glow::glow_examples)
+# add_executable(
+#     WebViewComposition
+#     WIN32
+#     ${PROJECT_SOURCE_DIR}/examples/WebViewComposition.cxx
+#     ${PROJECT_SOURCE_DIR}/examples/WebView.hxx
+#     ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+#     ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
+#     ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
+#     ${RC_FILE}
+#     ${MANIFEST_FILE}
+# )
+# target_link_libraries(WebViewComposition PRIVATE glow::glow_examples)
 
 add_dependencies(App MakeIcon)
 add_dependencies(Console MakeIcon)
 add_dependencies(WebView MakeIcon)
-add_dependencies(WebViewComposition MakeIcon)
+# add_dependencies(WebViewComposition MakeIcon)

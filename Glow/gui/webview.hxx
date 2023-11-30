@@ -22,21 +22,49 @@
 #include <gui/gui.hxx>
 #include <text/text.hxx>
 
+//==============================================================================
 namespace glow::gui
 {
 struct WebView
 {
-  public:
-    WebView(std::string, HWND, int);
-    ~WebView();
+    WebView(std::string name, HWND parentHwnd, int id);
+    virtual ~WebView();
 
-    static LRESULT CALLBACK WndProcCallback(HWND, UINT, WPARAM, LPARAM);
-    virtual LRESULT WndProc(HWND, UINT, WPARAM, LPARAM);
-    virtual int OnClose(HWND);
-    virtual int OnWindowPosChanged(HWND);
+    //==============================================================================
+    virtual auto get_hwnd() -> HWND;
 
-    HWND parentHwnd{nullptr};
-    HWND webviewHwnd{nullptr};
+  private:
+    virtual auto register_window() -> void;
+    virtual auto create_window() -> void;
+
+    //==============================================================================
+    virtual auto show_window_default() -> void;
+    virtual auto show_window() -> void;
+    virtual auto hide_window() -> void;
+
+    //==============================================================================
+    static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+
+    //==============================================================================
+    virtual auto on_close() -> int;
+    virtual auto on_window_pos_changed() -> int;
+
+    //==============================================================================
+    HWND m_hwndParent{nullptr};
+    HWND m_hwnd{nullptr};
+    std::string m_class;
+    HCURSOR m_cursor{
+        reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
+                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    HICON m_defaultIcon{
+        reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
+                                            IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
+                                                     IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
+    //==============================================================================
     UINT_PTR id{0};
     bool initialized{false};
     winrt::com_ptr<ICoreWebView2Controller> controller{nullptr};

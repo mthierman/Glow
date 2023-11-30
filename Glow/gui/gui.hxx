@@ -32,19 +32,19 @@ struct Bounds
     int height{0};
 };
 
-template <class T, HWND(T::*m_hWnd)> T* InstanceFromWndProc(HWND h, UINT m, LPARAM l)
+template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance;
 
-    if (m == WM_NCCREATE)
+    if (uMsg == WM_NCCREATE)
     {
-        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(l);
+        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
         pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        pInstance->*m_hWnd = h;
-        ::SetWindowLongPtr(h, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        pInstance->*m_hwnd = hwnd;
+        ::SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(h, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
     return pInstance;
 }

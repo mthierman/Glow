@@ -10,79 +10,87 @@
 
 #include <gui/app.hxx>
 
+//==============================================================================
 namespace glow::gui
 {
-App::App(std::string n)
+App::App(std::string name) : m_class(glow::text::randomize(name))
 {
-    auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
-
-    auto cursor{
-        reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
-                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    auto defaultIcon{
-        reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
-                                            IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-    auto icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
-                                                  IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-
-    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = n.c_str();
-    wcex.lpszMenuName = n.c_str();
-    wcex.lpfnWndProc = App::WndProcCallback;
-    wcex.style = 0;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandle(nullptr);
-    wcex.hbrBackground = brush;
-    wcex.hCursor = cursor;
-    wcex.hIcon = icon ? icon : defaultIcon;
-    wcex.hIconSm = icon ? icon : defaultIcon;
-
-    ::RegisterClassEx(&wcex);
-
-    ::CreateWindowEx(0, n.c_str(), n.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                     ::GetModuleHandle(nullptr), this);
-
-    ::ShowWindow(appHwnd, SW_SHOWDEFAULT);
+    register_window();
+    create_window(name);
+    show_window_default();
 }
 
 App::~App() {}
 
-auto CALLBACK App::WndProcCallback(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
+//==============================================================================
+auto App::get_hwnd() -> HWND { return m_hwnd; }
+
+//==============================================================================
+auto App::register_window() -> void
 {
-    App* app = InstanceFromWndProc<App, &App::appHwnd>(h, m, l);
+    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
+    wcex.lpszClassName = m_class.c_str();
+    wcex.lpszMenuName = m_class.c_str();
+    wcex.lpfnWndProc = App::wnd_proc;
+    wcex.style = 0;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = ::GetModuleHandle(nullptr);
+    wcex.hbrBackground = m_background;
+    wcex.hCursor = m_cursor;
+    wcex.hIcon = m_icon ? m_icon : m_defaultIcon;
+    wcex.hIconSm = m_icon ? m_icon : m_defaultIcon;
 
-    if (app)
-    {
-        switch (m)
-        {
-        case WM_CLOSE: return app->OnClose(h);
-        case WM_DESTROY: return app->OnDestroy();
-        default: return app->WndProc(h, m, w, l);
-        }
-    }
-
-    return ::DefWindowProc(h, m, w, l);
+    ::RegisterClassEx(&wcex);
 }
 
-auto App::OnClose(HWND h) -> int
+auto App::create_window(std::string name) -> void
 {
-    ::DestroyWindow(h);
+    ::CreateWindowEx(0, m_class.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                     ::GetModuleHandle(nullptr), this);
+}
+
+//==============================================================================
+auto App::show_window_default() -> void { ::ShowWindow(m_hwnd, SW_SHOWDEFAULT); }
+
+auto App::show_window() -> void { ::ShowWindow(m_hwnd, SW_SHOW); }
+
+auto App::hide_window() -> void { ::ShowWindow(m_hwnd, SW_HIDE); }
+
+//==============================================================================
+auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    App* self = InstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam);
+
+    if (self) return self->handle_message(uMsg, wParam, lParam);
+
+    else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_CLOSE: return on_close();
+    case WM_DESTROY: return on_destroy();
+    }
+
+    return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+}
+
+//==============================================================================
+auto App::on_close() -> int
+{
+    ::DestroyWindow(m_hwnd);
 
     return 0;
 }
 
-auto App::OnDestroy() -> int
+auto App::on_destroy() -> int
 {
     ::PostQuitMessage(0);
 
     return 0;
-}
-
-auto App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
-{
-    return ::DefWindowProc(h, m, w, l);
 }
 } // namespace glow::gui

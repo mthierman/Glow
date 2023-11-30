@@ -11,60 +11,79 @@
 #pragma once
 
 #include <gui/app.hxx>
+#include <gui/gui.hxx>
 
+//==============================================================================
 namespace glow
 {
 struct App : glow::gui::App
 {
     using glow::gui::App::App;
 
-  private:
-    auto WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT override;
-    static auto EnumChildProc(HWND h, LPARAM l) -> BOOL;
+    //==============================================================================
+    // auto get_hwnd() -> HWND;
 
-    auto OnNotify(HWND h) -> int;
-    auto OnWindowPosChanged(HWND h) -> int;
+  private:
+    auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+
+    //==============================================================================
+    auto on_notify() -> int;
+    auto on_window_pos_changed() -> int;
+
+    //==============================================================================
+    HWND m_hwnd{nullptr};
 };
 
-auto App::WndProc(HWND h, UINT m, WPARAM w, LPARAM l) -> LRESULT
+//==============================================================================
+// auto App::get_hwnd() -> HWND { return m_hwnd; }
+
+//==============================================================================
+auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    switch (m)
+    if (this)
     {
-    case WM_NOTIFY: return OnNotify(h);
-    case WM_WINDOWPOSCHANGED: return OnWindowPosChanged(h);
+        switch (uMsg)
+        {
+        case WM_NOTIFY: return on_notify();
+        case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
+        }
+
+        return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
     }
 
-    return ::DefWindowProc(h, m, w, l);
+    else return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 }
 
-auto CALLBACK App::EnumChildProc(HWND h, LPARAM l) -> BOOL
+auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
-    auto childId{::GetWindowLongPtr(h, GWL_ID)};
+    auto childId{::GetWindowLongPtr(hwnd, GWL_ID)};
 
-    auto rcParent{(LPRECT)l};
+    auto rcParent{(LPRECT)lParam};
 
     if (childId == 1)
-        ::SetWindowPos(h, nullptr, 0, 0, (rcParent->right - rcParent->left),
+        ::SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left),
                        (rcParent->bottom - rcParent->top), SWP_NOZORDER);
 
     return 1;
 }
 
-auto App::OnNotify(HWND h) -> int
+//==============================================================================
+auto App::on_notify() -> int
 {
 
     RECT clientRect{0};
-    ::GetClientRect(h, &clientRect);
-    ::EnumChildWindows(h, EnumChildProc, (LPARAM)&clientRect);
+    ::GetClientRect(m_hwnd, &clientRect);
+    ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
 
     return 0;
 }
 
-auto App::OnWindowPosChanged(HWND h) -> int
+auto App::on_window_pos_changed() -> int
 {
     RECT clientRect{0};
-    ::GetClientRect(h, &clientRect);
-    ::EnumChildWindows(h, EnumChildProc, (LPARAM)&clientRect);
+    ::GetClientRect(m_hwnd, &clientRect);
+    ::EnumChildWindows(m_hwnd, enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
 
     return 0;
 }
