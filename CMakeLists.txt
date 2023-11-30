@@ -46,7 +46,7 @@ FetchContent_Populate(wil)
 
 FetchContent_Declare(
     json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
 FetchContent_MakeAvailable(json)
 
@@ -58,7 +58,7 @@ FetchContent_MakeAvailable(toml)
 
 FetchContent_Declare(
     sqlite
-    URL https://www.sqlite.org/2023/sqlite-amalgamation-3440000.zip
+    URL https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip
 )
 FetchContent_MakeAvailable(sqlite)
 
