@@ -27,7 +27,7 @@ struct App
     virtual ~App();
 
     //==============================================================================
-    auto get_hwnd() -> HWND;
+    HWND m_hwnd{nullptr};
 
   private:
     auto register_window() -> void;
@@ -47,7 +47,6 @@ struct App
     auto on_destroy() -> int;
 
     //==============================================================================
-    HWND m_hwnd{nullptr};
     std::string m_class;
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),

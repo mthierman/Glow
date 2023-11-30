@@ -31,7 +31,8 @@ struct WebView
     ~WebView();
 
     //==============================================================================
-    auto get_hwnd() -> HWND;
+    HWND m_hwndParent{nullptr};
+    HWND m_hwnd{nullptr};
 
   private:
     auto register_window() -> void;
@@ -51,8 +52,6 @@ struct WebView
     auto on_window_pos_changed() -> int;
 
     //==============================================================================
-    HWND m_hwndParent{nullptr};
-    HWND m_hwnd{nullptr};
     std::string m_class;
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),

@@ -23,9 +23,6 @@ App::App(std::string name) : m_class(glow::text::randomize(name))
 App::~App() {}
 
 //==============================================================================
-auto App::get_hwnd() -> HWND { return m_hwnd; }
-
-//==============================================================================
 auto App::register_window() -> void
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
@@ -70,6 +67,7 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         case WM_CLOSE: return self->on_close();
         case WM_DESTROY: return self->on_destroy();
         }
+
         return self->handle_message(hwnd, uMsg, wParam, lParam);
     }
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -77,12 +75,6 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    // switch (uMsg)
-    // {
-    // case WM_CLOSE: return on_close();
-    // case WM_DESTROY: return on_destroy();
-    // }
-
     return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
 }
 

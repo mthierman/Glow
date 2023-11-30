@@ -19,23 +19,14 @@ struct App : glow::gui::App
 {
     using glow::gui::App::App;
 
-    //==============================================================================
-    // auto get_hwnd() -> HWND;
-
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    // static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     //==============================================================================
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
-
-    //==============================================================================
-    // HWND m_hwnd{nullptr};
 };
-
-//==============================================================================
-// auto App::get_hwnd() -> HWND { return m_hwnd; }
 
 //==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
