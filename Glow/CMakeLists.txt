@@ -1,6 +1,6 @@
 add_library(
     ${LIB_NAME}
-    ${PROJECT_SOURCE_DIR}/glow/Glow.cxx
+    ${GLOW_SOURCES}
     ${GLOW_HEADERS}
 )
 add_library(glow::glow ALIAS ${LIB_NAME})

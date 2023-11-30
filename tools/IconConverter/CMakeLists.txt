@@ -1,6 +1,7 @@
 add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter/IconConverter.cxx
+    ${PROJECT_SOURCE_DIR}/tools/IconConverter/IconConverter.hxx
     ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
     ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
     ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
@@ -9,6 +10,7 @@ add_executable(
 target_link_libraries(
     IconConverter
     PRIVATE
+    glow::glow
     glow::glow_compile_features
     glow::glow_compile_options
     glow::glow_include_directories

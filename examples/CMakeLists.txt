@@ -32,6 +32,7 @@ add_library(glow::glow_examples ALIAS glow_glow_examples)
 target_link_libraries(
     glow_glow_examples
     INTERFACE
+    glow::glow
     glow::glow_compile_features
     glow::glow_compile_options
     glow::glow_include_directories

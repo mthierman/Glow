@@ -17,6 +17,17 @@ if (PROJECT_IS_TOP_LEVEL)
 endif()
 
 set(
+    GLOW_SOURCES
+    ${PROJECT_SOURCE_DIR}/glow/console/console.cxx
+    ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.cxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/app.cxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/gui.cxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.cxx
+    ${PROJECT_SOURCE_DIR}/glow/gui/webview.cxx
+    ${PROJECT_SOURCE_DIR}/glow/logging/logging.cxx
+    ${PROJECT_SOURCE_DIR}/glow/text/text.cxx
+)
+set(
     GLOW_HEADERS
     ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
     ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
