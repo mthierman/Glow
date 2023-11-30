@@ -1,4 +1,4 @@
-set(NUGET_PATH "${PROJECT_BINARY_DIR}/_deps/Nuget")
+set(NUGET_PATH "${PROJECT_BINARY_DIR}/_deps/nuget")
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
@@ -7,7 +7,7 @@ set(WIL "Microsoft.Windows.ImplementationLibrary")
 set(WIL_VER "1.0.231028.1")
 set(
     URL_WIL
-    "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.zip"
+    "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.tar.gz"
 )
 set(
     URL_JSON
@@ -15,7 +15,7 @@ set(
 )
 set(
     URL_TOML
-    "https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.zip"
+    "https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz"
 )
 set(
     URL_SQLITE
