@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.26)
 
 set(LIB_NAME "Glow")
 set(LIB_VERSION "0.0.1")
-option(GLOW_BUILD_EXAMPLES OFF)
 
 project(
     ${LIB_NAME}
@@ -10,15 +9,21 @@ project(
     LANGUAGES C CXX
 )
 
-if (PROJECT_IS_TOP_LEVEL)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
-    set(CMAKE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/pdb)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
-endif()
+option(GLOW_BUILD_EXAMPLES OFF)
+
+# if (PROJECT_IS_TOP_LEVEL)
+#     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
+#     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
+#     set(CMAKE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/pdb)
+#     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
+# endif()
 
 include(cmake/packages.cmake)
 
+configure_file(${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in ${PROJECT_BINARY_DIR}/include/GlowConfig.h)
+file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
+
+# compile_features
 add_library(glow_glow_compile_features INTERFACE)
 add_library(glow::glow_compile_features ALIAS glow_glow_compile_features)
 target_compile_features(
@@ -28,6 +33,7 @@ target_compile_features(
     cxx_std_23
 )
 
+# compile_options
 add_library(glow_glow_compile_options INTERFACE)
 add_library(glow::glow_compile_options ALIAS glow_glow_compile_options)
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -41,58 +47,57 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         /wd4100
         /Zc:__cplusplus
     )
-
     target_link_options(
         glow_glow_compile_options
         INTERFACE
         /WX
     )
 endif()
-# if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-#     target_compile_options(
-#         glow_glow_compile_options
-#         INTERFACE
-#         -Wall
-#         -Wextra
-#         -Wpedantic
-#         -Wno-unused-parameters
-#         # -Werror
-#     )
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    target_compile_options(
+        glow_glow_compile_options
+        INTERFACE
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Wno-unused-parameters
+        -Werror
+    )
+    target_link_options(
+        glow_glow_compile_options
+        INTERFACE
+        --fatal-warnings
+    )
+endif()
 
-#     target_link_options(
-#         glow_glow_compile_options
-#         INTERFACE
-#         # --fatal-warnings
-#     )
-# endif()
-
-add_library(glow_glow_includes INTERFACE)
-add_library(glow::glow_includes ALIAS glow_glow_includes)
+# include_directories
+add_library(glow_glow_include_directories INTERFACE)
+add_library(glow::glow_include_directories ALIAS glow_glow_include_directories)
 target_include_directories(
-    glow_glow_includes
+    glow_glow_include_directories
     INTERFACE
     ${PROJECT_SOURCE_DIR}
-    ${PROJECT_BINARY_DIR}
-    ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    ${PROJECT_BINARY_DIR}/include
     ${webview_SOURCE_DIR}/build/native/include
     ${wil_SOURCE_DIR}/include
     ${sqlite_SOURCE_DIR}
 )
 target_compile_definitions(
-    glow_glow_includes
+    glow_glow_include_directories
     INTERFACE
     NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
-add_library(glow_glow_libs INTERFACE)
-add_library(glow::glow_libs ALIAS glow_glow_libs)
+# link_libraries
+add_library(glow_glow_link_libraries INTERFACE)
+add_library(glow::glow_link_libraries ALIAS glow_glow_link_libraries)
 target_link_directories(
-    glow_glow_libs
+    glow_glow_link_libraries
     INTERFACE
     ${webview_SOURCE_DIR}/build/native/x64
 )
 target_link_libraries(
-    glow_glow_libs
+    glow_glow_link_libraries
     INTERFACE
     nlohmann_json::nlohmann_json
     tomlplusplus::tomlplusplus
@@ -104,6 +109,7 @@ target_link_libraries(
     WebView2LoaderStatic.lib
 )
 
+# glow
 add_library(glow_glow ${PROJECT_SOURCE_DIR}/src/Glow.cxx)
 add_library(glow::glow ALIAS glow_glow)
 target_link_libraries(
@@ -111,36 +117,26 @@ target_link_libraries(
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_includes
-    glow::glow_libs
+    glow::glow_include_directories
+    glow::glow_link_libraries
 )
 
-configure_file(${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in ${PROJECT_BINARY_DIR}/GlowConfig.h)
-file(TO_CMAKE_PATH ${PROJECT_SOURCE_DIR}/data/app.manifest MANIFEST_FILE)
-
+# IconConverter
 add_executable(
     IconConverter
     ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
     ${MANIFEST_FILE}
 )
-
 target_link_libraries(
     IconConverter
     PRIVATE
     glow::glow_compile_features
     glow::glow_compile_options
-    glow::glow_includes
+    glow::glow_include_directories
     windowscodecs.lib
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_link_options(
-        IconConverter
-        PRIVATE
-        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/IconConverter.ilk
-    )
-endif()
-
+# Examples
 if(GLOW_BUILD_EXAMPLES)
     file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
     file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/res.rc RC_FILE)
@@ -165,8 +161,8 @@ if(GLOW_BUILD_EXAMPLES)
         INTERFACE
         glow::glow_compile_features
         glow::glow_compile_options
-        glow::glow_includes
-        glow::glow_libs
+        glow::glow_include_directories
+        glow::glow_link_libraries
     )
 
     add_executable(
@@ -175,6 +171,8 @@ if(GLOW_BUILD_EXAMPLES)
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
+    target_link_libraries(Console PRIVATE glow::glow_examples)
+    add_dependencies(Console MakeIcon)
 
     add_executable(
         Win32
@@ -183,6 +181,8 @@ if(GLOW_BUILD_EXAMPLES)
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
+    target_link_libraries(Win32 PRIVATE glow::glow_examples)
+    add_dependencies(Win32 MakeIcon)
 
     add_executable(
         WebView
@@ -191,6 +191,8 @@ if(GLOW_BUILD_EXAMPLES)
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
+    target_link_libraries(WebView PRIVATE glow::glow_examples)
+    add_dependencies(WebView MakeIcon)
 
     add_executable(
         WebViewComposition
@@ -199,40 +201,6 @@ if(GLOW_BUILD_EXAMPLES)
         ${RC_FILE}
         ${MANIFEST_FILE}
     )
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_link_options(
-        Console
-        PRIVATE
-        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/Console.ilk
-    )
-
-    target_link_options(
-        Win32
-        PRIVATE
-        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/Win32.ilk
-    )
-
-    target_link_options(
-        WebView
-        PRIVATE
-        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/WebView.ilk
-    )
-
-    target_link_options(
-        WebViewComposition
-        PRIVATE
-        /ILK:${CMAKE_PDB_OUTPUT_DIRECTORY}/WebViewComposition.ilk
-    )
-endif()
-
-    target_link_libraries(Console PRIVATE glow::glow_examples)
-    target_link_libraries(Win32 PRIVATE glow::glow_examples)
-    target_link_libraries(WebView PRIVATE glow::glow_examples)
     target_link_libraries(WebViewComposition PRIVATE glow::glow_examples)
-
-    add_dependencies(Console MakeIcon)
-    add_dependencies(Win32 MakeIcon)
-    add_dependencies(WebView MakeIcon)
     add_dependencies(WebViewComposition MakeIcon)
 endif()
