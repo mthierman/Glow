@@ -19,7 +19,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
     register_window();
     create_window();
     show_window_default();
-    // window_cloak(m_hwnd);
+    window_cloak(m_hwnd);
 
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -74,7 +74,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
                                             {
                                                 if (!initialized)
                                                 {
-                                                    // window_uncloak(m_hwnd);
+                                                    window_uncloak(m_hwnd);
                                                     ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
                                                     initialized = true;
                                                 }
@@ -138,7 +138,6 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         switch (uMsg)
         {
-        case WM_CLOSE: return self->on_close();
         case WM_WINDOWPOSCHANGED: return self->on_window_pos_changed();
         }
 
@@ -153,17 +152,8 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 }
 
 //==============================================================================
-auto WebView::on_close() -> int
-{
-    OutputDebugString("WEBVIEW: WM_CLOSE\n");
-    ::DestroyWindow(m_hwnd);
-
-    return 0;
-}
-
 auto WebView::on_window_pos_changed() -> int
 {
-    OutputDebugString("WEBVIEW: WM_ONWINDOWPOSCHANGED\n");
     RECT rect{};
     ::GetClientRect(m_hwnd, &rect);
 

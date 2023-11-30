@@ -48,7 +48,6 @@ struct WebView
     virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     //==============================================================================
-    virtual auto on_close() -> int;
     virtual auto on_window_pos_changed() -> int;
 
     //==============================================================================
