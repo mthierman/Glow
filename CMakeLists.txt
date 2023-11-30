@@ -12,12 +12,11 @@ project(
 option(GLOW_BUILD_EXAMPLES OFF)
 option(GLOW_BUILD_ICONCONVERTER OFF)
 
-# if (PROJECT_IS_TOP_LEVEL)
-#     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
-#     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
-#     set(CMAKE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/pdb)
-#     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
-# endif()
+if (PROJECT_IS_TOP_LEVEL)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIB_NAME})
+endif()
 
 include(cmake/packages.cmake)
 
@@ -162,12 +161,12 @@ if(GLOW_BUILD_ICONCONVERTER)
 endif()
 
 if(GLOW_BUILD_EXAMPLES)
-    file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
-    file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/res.rc RC_FILE)
+    file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/data/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
+    file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/data/res.rc RC_FILE)
 
     if(GLOW_BUILD_ICONCONVERTER)
         set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-        set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+        set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
         add_custom_command(
             OUTPUT ${ICO_FILE}
             COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
@@ -179,7 +178,7 @@ if(GLOW_BUILD_EXAMPLES)
         )
     else()
         set(ICO_SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-        set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+        set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
         add_custom_command(
             OUTPUT ${ICO_FILE}
             COMMAND ${CMAKE_COMMAND} -E copy ${ICO_SOURCE_FILE} ${PROJECT_BINARY_DIR}
