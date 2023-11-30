@@ -27,8 +27,8 @@
 
 #include "WebView.hxx"
 
-int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PSTR /*pCmdLine*/,
-                   int /*nCmdShow*/)
+auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
+    -> int
 {
     // #ifdef _DEBUG
     //     glow::console::Console console;
@@ -39,17 +39,17 @@ int WINAPI WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, PSTR /*
     auto wv{std::make_unique<glow::gui::WebViewComp>("WebView", app->appHwnd, 1)};
     wv->create_webview(app->appHwnd);
 
-    MSG msg;
-    int r;
+    MSG msg{nullptr};
+    int r{0};
 
-    while ((r = GetMessage(&msg, nullptr, 0, 0)) != 0)
+    while ((r = ::GetMessage(&msg, nullptr, 0, 0)) != 0)
     {
         if (r == -1) return 0;
 
         else
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
         }
     }
 

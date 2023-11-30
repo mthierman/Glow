@@ -22,17 +22,17 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     auto app{std::make_unique<glow::gui::App>("App")};
 
-    MSG msg;
-    int r;
+    MSG msg{nullptr};
+    int r{0};
 
-    while ((r = GetMessage(&msg, nullptr, 0, 0)) != 0)
+    while ((r = ::GetMessage(&msg, nullptr, 0, 0)) != 0)
     {
         if (r == -1) return 0;
 
         else
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            ::TranslateMessage(&msg);
+            ::DispatchMessage(&msg);
         }
     }
 
