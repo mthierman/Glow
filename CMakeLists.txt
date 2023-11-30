@@ -10,6 +10,7 @@ project(
 )
 
 option(GLOW_BUILD_EXAMPLES OFF)
+option(GLOW_BUILD_ICONCONVERTER OFF)
 
 # if (PROJECT_IS_TOP_LEVEL)
 #     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libs)
@@ -141,41 +142,54 @@ set_target_properties(
     OUTPUT_NAME ${LIB_NAME}
 )
 
-# IconConverter
-add_executable(
-    IconConverter
-    ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
-    ${PROJECT_SOURCE_DIR}/console/console.hxx
-    ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
-    ${PROJECT_SOURCE_DIR}/text/text.hxx
-    ${MANIFEST_FILE}
-)
-target_link_libraries(
-    IconConverter
-    PRIVATE
-    glow::glow_compile_features
-    glow::glow_compile_options
-    glow::glow_include_directories
-    windowscodecs.lib
-)
+if(GLOW_BUILD_ICONCONVERTER)
+    add_executable(
+        IconConverter
+        ${PROJECT_SOURCE_DIR}/tools/IconConverter.cxx
+        ${PROJECT_SOURCE_DIR}/console/console.hxx
+        ${PROJECT_SOURCE_DIR}/filesystem/filesystem.hxx
+        ${PROJECT_SOURCE_DIR}/text/text.hxx
+        ${MANIFEST_FILE}
+    )
+    target_link_libraries(
+        IconConverter
+        PRIVATE
+        glow::glow_compile_features
+        glow::glow_compile_options
+        glow::glow_include_directories
+        windowscodecs.lib
+    )
+endif()
 
-# Examples
 if(GLOW_BUILD_EXAMPLES)
     file(GENERATE OUTPUT ${PROJECT_BINARY_DIR}/res.rc CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\"")
     file(TO_CMAKE_PATH ${PROJECT_BINARY_DIR}/res.rc RC_FILE)
-    set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-    set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
 
-    add_custom_command(
-        OUTPUT ${ICO_FILE}
-        COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
-        COMMENT "Running IconConverter..."
-    )
-
-    add_custom_target(
-        MakeIcon ALL
-        DEPENDS ${ICO_FILE}
-    )
+    if(GLOW_BUILD_ICONCONVERTER)
+        set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
+        set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+        add_custom_command(
+            OUTPUT ${ICO_FILE}
+            COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
+            COMMENT "Running IconConverter..."
+        )
+        add_custom_target(
+            MakeIcon ALL
+            DEPENDS ${ICO_FILE}
+        )
+    else()
+        set(ICO_SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+        set(ICO_FILE ${PROJECT_BINARY_DIR}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+        add_custom_command(
+            OUTPUT ${ICO_FILE}
+            COMMAND ${CMAKE_COMMAND} -E copy ${ICO_SOURCE_FILE} ${PROJECT_BINARY_DIR}
+            COMMENT "Copying icon..."
+        )
+        add_custom_target(
+            MakeIcon ALL
+            DEPENDS ${ICO_FILE}
+        )
+    endif()
 
     add_library(glow_glow_examples INTERFACE)
     add_library(glow::glow_examples ALIAS glow_glow_examples)
@@ -198,7 +212,6 @@ if(GLOW_BUILD_EXAMPLES)
         ${MANIFEST_FILE}
     )
     target_link_libraries(App PRIVATE glow::glow_examples)
-    add_dependencies(App MakeIcon)
 
     add_executable(
         Console
@@ -210,7 +223,6 @@ if(GLOW_BUILD_EXAMPLES)
         ${MANIFEST_FILE}
     )
     target_link_libraries(Console PRIVATE glow::glow_examples)
-    add_dependencies(Console MakeIcon)
 
     add_executable(
         WebView
@@ -224,7 +236,7 @@ if(GLOW_BUILD_EXAMPLES)
         ${MANIFEST_FILE}
     )
     target_link_libraries(WebView PRIVATE glow::glow_examples)
-    add_dependencies(WebView MakeIcon)
+
 
     add_executable(
         WebViewComposition
@@ -238,5 +250,9 @@ if(GLOW_BUILD_EXAMPLES)
         ${MANIFEST_FILE}
     )
     target_link_libraries(WebViewComposition PRIVATE glow::glow_examples)
+
+    add_dependencies(App MakeIcon)
+    add_dependencies(Console MakeIcon)
+    add_dependencies(WebView MakeIcon)
     add_dependencies(WebViewComposition MakeIcon)
 endif()
