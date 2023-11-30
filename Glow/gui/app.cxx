@@ -63,12 +63,12 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 {
     App* self = InstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam);
 
-    if (self) return self->handle_message(uMsg, wParam, lParam);
+    if (self) return self->handle_message(hwnd, uMsg, wParam, lParam);
 
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {

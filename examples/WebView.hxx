@@ -19,8 +19,11 @@ struct App : glow::gui::App
 {
     using glow::gui::App::App;
 
+    //==============================================================================
+    auto get_hwnd() -> HWND;
+
   private:
-    auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     //==============================================================================
@@ -32,7 +35,10 @@ struct App : glow::gui::App
 };
 
 //==============================================================================
-auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::get_hwnd() -> HWND { return m_hwnd; }
+
+//==============================================================================
+auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -40,7 +46,7 @@ auto App::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
     }
 
-    return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+    return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
