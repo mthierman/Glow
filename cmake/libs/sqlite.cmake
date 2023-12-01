@@ -5,13 +5,6 @@ target_sources(
     SQLite
     PRIVATE
     ${sqlite_SOURCE_DIR}/sqlite3.c
-)
-
-target_sources(
-    SQLite
-    PUBLIC
-    FILE_SET HEADERS
-    FILES
     ${sqlite_SOURCE_DIR}/sqlite3.h
 )
 
@@ -28,4 +21,4 @@ set_target_properties(
     OUTPUT_NAME SQLite
 )
 
-# file(COPY ${sqlite_SOURCE_DIR}/sqlite3.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+file(COPY ${sqlite_SOURCE_DIR}/sqlite3.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

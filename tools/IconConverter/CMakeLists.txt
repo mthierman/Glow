@@ -4,15 +4,11 @@ target_sources(
     IconConverter
     PRIVATE
     IconConverter.cxx
-    ${PROJECT_SOURCE_DIR}/data/app.manifest
-)
-
-target_sources(
-    IconConverter
-    PRIVATE
-    FILE_SET HEADERS
-    FILES
     IconConverter.hxx
+    ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
+    ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
+    ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
+    ${DATA_MANIFEST}
 )
 
 target_link_libraries(

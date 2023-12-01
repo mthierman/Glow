@@ -16,6 +16,7 @@ if (PROJECT_IS_TOP_LEVEL)
 endif()
 
 include(Dependencies)
+include(Data)
 
 add_subdirectory(Glow)
 
