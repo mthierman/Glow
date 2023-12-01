@@ -1,4 +1,4 @@
-set(NUGET_PATH "${PROJECT_BINARY_DIR}/_deps/nuget")
+set(NUGET_PATH "${CMAKE_BINARY_DIR}/_deps/nuget")
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")
