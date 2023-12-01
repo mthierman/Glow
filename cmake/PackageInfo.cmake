@@ -1,4 +1,3 @@
-
 set(WEBVIEW "Microsoft.Web.WebView2")
 set(WEBVIEW_VER "1.0.2151.40")
 set(CPPWINRT "Microsoft.Windows.CppWinRT")

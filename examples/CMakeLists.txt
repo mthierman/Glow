@@ -1,6 +1,6 @@
 if(GLOW_BUILD_ICONCONVERTER)
     set(SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-    set(OUTPUT_FILE ${CMAKE_BINARY_DIR}/_deps/Glow/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+    set(OUTPUT_FILE ${DATA_DIRECTORY}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
 
     add_custom_command(
         OUTPUT ${OUTPUT_FILE}
@@ -14,11 +14,11 @@ if(GLOW_BUILD_ICONCONVERTER)
     )
 else()
     set(SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-    set(OUTPUT_FILE ${CMAKE_BINARY_DIR}/_deps/Glow/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+    set(OUTPUT_FILE ${DATA_DIRECTORY}/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
 
     add_custom_command(
         OUTPUT ${OUTPUT_FILE}
-        COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${PROJECT_BINARY_DIR}
+        COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${DATA_DIRECTORY}
         COMMENT "Copying icon..."
     )
 
