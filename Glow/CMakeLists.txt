@@ -1,3 +1,5 @@
+include(libs/SQLite)
+
 add_library(glow_glow_compile_features INTERFACE)
 add_library(glow::glow_compile_features ALIAS glow_glow_compile_features)
 
@@ -61,7 +63,7 @@ add_library(glow::glow_link_libraries ALIAS glow_glow_link_libraries)
 target_link_directories(
     glow_glow_link_libraries
     INTERFACE
-    ${OUTPUT_DIRECTORY}
+    ${LIB_DIRECTORY}
 )
 
 target_link_libraries(

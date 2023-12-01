@@ -13,5 +13,4 @@ include(deps/SQLite)
 # include(deps/CURL)
 
 # Libraries
-include(libs/SQLite)
 include(libs/Nuget)
