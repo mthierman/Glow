@@ -1,5 +1,5 @@
 execute_process(
     COMMAND
-    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${NUGET_PATH}
+    nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${CMAKE_NUGET_OUTPUT_DIRECTORY}
 )
-file(TO_CMAKE_PATH ${NUGET_PATH}/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)
+file(TO_CMAKE_PATH ${CMAKE_NUGET_OUTPUT_DIRECTORY}/${CPPWINRT}.${CPPWINRT_VER} cppwinrt_SOURCE_DIR)

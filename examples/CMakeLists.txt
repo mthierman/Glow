@@ -1,30 +1,30 @@
 if(GLOW_BUILD_ICONCONVERTER)
-    set(PNG_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
-    set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+    set(SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png)
+    set(OUTPUT_FILE ${CMAKE_BINARY_DIR}/_deps/Glow/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
 
     add_custom_command(
-        OUTPUT ${ICO_FILE}
-        COMMAND IconConverter ${PNG_FILE} ${ICO_FILE}
+        OUTPUT ${OUTPUT_FILE}
+        COMMAND IconConverter ${SOURCE_FILE} ${OUTPUT_FILE}
         COMMENT "Running IconConverter..."
     )
 
     add_custom_target(
         MakeIcon ALL
-        DEPENDS ${ICO_FILE}
+        DEPENDS ${OUTPUT_FILE}
     )
 else()
-    set(ICO_SOURCE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
-    set(ICO_FILE ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+    set(SOURCE_FILE ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
+    set(OUTPUT_FILE ${CMAKE_BINARY_DIR}/_deps/Glow/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico)
 
     add_custom_command(
-        OUTPUT ${ICO_FILE}
-        COMMAND ${CMAKE_COMMAND} -E copy ${ICO_SOURCE} ${PROJECT_BINARY_DIR}
+        OUTPUT ${OUTPUT_FILE}
+        COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${PROJECT_BINARY_DIR}
         COMMENT "Copying icon..."
     )
 
     add_custom_target(
         MakeIcon ALL
-        DEPENDS ${ICO_FILE}
+        DEPENDS ${OUTPUT_FILE}
     )
 endif()
 
