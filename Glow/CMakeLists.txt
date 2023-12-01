@@ -31,23 +31,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     )
 endif()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    target_compile_options(
-        glow_glow_compile_options
-        INTERFACE
-        -Wall
-        -Wextra
-        -Wpedantic
-        -Wno-unused-parameters
-        -Werror
-    )
-    target_link_options(
-        glow_glow_compile_options
-        INTERFACE
-        --fatal-warnings
-    )
-endif()
-
 add_library(glow_glow_include_directories INTERFACE)
 add_library(glow::glow_include_directories ALIAS glow_glow_include_directories)
 
