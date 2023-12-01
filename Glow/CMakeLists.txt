@@ -52,7 +52,7 @@ add_library(glow::glow_include_directories ALIAS glow_glow_include_directories)
 target_include_directories(
     glow_glow_include_directories
     INTERFACE
-    ${CMAKE_INCLUDE_OUTPUT_DIRECTORY}
+    ${INCLUDE_DIRECTORY}
 )
 
 add_library(glow_glow_link_libraries INTERFACE)
@@ -61,7 +61,7 @@ add_library(glow::glow_link_libraries ALIAS glow_glow_link_libraries)
 target_link_directories(
     glow_glow_link_libraries
     INTERFACE
-    ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+    ${CMAKE_BINARY_DIR}
 )
 
 target_link_libraries(

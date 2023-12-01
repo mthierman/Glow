@@ -28,5 +28,5 @@ set(
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in
-    ${CMAKE_INCLUDE_OUTPUT_DIRECTORY}/GlowConfig.h
+    ${INCLUDE_DIRECTORY}/GlowConfig.h
 )

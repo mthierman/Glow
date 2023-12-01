@@ -21,4 +21,4 @@ set_target_properties(
     OUTPUT_NAME SQLite
 )
 
-file(COPY ${sqlite_SOURCE_DIR}/sqlite3.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+file(COPY ${sqlite_SOURCE_DIR}/sqlite3.h DESTINATION ${INCLUDE_DIRECTORY})
