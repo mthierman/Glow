@@ -9,8 +9,8 @@
 
 #pragma once
 
-#define LIB_NAME "@LIB_NAME@"
-#define LIB_VERSION "@LIB_VERSION@"
+#define PROJECT_NAME "@PROJECT_NAME@"
+#define PROJECT_VERSION "@PROJECT_VERSION@"
 #define WEBVIEW "@WEBVIEW@"
 #define WEBVIEW_VER "@WEBVIEW_VER@"
 #define CPPWINRT "@CPPWINRT@"
