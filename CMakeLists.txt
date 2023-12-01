@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.27)
 
-project(Glow VERSION 0.0.1 LANGUAGES C CXX)
+project(
+    Glow
+    VERSION 0.0.1
+    LANGUAGES C CXX)
 
 option(GLOW_BUILD_EXAMPLES OFF)
 option(GLOW_BUILD_ICONCONVERTER OFF)
