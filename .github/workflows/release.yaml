@@ -39,11 +39,11 @@ jobs:
           Export-Notes
           Compress-Repo
           $name = Get-Name
-          $version = Get-Version
+          $version = "v$(Get-Version)"
           $archive = Get-Archive
           $notes = Get-Notes
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release delete $version -y
-            gh release create $version $archive -F $notes -t "$name $version"
+            gh release create $version $archive -F $notes -t "$version"
           }
