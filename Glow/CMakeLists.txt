@@ -74,7 +74,7 @@ add_library(
 target_link_directories(
     glow_glow_link_libraries
     INTERFACE
-    ${LIB_DIRECTORY}
+    ${NUGET_DIRECTORY}/${WEBVIEW}.${WEBVIEW_VER}/build/native/x64
 )
 
 target_link_libraries(

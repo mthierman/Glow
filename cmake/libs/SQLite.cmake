@@ -23,8 +23,3 @@ set_target_properties(
     PROPERTIES OUTPUT_NAME
                SQLite
 )
-
-file(
-    COPY ${sqlite_SOURCE_DIR}/sqlite3.h
-    DESTINATION ${INCLUDE_DIRECTORY}
-)

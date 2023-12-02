@@ -5,6 +5,7 @@ file(
     ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json
     GLOW_JSON
 )
+
 string(
     JSON
     GLOW_VERSION
@@ -24,10 +25,12 @@ option(
     GLOW_BUILD_EXAMPLES
     OFF
 )
+
 option(
     GLOW_BUILD_ICONCONVERTER
     OFF
 )
+
 option(
     GLOW_ENABLE_TESTING
     OFF
@@ -42,23 +45,13 @@ list(
 set(NUGET_DIRECTORY
     ${CMAKE_BINARY_DIR}/_deps/Nuget
 )
-set(OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/Glow
-)
-set(DATA_DIRECTORY
-    ${OUTPUT_DIRECTORY}/data
-)
-set(DLL_DIRECTORY
-    ${OUTPUT_DIRECTORY}
-)
+
 set(INCLUDE_DIRECTORY
-    ${OUTPUT_DIRECTORY}/include
-)
-set(LIB_DIRECTORY
-    ${OUTPUT_DIRECTORY}
+    ${CMAKE_BINARY_DIR}/_deps_include
 )
 
 include(Dependencies)
+
 include(Data)
 
 add_subdirectory(Glow)
