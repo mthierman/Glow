@@ -35,10 +35,10 @@ function Get-Commit
 
 function Get-Archive
 {
-    Get-Item "Glow.tar.xz"
+    Get-Item "..\Glow.tar.xz"
 }
 
 function Get-ReleaseNotes
 {
-    Get-Item "notes.txt"
+    Get-Item "..\notes.txt"
 }
