@@ -1,7 +1,13 @@
+project(
+    SQLite
+    VERSION 3.44.2
+    LANGUAGES C
+)
+
 add_library(SQLite)
 
 add_library(
-    sqlite::sqlite
+    glow::sqlite
     ALIAS
     SQLite
 )
@@ -9,17 +15,16 @@ add_library(
 target_sources(
     SQLite
     PRIVATE ${sqlite_SOURCE_DIR}/sqlite3.c
-            ${sqlite_SOURCE_DIR}/sqlite3.h
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           ${sqlite_SOURCE_DIR}
+           FILES
+           ${sqlite_SOURCE_DIR}/sqlite3.h
 )
 
 target_link_libraries(
     SQLite
     PRIVATE glow::glow_compile_features
             glow::glow_compile_options
-)
-
-set_target_properties(
-    SQLite
-    PROPERTIES OUTPUT_NAME
-               SQLite
 )

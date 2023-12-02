@@ -17,3 +17,8 @@ file(
     ${PROJECT_SOURCE_DIR}/data/Glow.manifest
     DATA_MANIFEST
 )
+
+configure_file(
+    ${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in
+    ${PROJECT_BINARY_DIR}/config/GlowConfig.h
+)

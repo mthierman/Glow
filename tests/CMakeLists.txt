@@ -1,5 +1,7 @@
 include(CTest)
 
+enable_testing()
+
 add_executable(Tests)
 
 target_sources(

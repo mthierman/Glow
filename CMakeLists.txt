@@ -39,19 +39,10 @@ option(
 list(
     APPEND
     CMAKE_MODULE_PATH
-    ${PROJECT_SOURCE_DIR}/cmake
-)
-
-set(NUGET_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps/Nuget
-)
-
-set(INCLUDE_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps_include
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake
 )
 
 include(Dependencies)
-
 include(Data)
 
 add_subdirectory(Glow)
@@ -65,6 +56,5 @@ if(GLOW_BUILD_EXAMPLES)
 endif()
 
 if(GLOW_ENABLE_TESTING)
-    enable_testing()
     add_subdirectory(tests)
 endif()

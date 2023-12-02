@@ -126,6 +126,7 @@ target_sources(
 target_link_libraries(
     WebViewComposition
     PRIVATE glow::glow_examples
+            CoreMessaging.lib
 )
 
 add_dependencies(

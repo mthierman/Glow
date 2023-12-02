@@ -1,9 +1,11 @@
-include(libs/SQLite)
+include(SQLite)
 
+# glow::glow_compile_features
 add_library(
     glow_glow_compile_features
     INTERFACE
 )
+
 add_library(
     glow::glow_compile_features
     ALIAS
@@ -16,10 +18,12 @@ target_compile_features(
               cxx_std_23
 )
 
+# glow::glow_compile_options
 add_library(
     glow_glow_compile_options
     INTERFACE
 )
+
 add_library(
     glow::glow_compile_options
     ALIAS
@@ -39,6 +43,7 @@ if(CMAKE_CXX_COMPILER_ID
                   /wd4100
                   /Zc:__cplusplus
     )
+
     target_link_options(
         glow_glow_compile_options
         INTERFACE
@@ -46,10 +51,12 @@ if(CMAKE_CXX_COMPILER_ID
     )
 endif()
 
+# glow::glow_include_directories
 add_library(
     glow_glow_include_directories
     INTERFACE
 )
+
 add_library(
     glow::glow_include_directories
     ALIAS
@@ -58,13 +65,18 @@ add_library(
 
 target_include_directories(
     glow_glow_include_directories
-    INTERFACE ${INCLUDE_DIRECTORY}
+    INTERFACE ${PROJECT_BINARY_DIR}/config
+              ${webview_SOURCE_DIR}/build/native/include-winrt
+              ${webview_SOURCE_DIR}/build/native/include
+              ${wil_SOURCE_DIR}/include
 )
 
+# glow::glow_link_libraries
 add_library(
     glow_glow_link_libraries
     INTERFACE
 )
+
 add_library(
     glow::glow_link_libraries
     ALIAS
@@ -81,11 +93,10 @@ target_link_libraries(
     glow_glow_link_libraries
     INTERFACE nlohmann_json::nlohmann_json
               tomlplusplus::tomlplusplus
-              sqlite::sqlite
+              glow::sqlite
               dwmapi.lib
               Comctl32.lib
               gdiplus.lib
-              CoreMessaging.lib
               WebView2LoaderStatic.lib
 )
 
@@ -94,7 +105,9 @@ target_compile_definitions(
     INTERFACE NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
 
+# glow::glow
 add_library(Glow)
+
 add_library(
     glow::glow
     ALIAS
@@ -130,14 +143,10 @@ target_sources(
 
 target_link_libraries(
     Glow
-    PRIVATE glow::glow_compile_features
-            glow::glow_compile_options
-            glow::glow_include_directories
-            glow::glow_link_libraries
+    PUBLIC glow::glow_compile_features
+           glow::glow_compile_options
+           glow::glow_include_directories
+           glow::glow_link_libraries
 )
 
-set_target_properties(
-    Glow
-    PROPERTIES OUTPUT_NAME
-               Glow
-)
+# set_target_properties( Glow PROPERTIES OUTPUT_NAME Glow )
