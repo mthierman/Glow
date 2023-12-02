@@ -26,19 +26,25 @@ jobs:
           path: |
             build/_deps
           key: deps-${{ hashFiles('cmake/PackageInfo.cmake') }}
+      # - name: Compress
+      #   run: |
+      #     Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+      #     Export-ReleaseNotes
+      #     $commit = Get-Commit
+      #     Compress-Repo
+      #     $archive = Get-Archive
+      #     $notes = Get-ReleaseNotes
+
+      #     if ("${{ github.ref_name }}" -eq "main") {
+      #       gh release delete $commit -y
+      #       gh release create $commit $archive -F $notes -t "Glow $version"
+      #     }
       - name: Compress
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
           Export-ReleaseNotes
           $commit = Get-Commit
-          Compress-Repo
-          $archive = Get-Archive
-          $notes = Get-ReleaseNotes
-
-          if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete $commit -y
-            gh release create $commit $archive -F $notes -t "Glow $version"
-          }
+          $commit
       # - name: CMake
       #   run: |
       #     Import-Module ${{ github.workspace }}/tools/scripts/pwsh
