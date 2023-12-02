@@ -3,7 +3,7 @@ name: Release
 on:
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [main, next]
 
 permissions:
   contents: write
@@ -33,8 +33,14 @@ jobs:
           Import-Module ${{ github.workspace }}/tools/pwsh
           Invoke-CMake
 
-      - name: Release
+      - name: Stable Release
         if: ${{ github.ref_name }}" -eq "main"
         run: |
           Import-Module ${{ github.workspace }}/tools/pwsh
-          Invoke-VersionRelease
+          Invoke-StableRelease
+
+      - name: Nightly Release
+        if: ${{ github.ref_name }}" -eq "next"
+        run: |
+          Import-Module ${{ github.workspace }}/tools/pwsh
+          Invoke-NextRelease
