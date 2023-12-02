@@ -12,7 +12,6 @@ string(
     ${GLOW_JSON}
     version
 )
-message(STATUS ${GLOW_VERSION})
 
 project(
     Glow

@@ -30,12 +30,12 @@ jobs:
 
       - name: CMake
         run: |
-          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Import-Module ${{ github.workspace }}/tools/pwsh
           Enter-DevShell64 && Build-CMake
 
       - name: Release
         run: |
-          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Import-Module ${{ github.workspace }}/tools/pwsh
           Export-Notes
           Compress-Repo
           $name = Get-Name

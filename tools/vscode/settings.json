@@ -1,7 +1,0 @@
-{
-    "cmake.configureSettings": {
-        "GLOW_BUILD_ICONCONVERTER": "ON",
-        "GLOW_BUILD_EXAMPLES": "ON",
-        "GLOW_ENABLE_TESTING": "ON"
-    }
-}
