@@ -37,4 +37,5 @@ jobs:
         if: ${{ github.ref_name }}" -eq "main"
         run: |
           Import-Module ${{ github.workspace }}/tools/pwsh
+          Invoke-LatestRelease
           Invoke-StableRelease
