@@ -18,7 +18,7 @@ function Build-CMake
     cmake --build --preset Release
 }
 
-function Export-ReleaseNotes
+function Export-Notes
 {
     git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
 }
@@ -41,7 +41,7 @@ function Get-Archive
     Get-Item "..\Glow.tar.xz"
 }
 
-function Get-ReleaseNotes
+function Get-Notes
 {
     Get-Item "..\notes.txt"
 }

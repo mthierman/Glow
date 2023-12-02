@@ -19,6 +19,7 @@ jobs:
         with:
           fetch-depth: 5
           submodules: true
+
       - name: Cache
         uses: actions/cache@v3
         id: deps
@@ -26,20 +27,22 @@ jobs:
           path: |
             build/_deps
           key: deps-${{ hashFiles('cmake/PackageInfo.cmake') }}
+
+      - name: CMake
+        run: |
+          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Enter-DevShell64 && Build-CMake
+
       - name: Release
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-          Export-ReleaseNotes
+          Export-Notes
           Compress-Repo
           $commit = Get-Commit
           $archive = Get-Archive
-          $notes = Get-ReleaseNotes
+          $notes = Get-Notes
 
           if ("${{ github.ref_name }}" -eq "main") {
             gh release delete $commit -y
             gh release create $commit $archive -F $notes -t "Glow $version"
           }
-      # - name: CMake
-      #   run: |
-      #     Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-      #     Enter-DevShell64 && Build-CMake
