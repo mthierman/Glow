@@ -30,9 +30,8 @@ function Get-Commit
 
 function Compress-Repo
 {
-    Remove-Item .git -Force -Recurse
     Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe -cJf Glow.tar.xz Glow
+    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs -cJf Glow.tar.xz Glow
 }
 
 function Get-Archive
