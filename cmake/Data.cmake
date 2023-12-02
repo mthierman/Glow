@@ -1,13 +1,13 @@
 if(GLOW_BUILD_EXAMPLES)
     file(
         GENERATE
-        OUTPUT ${PROJECT_BINARY_DIR}/Glow.rc
+        OUTPUT ${PROJECT_BINARY_DIR}/data/Glow.rc
         CONTENT "1 ICON \"$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico\""
     )
 
     file(
         TO_CMAKE_PATH
-        ${PROJECT_BINARY_DIR}/Glow.rc
+        ${PROJECT_BINARY_DIR}/data/Glow.rc
         GLOW_DATA_RC
     )
 endif()
