@@ -22,6 +22,7 @@ function Compress-Repo
 {
     Push-Location
     Set-Location ..\
+    tar -h
     tar -cJf ..\Glow.tar.xz Glow
     Pop-Location
 }
