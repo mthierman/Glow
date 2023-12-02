@@ -31,19 +31,10 @@ jobs:
       - name: CMake
         run: |
           Import-Module ${{ github.workspace }}/tools/pwsh
-          Enter-DevShell64 && Build-CMake
+          Invoke-CMake
 
       - name: Release
+        if: ${{ github.ref_name }}" -eq "main"
         run: |
           Import-Module ${{ github.workspace }}/tools/pwsh
-          Export-Notes
-          Compress-Repo
-          $name = Get-Name
-          $version = "v$(Get-Version)"
-          $archive = Get-Archive
-          $notes = Get-Notes
-
-          if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete $version -y
-            gh release create $version $archive -F $notes -t "$version"
-          }
+          Invoke-Release

@@ -12,8 +12,9 @@ function Enter-DevShell32
     & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
 }
 
-function Build-CMake
+function Invoke-CMake
 {
+    Enter-DevShell64
     cmake --preset Release
     cmake --build --preset Release
 }
@@ -55,3 +56,15 @@ function Get-Notes
 {
     Get-Item "..\notes.txt"
 }
+
+function Invoke-Release
+{
+    Export-Notes
+    Compress-Repo
+    $version = "v$(Get-Version)"
+    $archive = Get-Archive
+    $notes = Get-Notes
+    gh release delete $version -y
+    gh release create $version $archive -F $notes -t "$version"
+}
+
