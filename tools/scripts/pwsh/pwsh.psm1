@@ -23,15 +23,14 @@ function Export-ReleaseNotes
     git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
 }
 
+function Compress-Repo
+{
+    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs -cJf ..\Glow.tar.xz ..\Glow
+}
+
 function Get-Commit
 {
     git rev-parse --short HEAD
-}
-
-function Compress-Repo
-{
-    Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs -cJf Glow.tar.xz Glow
 }
 
 function Get-Archive

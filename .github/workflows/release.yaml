@@ -30,8 +30,8 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
           Export-ReleaseNotes
-          $commit = Get-Commit
           Compress-Repo
+          $commit = Get-Commit
           $archive = Get-Archive
           $notes = Get-ReleaseNotes
 
