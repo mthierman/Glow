@@ -30,3 +30,4 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
           Test-Module
+          Enter-DevShell64
