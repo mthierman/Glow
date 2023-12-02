@@ -18,19 +18,9 @@ function Build-CMake
     cmake --build --preset Release
 }
 
-function Compress-Repo
+function Export-ReleaseNotes
 {
     git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
-    Remove-Item .git -Force -Recurse
-    Push-Location
-    Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe -cJf Glow.tar.xz Glow
-    Pop-Location
-}
-
-function Get-Archive
-{
-    Get-Item "..\Glow.tar.xz"
 }
 
 function Get-Commit
@@ -38,7 +28,19 @@ function Get-Commit
     git rev-parse --short HEAD
 }
 
+function Compress-Repo
+{
+    Remove-Item .git -Force -Recurse
+    Set-Location ..\
+    C:\msys64\usr\bin\bsdtar.exe -cJf Glow.tar.xz Glow
+}
+
+function Get-Archive
+{
+    Get-Item "Glow.tar.xz"
+}
+
 function Get-ReleaseNotes
 {
-    Get-Item "..\notes.txt"
+    Get-Item "notes.txt"
 }

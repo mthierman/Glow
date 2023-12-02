@@ -29,6 +29,7 @@ jobs:
       - name: Compress
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Export-ReleaseNotes
           $commit = Get-Commit
           Compress-Repo
           $archive = Get-Archive
