@@ -29,9 +29,9 @@ jobs:
       - name: Compress
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          $commit = Get-Commit
           Compress-Repo
           $archive = Get-Archive
-          $commit = Get-Commit
           $notes = Get-ReleaseNotes
 
           if ("${{ github.ref_name }}" -eq "main") {
