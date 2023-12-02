@@ -38,10 +38,6 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     glow::glow
-    glow::glow_compile_features
-    glow::glow_compile_options
-    glow::glow_include_directories
-    glow::glow_link_libraries
 )
 ```
 
@@ -65,9 +61,5 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     glow::glow
-    glow::glow_compile_features
-    glow::glow_compile_options
-    glow::glow_include_directories
-    glow::glow_link_libraries
 )
 ```
