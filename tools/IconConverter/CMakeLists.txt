@@ -9,7 +9,7 @@ add_executable(IconConverter)
 target_sources(
     IconConverter
     PRIVATE IconConverter.cxx
-            ${DATA_MANIFEST}
+            ${GLOW_DATA_MANIFEST}
 )
 
 target_sources(

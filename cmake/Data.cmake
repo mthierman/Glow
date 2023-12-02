@@ -8,17 +8,23 @@ if(GLOW_BUILD_EXAMPLES)
     file(
         TO_CMAKE_PATH
         ${PROJECT_BINARY_DIR}/Glow.rc
-        DATA_RC
+        GLOW_DATA_RC
     )
 endif()
 
 file(
     TO_CMAKE_PATH
     ${PROJECT_SOURCE_DIR}/data/Glow.manifest
-    DATA_MANIFEST
+    GLOW_DATA_MANIFEST
 )
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/config/GlowConfig.h.in
-    ${CMAKE_BINARY_DIR}/config/GlowConfig.h
+    ${PROJECT_BINARY_DIR}/config/GlowConfig.h
+)
+
+file(
+    TO_CMAKE_PATH
+    ${PROJECT_BINARY_DIR}/config
+    GLOW_CONFIG_PATH
 )

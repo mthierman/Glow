@@ -65,7 +65,7 @@ add_library(
 
 target_include_directories(
     glow_glow_include_directories
-    INTERFACE ${CMAKE_BINARY_DIR}/config
+    INTERFACE ${GLOW_CONFIG_PATH}
               ${webview_SOURCE_DIR}/build/native/include-winrt
               ${webview_SOURCE_DIR}/build/native/include
               ${wil_SOURCE_DIR}/include

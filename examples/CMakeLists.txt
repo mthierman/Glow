@@ -68,8 +68,8 @@ target_sources(
     PRIVATE App.cxx
             ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
             ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
-            ${DATA_MANIFEST}
-            ${DATA_RC}
+            ${GLOW_DATA_MANIFEST}
+            ${GLOW_DATA_RC}
 )
 
 target_link_libraries(
@@ -86,8 +86,8 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/glow/filesystem/filesystem.hxx
             ${PROJECT_SOURCE_DIR}/glow/logging/logging.hxx
             ${PROJECT_SOURCE_DIR}/glow/text/text.hxx
-            ${DATA_MANIFEST}
-            ${DATA_RC}
+            ${GLOW_DATA_MANIFEST}
+            ${GLOW_DATA_RC}
 )
 
 target_link_libraries(
@@ -108,8 +108,8 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
             ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
             ${PROJECT_SOURCE_DIR}/glow/gui/webview.hxx
-            ${DATA_MANIFEST}
-            ${DATA_RC}
+            ${GLOW_DATA_MANIFEST}
+            ${GLOW_DATA_RC}
 )
 
 target_link_libraries(
@@ -129,8 +129,8 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/glow/console/console.hxx
             ${PROJECT_SOURCE_DIR}/glow/gui/app.hxx
             ${PROJECT_SOURCE_DIR}/glow/gui/webview_composition.hxx
-            ${DATA_MANIFEST}
-            ${DATA_RC}
+            ${GLOW_DATA_MANIFEST}
+            ${GLOW_DATA_RC}
 )
 target_link_libraries(
     WebViewComposition
