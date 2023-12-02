@@ -22,4 +22,3 @@ jobs:
       - name: Test
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-          C:\msys64\usr\bin\bsdtar.exe -h
