@@ -57,7 +57,7 @@ function Get-Notes
     Get-Item "..\notes.txt"
 }
 
-function Invoke-LatestRelease
+function Invoke-VersionRelease
 {
     Export-Notes
     Compress-Repo
@@ -68,12 +68,12 @@ function Invoke-LatestRelease
     gh release create $version $archive -F $notes -t "$version"
 }
 
-function Invoke-StableRelease
+function Invoke-LatestRelease
 {
     Export-Notes
     Compress-Repo
     $archive = Get-Archive
     $notes = Get-Notes
-    gh release delete stable --cleanup-tag -y
-    gh release create stable $archive -F $notes -t "stable"
+    gh release delete Latest --cleanup-tag -y
+    gh release create Latest $archive -F $notes -t "Latest"
 }
