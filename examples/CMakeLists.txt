@@ -1,9 +1,21 @@
+file(
+    TO_CMAKE_PATH
+    ${PROJECT_BINARY_DIR}/data/Glow.rc
+    GLOW_DATA_RC
+)
+
+file(
+    GENERATE
+    OUTPUT ${GLOW_DATA_RC}
+    CONTENT "1 ICON \"Glow.ico\""
+)
+
 if(GLOW_BUILD_ICONCONVERTER)
     set(SOURCE_FILE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png
     )
     set(OUTPUT_FILE
-        ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+        ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
 
     add_custom_command(
@@ -23,7 +35,7 @@ else()
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
     )
     set(OUTPUT_FILE
-        ${PROJECT_BINARY_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
+        ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
 
     add_custom_command(
