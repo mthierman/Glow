@@ -14,17 +14,19 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 5
           submodules: true
-      - uses: actions/cache@v3
+      - name: Cache
+        uses: actions/cache@v3
         id: deps
         with:
           path: |
             build/_deps
           key: deps-${{ hashFiles('cmake/PackageInfo.cmake') }}
-      - run: |
-          Set-Location ${{ github.workspace }} && Get-Location
-          Set-Location $GITHUB_WORKSPACE && Get-Location
-          zstd --version
+      - name: Run CMake
+        run: |
+          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Test-Module
