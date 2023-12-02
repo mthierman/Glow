@@ -20,29 +20,25 @@ function Build-CMake
 
 function Compress-Repo
 {
+    git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
     Remove-Item .git -Force -Recurse
     Push-Location
     Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe -cJf Glow\Glow.tar.xz Glow
+    C:\msys64\usr\bin\bsdtar.exe -cJf Glow.tar.xz Glow
     Pop-Location
 }
 
-function Get-CompressedRepo
+function Get-Archive
 {
-    Get-Item "Glow.tar.xz"
-}
-
-function Get-Version
-{
-    Get-Content "build\Glow_version.txt"
-}
-
-function Get-ReleaseNotes
-{
-    Get-Item "build\Glow_release_notes.txt"
+    Get-Item "..\Glow.tar.xz"
 }
 
 function Get-Commit
 {
     git rev-parse --short HEAD
+}
+
+function Get-ReleaseNotes
+{
+    Get-Item "..\notes.txt"
 }

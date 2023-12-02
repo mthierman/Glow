@@ -45,8 +45,6 @@ set(LIB_DIRECTORY
     ${OUTPUT_DIRECTORY}
 )
 
-
-
 include(Dependencies)
 include(Data)
 

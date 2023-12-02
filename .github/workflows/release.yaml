@@ -30,14 +30,13 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
           Compress-Repo
-          $zip = Get-CompressedRepo
-          $version = Get-Version
-          $notes = Get-ReleaseNotes
+          $archive = Get-Archive
           $commit = Get-Commit
+          $notes = Get-ReleaseNotes
 
           if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete $version -y
-            gh release create $version $zip -F $notes -t "Glow $version"
+            gh release delete $commit -y
+            gh release create $commit $archive -F $notes -t "Glow $version"
           }
       # - name: CMake
       #   run: |
