@@ -144,3 +144,21 @@ add_dependencies(
     WebViewComposition
     MakeIcon
 )
+
+add_custom_command(
+    TARGET WebView
+    COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${NUGET_DIRECTORY}/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native/WebView2Loader.dll
+        ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Copying WebView2Loader.dll..."
+)
+
+add_custom_command(
+    TARGET WebViewComposition
+    COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${NUGET_DIRECTORY}/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
+        ${CMAKE_CURRENT_BINARY_DIR}
+    COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
+)
