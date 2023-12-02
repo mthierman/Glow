@@ -1,3 +1,6 @@
+set(NUGET_DIRECTORY
+    ${CMAKE_BINARY_DIR}/_deps/Nuget
+)
 set(WEBVIEW
     "Microsoft.Web.WebView2"
 )
@@ -30,4 +33,26 @@ set(URL_SQLITE
 )
 set(URL_CURL
     "https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz"
+)
+
+file(
+    READ
+    ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json
+    PROJECT_JSON
+)
+
+string(
+    JSON
+    NAME
+    GET
+    ${PROJECT_JSON}
+    name
+)
+
+string(
+    JSON
+    VERSION
+    GET
+    ${PROJECT_JSON}
+    version
 )

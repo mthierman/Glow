@@ -6,7 +6,6 @@ list(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
 )
 
-include(ReadJSON)
 include(PackageInfo)
 
 project(
@@ -14,10 +13,6 @@ project(
     VERSION ${VERSION}
     LANGUAGES C
               CXX
-)
-
-set(NUGET_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps/Nuget
 )
 
 add_subdirectory(Glow)
