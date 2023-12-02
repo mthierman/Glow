@@ -67,4 +67,3 @@ function Invoke-Release
     gh release delete $version -y
     gh release create $version $archive -F $notes -t "$version"
 }
-
