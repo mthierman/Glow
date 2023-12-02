@@ -40,28 +40,29 @@ else()
     )
 endif()
 
+# glow::glow_examples
 add_library(
     glow_glow_examples
     INTERFACE
 )
+
 add_library(
     glow::glow_examples
     ALIAS
     glow_glow_examples
 )
+
 target_link_libraries(
     glow_glow_examples
     INTERFACE glow::glow
-              glow::glow_compile_features
-              glow::glow_compile_options
-              glow::glow_include_directories
-              glow::glow_link_libraries
 )
 
+# Win32 app
 add_executable(
     App
     WIN32
 )
+
 target_sources(
     App
     PRIVATE App.cxx
@@ -70,12 +71,15 @@ target_sources(
             ${DATA_MANIFEST}
             ${DATA_RC}
 )
+
 target_link_libraries(
     App
     PRIVATE glow::glow_examples
 )
 
+# Console app
 add_executable(Console)
+
 target_sources(
     Console
     PRIVATE Console.cxx
@@ -85,15 +89,18 @@ target_sources(
             ${DATA_MANIFEST}
             ${DATA_RC}
 )
+
 target_link_libraries(
     Console
     PRIVATE glow::glow_examples
 )
 
+# WebView example
 add_executable(
     WebView
     WIN32
 )
+
 target_sources(
     WebView
     PRIVATE WebView.cxx
@@ -104,11 +111,13 @@ target_sources(
             ${DATA_MANIFEST}
             ${DATA_RC}
 )
+
 target_link_libraries(
     WebView
     PRIVATE glow::glow_examples
 )
 
+# WebView composition example
 add_executable(
     WebViewComposition
     WIN32
@@ -133,14 +142,17 @@ add_dependencies(
     App
     MakeIcon
 )
+
 add_dependencies(
     Console
     MakeIcon
 )
+
 add_dependencies(
     WebView
     MakeIcon
 )
+
 add_dependencies(
     WebViewComposition
     MakeIcon
