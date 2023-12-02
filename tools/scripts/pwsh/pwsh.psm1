@@ -20,6 +20,7 @@ function Build-CMake
 
 function Compress-Repo
 {
+    Remove-Item .git -Force -Recurse
     Push-Location
     Set-Location ..\
     C:\msys64\usr\bin\bsdtar.exe -cJf Glow\Glow.tar.xz Glow

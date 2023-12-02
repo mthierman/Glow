@@ -26,10 +26,6 @@ jobs:
           path: |
             build/_deps
           key: deps-${{ hashFiles('cmake/PackageInfo.cmake') }}
-      - name: CMake
-        run: |
-          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-          Enter-DevShell64 && Build-CMake
       - name: Compress
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
@@ -43,3 +39,7 @@ jobs:
             gh release delete $version -y
             gh release create $version $zip -F $notes -t "Glow $version"
           }
+      # - name: CMake
+      #   run: |
+      #     Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+      #     Enter-DevShell64 && Build-CMake
