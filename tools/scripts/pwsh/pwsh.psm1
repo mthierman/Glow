@@ -12,8 +12,36 @@ function Enter-DevShell32
     & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
 }
 
-function Test-Module
+function Build-CMake
 {
-    Get-Location
-    Get-ChildItem
+    cmake --preset Release
+    cmake --build --preset Release
+}
+
+function Compress-Repo
+{
+    Push-Location
+    Set-Location ..\
+    tar -cJf ..\Glow.tar.xz Glow
+    Pop-Location
+}
+
+function Get-CompressedRepo
+{
+    Get-Item "Glow.tar.xz"
+}
+
+function Get-Version
+{
+    Get-Content "build\Glow_version.txt"
+}
+
+function Get-ReleaseNotes
+{
+    Get-Item "build\Glow_release_notes.txt"
+}
+
+function Get-Commit
+{
+    git rev-parse --short HEAD
 }

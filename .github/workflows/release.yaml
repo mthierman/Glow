@@ -26,8 +26,20 @@ jobs:
           path: |
             build/_deps
           key: deps-${{ hashFiles('cmake/PackageInfo.cmake') }}
-      - name: Run CMake
+      - name: CMake
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-          Test-Module
-          Enter-DevShell64
+          Enter-DevShell64 && Build-CMake
+      - name: Compress
+        run: |
+          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Compress-Repo
+          $zip = Get-CompressedRepo
+          $version = Get-Version
+          $notes = Get-ReleaseNotes
+          $commit = Get-Commit
+
+          if ("${{ github.ref_name }}" -eq "main") {
+            gh release delete $version -y
+            gh release create $version $zip -F $notes -t "Glow $version"
+          }
