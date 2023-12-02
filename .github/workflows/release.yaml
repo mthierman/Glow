@@ -33,14 +33,14 @@ jobs:
           Import-Module ${{ github.workspace }}/tools/pwsh
           Invoke-CMake
 
-      - name: Stable Release
-        if: github.ref == 'refs/heads/main'
-        run: |
-          Import-Module ${{ github.workspace }}/tools/pwsh
-          Invoke-StableRelease
+      # - name: Stable Release
+      #   if: github.ref == 'refs/heads/main'
+      #   run: |
+      #     Import-Module ${{ github.workspace }}/tools/pwsh
+      #     Invoke-StableRelease
 
-      - name: Nightly Release
-        if: github.ref == 'refs/heads/next'
-        run: |
-          Import-Module ${{ github.workspace }}/tools/pwsh
-          Invoke-NextRelease
+      # - name: Nightly Release
+      #   if: github.ref == 'refs/heads/next'
+      #   run: |
+      #     Import-Module ${{ github.workspace }}/tools/pwsh
+      #     Invoke-NextRelease
