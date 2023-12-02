@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Test
+        run: |
+          Import-Module ${{ github.workspace }}/tools/scripts/pwsh
+          Get-ChildItem C:\msys64\usr\bin\bsdtar.exe -h
