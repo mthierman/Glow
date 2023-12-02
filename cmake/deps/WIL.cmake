@@ -1,6 +1,5 @@
 execute_process(
-    COMMAND
-        nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${NUGET_DIRECTORY}
+    COMMAND nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${NUGET_DIRECTORY}
 )
 
 file(

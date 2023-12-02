@@ -1,6 +1,5 @@
 execute_process(
-    COMMAND
-        nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${NUGET_DIRECTORY}
+    COMMAND nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${NUGET_DIRECTORY}
 )
 
 file(

@@ -1,3 +1,18 @@
+option(
+    GLOW_BUILD_EXAMPLES
+    OFF
+)
+option(
+    GLOW_BUILD_ICONCONVERTER
+    OFF
+)
+option(
+    GLOW_ENABLE_TESTING
+    OFF
+)
+
+include(Dependencies)
+include(Data)
 include(SQLite)
 
 # glow::glow_compile_features
@@ -148,5 +163,3 @@ target_link_libraries(
            glow::glow_include_directories
            glow::glow_link_libraries
 )
-
-# set_target_properties( Glow PROPERTIES OUTPUT_NAME Glow )

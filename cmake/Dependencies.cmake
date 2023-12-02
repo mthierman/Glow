@@ -1,9 +1,4 @@
 include(FetchContent)
-include(PackageInfo)
-
-set(NUGET_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps/Nuget
-)
 
 # Nuget
 include(deps/WIL)

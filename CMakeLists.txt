@@ -1,49 +1,24 @@
 cmake_minimum_required(VERSION 3.27)
 
-file(
-    READ
-    ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json
-    GLOW_JSON
-)
-
-string(
-    JSON
-    GLOW_VERSION
-    GET
-    ${GLOW_JSON}
-    version
-)
-
-project(
-    Glow
-    VERSION ${GLOW_VERSION}
-    LANGUAGES C
-              CXX
-)
-
-option(
-    GLOW_BUILD_EXAMPLES
-    OFF
-)
-
-option(
-    GLOW_BUILD_ICONCONVERTER
-    OFF
-)
-
-option(
-    GLOW_ENABLE_TESTING
-    OFF
-)
-
 list(
     APPEND
     CMAKE_MODULE_PATH
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
 )
 
-include(Dependencies)
-include(Data)
+include(ReadJSON)
+include(PackageInfo)
+
+project(
+    ${NAME}
+    VERSION ${VERSION}
+    LANGUAGES C
+              CXX
+)
+
+set(NUGET_DIRECTORY
+    ${CMAKE_BINARY_DIR}/_deps/Nuget
+)
 
 add_subdirectory(Glow)
 

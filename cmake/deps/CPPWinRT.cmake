@@ -1,6 +1,5 @@
 execute_process(
-    COMMAND
-        nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${NUGET_DIRECTORY}
+    COMMAND nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${NUGET_DIRECTORY}
 )
 
 file(

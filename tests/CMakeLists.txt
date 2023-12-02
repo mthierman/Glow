@@ -17,6 +17,5 @@ target_link_libraries(
 
 add_test(
     NAME Tests
-    COMMAND
-        Tests
+    COMMAND Tests
 )

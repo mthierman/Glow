@@ -20,8 +20,7 @@ if(GLOW_BUILD_ICONCONVERTER)
 
     add_custom_command(
         OUTPUT ${OUTPUT_FILE}
-        COMMAND
-            IconConverter ${SOURCE_FILE} ${OUTPUT_FILE}
+        COMMAND IconConverter ${SOURCE_FILE} ${OUTPUT_FILE}
         COMMENT "Running IconConverter..."
     )
 
@@ -40,8 +39,7 @@ else()
 
     add_custom_command(
         OUTPUT ${OUTPUT_FILE}
-        COMMAND
-            ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${PROJECT_BINARY_DIR}/data
+        COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${PROJECT_BINARY_DIR}/data
         COMMENT "Copying icon..."
     )
 
