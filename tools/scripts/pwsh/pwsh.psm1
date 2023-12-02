@@ -25,7 +25,10 @@ function Export-ReleaseNotes
 
 function Compress-Repo
 {
-    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs -cJf ..\Glow.tar.xz ..\Glow
+    Push-Location
+    Set-Location ..\
+    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow.tar.xz Glow
+    Pop-Location
 }
 
 function Get-Commit
