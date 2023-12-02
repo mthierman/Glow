@@ -38,11 +38,12 @@ jobs:
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
           Export-Notes
           Compress-Repo
-          $commit = Get-Commit
+          $name = Get-Name
+          $version = Get-Version
           $archive = Get-Archive
           $notes = Get-Notes
 
           if ("${{ github.ref_name }}" -eq "main") {
-            gh release delete $commit -y
-            gh release create $commit $archive -F $notes -t "Glow $version"
+            gh release delete $version -y
+            gh release create $version $archive -F $notes -t "$name $version"
           }

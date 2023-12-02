@@ -36,6 +36,16 @@ function Get-Commit
     git rev-parse --short HEAD
 }
 
+function Get-Name
+{
+    (Get-Content .\Glow.json | ConvertFrom-Json).name
+}
+
+function Get-Version
+{
+    (Get-Content .\Glow.json | ConvertFrom-Json).version
+}
+
 function Get-Archive
 {
     Get-Item "..\Glow.tar.xz"

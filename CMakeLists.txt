@@ -1,8 +1,22 @@
 cmake_minimum_required(VERSION 3.27)
 
+file(
+    READ
+    ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json
+    GLOW_JSON
+)
+string(
+    JSON
+    GLOW_VERSION
+    GET
+    ${GLOW_JSON}
+    version
+)
+message(STATUS ${GLOW_VERSION})
+
 project(
     Glow
-    VERSION 0.0.1
+    VERSION ${GLOW_VERSION}
     LANGUAGES C
               CXX
 )
