@@ -22,8 +22,7 @@ function Compress-Repo
 {
     Push-Location
     Set-Location ..\
-    tar -h
-    tar -cJf ..\Glow.tar.xz Glow
+    C:\msys64\usr\bin\bsdtar.exe -cJf ..\Glow.tar.xz Glow
     Pop-Location
 }
 
