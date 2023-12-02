@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+          submodules: true
+      # - uses: actions/cache@v3
+      #   id: library-cache
+      #   with:
+      #     path: |
+      #       build/_deps
+      #     key: library-cache-${{ hashFiles('**/cmake/PackageInfo.cmake') }}
+      - run: |
+          Get-Location ${{ github.workspace }}
+          Get-Location $GITHUB_WORKSPACE

@@ -30,19 +30,19 @@ set(NUGET_DIRECTORY
     ${CMAKE_BINARY_DIR}/_deps/Nuget
 )
 set(OUTPUT_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps/Glow
+    ${CMAKE_BINARY_DIR}/Glow
 )
 set(DATA_DIRECTORY
     ${OUTPUT_DIRECTORY}/data
 )
 set(DLL_DIRECTORY
-    ${OUTPUT_DIRECTORY}/dll
+    ${OUTPUT_DIRECTORY}
 )
 set(INCLUDE_DIRECTORY
     ${OUTPUT_DIRECTORY}/include
 )
 set(LIB_DIRECTORY
-    ${OUTPUT_DIRECTORY}/lib
+    ${OUTPUT_DIRECTORY}
 )
 
 include(Dependencies)
