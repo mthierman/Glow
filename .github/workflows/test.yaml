@@ -22,4 +22,4 @@ jobs:
       - name: Test
         run: |
           Import-Module ${{ github.workspace }}/tools/scripts/pwsh
-          Get-ChildItem C:\msys64\usr\bin\bsdtar.exe -h
+          C:\msys64\usr\bin\bsdtar.exe -h
