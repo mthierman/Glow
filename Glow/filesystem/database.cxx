@@ -15,14 +15,12 @@ namespace glow::filesystem
 {
 auto Database::initialize(const std::filesystem::path& path) -> sqlite3_ptr
 {
-    sqlite3* buffer{nullptr};
-
-    if (sqlite3_open(path.string().c_str(), &buffer) != SQLITE_OK)
+    if (sqlite3_open(path.string().c_str(), &db) != SQLITE_OK)
     {
         throw std::runtime_error("Failed to open SQLite");
     }
 
-    return sqlite3_ptr(buffer);
+    return sqlite3_ptr(db);
 }
 
 auto Database::write() -> void

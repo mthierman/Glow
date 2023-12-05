@@ -25,7 +25,16 @@ struct Console
 {
     Console();
     ~Console();
-    FILE* file;
+
+  private:
+    struct FILE_DELETER
+    {
+        void operator()(FILE* file) { ::fclose(file); }
+    };
+    using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
+
+    FILE* buffer{nullptr};
+    file_ptr file{file_ptr(buffer)};
 };
 
 //==============================================================================

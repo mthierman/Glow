@@ -18,20 +18,19 @@ Console::Console()
     ::AllocConsole();
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-    ::freopen_s(&file, "CONOUT$", "w", stdout);
-    ::freopen_s(&file, "CONOUT$", "w", stderr);
-    ::freopen_s(&file, "CONIN$", "r", stdin);
+
+    auto openFile{file.get()};
+    ::freopen_s(&openFile, "CONOUT$", "w", stdout);
+    ::freopen_s(&openFile, "CONOUT$", "w", stderr);
+    ::freopen_s(&openFile, "CONIN$", "r", stdin);
+
     std::cout.clear();
     std::clog.clear();
     std::cerr.clear();
     std::cin.clear();
 }
 
-Console::~Console()
-{
-    ::fclose(file);
-    ::FreeConsole();
-}
+Console::~Console() { ::FreeConsole(); }
 
 //==============================================================================
 auto get_argv() -> std::vector<std::string>
