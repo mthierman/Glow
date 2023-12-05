@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.27)
-include(FetchContent)
 
 list(
     APPEND
@@ -16,6 +15,7 @@ project(
               CXX
 )
 
+include(FetchContent)
 include(Dependencies)
 include(Configure)
 include(Common)
