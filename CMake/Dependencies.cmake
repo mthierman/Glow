@@ -1,10 +1,33 @@
 include(FetchContent)
 include(PackageInfo)
 
-# Nuget
-include(deps/WIL)
-include(deps/WebView)
-include(deps/CPPWinRT)
+execute_process(
+    COMMAND nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${NUGET_DIRECTORY}
+)
+file(
+    TO_CMAKE_PATH
+    ${NUGET_DIRECTORY}/${WIL}.${WIL_VER}
+    wil_SOURCE_DIR
+)
+# FetchContent_Declare( wil URL ${URL_WIL} ) FetchContent_Populate(wil)
+
+execute_process(
+    COMMAND nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${NUGET_DIRECTORY}
+)
+file(
+    TO_CMAKE_PATH
+    ${NUGET_DIRECTORY}/${WEBVIEW}.${WEBVIEW_VER}
+    webview_SOURCE_DIR
+)
+
+execute_process(
+    COMMAND nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory ${NUGET_DIRECTORY}
+)
+file(
+    TO_CMAKE_PATH
+    ${NUGET_DIRECTORY}/${CPPWINRT}.${CPPWINRT_VER}
+    cppwinrt_SOURCE_DIR
+)
 
 execute_process(
     COMMAND
@@ -16,13 +39,13 @@ execute_process(
 # FetchContent
 FetchContent_Declare(
     NLOHMANN_JSON
-    URL ${URL_JSON}
+    URL ${URL_NLOHMANN_JSON}
 )
 FetchContent_MakeAvailable(NLOHMANN_JSON)
 
 FetchContent_Declare(
     MARZER_TOML
-    URL ${URL_TOML}
+    URL ${URL_MARZER_TOML}
 )
 FetchContent_MakeAvailable(MARZER_TOML)
 
