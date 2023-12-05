@@ -78,18 +78,18 @@ string(
 
 string(
     JSON
-    URL_JSON
+    URL_NLOHMANN_JSON
     GET
     ${PROJECT_JSON}
-    URL_JSON
+    URL_NLOHMANN_JSON
 )
 
 string(
     JSON
-    URL_TOML
+    URL_MARZER_TOML
     GET
     ${PROJECT_JSON}
-    URL_TOML
+    URL_MARZER_TOML
 )
 
 string(
