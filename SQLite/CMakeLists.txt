@@ -4,6 +4,13 @@ project(
     LANGUAGES C
 )
 
+FetchContent_Declare(
+    sqlite
+    URL ${URL_SQLITE}
+)
+
+FetchContent_MakeAvailable(sqlite)
+
 add_library(${PROJECT_NAME})
 
 add_library(
