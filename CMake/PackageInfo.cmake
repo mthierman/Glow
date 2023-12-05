@@ -2,40 +2,6 @@ set(NUGET_DIRECTORY
     ${CMAKE_BINARY_DIR}/_deps/Nuget
 )
 
-set(WEBVIEW
-    "Microsoft.Web.WebView2"
-)
-set(WEBVIEW_VER
-    "1.0.2151.40"
-)
-set(CPPWINRT
-    "Microsoft.Windows.CppWinRT"
-)
-set(CPPWINRT_VER
-    "2.0.230706.1"
-)
-set(WIL
-    "Microsoft.Windows.ImplementationLibrary"
-)
-set(WIL_VER
-    "1.0.231028.1"
-)
-set(URL_WIL
-    "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.tar.gz"
-)
-set(URL_JSON
-    "https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz"
-)
-set(URL_TOML
-    "https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz"
-)
-set(URL_SQLITE
-    "https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip"
-)
-set(URL_CURL
-    "https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz"
-)
-
 file(
     READ
     ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json
@@ -47,7 +13,7 @@ string(
     NAME
     GET
     ${PROJECT_JSON}
-    name
+    NAME
 )
 
 string(
@@ -55,5 +21,93 @@ string(
     VERSION
     GET
     ${PROJECT_JSON}
-    version
+    VERSION
+)
+
+string(
+    JSON
+    WEBVIEW
+    GET
+    ${PROJECT_JSON}
+    WEBVIEW
+)
+
+string(
+    JSON
+    WEBVIEW_VER
+    GET
+    ${PROJECT_JSON}
+    WEBVIEW_VER
+)
+
+string(
+    JSON
+    CPPWINRT
+    GET
+    ${PROJECT_JSON}
+    CPPWINRT
+)
+
+string(
+    JSON
+    CPPWINRT_VER
+    GET
+    ${PROJECT_JSON}
+    CPPWINRT_VER
+)
+
+string(
+    JSON
+    WIL
+    GET
+    ${PROJECT_JSON}
+    WIL
+)
+
+string(
+    JSON
+    WIL_VER
+    GET
+    ${PROJECT_JSON}
+    WIL_VER
+)
+
+string(
+    JSON
+    URL_WIL
+    GET
+    ${PROJECT_JSON}
+    URL_WIL
+)
+
+string(
+    JSON
+    URL_JSON
+    GET
+    ${PROJECT_JSON}
+    URL_JSON
+)
+
+string(
+    JSON
+    URL_TOML
+    GET
+    ${PROJECT_JSON}
+    URL_TOML
+)
+
+string(
+    JSON
+    URL_SQLITE
+    GET
+    ${PROJECT_JSON}
+    URL_SQLITE
+)
+
+string(
+    JSON
+    URL_CURL
+    GET
+    ${PROJECT_JSON}
+    URL_CURL
 )
