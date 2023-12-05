@@ -1,7 +1,3 @@
-set(NUGET_DIRECTORY
-    ${CMAKE_BINARY_DIR}/_deps/Nuget
-)
-
 file(
     READ
     ${CMAKE_CURRENT_SOURCE_DIR}/Glow.json

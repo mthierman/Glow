@@ -1,5 +1,9 @@
 include(FetchContent)
+
 include(PackageInfo)
+set(NUGET_DIRECTORY
+    ${CMAKE_BINARY_DIR}/_deps/Nuget
+)
 
 execute_process(
     COMMAND nuget install ${WIL} -Version ${WIL_VER} -OutputDirectory ${NUGET_DIRECTORY}
