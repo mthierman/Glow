@@ -4,16 +4,16 @@ project(
     LANGUAGES CXX
 )
 
-add_executable(IconConverter)
+add_executable(${PROJECT_NAME})
 
 target_sources(
-    IconConverter
+    ${PROJECT_NAME}
     PRIVATE IconConverter.cxx
             ${GLOW_DATA_MANIFEST}
 )
 
 target_sources(
-    IconConverter
+    ${PROJECT_NAME}
     PRIVATE FILE_SET
             HEADERS
             FILES
@@ -21,7 +21,7 @@ target_sources(
 )
 
 target_link_libraries(
-    IconConverter
+    ${PROJECT_NAME}
     PRIVATE glow::glow
             windowscodecs.lib
 )
