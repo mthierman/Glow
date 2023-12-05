@@ -51,14 +51,14 @@ target_link_directories(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE glow::common
-            nlohmann_json::nlohmann_json
-            tomlplusplus::tomlplusplus
-            sqlite::sqlite
-            dwmapi.lib
-            Comctl32.lib
-            gdiplus.lib
-            WebView2LoaderStatic.lib
+    PUBLIC glow::common
+           nlohmann_json::nlohmann_json
+           tomlplusplus::tomlplusplus
+           sqlite::sqlite
+           dwmapi.lib
+           Comctl32.lib
+           gdiplus.lib
+           WebView2LoaderStatic.lib
 )
 
 target_compile_definitions(
