@@ -33,13 +33,13 @@ add_subdirectory(SQLite)
 add_subdirectory(Glow)
 
 if(GLOW_BUILD_ICONCONVERTER)
-    add_subdirectory(tools/IconConverter)
+    add_subdirectory(Tools/IconConverter)
 endif()
 
 if(GLOW_BUILD_EXAMPLES)
-    add_subdirectory(examples)
+    add_subdirectory(Examples)
 endif()
 
 if(GLOW_ENABLE_TESTING)
-    add_subdirectory(tests)
+    add_subdirectory(Testing)
 endif()

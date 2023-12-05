@@ -30,17 +30,17 @@ jobs:
 
       - name: CMake
         run: |
-          Import-Module ${{ github.workspace }}\tools\pwsh
+          Import-Module ${{ github.workspace }}\Tools\PowerShell
           Invoke-CMake
 
       # - name: Stable Release
       #   if: github.ref == 'refs/heads/main'
       #   run: |
-      #     Import-Module ${{ github.workspace }}\tools\pwsh
+      #     Import-Module ${{ github.workspace }}\Tools\PowerShell
       #     Invoke-StableRelease
 
       # - name: Nightly Release
       #   if: github.ref == 'refs/heads/next'
       #   run: |
-      #     Import-Module ${{ github.workspace }}\tools\pwsh
+      #     Import-Module ${{ github.workspace }}\Tools\PowerShell
       #     Invoke-NextRelease
