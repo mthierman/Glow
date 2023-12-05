@@ -6,7 +6,10 @@ list(
     ${CMAKE_CURRENT_SOURCE_DIR}/CMake
 )
 
+include(FetchContent)
+include(PackageInfo)
 include(Dependencies)
+include(Data)
 
 project(
     ${NAME}
@@ -27,6 +30,8 @@ option(
     GLOW_ENABLE_TESTING
     OFF
 )
+
+include(Common)
 
 add_subdirectory(libs/sqlite)
 # add_subdirectory(libs/libcurl)

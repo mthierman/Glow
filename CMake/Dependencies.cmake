@@ -1,6 +1,3 @@
-include(FetchContent)
-
-include(PackageInfo)
 set(NUGET_DIRECTORY
     ${CMAKE_BINARY_DIR}/_deps/Nuget
 )
@@ -13,7 +10,6 @@ file(
     ${NUGET_DIRECTORY}/${WIL}.${WIL_VER}
     wil_SOURCE_DIR
 )
-# FetchContent_Declare( wil URL ${URL_WIL} ) FetchContent_Populate(wil)
 
 execute_process(
     COMMAND nuget install ${WEBVIEW} -Version ${WEBVIEW_VER} -OutputDirectory ${NUGET_DIRECTORY}
@@ -52,6 +48,3 @@ FetchContent_Declare(
     URL ${URL_MARZER_TOML}
 )
 FetchContent_MakeAvailable(MARZER_TOML)
-
-include(Data)
-include(Common)

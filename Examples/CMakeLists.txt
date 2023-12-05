@@ -14,6 +14,7 @@ if(GLOW_BUILD_ICONCONVERTER)
     set(SOURCE_FILE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png
     )
+
     set(OUTPUT_FILE
         ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
@@ -33,6 +34,7 @@ else()
     set(SOURCE_FILE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
     )
+
     set(OUTPUT_FILE
         ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
@@ -50,29 +52,10 @@ else()
     )
 endif()
 
-# glow::glow_examples
-add_library(
-    glow_glow_examples
-    INTERFACE
-)
-
-add_library(
-    glow::glow_examples
-    ALIAS
-    glow_glow_examples
-)
-
-target_link_libraries(
-    glow_glow_examples
-    INTERFACE glow::glow
-)
-
-# Win32 app
 add_executable(
     App
     WIN32
 )
-
 target_sources(
     App
     PRIVATE App.cxx
@@ -81,15 +64,12 @@ target_sources(
             ${GLOW_DATA_MANIFEST}
             ${GLOW_DATA_RC}
 )
-
 target_link_libraries(
     App
-    PRIVATE glow::glow_examples
+    PRIVATE glow::glow
 )
 
-# Console app
 add_executable(Console)
-
 target_sources(
     Console
     PRIVATE Console.cxx
@@ -99,18 +79,15 @@ target_sources(
             ${GLOW_DATA_MANIFEST}
             ${GLOW_DATA_RC}
 )
-
 target_link_libraries(
     Console
-    PRIVATE glow::glow_examples
+    PRIVATE glow::glow
 )
 
-# WebView example
 add_executable(
     WebView
     WIN32
 )
-
 target_sources(
     WebView
     PRIVATE WebView.cxx
@@ -121,13 +98,11 @@ target_sources(
             ${GLOW_DATA_MANIFEST}
             ${GLOW_DATA_RC}
 )
-
 target_link_libraries(
     WebView
-    PRIVATE glow::glow_examples
+    PRIVATE glow::glow
 )
 
-# WebView composition example
 add_executable(
     WebViewComposition
     WIN32
@@ -144,7 +119,7 @@ target_sources(
 )
 target_link_libraries(
     WebViewComposition
-    PRIVATE glow::glow_examples
+    PRIVATE glow::glow
             CoreMessaging.lib
 )
 
@@ -152,17 +127,14 @@ add_dependencies(
     App
     MakeIcon
 )
-
 add_dependencies(
     Console
     MakeIcon
 )
-
 add_dependencies(
     WebView
     MakeIcon
 )
-
 add_dependencies(
     WebViewComposition
     MakeIcon

@@ -35,10 +35,33 @@ target_sources(
            text/text.hxx
 )
 
+target_include_directories(
+    ${PROJECT_NAME}
+    PUBLIC ${GLOW_CONFIG}
+           ${webview_SOURCE_DIR}/build/native/include-winrt
+           ${webview_SOURCE_DIR}/build/native/include
+           ${wil_SOURCE_DIR}/include
+)
+
+target_link_directories(
+    ${PROJECT_NAME}
+    PUBLIC
+    ${webview_SOURCE_DIR}/build/native/x64
+)
+
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC glow::glow_compile_features
-           glow::glow_compile_options
-           glow::glow_include_directories
-           glow::glow_link_libraries
+    PUBLIC glow::common
+           nlohmann_json::nlohmann_json
+           tomlplusplus::tomlplusplus
+           sqlite::sqlite
+           dwmapi.lib
+           Comctl32.lib
+           gdiplus.lib
+           WebView2LoaderStatic.lib
+)
+
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )

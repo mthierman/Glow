@@ -8,6 +8,7 @@ FetchContent_Declare(
     ${PROJECT_NAME}
     URL ${URL_SQLITE}
 )
+
 FetchContent_MakeAvailable(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME})
@@ -31,6 +32,5 @@ target_sources(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE glow::glow_compile_features
-            glow::glow_compile_options
+    PRIVATE glow::common
 )

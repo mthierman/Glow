@@ -8,12 +8,5 @@ FetchContent_Declare(
     ${PROJECT_NAME}
     URL ${URL_CURL}
 )
+
 FetchContent_MakeAvailable(${PROJECT_NAME})
-
-# add_library(${PROJECT_NAME})
-
-# add_library(
-#     libcurl::libcurl
-#     ALIAS
-#     ${PROJECT_NAME}
-# )
