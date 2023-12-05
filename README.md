@@ -61,3 +61,5 @@ target_link_libraries(
     glow::glow
 )
 ```
+
+To use a recommended set of MSVC flags, optionally link to `glow::flags`

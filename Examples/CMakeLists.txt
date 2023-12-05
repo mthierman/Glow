@@ -67,6 +67,7 @@ target_sources(
 target_link_libraries(
     App
     PRIVATE glow::glow
+            glow::flags
 )
 
 add_executable(Console)
@@ -82,6 +83,7 @@ target_sources(
 target_link_libraries(
     Console
     PRIVATE glow::glow
+            glow::flags
 )
 
 add_executable(
@@ -101,6 +103,7 @@ target_sources(
 target_link_libraries(
     WebView
     PRIVATE glow::glow
+            glow::flags
 )
 
 add_executable(
@@ -120,6 +123,7 @@ target_sources(
 target_link_libraries(
     WebViewComposition
     PRIVATE glow::glow
+            glow::flags
             CoreMessaging.lib
 )
 

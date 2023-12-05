@@ -23,5 +23,6 @@ target_sources(
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE glow::glow
+            glow::flags
             windowscodecs.lib
 )

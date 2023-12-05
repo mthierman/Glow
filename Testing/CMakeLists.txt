@@ -13,6 +13,7 @@ target_sources(
 target_link_libraries(
     Tests
     PRIVATE glow::glow
+            glow::flags
 )
 
 add_test(

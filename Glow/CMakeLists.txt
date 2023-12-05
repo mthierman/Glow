@@ -51,7 +51,8 @@ target_link_directories(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC glow::common
+    PRIVATE glow::flags
+    PUBLIC glow::features
            nlohmann_json::nlohmann_json
            tomlplusplus::tomlplusplus
            sqlite::sqlite

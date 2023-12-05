@@ -32,5 +32,6 @@ target_sources(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE glow::common
+    PRIVATE glow::features
+            glow::flags
 )
