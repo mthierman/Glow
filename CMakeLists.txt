@@ -6,7 +6,7 @@ list(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake
 )
 
-include(PackageInfo)
+include(Dependencies)
 
 project(
     ${NAME}
@@ -14,6 +14,21 @@ project(
     LANGUAGES C
               CXX
 )
+
+option(
+    GLOW_BUILD_EXAMPLES
+    OFF
+)
+option(
+    GLOW_BUILD_ICONCONVERTER
+    OFF
+)
+option(
+    GLOW_ENABLE_TESTING
+    OFF
+)
+
+add_subdirectory(SQLite)
 
 add_subdirectory(Glow)
 

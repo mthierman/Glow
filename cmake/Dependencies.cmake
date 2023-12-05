@@ -1,4 +1,5 @@
 include(FetchContent)
+include(PackageInfo)
 
 # Nuget
 include(deps/WIL)
@@ -17,3 +18,6 @@ execute_process(
         ${webview_SOURCE_DIR}/build/native/include-winrt
     WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
 )
+
+include(Data)
+include(Common)
