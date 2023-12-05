@@ -10,10 +10,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(${PROJECT_NAME})
 
-add_library(${PROJECT_NAME})
+# add_library(${PROJECT_NAME})
 
-add_library(
-    libcurl::libcurl
-    ALIAS
-    ${PROJECT_NAME}
-)
+# add_library(
+#     libcurl::libcurl
+#     ALIAS
+#     ${PROJECT_NAME}
+# )

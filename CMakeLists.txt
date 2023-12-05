@@ -29,7 +29,7 @@ option(
 )
 
 add_subdirectory(libs/sqlite)
-add_subdirectory(libs/libcurl)
+# add_subdirectory(libs/libcurl)
 
 add_subdirectory(Glow)
 
