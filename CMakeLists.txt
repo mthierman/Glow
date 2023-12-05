@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.27)
 list(
     APPEND
     CMAKE_MODULE_PATH
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMake
 )
 
 include(Dependencies)
