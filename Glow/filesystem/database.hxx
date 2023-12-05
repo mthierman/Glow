@@ -12,19 +12,29 @@
 
 #include <Windows.h>
 
+#include <filesystem>
+#include <memory>
 #include <print>
-#include <source_location>
 #include <string>
-#include <system_error>
 
-#include <text/text.hxx>
+#include <sqlite3.h>
+
+#include <filesystem/filesystem.hxx>
 
 //==============================================================================
-namespace glow::logging
+namespace glow::filesystem
 {
-auto debug(std::string string, std::source_location location = std::source_location::current())
-    -> void;
-auto msgbox(std::string string) -> void;
-auto errorbox(std::string string) -> void;
-auto hr(HRESULT hresult) -> void;
-} // namespace glow::logging
+struct Database
+{
+  private:
+    struct sqlite3_deleter
+    {
+        void operator()(sqlite3* db) { sqlite3_close(db); }
+    };
+    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
+
+  public:
+    auto initialize(const std::filesystem::path& path) -> sqlite3_ptr;
+    auto write() -> void;
+};
+} // namespace glow::filesystem

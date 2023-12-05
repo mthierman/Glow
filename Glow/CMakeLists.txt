@@ -108,7 +108,7 @@ target_link_libraries(
     glow_glow_link_libraries
     INTERFACE nlohmann_json::nlohmann_json
               tomlplusplus::tomlplusplus
-              glow::sqlite
+              sqlite::sqlite
               dwmapi.lib
               Comctl32.lib
               gdiplus.lib
@@ -132,6 +132,7 @@ add_library(
 target_sources(
     Glow
     PRIVATE console/console.cxx
+            filesystem/database.cxx
             filesystem/filesystem.cxx
             gui/app.cxx
             gui/gui.cxx
@@ -147,6 +148,7 @@ target_sources(
            HEADERS
            FILES
            console/console.hxx
+           filesystem/database.hxx
            filesystem/filesystem.hxx
            gui/app.hxx
            gui/gui.hxx

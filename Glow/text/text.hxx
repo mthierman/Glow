@@ -15,6 +15,7 @@
 #include <random>
 #include <string>
 
+//==============================================================================
 namespace glow::text
 {
 auto narrow(std::wstring wstring) -> std::string;

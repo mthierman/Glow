@@ -18,6 +18,7 @@
 
 #include <text/text.hxx>
 
+//==============================================================================
 namespace glow::console
 {
 struct Console
@@ -26,5 +27,7 @@ struct Console
     ~Console();
     FILE* file;
 };
+
+//==============================================================================
 auto get_argv() -> std::vector<std::string>;
 } // namespace glow::console

@@ -10,6 +10,7 @@
 
 #include <gui/gui.hxx>
 
+//==============================================================================
 namespace glow::gui
 {
 auto check_theme() -> bool

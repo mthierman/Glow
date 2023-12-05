@@ -10,6 +10,7 @@
 
 #include <logging/logging.hxx>
 
+//==============================================================================
 namespace glow::logging
 {
 auto debug(std::string string, std::source_location location) -> void

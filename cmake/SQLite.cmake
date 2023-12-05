@@ -7,7 +7,7 @@ project(
 add_library(SQLite)
 
 add_library(
-    glow::sqlite
+    sqlite::sqlite
     ALIAS
     SQLite
 )

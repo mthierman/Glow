@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 
+//==============================================================================
 namespace glow::filesystem
 {
 auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path;

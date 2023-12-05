@@ -10,6 +10,7 @@
 
 #include "console.hxx"
 
+//==============================================================================
 namespace glow::console
 {
 Console::Console()
@@ -32,6 +33,7 @@ Console::~Console()
     ::FreeConsole();
 }
 
+//==============================================================================
 auto get_argv() -> std::vector<std::string>
 {
     int argc{0};

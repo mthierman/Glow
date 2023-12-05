@@ -10,6 +10,7 @@
 
 #include <filesystem/filesystem.hxx>
 
+//==============================================================================
 namespace glow::filesystem
 {
 auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path

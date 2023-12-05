@@ -10,6 +10,7 @@
 
 #include <text/text.hxx>
 
+//==============================================================================
 namespace glow::text
 {
 auto narrow(std::wstring wstring) -> std::string
