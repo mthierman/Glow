@@ -13,25 +13,21 @@
 //==============================================================================
 namespace glow::filesystem
 {
-auto Database::initialize(const std::filesystem::path& path) -> sqlite3_ptr
+Database::Database()
 {
-    if (sqlite3_open(path.string().c_str(), &db) != SQLITE_OK)
+    if (sqlite3_open(path.string().c_str(), &buffer) != SQLITE_OK)
     {
         throw std::runtime_error("Failed to open SQLite");
     }
 
-    return sqlite3_ptr(db);
+    db = sqlite3_ptr(buffer);
 }
 
+Database::~Database() {}
+
+//==============================================================================
 auto Database::write() -> void
 {
-    auto exe{get_pgmptr()};
-    auto path{(exe / "db.sqlite")};
-    println("{}", exe.string());
-    println("{}", path.string());
-
-    auto db{initialize(path)};
-
     std::string sql{"CREATE TABLE CONFIG("
                     "X INT NOT NULL,"
                     "Y INT NOT NULL,"
