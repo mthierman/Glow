@@ -5,11 +5,10 @@ project(
 )
 
 FetchContent_Declare(
-    libcurl
+    ${PROJECT_NAME}
     URL ${URL_CURL}
 )
-
-FetchContent_MakeAvailable(libcurl)
+FetchContent_MakeAvailable(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME})
 

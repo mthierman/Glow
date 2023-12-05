@@ -1,15 +1,14 @@
 project(
-    SQLite
+    sqlite
     VERSION 3.44.2
     LANGUAGES C
 )
 
 FetchContent_Declare(
-    sqlite
+    ${PROJECT_NAME}
     URL ${URL_SQLITE}
 )
-
-FetchContent_MakeAvailable(sqlite)
+FetchContent_MakeAvailable(${PROJECT_NAME})
 
 add_library(${PROJECT_NAME})
 
@@ -21,13 +20,13 @@ add_library(
 
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE ${sqlite_SOURCE_DIR}/sqlite3.c
+    PRIVATE ${${PROJECT_NAME}_SOURCE_DIR}/sqlite3.c
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${sqlite_SOURCE_DIR}
+           ${${PROJECT_NAME}_SOURCE_DIR}
            FILES
-           ${sqlite_SOURCE_DIR}/sqlite3.h
+           ${${PROJECT_NAME}_SOURCE_DIR}/sqlite3.h
 )
 
 target_link_libraries(
