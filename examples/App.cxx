@@ -17,9 +17,9 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    // #ifdef _DEBUG
-    //     glow::console::Console console;
-    // #endif
+#ifdef _DEBUG
+    glow::console::Console console;
+#endif
 
     auto app{std::make_unique<glow::gui::App>("App")};
 

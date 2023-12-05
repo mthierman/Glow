@@ -33,15 +33,17 @@ struct Database
     auto write() -> void;
 
   private:
+    sqlite3* buffer{nullptr};
     struct sqlite3_deleter
     {
         void operator()(sqlite3* db) { sqlite3_close(db); }
     };
-    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
 
     //==============================================================================
-    sqlite3* buffer{nullptr};
+    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
     sqlite3_ptr db;
+
+    //==============================================================================
     std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
 };
 } // namespace glow::filesystem
