@@ -15,16 +15,16 @@ execute_process(
 
 # FetchContent
 FetchContent_Declare(
-    json
+    NLOHMANN_JSON
     URL ${URL_JSON}
 )
-FetchContent_MakeAvailable(json)
+FetchContent_MakeAvailable(NLOHMANN_JSON)
 
 FetchContent_Declare(
-    toml
+    MARZER_TOML
     URL ${URL_TOML}
 )
-FetchContent_MakeAvailable(toml)
+FetchContent_MakeAvailable(MARZER_TOML)
 
 include(Data)
 include(Common)
