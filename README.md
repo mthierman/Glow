@@ -24,8 +24,6 @@
 git submodule add https://github.com/mthierman/Glow.git libs/Glow
 ```
 
-CMakeLists.txt:
-
 ```cmake
 add_subdirectory(libs/Glow)
 
