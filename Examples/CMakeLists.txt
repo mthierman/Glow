@@ -11,44 +11,44 @@ file(
 )
 
 if(GLOW_BUILD_ICONCONVERTER)
-    set(SOURCE_FILE
+    set(GLOW_ICON_SOURCE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png
     )
 
-    set(OUTPUT_FILE
+    set(GLOW_ICON
         ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
 
     add_custom_command(
-        OUTPUT ${OUTPUT_FILE}
-        COMMAND IconConverter ${SOURCE_FILE} ${OUTPUT_FILE}
+        OUTPUT ${GLOW_ICON}
+        COMMAND IconConverter ${GLOW_ICON_SOURCE} ${GLOW_ICON}
         COMMENT "Running IconConverter..."
     )
 
     add_custom_target(
         MakeIcon
         ALL
-        DEPENDS ${OUTPUT_FILE}
+        DEPENDS ${GLOW_ICON}
     )
 else()
-    set(SOURCE_FILE
+    set(GLOW_ICON_SOURCE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.ico
     )
 
-    set(OUTPUT_FILE
+    set(GLOW_ICON
         ${PROJECT_BINARY_DIR}/data/Glow.ico
     )
 
     add_custom_command(
-        OUTPUT ${OUTPUT_FILE}
-        COMMAND ${CMAKE_COMMAND} -E copy ${SOURCE_FILE} ${PROJECT_BINARY_DIR}/data
+        OUTPUT ${GLOW_ICON}
+        COMMAND ${CMAKE_COMMAND} -E copy ${GLOW_ICON_SOURCE} ${GLOW_ICON}
         COMMENT "Copying icon..."
     )
 
     add_custom_target(
         MakeIcon
         ALL
-        DEPENDS ${OUTPUT_FILE}
+        DEPENDS ${GLOW_ICON}
     )
 endif()
 
