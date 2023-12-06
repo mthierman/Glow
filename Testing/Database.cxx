@@ -8,6 +8,8 @@
 // ╚──────────────────────╝
 // clang-format on
 
+#include <print>
+
 #include <console/console.hxx>
 #include <filesystem/database.hxx>
 #include <filesystem/filesystem.hxx>
@@ -18,4 +20,13 @@
 #include <logging/logging.hxx>
 #include <text/text.hxx>
 
-auto main() -> int { return 0; }
+auto main() -> int
+{
+    std::println("Test");
+
+    glow::filesystem::Database db;
+
+    db.write();
+
+    return 0;
+}
