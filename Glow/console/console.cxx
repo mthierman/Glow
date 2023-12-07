@@ -16,6 +16,7 @@ namespace glow::console
 Console::Console()
 {
     ::AllocConsole();
+
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
@@ -39,6 +40,7 @@ auto get_argv() -> std::vector<std::string>
 
     std::vector<std::string> argv;
     argv.reserve(sizeof(wideArgs));
+
     for (int i = 0; i < argc; i++)
     {
         auto arg{glow::text::narrow(wideArgs[i])};
