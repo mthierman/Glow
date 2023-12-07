@@ -25,14 +25,20 @@ add_subdirectory(libs/sqlite)
 
 add_subdirectory(Glow)
 
-if(GLOW_BUILD_ICONCONVERTER)
-    add_subdirectory(Tools/IconConverter)
+if(ENABLE_GLOW_ICONCONVERTER)
+    add_subdirectory(
+        Tools/IconConverter
+        EXCLUDE_FROM_ALL
+    )
 endif()
 
-if(GLOW_BUILD_EXAMPLES)
+if(ENABLE_GLOW_EXAMPLES)
     add_subdirectory(Examples)
 endif()
 
-if(GLOW_ENABLE_TESTING)
-    add_subdirectory(Testing)
+if(ENABLE_GLOW_TESTING)
+    add_subdirectory(
+        Testing
+        EXCLUDE_FROM_ALL
+    )
 endif()

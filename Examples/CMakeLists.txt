@@ -10,7 +10,7 @@ file(
     CONTENT "1 ICON \"Glow.ico\""
 )
 
-if(GLOW_BUILD_ICONCONVERTER)
+if(ENABLE_GLOW_GENERATE_EXAMPLE_ICONS)
     set(GLOW_ICON_SOURCE
         ${PROJECT_SOURCE_DIR}/data/$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.png
     )
