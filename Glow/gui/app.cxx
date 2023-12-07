@@ -13,21 +13,24 @@
 //==============================================================================
 namespace glow::gui
 {
-App::App(std::string name) : m_class(glow::text::randomize(name))
+App::App(std::string name) : m_name(name)
 {
-    register_window();
-    create_window(name);
+    m_classAtom = register_window();
+    create_window();
     show_window_default();
 }
 
 App::~App() {}
 
 //==============================================================================
-auto App::register_window() -> void
+auto App::get_hwnd() -> HWND { return m_hwnd; }
+
+//==============================================================================
+auto App::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = m_class.c_str();
-    wcex.lpszMenuName = m_class.c_str();
+    wcex.lpszClassName = m_name.c_str();
+    wcex.lpszMenuName = m_name.c_str();
     wcex.lpfnWndProc = App::wnd_proc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
@@ -38,14 +41,15 @@ auto App::register_window() -> void
     wcex.hIcon = m_icon ? m_icon : m_defaultIcon;
     wcex.hIconSm = m_icon ? m_icon : m_defaultIcon;
 
-    ::RegisterClassEx(&wcex);
+    return ::RegisterClassEx(&wcex);
 }
 
-auto App::create_window(std::string name) -> void
+auto App::create_window() -> void
 {
-    ::CreateWindowEx(0, m_class.c_str(), name.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                     ::GetModuleHandle(nullptr), this);
+    ::CreateWindowEx(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
+                     WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                     CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, ::GetModuleHandle(nullptr),
+                     this);
 }
 
 //==============================================================================

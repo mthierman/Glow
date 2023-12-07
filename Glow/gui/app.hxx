@@ -27,11 +27,12 @@ struct App
     virtual ~App();
 
     //==============================================================================
-    HWND m_hwnd{nullptr};
+    // HWND m_hwnd{nullptr};
+    auto get_hwnd() -> HWND;
 
   private:
-    auto register_window() -> void;
-    auto create_window(std::string name) -> void;
+    auto register_window() -> ATOM;
+    auto create_window() -> void;
 
     //==============================================================================
     auto show_window_default() -> void;
@@ -47,7 +48,11 @@ struct App
     virtual auto on_destroy() -> int;
 
     //==============================================================================
-    std::string m_class;
+    std::string m_name;
+    ATOM m_classAtom{};
+    HWND m_hwnd;
+
+    //==============================================================================
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};

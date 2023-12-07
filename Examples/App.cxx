@@ -21,7 +21,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     glow::console::Console console;
 #endif
 
-    auto app{std::make_unique<glow::gui::App>("App")};
+    auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
 
     MSG msg{nullptr};
     int r{0};
