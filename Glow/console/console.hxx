@@ -27,7 +27,6 @@ struct Console
     ~Console();
 
   private:
-    FILE* buffer{nullptr};
     struct FILE_DELETER
     {
         auto operator()(FILE* file) noexcept -> void { ::fclose(file); }
@@ -35,8 +34,7 @@ struct Console
 
     //==============================================================================
     using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
-    // file_ptr file;
-    file_ptr file{file_ptr(buffer)};
+    file_ptr file;
 };
 
 //==============================================================================
