@@ -70,6 +70,7 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
         return self->handle_message(hwnd, uMsg, wParam, lParam);
     }
+
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
