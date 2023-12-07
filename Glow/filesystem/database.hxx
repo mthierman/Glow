@@ -15,6 +15,7 @@
 #include <filesystem>
 #include <memory>
 #include <print>
+#include <stdexcept>
 #include <string>
 
 #include <sqlite3.h>
@@ -30,13 +31,13 @@ struct Database
     ~Database();
 
     //==============================================================================
+    auto open() -> void;
     auto write() -> void;
 
   private:
-    sqlite3* buffer{nullptr};
     struct sqlite3_deleter
     {
-        void operator()(sqlite3* db) { sqlite3_close(db); }
+        auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
     };
 
     //==============================================================================

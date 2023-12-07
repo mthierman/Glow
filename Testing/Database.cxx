@@ -22,9 +22,9 @@
 
 auto main() -> int
 {
-    std::println("Test");
-
     glow::filesystem::Database db;
+
+    db.open();
 
     db.write();
 
