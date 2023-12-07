@@ -17,11 +17,6 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <filesystem>
-#include <iostream>
-#include <random>
-#include <string>
-
 //==============================================================================
 namespace glow::gui
 {

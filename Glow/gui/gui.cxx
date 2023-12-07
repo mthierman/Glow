@@ -42,7 +42,7 @@ auto set_darkmode(HWND hwnd) -> bool
 
 auto set_darktitle() -> bool
 {
-    enum PreferredAppMode
+    enum class PreferredAppMode
     {
         Default,
         AllowDark,
@@ -57,7 +57,7 @@ auto set_darktitle() -> bool
 
     if (!uxtheme) return false;
 
-    auto ord135{::GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCEW(135))};
+    auto ord135{::GetProcAddress(uxtheme, PCSTR MAKEINTRESOURCE(135))};
 
     if (!ord135) return false;
 

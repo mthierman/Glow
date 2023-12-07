@@ -32,7 +32,7 @@ auto errorbox(std::string string) -> void
 
 auto hr(HRESULT hresult) -> void
 {
-    std::string errorMsg{std::system_category().message(hresult)};
-    std::println("{}", errorMsg);
+    std::string message{std::system_category().message(hresult)};
+    std::println("{}", message);
 }
 } // namespace glow::logging
