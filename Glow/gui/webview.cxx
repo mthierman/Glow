@@ -143,6 +143,7 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
         return self->handle_message(uMsg, wParam, lParam);
     }
+
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
