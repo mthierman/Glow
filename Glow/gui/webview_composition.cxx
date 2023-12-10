@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <gui/webview_composition.hxx>
@@ -13,14 +11,18 @@
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 CompositionHost::CompositionHost() {}
 
+//==============================================================================
 CompositionHost* CompositionHost::GetInstance()
 {
     static CompositionHost instance;
     return &instance;
 }
 
+//==============================================================================
 CompositionHost::~CompositionHost() {}
 
 //==============================================================================
@@ -58,6 +60,7 @@ auto CompositionHost::EnsureDispatcherQueue() -> void
     }
 }
 
+//==============================================================================
 auto CompositionHost::CreateDesktopWindowTarget(HWND window) -> void
 {
     namespace abi = ABI::Windows::UI::Composition::Desktop;
@@ -69,6 +72,7 @@ auto CompositionHost::CreateDesktopWindowTarget(HWND window) -> void
     m_target = target;
 }
 
+//==============================================================================
 auto CompositionHost::CreateCompositionRoot() -> void
 {
     auto root{m_compositor.CreateContainerVisual()};
@@ -114,8 +118,10 @@ WebViewComp::WebViewComp(std::string name, HWND hwnd, int id) : m_hwndParent(hwn
     ::ShowWindow(m_hwnd, SW_SHOW);
 }
 
+//==============================================================================
 WebViewComp::~WebViewComp() {}
 
+//==============================================================================
 auto WebViewComp::create_webview() -> winrt::IAsyncAction
 {
     CompositionHost* compHost{CompositionHost::GetInstance()};
@@ -162,6 +168,7 @@ auto WebViewComp::create_webview() -> winrt::IAsyncAction
     ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
 }
 
+//==============================================================================
 auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     WebViewComp* self = InstanceFromWndProc<WebViewComp, &WebViewComp::m_hwnd>(hwnd, uMsg, lParam);
@@ -177,6 +184,7 @@ auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
     return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+//==============================================================================
 auto WebViewComp::on_window_pos_changed() -> int
 {
     if (controller)
@@ -193,4 +201,6 @@ auto WebViewComp::on_window_pos_changed() -> int
 
     return 0;
 }
+
+//==============================================================================
 } // namespace glow::gui

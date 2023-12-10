@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #pragma once
@@ -42,6 +40,8 @@ using namespace winrt::Windows::UI::Composition::Desktop;
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 class CompositionHost
 {
   public:
@@ -67,6 +67,7 @@ class CompositionHost
     auto CreateCompositionRoot() -> void;
 };
 
+//==============================================================================
 struct WebViewComp
 {
     WebViewComp(std::string name, HWND hwnd, int id);
@@ -93,4 +94,6 @@ struct WebViewComp
     winrt::CoreWebView2CompositionController comp{nullptr};
     winrt::CoreWebView2 core{nullptr};
 };
+
+//==============================================================================
 } // namespace glow::gui

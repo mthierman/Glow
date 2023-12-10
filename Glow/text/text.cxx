@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <text/text.hxx>
@@ -13,6 +11,8 @@
 //==============================================================================
 namespace glow::text
 {
+
+//==============================================================================
 auto narrow(std::wstring wstring) -> std::string
 {
     if (!wstring.empty())
@@ -37,6 +37,7 @@ auto narrow(std::wstring wstring) -> std::string
     return {};
 }
 
+//==============================================================================
 auto widen(std::string string) -> std::wstring
 {
     if (!string.empty())
@@ -60,6 +61,7 @@ auto widen(std::string string) -> std::wstring
     return {};
 }
 
+//==============================================================================
 auto randomize(std::string string) -> std::string
 {
     std::random_device rd;
@@ -71,4 +73,6 @@ auto randomize(std::string string) -> std::string
 
     return (string + randomNumber);
 }
+
+//==============================================================================
 } // namespace glow::text

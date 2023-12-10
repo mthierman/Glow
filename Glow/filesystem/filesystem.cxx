@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <filesystem/filesystem.hxx>
@@ -13,6 +11,8 @@
 //==============================================================================
 namespace glow::filesystem
 {
+
+//==============================================================================
 auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 {
     std::wstring wstring;
@@ -24,6 +24,7 @@ auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
     else return {};
 }
 
+//==============================================================================
 auto get_pgmptr() -> std::filesystem::path
 {
     std::string string;
@@ -36,6 +37,7 @@ auto get_pgmptr() -> std::filesystem::path
     return std::filesystem::canonical(exe.remove_filename());
 }
 
+//==============================================================================
 auto get_wpgmptr() -> std::filesystem::path
 {
     std::wstring wstring;
@@ -47,4 +49,6 @@ auto get_wpgmptr() -> std::filesystem::path
 
     return std::filesystem::canonical(exe.remove_filename());
 }
+
+//==============================================================================
 } // namespace glow::filesystem

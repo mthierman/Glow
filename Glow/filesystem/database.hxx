@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #pragma once
@@ -25,6 +23,7 @@
 //==============================================================================
 namespace glow::filesystem
 {
+//==============================================================================
 struct Database
 {
     Database();
@@ -45,4 +44,5 @@ struct Database
     sqlite3_ptr db;
     std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
 };
+//==============================================================================
 } // namespace glow::filesystem

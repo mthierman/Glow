@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #pragma once
@@ -25,6 +23,8 @@
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 struct WebView
 {
     WebView(std::string name, HWND parentHwnd, int id);
@@ -71,4 +71,6 @@ struct WebView
     winrt::com_ptr<ICoreWebView2_19> core19{nullptr};
     winrt::com_ptr<ICoreWebView2Settings> settings{nullptr};
 };
+
+//==============================================================================
 } // namespace glow::gui

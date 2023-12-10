@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <filesystem/database.hxx>
@@ -13,8 +11,11 @@
 //==============================================================================
 namespace glow::filesystem
 {
+
+//==============================================================================
 Database::Database() {}
 
+//==============================================================================
 Database::~Database() {}
 
 //==============================================================================
@@ -24,6 +25,7 @@ auto Database::open() -> void
         throw std::runtime_error("Failed to open SQLite");
 }
 
+//==============================================================================
 auto Database::write() -> void
 {
     std::string sql{"CREATE TABLE CONFIG("
@@ -53,4 +55,6 @@ auto Database::write() -> void
         }
     }
 }
+
+//==============================================================================
 } // namespace glow::filesystem

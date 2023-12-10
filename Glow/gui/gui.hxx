@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #pragma once
@@ -20,6 +18,8 @@
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 struct Bounds
 {
     int x{0};
@@ -28,6 +28,7 @@ struct Bounds
     int height{0};
 };
 
+//==============================================================================
 template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance;
@@ -45,6 +46,7 @@ template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg
     return pInstance;
 }
 
+//==============================================================================
 auto check_theme() -> bool;
 auto set_darkmode(HWND hwnd) -> bool;
 auto set_darktitle() -> bool;

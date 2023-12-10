@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <gui/webview.hxx>
@@ -13,6 +11,8 @@
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 WebView::WebView(std::string name, HWND parentHwnd, int id)
     : m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
@@ -94,6 +94,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
             .Get()));
 }
 
+//==============================================================================
 WebView::~WebView() {}
 
 //==============================================================================
@@ -115,6 +116,7 @@ auto WebView::register_window() -> void
     ::RegisterClassEx(&wcex);
 }
 
+//==============================================================================
 auto WebView::create_window() -> void
 {
     ::CreateWindowEx(0, m_class.c_str(), m_class.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -125,8 +127,10 @@ auto WebView::create_window() -> void
 //==============================================================================
 auto WebView::show_window_default() -> void { ::ShowWindow(m_hwnd, SW_SHOWDEFAULT); }
 
+//==============================================================================
 auto WebView::show_window() -> void { ::ShowWindow(m_hwnd, SW_SHOW); }
 
+//==============================================================================
 auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd, SW_HIDE); }
 
 //==============================================================================
@@ -147,6 +151,7 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+//==============================================================================
 auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
@@ -164,4 +169,6 @@ auto WebView::on_window_pos_changed() -> int
 
     return 0;
 }
+
+//==============================================================================
 } // namespace glow::gui

@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include "console.hxx"
@@ -13,6 +11,8 @@
 //==============================================================================
 namespace glow::console
 {
+
+//==============================================================================
 Console::Console()
 {
     ::AllocConsole();
@@ -30,6 +30,7 @@ Console::Console()
     std::cin.clear();
 }
 
+//==============================================================================
 Console::~Console() { ::FreeConsole(); }
 
 //==============================================================================
@@ -51,4 +52,6 @@ auto get_argv() -> std::vector<std::string>
 
     return argv;
 }
+
+//==============================================================================
 } // namespace glow::console

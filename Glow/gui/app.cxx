@@ -1,11 +1,9 @@
 // clang-format off
-// ╔──────────────────────╗
-// │                      │
-// │     ╔═╗╦  ╔═╗╦ ╦     │  Glow - https://github.com/mthierman/Glow
-// │     ║ ╦║  ║ ║║║║     │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │     ╚═╝╩═╝╚═╝╚╩╝     │  SPDX-License-Identifier: MIT
-// │                      │
-// ╚──────────────────────╝
+// ╔──────────────╗
+// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
+// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚──────────────╝
 // clang-format on
 
 #include <gui/app.hxx>
@@ -13,6 +11,8 @@
 //==============================================================================
 namespace glow::gui
 {
+
+//==============================================================================
 App::App(std::string name) : m_name(name)
 {
     m_classAtom = register_window();
@@ -20,6 +20,7 @@ App::App(std::string name) : m_name(name)
     show_window_default();
 }
 
+//==============================================================================
 App::~App() {}
 
 //==============================================================================
@@ -44,6 +45,7 @@ auto App::register_window() -> ATOM
     return ::RegisterClassEx(&wcex);
 }
 
+//==============================================================================
 auto App::create_window() -> void
 {
     ::CreateWindowEx(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
@@ -55,8 +57,10 @@ auto App::create_window() -> void
 //==============================================================================
 auto App::show_window_default() -> void { ::ShowWindow(m_hwnd, SW_SHOWDEFAULT); }
 
+//==============================================================================
 auto App::show_window() -> void { ::ShowWindow(m_hwnd, SW_SHOW); }
 
+//==============================================================================
 auto App::hide_window() -> void { ::ShowWindow(m_hwnd, SW_HIDE); }
 
 //==============================================================================
@@ -78,6 +82,7 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
+//==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
@@ -91,10 +96,13 @@ auto App::on_close() -> int
     return 0;
 }
 
+//==============================================================================
 auto App::on_destroy() -> int
 {
     ::PostQuitMessage(0);
 
     return 0;
 }
+
+//==============================================================================
 } // namespace glow::gui
