@@ -14,11 +14,12 @@ namespace glow::gui
 
 //==============================================================================
 WebView::WebView(std::string name, HWND parentHwnd, int id)
-    : m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
+    : m_name(name), m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
-    register_window();
+    m_classAtom = register_window();
     create_window();
     show_window_default();
+
     window_cloak(m_hwnd.get());
     create_environment();
 }
@@ -27,7 +28,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
 WebView::~WebView() {}
 
 //==============================================================================
-auto WebView::register_window() -> void
+auto WebView::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = m_class.c_str();
@@ -42,14 +43,14 @@ auto WebView::register_window() -> void
     wcex.hIcon = m_icon ? m_icon : m_defaultIcon;
     wcex.hIconSm = m_icon ? m_icon : m_defaultIcon;
 
-    ::RegisterClassEx(&wcex);
+    return ::RegisterClassEx(&wcex);
 }
 
 //==============================================================================
 auto WebView::create_window() -> void
 {
-    ::CreateWindowEx(0, m_class.c_str(), m_class.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+    ::CreateWindowEx(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
+                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
                      reinterpret_cast<HMENU>(m_id), ::GetModuleHandle(nullptr), this);
 }
 

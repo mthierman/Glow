@@ -13,7 +13,7 @@ namespace glow::gui
 {
 
 //==============================================================================
-App::App(std::string name) : m_name(name)
+App::App(std::string name) : m_name(name), m_class(glow::text::randomize(name))
 {
     m_classAtom = register_window();
     create_window();
@@ -27,8 +27,8 @@ App::~App() {}
 auto App::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = m_name.c_str();
-    wcex.lpszMenuName = m_name.c_str();
+    wcex.lpszClassName = m_class.c_str();
+    wcex.lpszMenuName = m_class.c_str();
     wcex.lpfnWndProc = App::wnd_proc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;

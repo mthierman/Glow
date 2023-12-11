@@ -27,6 +27,7 @@ struct App
 
     //==============================================================================
     std::string m_name;
+    std::string m_class;
     ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
 

@@ -31,11 +31,14 @@ struct WebView
     virtual ~WebView();
 
     //==============================================================================
+    std::string m_name;
+    std::string m_class;
+    ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
     wil::unique_hwnd m_hwndParent;
 
   private:
-    auto register_window() -> void;
+    auto register_window() -> ATOM;
     auto create_window() -> void;
 
     //==============================================================================
@@ -56,7 +59,7 @@ struct WebView
     auto navigation_completed() -> void;
 
     //==============================================================================
-    std::string m_class;
+
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
