@@ -10,6 +10,8 @@
 
 #include <Windows.h>
 
+#include <wil/resource.h>
+
 #include <print>
 #include <string>
 
@@ -27,8 +29,7 @@ struct App
     virtual ~App();
 
     //==============================================================================
-    // HWND m_hwnd{nullptr};
-    auto get_hwnd() -> HWND;
+    wil::unique_hwnd m_hwnd;
 
   private:
     auto register_window() -> ATOM;
@@ -50,7 +51,6 @@ struct App
     //==============================================================================
     std::string m_name;
     ATOM m_classAtom{};
-    HWND m_hwnd;
 
     //==============================================================================
     HCURSOR m_cursor{

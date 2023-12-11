@@ -12,6 +12,8 @@
 #include <dwmapi.h>
 #include <ShlObj.h>
 
+#include <wil/resource.h>
+
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
@@ -46,8 +48,26 @@ template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg
     return pInstance;
 }
 
+template <class T, wil::unique_hwnd(T::*m_hwnd)>
+T* UniqueInstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
+{
+    T* pInstance;
+
+    if (uMsg == WM_NCCREATE)
+    {
+        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
+        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
+        pInstance->m_hwnd.reset(hwnd);
+        ::SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+    }
+
+    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+    return pInstance;
+}
+
 //==============================================================================
-auto msg_loop() -> int;
+auto msg_loop() -> void;
 auto check_theme() -> bool;
 auto set_darkmode(HWND hwnd) -> bool;
 auto set_darktitle() -> bool;

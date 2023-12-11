@@ -24,9 +24,6 @@ App::App(std::string name) : m_name(name)
 App::~App() {}
 
 //==============================================================================
-auto App::get_hwnd() -> HWND { return m_hwnd; }
-
-//==============================================================================
 auto App::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
@@ -55,18 +52,18 @@ auto App::create_window() -> void
 }
 
 //==============================================================================
-auto App::show_window_default() -> void { ::ShowWindow(m_hwnd, SW_SHOWDEFAULT); }
+auto App::show_window_default() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
 //==============================================================================
-auto App::show_window() -> void { ::ShowWindow(m_hwnd, SW_SHOW); }
+auto App::show_window() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 //==============================================================================
-auto App::hide_window() -> void { ::ShowWindow(m_hwnd, SW_HIDE); }
+auto App::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 //==============================================================================
 auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    App* self = InstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam);
+    App* self = UniqueInstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam);
 
     if (self)
     {
@@ -85,13 +82,13 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 //==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 //==============================================================================
 auto App::on_close() -> int
 {
-    ::DestroyWindow(m_hwnd);
+    m_hwnd.reset();
 
     return 0;
 }
