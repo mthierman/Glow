@@ -17,6 +17,8 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
+#include <memory>
+
 //==============================================================================
 namespace glow::gui
 {
@@ -48,19 +50,20 @@ template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg
     return pInstance;
 }
 
-template <class T> T* UniqueInstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
+template <typename T> using observer_ptr = T*;
+template <class T> observer_ptr<T> InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
-    T* pInstance;
+    observer_ptr<T> pInstance;
 
     if (uMsg == WM_NCCREATE)
     {
         LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        pInstance->m_hwnd.reset(hwnd);
-        ::SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        pInstance = reinterpret_cast<observer_ptr<T>>(pCreateStruct->lpCreateParams);
+        pInstance->m_hwnd.reset(hWnd);
+        ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<observer_ptr<T>>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
     return pInstance;
 }
