@@ -15,7 +15,7 @@ namespace glow::gui
 //==============================================================================
 auto msg_loop() -> void
 {
-    ::MSG msg{};
+    MSG msg{};
     int r{};
 
     while ((r = ::GetMessage(&msg, nullptr, 0, 0)) != 0)
