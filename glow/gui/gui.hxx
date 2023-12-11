@@ -48,8 +48,7 @@ template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg
     return pInstance;
 }
 
-template <class T, wil::unique_hwnd(T::*m_hwnd)>
-T* UniqueInstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
+template <class T> T* UniqueInstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance;
 
