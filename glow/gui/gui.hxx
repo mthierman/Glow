@@ -33,22 +33,22 @@ struct Bounds
 };
 
 //==============================================================================
-template <typename T> using observer_ptr = T*;
+template <typename T> using unowned_ptr = T*;
 
 //==============================================================================
-template <class T> observer_ptr<T> InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <class T> unowned_ptr<T> InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
-    observer_ptr<T> pInstance;
+    unowned_ptr<T> pInstance;
 
     if (uMsg == WM_NCCREATE)
     {
         LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-        pInstance = reinterpret_cast<observer_ptr<T>>(pCreateStruct->lpCreateParams);
+        pInstance = reinterpret_cast<unowned_ptr<T>>(pCreateStruct->lpCreateParams);
         pInstance->m_hwnd.reset(hWnd);
         ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<observer_ptr<T>>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<unowned_ptr<T>>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
     return pInstance;
 }

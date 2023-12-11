@@ -137,7 +137,7 @@ auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 //==============================================================================
 auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    observer_ptr<WebView> self{InstanceFromWndProc<WebView>(hwnd, uMsg, lParam)};
+    unowned_ptr<WebView> self{InstanceFromWndProc<WebView>(hwnd, uMsg, lParam)};
 
     if (self)
     {

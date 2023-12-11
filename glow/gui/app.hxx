@@ -12,7 +12,6 @@
 
 #include <wil/resource.h>
 
-#include <print>
 #include <string>
 
 #include <gui/gui.hxx>
