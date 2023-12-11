@@ -6,7 +6,7 @@ project(
 
 FetchContent_Declare(
     ${PROJECT_NAME}
-    URL ${URL_SQLITE}
+    URL https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip
 )
 
 FetchContent_MakeAvailable(${PROJECT_NAME})

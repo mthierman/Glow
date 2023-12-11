@@ -6,6 +6,11 @@ add_library(
     ${PROJECT_NAME}
 )
 
+configure_file(
+    config/glow.hxx.in
+    ${PROJECT_BINARY_DIR}/include/config/glow.hxx
+)
+
 target_sources(
     ${PROJECT_NAME}
     PRIVATE console/console.cxx
@@ -17,13 +22,14 @@ target_sources(
             gui/webview_composition.cxx
             logging/logging.cxx
             text/text.cxx
-)
-
-target_sources(
-    ${PROJECT_NAME}
+            data/glow.manifest
     PUBLIC FILE_SET
            HEADERS
+           BASE_DIRS
+           ${CMAKE_CURRENT_SOURCE_DIR}
+           ${PROJECT_BINARY_DIR}/include
            FILES
+           ${PROJECT_BINARY_DIR}/include/config/glow.hxx
            console/console.hxx
            filesystem/database.hxx
            filesystem/filesystem.hxx
@@ -37,16 +43,15 @@ target_sources(
 
 target_include_directories(
     ${PROJECT_NAME}
-    PUBLIC ${GLOW_CONFIG}
-           ${webview_SOURCE_DIR}/build/native/include-winrt
-           ${webview_SOURCE_DIR}/build/native/include
-           ${wil_SOURCE_DIR}/include
+    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include-winrt
+           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include
+           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
 )
 
 target_link_directories(
     ${PROJECT_NAME}
     PUBLIC
-    ${webview_SOURCE_DIR}/build/native/x64
+    ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/x64
 )
 
 target_link_libraries(

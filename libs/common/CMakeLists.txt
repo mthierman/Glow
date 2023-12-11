@@ -1,3 +1,9 @@
+project(
+    common
+    LANGUAGES C
+              CXX
+)
+
 add_library(
     glow_glow_features
     INTERFACE
