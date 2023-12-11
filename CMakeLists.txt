@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/ReadJSON.cmake)
+include(CMake/ReadJSON.cmake)
 
 project(
     ${NAME}
