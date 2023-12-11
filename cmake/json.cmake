@@ -1,6 +1,6 @@
 file(
     READ
-    Glow.json
+    glow.json
     GLOW_JSON
 )
 
