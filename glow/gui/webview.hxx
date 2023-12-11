@@ -51,6 +51,11 @@ struct WebView
     virtual auto on_window_pos_changed() -> int;
 
     //==============================================================================
+    auto create_environment() -> void;
+    auto create_controller(ICoreWebView2Environment* environment) -> void;
+    auto navigation_completed() -> void;
+
+    //==============================================================================
     std::string m_class;
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
@@ -65,11 +70,11 @@ struct WebView
     //==============================================================================
     UINT_PTR m_id{0};
     bool m_initialized{false};
-    winrt::com_ptr<ICoreWebView2Controller> controller{nullptr};
-    winrt::com_ptr<ICoreWebView2Controller4> controller4{nullptr};
-    winrt::com_ptr<ICoreWebView2> core{nullptr};
-    winrt::com_ptr<ICoreWebView2_19> core19{nullptr};
-    winrt::com_ptr<ICoreWebView2Settings> settings{nullptr};
+    winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+    winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+    winrt::com_ptr<ICoreWebView2> m_core{nullptr};
+    winrt::com_ptr<ICoreWebView2_19> m_core19{nullptr};
+    winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
 };
 
 //==============================================================================

@@ -20,79 +20,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
     create_window();
     show_window_default();
     window_cloak(m_hwnd.get());
-
-    winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, nullptr,
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [=, this](HRESULT, ICoreWebView2Environment* e) -> HRESULT
-            {
-                if (e)
-                    winrt::check_hresult(e->CreateCoreWebView2Controller(
-                        m_hwnd.get(),
-                        Microsoft::WRL::Callback<
-                            ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                            [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
-                            {
-                                if (c)
-                                {
-                                    controller.attach(c);
-                                    controller4 = controller.as<ICoreWebView2Controller4>();
-
-                                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                                    controller4->put_DefaultBackgroundColor(bgColor);
-
-                                    RECT bounds{0, 0, 0, 0};
-                                    GetClientRect(m_hwnd.get(), &bounds);
-                                    controller4->put_Bounds(bounds);
-
-                                    winrt::check_hresult(c->get_CoreWebView2(core.put()));
-
-                                    core19 = core.as<ICoreWebView2_19>();
-
-                                    winrt::check_hresult(core19->get_Settings(settings.put()));
-
-                                    settings->put_AreDefaultContextMenusEnabled(true);
-                                    settings->put_AreDefaultScriptDialogsEnabled(true);
-                                    settings->put_AreHostObjectsAllowed(true);
-                                    settings->put_IsBuiltInErrorPageEnabled(true);
-                                    settings->put_IsScriptEnabled(true);
-                                    settings->put_IsStatusBarEnabled(false);
-                                    settings->put_IsWebMessageEnabled(true);
-                                    settings->put_IsZoomControlEnabled(false);
-                                    settings->put_AreDevToolsEnabled(true);
-
-                                    core19->Navigate(L"https://www.google.com/");
-
-                                    EventRegistrationToken navigationCompletedToken;
-                                    core19->add_NavigationCompleted(
-                                        Microsoft::WRL::Callback<
-                                            ICoreWebView2NavigationCompletedEventHandler>(
-                                            [=,
-                                             this](ICoreWebView2* webView,
-                                                   ICoreWebView2NavigationCompletedEventArgs* args)
-                                                -> HRESULT
-                                            {
-                                                if (!m_initialized)
-                                                {
-                                                    window_uncloak(m_hwnd.get());
-                                                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0,
-                                                                  0);
-                                                    m_initialized = true;
-                                                }
-
-                                                return S_OK;
-                                            })
-                                            .Get(),
-                                        &navigationCompletedToken);
-                                }
-
-                                return S_OK;
-                            })
-                            .Get()));
-
-                return S_OK;
-            })
-            .Get()));
+    create_environment();
 }
 
 //==============================================================================
@@ -161,14 +89,92 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 //==============================================================================
 auto WebView::on_window_pos_changed() -> int
 {
-    if (controller4)
+    if (m_controller4)
     {
         RECT rect{};
         ::GetClientRect(m_hwnd.get(), &rect);
-        controller4->put_Bounds(rect);
+        m_controller4->put_Bounds(rect);
     }
 
     return 0;
+}
+
+//==============================================================================
+auto WebView::create_environment() -> void
+{
+    winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, nullptr, nullptr,
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [=, this](HRESULT, ICoreWebView2Environment* environment) -> HRESULT
+            {
+                if (environment) create_controller(environment);
+
+                return S_OK;
+            })
+            .Get()));
+}
+
+//==============================================================================
+auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
+{
+    winrt::check_hresult(environment->CreateCoreWebView2Controller(
+        m_hwnd.get(),
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+            [=, this](HRESULT, ICoreWebView2Controller* controller) -> HRESULT
+            {
+                if (controller)
+                {
+                    m_controller.attach(controller);
+                    m_controller4 = m_controller.as<ICoreWebView2Controller4>();
+
+                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                    m_controller4->put_DefaultBackgroundColor(bgColor);
+
+                    winrt::check_hresult(m_controller->get_CoreWebView2(m_core.put()));
+                    m_core19 = m_core.as<ICoreWebView2_19>();
+
+                    winrt::check_hresult(m_core19->get_Settings(m_settings.put()));
+                    m_settings->put_AreDefaultContextMenusEnabled(true);
+                    m_settings->put_AreDefaultScriptDialogsEnabled(true);
+                    m_settings->put_AreHostObjectsAllowed(true);
+                    m_settings->put_IsBuiltInErrorPageEnabled(true);
+                    m_settings->put_IsScriptEnabled(true);
+                    m_settings->put_IsStatusBarEnabled(false);
+                    m_settings->put_IsWebMessageEnabled(true);
+                    m_settings->put_IsZoomControlEnabled(false);
+                    m_settings->put_AreDevToolsEnabled(true);
+
+                    m_core19->Navigate(L"https://www.google.com/");
+
+                    navigation_completed();
+                }
+
+                return S_OK;
+            })
+            .Get()));
+}
+
+//==============================================================================
+auto WebView::navigation_completed() -> void
+{
+    EventRegistrationToken navigationCompletedToken;
+
+    m_core19->add_NavigationCompleted(
+        Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
+            [=, this](ICoreWebView2* webView,
+                      ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
+            {
+                if (!m_initialized)
+                {
+                    window_uncloak(m_hwnd.get());
+                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+                    m_initialized = true;
+                }
+
+                return S_OK;
+            })
+            .Get(),
+        &navigationCompletedToken);
 }
 
 //==============================================================================
