@@ -19,7 +19,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
     register_window();
     create_window();
     show_window_default();
-    window_cloak(m_hwnd);
+    window_cloak(m_hwnd.get());
 
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -28,7 +28,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
             {
                 if (e)
                     winrt::check_hresult(e->CreateCoreWebView2Controller(
-                        m_hwnd,
+                        m_hwnd.get(),
                         Microsoft::WRL::Callback<
                             ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                             [=, this](HRESULT, ICoreWebView2Controller* c) -> HRESULT
@@ -42,7 +42,7 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
                                     controller4->put_DefaultBackgroundColor(bgColor);
 
                                     RECT bounds{0, 0, 0, 0};
-                                    GetClientRect(m_hwnd, &bounds);
+                                    GetClientRect(m_hwnd.get(), &bounds);
                                     controller4->put_Bounds(bounds);
 
                                     winrt::check_hresult(c->get_CoreWebView2(core.put()));
@@ -74,8 +74,9 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
                                             {
                                                 if (!m_initialized)
                                                 {
-                                                    window_uncloak(m_hwnd);
-                                                    ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
+                                                    window_uncloak(m_hwnd.get());
+                                                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0,
+                                                                  0);
                                                     m_initialized = true;
                                                 }
 
@@ -120,23 +121,23 @@ auto WebView::register_window() -> void
 auto WebView::create_window() -> void
 {
     ::CreateWindowEx(0, m_class.c_str(), m_class.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent, reinterpret_cast<HMENU>(m_id),
-                     ::GetModuleHandle(nullptr), this);
+                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+                     reinterpret_cast<HMENU>(m_id), ::GetModuleHandle(nullptr), this);
 }
 
 //==============================================================================
-auto WebView::show_window_default() -> void { ::ShowWindow(m_hwnd, SW_SHOWDEFAULT); }
+auto WebView::show_window_default() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
 //==============================================================================
-auto WebView::show_window() -> void { ::ShowWindow(m_hwnd, SW_SHOW); }
+auto WebView::show_window() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 //==============================================================================
-auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd, SW_HIDE); }
+auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 //==============================================================================
 auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    WebView* self = InstanceFromWndProc<WebView, &WebView::m_hwnd>(hwnd, uMsg, lParam);
+    observer_ptr<WebView> self{InstanceFromWndProc<WebView>(hwnd, uMsg, lParam)};
 
     if (self)
     {
@@ -154,7 +155,7 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 //==============================================================================
 auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    return ::DefWindowProc(m_hwnd, uMsg, wParam, lParam);
+    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 //==============================================================================
@@ -163,7 +164,7 @@ auto WebView::on_window_pos_changed() -> int
     if (controller4)
     {
         RECT rect{};
-        ::GetClientRect(m_hwnd, &rect);
+        ::GetClientRect(m_hwnd.get(), &rect);
         controller4->put_Bounds(rect);
     }
 

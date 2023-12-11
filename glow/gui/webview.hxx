@@ -31,8 +31,8 @@ struct WebView
     virtual ~WebView();
 
     //==============================================================================
-    HWND m_hwndParent{nullptr};
-    HWND m_hwnd{nullptr};
+    wil::unique_hwnd m_hwnd;
+    wil::unique_hwnd m_hwndParent;
 
   private:
     auto register_window() -> void;

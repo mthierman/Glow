@@ -19,7 +19,7 @@ target_sources(
             gui/app.cxx
             gui/gui.cxx
             gui/webview.cxx
-            gui/webview_composition.cxx
+            # gui/webview_composition.cxx
             logging/logging.cxx
             text/text.cxx
             data/glow.manifest

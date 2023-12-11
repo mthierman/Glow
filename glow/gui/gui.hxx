@@ -33,24 +33,9 @@ struct Bounds
 };
 
 //==============================================================================
-template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
-{
-    T* pInstance;
-
-    if (uMsg == WM_NCCREATE)
-    {
-        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        pInstance->*m_hwnd = hwnd;
-        ::SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
-    }
-
-    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(hwnd, GWLP_USERDATA));
-
-    return pInstance;
-}
-
 template <typename T> using observer_ptr = T*;
+
+//==============================================================================
 template <class T> observer_ptr<T> InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     observer_ptr<T> pInstance;
