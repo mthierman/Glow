@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <GlowConfig.h>
+#include <config/glow.hxx>
 
 #include <Windows.h>
 
