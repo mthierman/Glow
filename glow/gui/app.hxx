@@ -26,9 +26,11 @@ struct App
     virtual ~App();
 
     //==============================================================================
+    std::string m_name;
+    ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
 
-  private:
+  protected:
     auto register_window() -> ATOM;
     auto create_window() -> void;
 
@@ -44,10 +46,6 @@ struct App
     //==============================================================================
     virtual auto on_close() -> int;
     virtual auto on_destroy() -> int;
-
-    //==============================================================================
-    std::string m_name;
-    ATOM m_classAtom{};
 
     //==============================================================================
     HCURSOR m_cursor{
