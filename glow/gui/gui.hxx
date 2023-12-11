@@ -47,6 +47,7 @@ template <class T, HWND(T::*m_hwnd)> T* InstanceFromWndProc(HWND hwnd, UINT uMsg
 }
 
 //==============================================================================
+auto msg_loop() -> int;
 auto check_theme() -> bool;
 auto set_darkmode(HWND hwnd) -> bool;
 auto set_darktitle() -> bool;
