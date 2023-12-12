@@ -31,6 +31,13 @@ struct WebView
     virtual ~WebView();
 
     //==============================================================================
+    auto register_window() -> ATOM;
+    auto create_window() -> void;
+    auto show_window_default() -> void;
+    auto show_window() -> void;
+    auto hide_window() -> void;
+
+    //==============================================================================
     std::string m_name;
     std::string m_class;
     ATOM m_classAtom{};
@@ -46,26 +53,13 @@ struct WebView
     winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 
   private:
-    auto register_window() -> ATOM;
-    auto create_window() -> void;
-
-    //==============================================================================
-    auto show_window_default() -> void;
-    auto show_window() -> void;
-    auto hide_window() -> void;
-
-    //==============================================================================
-    static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-
-    //==============================================================================
-    virtual auto on_window_pos_changed() -> int;
-
-    //==============================================================================
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 
     //==============================================================================
+    static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto on_window_pos_changed() -> int;
     virtual auto navigation_completed() -> void;
     virtual auto accelerator_key_pressed() -> void;
 
