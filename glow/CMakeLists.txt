@@ -24,11 +24,7 @@ target_sources(
             text/text.cxx
     PUBLIC FILE_SET
            HEADERS
-           BASE_DIRS
-           ${CMAKE_CURRENT_SOURCE_DIR}
-           ${PROJECT_BINARY_DIR}/include
            FILES
-           ${PROJECT_BINARY_DIR}/include/config/glow.hxx
            console/console.hxx
            filesystem/database.hxx
            filesystem/filesystem.hxx
