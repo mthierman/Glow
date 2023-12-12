@@ -65,7 +65,8 @@ struct WebView
     virtual auto accelerator_key_pressed() -> void;
 
     virtual auto web_message_received_handler() -> void{};
-    virtual auto accelerator_key_pressed_handler() -> void{};
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void{};
 
     //==============================================================================
     HCURSOR m_cursor{

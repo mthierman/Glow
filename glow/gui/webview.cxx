@@ -222,7 +222,7 @@ auto WebView::accelerator_key_pressed() -> void
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
             {
-                accelerator_key_pressed_handler();
+                accelerator_key_pressed_handler(args);
                 return S_OK;
             })
             .Get(),
