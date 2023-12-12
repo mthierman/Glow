@@ -78,6 +78,7 @@ struct WebView
     winrt::com_ptr<ICoreWebView2> m_core{nullptr};
     winrt::com_ptr<ICoreWebView2_19> m_core19{nullptr};
     winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+    winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 };
 
 //==============================================================================
