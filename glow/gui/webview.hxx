@@ -36,6 +36,14 @@ struct WebView
     ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
     wil::unique_hwnd m_hwndParent;
+    UINT_PTR m_id{0};
+    bool m_initialized{false};
+    winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+    winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+    winrt::com_ptr<ICoreWebView2> m_core{nullptr};
+    winrt::com_ptr<ICoreWebView2_19> m_core19{nullptr};
+    winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+    winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 
   private:
     auto register_window() -> ATOM;
@@ -56,10 +64,12 @@ struct WebView
     //==============================================================================
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
-    auto navigation_completed() -> void;
 
     //==============================================================================
+    virtual auto navigation_completed() -> void;
+    virtual auto accelerator_key_pressed() -> void;
 
+    //==============================================================================
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
                                               IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -69,16 +79,6 @@ struct WebView
     HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
                                                      IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
     HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
-
-    //==============================================================================
-    UINT_PTR m_id{0};
-    bool m_initialized{false};
-    winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
-    winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
-    winrt::com_ptr<ICoreWebView2> m_core{nullptr};
-    winrt::com_ptr<ICoreWebView2_19> m_core19{nullptr};
-    winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
-    winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 };
 
 //==============================================================================

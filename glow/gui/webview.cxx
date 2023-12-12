@@ -190,4 +190,18 @@ auto WebView::navigation_completed() -> void
 }
 
 //==============================================================================
+auto WebView::accelerator_key_pressed() -> void
+{
+    EventRegistrationToken acceleratorKeyPressedToken;
+
+    m_controller4->add_AcceleratorKeyPressed(
+        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+            [=, this](ICoreWebView2Controller* sender,
+                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+            { return S_OK; })
+            .Get(),
+        &acceleratorKeyPressedToken);
+}
+
+//==============================================================================
 } // namespace glow::gui
