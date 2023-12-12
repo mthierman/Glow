@@ -16,6 +16,10 @@ namespace glow::gui
 WebView::WebView(std::string name, HWND parentHwnd, int id)
     : m_name(name), m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
+    ::SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    ::SetEnvironmentVariable("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                             "--allow-file-access-from-files");
+
     m_classAtom = register_window();
     create_window();
     show_window_default();
@@ -172,7 +176,7 @@ auto WebView::navigation_completed() -> void
 {
     EventRegistrationToken navigationCompletedToken;
 
-    m_core19->add_NavigationCompleted(
+    winrt::check_hresult(m_core19->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* webView,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
@@ -180,14 +184,28 @@ auto WebView::navigation_completed() -> void
                 if (!m_initialized)
                 {
                     window_uncloak(m_hwnd.get());
-                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+                    // ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+                    ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
                     m_initialized = true;
                 }
 
                 return S_OK;
             })
             .Get(),
-        &navigationCompletedToken);
+        &navigationCompletedToken));
+}
+
+//==============================================================================
+auto WebView::web_message_received() -> void
+{
+    EventRegistrationToken webMessageReceivedToken;
+
+    winrt::check_hresult(m_core19->add_WebMessageReceived(
+        Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+            [=, this](ICoreWebView2* webView,
+                      ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT { return S_OK; })
+            .Get(),
+        &webMessageReceivedToken));
 }
 
 //==============================================================================
@@ -195,13 +213,13 @@ auto WebView::accelerator_key_pressed() -> void
 {
     EventRegistrationToken acceleratorKeyPressedToken;
 
-    m_controller4->add_AcceleratorKeyPressed(
+    winrt::check_hresult(m_controller4->add_AcceleratorKeyPressed(
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
             { return S_OK; })
             .Get(),
-        &acceleratorKeyPressedToken);
+        &acceleratorKeyPressedToken));
 }
 
 //==============================================================================
