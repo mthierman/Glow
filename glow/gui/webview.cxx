@@ -161,12 +161,9 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 //==============================================================================
 auto WebView::on_window_pos_changed() -> int
 {
-    if (m_controller4)
-    {
-        RECT rect{};
-        ::GetClientRect(m_hwnd.get(), &rect);
-        m_controller4->put_Bounds(rect);
-    }
+    RECT rect{};
+    ::GetClientRect(m_hwnd.get(), &rect);
+    if (m_controller4) { m_controller4->put_Bounds(rect); }
 
     return 0;
 }

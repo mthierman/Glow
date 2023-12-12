@@ -49,6 +49,10 @@ auto App::create_window() -> void
                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
                      CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, ::GetModuleHandle(nullptr),
                      this);
+
+    // auto menu = ::CreateMenu();
+    // ::AppendMenu(menu, MF_STRING, 0, "Hello World");
+    // ::SetMenu(m_hwnd.get(), menu);
 }
 
 //==============================================================================
