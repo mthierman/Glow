@@ -64,6 +64,9 @@ struct WebView
     virtual auto web_message_received() -> void;
     virtual auto accelerator_key_pressed() -> void;
 
+    virtual auto web_message_received_handler() -> void{};
+    virtual auto accelerator_key_pressed_handler() -> void{};
+
     //==============================================================================
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),

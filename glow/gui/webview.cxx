@@ -184,8 +184,8 @@ auto WebView::navigation_completed() -> void
                 if (!m_initialized)
                 {
                     window_uncloak(m_hwnd.get());
-                    // ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
-                    ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
+                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+                    // ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
                     m_initialized = true;
                 }
 
@@ -203,7 +203,11 @@ auto WebView::web_message_received() -> void
     winrt::check_hresult(m_core19->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* webView,
-                      ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT { return S_OK; })
+                      ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+            {
+                web_message_received_handler();
+                return S_OK;
+            })
             .Get(),
         &webMessageReceivedToken));
 }
@@ -217,7 +221,10 @@ auto WebView::accelerator_key_pressed() -> void
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
-            { return S_OK; })
+            {
+                accelerator_key_pressed_handler();
+                return S_OK;
+            })
             .Get(),
         &acceleratorKeyPressedToken));
 }
