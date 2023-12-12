@@ -122,6 +122,7 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     m_core19->Navigate(L"https://www.google.com/");
 
                     navigation_completed();
+                    accelerator_key_pressed();
                 }
 
                 return S_OK;
