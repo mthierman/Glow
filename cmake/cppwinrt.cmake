@@ -1,5 +1,5 @@
 execute_process(
     COMMAND
-        nuget install Microsoft.Windows.CppWinRT -Version 2.0.230706.1 -OutputDirectory
+        nuget install ${CPPWINRT} -Version ${CPPWINRT_VER} -OutputDirectory
         ${CMAKE_BINARY_DIR}/_deps/Nuget
 )

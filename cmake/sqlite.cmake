@@ -21,7 +21,7 @@ target_sources(
            BASE_DIRS
            ${sqlite_SOURCE_DIR}
            FILES
-           sqlite3.h
+           ${sqlite_SOURCE_DIR}/sqlite3.h
 )
 
 target_link_libraries(

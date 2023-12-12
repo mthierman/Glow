@@ -1,13 +1,34 @@
 cmake_minimum_required(VERSION 3.27)
 
-include(FetchContent)
-include(cmake/readjson.cmake)
-
 project(
-    ${NAME}
-    VERSION ${VERSION}
+    Glow
+    VERSION 0.0.0
     LANGUAGES C
               CXX
+)
+
+set(WIL
+    Microsoft.Windows.ImplementationLibrary
+)
+
+set(WIL_VER
+    1.0.231028.1
+)
+
+set(CPPWINRT
+    Microsoft.Windows.CppWinRT
+)
+
+set(CPPWINRT_VER
+    2.0.230706.1
+)
+
+set(WEBVIEW2
+    Microsoft.Web.WebView2
+)
+
+set(WEBVIEW2_VER
+    1.0.2151.40
 )
 
 option(
@@ -27,6 +48,7 @@ option(
     OFF
 )
 
+include(FetchContent)
 # include(cmake/libcurl.cmake)
 include(cmake/common.cmake)
 include(cmake/sqlite.cmake)
@@ -39,9 +61,9 @@ include(cmake/webview2.cmake)
 execute_process(
     COMMAND
         cppwinrt -input
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/lib/Microsoft.Web.WebView2.Core.winmd
+        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/lib/Microsoft.Web.WebView2.Core.winmd
         sdk -output
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include-winrt
+        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/_deps/Nuget/${CPPWINRT}.${CPPWINRT_VER}/bin
 )
 

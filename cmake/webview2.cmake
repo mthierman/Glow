@@ -1,5 +1,5 @@
 execute_process(
     COMMAND
-        nuget install Microsoft.Web.WebView2 -Version 1.0.2151.40 -OutputDirectory
+        nuget install ${WEBVIEW2} -Version ${WEBVIEW2_VER} -OutputDirectory
         ${CMAKE_BINARY_DIR}/_deps/Nuget
 )

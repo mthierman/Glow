@@ -1,9 +1,9 @@
-add_library(${PROJECT_NAME})
+add_library(glow)
 
 add_library(
     glow::glow
     ALIAS
-    ${PROJECT_NAME}
+    glow
 )
 
 configure_file(
@@ -12,7 +12,7 @@ configure_file(
 )
 
 target_sources(
-    ${PROJECT_NAME}
+    glow
     PRIVATE console/console.cxx
             filesystem/database.cxx
             filesystem/filesystem.cxx
@@ -42,9 +42,9 @@ target_sources(
 )
 
 target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include-winrt
-           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include
+    glow
+    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
+           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
            ${sqlite_SOURCE_DIR}
            ${json_SOURCE_DIR}/single_include
@@ -52,13 +52,13 @@ target_include_directories(
 )
 
 target_link_directories(
-    ${PROJECT_NAME}
+    glow
     PUBLIC
     ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/x64
 )
 
 target_link_libraries(
-    ${PROJECT_NAME}
+    glow
     PRIVATE glow::flags
     PUBLIC glow::features
            nlohmann_json::nlohmann_json
@@ -71,6 +71,6 @@ target_link_libraries(
 )
 
 target_compile_definitions(
-    ${PROJECT_NAME}
+    glow
     PUBLIC NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )
