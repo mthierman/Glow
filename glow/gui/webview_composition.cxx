@@ -171,7 +171,7 @@ auto WebViewComp::create_webview() -> winrt::IAsyncAction
 //==============================================================================
 auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{InstanceFromWndProc<WebViewComp, &WebViewComp::m_hwnd>(hwnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<WebViewComp>(hwnd, uMsg, lParam)};
 
     if (self)
     {

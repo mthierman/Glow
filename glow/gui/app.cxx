@@ -63,7 +63,7 @@ auto App::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 //==============================================================================
 auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{InstanceFromWndProc<App, &App::m_hwnd>(hwnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<App>(hwnd, uMsg, lParam)};
 
     if (self)
     {
