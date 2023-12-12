@@ -181,18 +181,23 @@ auto WebView::navigation_completed() -> void
             [=, this](ICoreWebView2* webView,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
             {
-                if (!m_initialized)
-                {
-                    window_uncloak(m_hwnd.get());
-                    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
-                    // ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
-                    m_initialized = true;
-                }
-
+                initialized();
                 return S_OK;
             })
             .Get(),
         &navigationCompletedToken));
+}
+
+//==============================================================================
+auto WebView::initialized() -> void
+{
+    if (!m_initialized)
+    {
+        window_uncloak(m_hwnd.get());
+        ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+        // ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
+        m_initialized = true;
+    }
 }
 
 //==============================================================================

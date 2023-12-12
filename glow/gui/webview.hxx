@@ -60,10 +60,12 @@ struct WebView
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_window_pos_changed() -> int;
+
     virtual auto navigation_completed() -> void;
     virtual auto web_message_received() -> void;
     virtual auto accelerator_key_pressed() -> void;
 
+    auto initialized() -> void;
     virtual auto web_message_received_handler() -> void{};
     virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> void{};
