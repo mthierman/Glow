@@ -19,10 +19,9 @@ target_sources(
             gui/app.cxx
             gui/gui.cxx
             gui/webview.cxx
-            # gui/webview_composition.cxx
+            gui/webview_composition.cxx
             logging/logging.cxx
             text/text.cxx
-            data/glow.manifest
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
@@ -35,7 +34,7 @@ target_sources(
            filesystem/filesystem.hxx
            gui/app.hxx
            gui/gui.hxx
-           # gui/webview_composition.hxx
+           gui/webview_composition.hxx
            gui/webview.hxx
            logging/logging.hxx
            text/text.hxx
@@ -54,7 +53,7 @@ target_include_directories(
 target_link_directories(
     glow
     PUBLIC
-    ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/x64
+    ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/x64
 )
 
 target_link_libraries(

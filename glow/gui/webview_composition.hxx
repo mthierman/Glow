@@ -81,8 +81,8 @@ struct WebViewComp
     virtual auto on_window_pos_changed() -> int;
 
     //==============================================================================
-    HWND m_hwndParent{nullptr};
-    HWND m_hwnd{nullptr};
+    wil::unique_hwnd m_hwndParent{nullptr};
+    wil::unique_hwnd m_hwnd{nullptr};
     std::string m_class;
     UINT_PTR m_id{0};
     bool m_initialized{false};

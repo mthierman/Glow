@@ -33,7 +33,8 @@ struct Bounds
 };
 
 //==============================================================================
-template <class T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <class T, wil::unique_hwnd(T::*m_hwnd)>
+T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance{nullptr};
 

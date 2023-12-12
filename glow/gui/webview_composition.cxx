@@ -112,10 +112,10 @@ WebViewComp::WebViewComp(std::string name, HWND hwnd, int id) : m_hwndParent(hwn
     ::RegisterClassEx(&wcex);
 
     ::CreateWindowEx(0, m_class.c_str(), name.c_str(), WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent, reinterpret_cast<HMENU>(m_id),
-                     ::GetModuleHandle(nullptr), this);
+                     CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+                     reinterpret_cast<HMENU>(m_id), ::GetModuleHandle(nullptr), this);
 
-    ::ShowWindow(m_hwnd, SW_SHOW);
+    ::ShowWindow(m_hwnd.get(), SW_SHOW);
 }
 
 //==============================================================================
@@ -125,10 +125,10 @@ WebViewComp::~WebViewComp() {}
 auto WebViewComp::create_webview() -> winrt::IAsyncAction
 {
     CompositionHost* compHost{CompositionHost::GetInstance()};
-    compHost->Initialize(m_hwnd);
+    compHost->Initialize(m_hwnd.get());
 
     auto windowRef{winrt::CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
-        reinterpret_cast<uint64_t>(m_hwndParent))};
+        reinterpret_cast<uint64_t>(m_hwndParent.get()))};
 
     auto environmentOptions{winrt::CoreWebView2EnvironmentOptions()};
     environmentOptions.AdditionalBrowserArguments(L"--allow-file-access-from-files");
@@ -159,19 +159,19 @@ auto WebViewComp::create_webview() -> winrt::IAsyncAction
     core.Navigate(winrt::to_hstring(std::string("https://www.google.com/")));
 
     RECT bounds{0, 0, 0, 0};
-    ::GetClientRect(m_hwndParent, &bounds);
+    ::GetClientRect(m_hwndParent.get(), &bounds);
     winrt::Windows::Foundation::Rect displayWebView{
         static_cast<float>(bounds.left), static_cast<float>(bounds.top),
         static_cast<float>(bounds.right), static_cast<float>(bounds.bottom)};
     controller.Bounds(displayWebView);
 
-    ::SendMessage(m_hwndParent, WM_NOTIFY, 0, 0);
+    ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
 }
 
 //==============================================================================
 auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    observer_ptr<WebViewComp> self{InstanceFromWndProc<WebViewComp>(hwnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<WebViewComp, &WebViewComp::m_hwnd>(hwnd, uMsg, lParam)};
 
     if (self)
     {
@@ -190,7 +190,7 @@ auto WebViewComp::on_window_pos_changed() -> int
     if (controller)
     {
         RECT rect{0, 0, 0, 0};
-        ::GetClientRect(m_hwnd, &rect);
+        ::GetClientRect(m_hwnd.get(), &rect);
 
         winrt::Windows::Foundation::Rect rectWv{
             static_cast<float>(rect.left), static_cast<float>(rect.top),

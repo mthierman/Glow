@@ -19,6 +19,8 @@
 
 #include <winrt/Microsoft.Web.WebView2.Core.h>
 
+#include <memory>
+
 #include <console/console.hxx>
 #include <gui/app.hxx>
 #include <gui/webview_composition.hxx>
@@ -34,7 +36,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     auto app{std::make_unique<glow::App>("WebViewComposition")};
 
-    auto wv{std::make_unique<glow::gui::WebViewComp>("WebView", app->get_hwnd(), 1)};
+    auto wv{std::make_unique<glow::gui::WebViewComp>("WebView", app->m_hwnd.get(), 1)};
     wv->create_webview();
 
     MSG msg{nullptr};
