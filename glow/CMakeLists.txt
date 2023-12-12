@@ -35,7 +35,7 @@ target_sources(
            filesystem/filesystem.hxx
            gui/app.hxx
            gui/gui.hxx
-           gui/webview_composition.hxx
+           # gui/webview_composition.hxx
            gui/webview.hxx
            logging/logging.hxx
            text/text.hxx
@@ -46,6 +46,9 @@ target_include_directories(
     PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include-winrt
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
+           ${sqlite_SOURCE_DIR}
+           ${json_SOURCE_DIR}/single_include
+           ${toml_SOURCE_DIR}/include
 )
 
 target_link_directories(

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.27)
 
 include(FetchContent)
-include(cmake/json.cmake)
+include(cmake/readjson.cmake)
 
 project(
     ${NAME}
@@ -27,7 +27,23 @@ option(
     OFF
 )
 
-add_subdirectory(libs)
+# include(cmake/libcurl.cmake)
+include(cmake/common.cmake)
+include(cmake/sqlite.cmake)
+include(cmake/json.cmake)
+include(cmake/toml.cmake)
+include(cmake/wil.cmake)
+include(cmake/cppwinrt.cmake)
+include(cmake/webview2.cmake)
+
+execute_process(
+    COMMAND
+        cppwinrt -input
+        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/lib/Microsoft.Web.WebView2.Core.winmd
+        sdk -output
+        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/build/native/include-winrt
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/_deps/Nuget/${CPPWINRT}.${CPPWINRT_VER}/bin
+)
 
 add_subdirectory(glow)
 
