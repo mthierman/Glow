@@ -26,9 +26,6 @@ struct App
     virtual ~App();
 
     //==============================================================================
-    std::string m_name;
-    std::string m_class;
-    ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
 
   protected:
@@ -55,9 +52,14 @@ struct App
     HICON m_defaultIcon{
         reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
-                                                     IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    wil::unique_hicon m_icon{reinterpret_cast<HICON>(::LoadImage(
+        ::GetModuleHandle(nullptr), MAKEINTRESOURCE(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
     HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
+    //==============================================================================
+    std::string m_name;
+    std::string m_class;
+    ATOM m_classAtom{};
 };
 
 //==============================================================================

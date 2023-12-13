@@ -44,8 +44,8 @@ auto WebView::register_window() -> ATOM
     wcex.hInstance = ::GetModuleHandle(nullptr);
     wcex.hbrBackground = m_background;
     wcex.hCursor = m_cursor;
-    wcex.hIcon = m_icon ? m_icon : m_defaultIcon;
-    wcex.hIconSm = m_icon ? m_icon : m_defaultIcon;
+    wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon;
+    wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon;
 
     return ::RegisterClassEx(&wcex);
 }

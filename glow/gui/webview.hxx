@@ -39,13 +39,9 @@ struct WebView
     auto navigate(const std::string url) -> void;
 
     //==============================================================================
-    std::string m_name;
-    std::string m_class;
-    ATOM m_classAtom{};
     wil::unique_hwnd m_hwnd;
     wil::unique_hwnd m_hwndParent;
-    UINT_PTR m_id{0};
-    bool m_initialized{false};
+
     winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
     winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
     winrt::com_ptr<ICoreWebView2> m_core{nullptr};
@@ -53,7 +49,7 @@ struct WebView
     winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
     winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 
-  private:
+  protected:
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 
@@ -78,9 +74,18 @@ struct WebView
     HICON m_defaultIcon{
         reinterpret_cast<HICON>(::LoadImage(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
                                             IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    HICON m_icon{reinterpret_cast<HICON>(::LoadImage(::GetModuleHandle(nullptr), MAKEINTRESOURCE(1),
-                                                     IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    wil::unique_hicon m_icon{reinterpret_cast<HICON>(::LoadImage(
+        ::GetModuleHandle(nullptr), MAKEINTRESOURCE(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
     HBRUSH m_background{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
+
+    //==============================================================================
+    std::string m_name;
+    std::string m_class;
+    ATOM m_classAtom{};
+
+    //==============================================================================
+    UINT_PTR m_id{0};
+    bool m_initialized{false};
 };
 
 //==============================================================================
