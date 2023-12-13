@@ -28,7 +28,7 @@ set(WEBVIEW2
 )
 
 set(WEBVIEW2_VER
-    1.0.2151.40
+    1.0.2210.55
 )
 
 option(

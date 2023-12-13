@@ -68,6 +68,13 @@ auto WebView::show_window() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
 auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 //==============================================================================
+auto WebView::navigate(const std::string url) -> void
+{
+    auto wideUrl{glow::text::widen(url)};
+    if (m_core19) m_core19->Navigate(wideUrl.c_str());
+}
+
+//==============================================================================
 auto WebView::create_environment() -> void
 {
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
@@ -192,7 +199,6 @@ auto WebView::initialized() -> void
     {
         window_uncloak(m_hwnd.get());
         ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
-        // ::SendMessage(m_hwndParent.get(), WM_WINDOWPOSCHANGED, 0, 0);
         m_initialized = true;
     }
 }

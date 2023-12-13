@@ -36,6 +36,7 @@ struct WebView
     auto show_window_default() -> void;
     auto show_window() -> void;
     auto hide_window() -> void;
+    auto navigate(const std::string url) -> void;
 
     //==============================================================================
     std::string m_name;
