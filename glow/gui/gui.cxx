@@ -13,7 +13,7 @@ namespace glow::gui
 {
 
 //==============================================================================
-auto msg_loop() -> void
+auto message_loop() -> void
 {
     MSG msg{};
     int r{};

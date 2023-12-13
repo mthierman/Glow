@@ -80,9 +80,9 @@ auto WebView::create_environment() -> void
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [=, this](HRESULT, ICoreWebView2Environment* environment) -> HRESULT
+            [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
             {
-                if (environment) create_controller(environment);
+                if (createdEnvironment) create_controller(createdEnvironment);
 
                 return S_OK;
             })
@@ -160,12 +160,6 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 }
 
 //==============================================================================
-auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
-}
-
-//==============================================================================
 auto WebView::on_window_pos_changed() -> int
 {
     RECT rect{};
@@ -176,13 +170,19 @@ auto WebView::on_window_pos_changed() -> int
 }
 
 //==============================================================================
+auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
+}
+
+//==============================================================================
 auto WebView::navigation_completed() -> void
 {
     EventRegistrationToken navigationCompletedToken;
 
     winrt::check_hresult(m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
-            [=, this](ICoreWebView2* webView,
+            [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
             {
                 initialized();
@@ -193,24 +193,13 @@ auto WebView::navigation_completed() -> void
 }
 
 //==============================================================================
-auto WebView::initialized() -> void
-{
-    if (!m_initialized)
-    {
-        window_uncloak(m_hwnd.get());
-        ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
-        m_initialized = true;
-    }
-}
-
-//==============================================================================
 auto WebView::web_message_received() -> void
 {
     EventRegistrationToken webMessageReceivedToken;
 
     winrt::check_hresult(m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-            [=, this](ICoreWebView2* webView,
+            [=, this](ICoreWebView2* sender,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
             {
                 web_message_received_handler();
@@ -235,6 +224,35 @@ auto WebView::accelerator_key_pressed() -> void
             })
             .Get(),
         &acceleratorKeyPressedToken));
+}
+
+//==============================================================================
+auto WebView::favicon() -> void
+{
+    EventRegistrationToken acceleratorKeyPressedToken;
+
+    winrt::check_hresult(m_core20->add_DocumentTitleChanged(
+        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+            [=, this](ICoreWebView2* sender,
+                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+            {
+                accelerator_key_pressed_handler(args);
+                return S_OK;
+            })
+            .Get(),
+        &acceleratorKeyPressedToken));
+}
+
+//==============================================================================
+auto WebView::initialized() -> void
+{
+    OutputDebugString("BASE WebView::initialized()");
+    if (!m_initialized)
+    {
+        window_uncloak(m_hwnd.get());
+        ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+        m_initialized = true;
+    }
 }
 
 //==============================================================================
