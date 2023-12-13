@@ -71,7 +71,7 @@ auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 auto WebView::navigate(const std::string url) -> void
 {
     auto wideUrl{glow::text::widen(url)};
-    if (m_core19) m_core19->Navigate(wideUrl.c_str());
+    if (m_core20) m_core20->Navigate(wideUrl.c_str());
 }
 
 //==============================================================================
@@ -106,9 +106,9 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     m_controller4->put_DefaultBackgroundColor(bgColor);
 
                     winrt::check_hresult(m_controller->get_CoreWebView2(m_core.put()));
-                    m_core19 = m_core.as<ICoreWebView2_19>();
+                    m_core20 = m_core.as<ICoreWebView2_20>();
 
-                    winrt::check_hresult(m_core19->get_Settings(m_settings.put()));
+                    winrt::check_hresult(m_core20->get_Settings(m_settings.put()));
 
                     m_settings8 = m_settings.as<ICoreWebView2Settings8>();
 
@@ -130,7 +130,7 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     m_settings8->put_IsWebMessageEnabled(true);
                     m_settings8->put_IsZoomControlEnabled(true);
 
-                    m_core19->Navigate(L"https://www.google.com/");
+                    m_core20->Navigate(L"https://www.google.com/");
 
                     navigation_completed();
                     accelerator_key_pressed();
@@ -180,7 +180,7 @@ auto WebView::navigation_completed() -> void
 {
     EventRegistrationToken navigationCompletedToken;
 
-    winrt::check_hresult(m_core19->add_NavigationCompleted(
+    winrt::check_hresult(m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* webView,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
@@ -208,7 +208,7 @@ auto WebView::web_message_received() -> void
 {
     EventRegistrationToken webMessageReceivedToken;
 
-    winrt::check_hresult(m_core19->add_WebMessageReceived(
+    winrt::check_hresult(m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* webView,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
