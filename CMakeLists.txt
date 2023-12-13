@@ -48,9 +48,10 @@ option(
     OFF
 )
 
+include(cmake/common.cmake)
+
 include(FetchContent)
 # include(cmake/libcurl.cmake)
-include(cmake/common.cmake)
 include(cmake/sqlite.cmake)
 include(cmake/json.cmake)
 include(cmake/toml.cmake)
@@ -58,14 +59,7 @@ include(cmake/wil.cmake)
 include(cmake/cppwinrt.cmake)
 include(cmake/webview2.cmake)
 
-execute_process(
-    COMMAND
-        cppwinrt -input
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/lib/Microsoft.Web.WebView2.Core.winmd
-        sdk -output
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/_deps/Nuget/${CPPWINRT}.${CPPWINRT_VER}/bin
-)
+include(cmake/buildcppwinrt.cmake)
 
 add_subdirectory(glow)
 
