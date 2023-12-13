@@ -62,7 +62,7 @@ struct WebView
     virtual auto navigation_completed() -> void;
     virtual auto web_message_received() -> void;
     virtual auto accelerator_key_pressed() -> void;
-    virtual auto favicon() -> void;
+    virtual auto favicon_changed() -> void;
 
     //==============================================================================
     auto initialized() -> void;

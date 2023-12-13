@@ -134,6 +134,7 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
 
                     navigation_completed();
                     accelerator_key_pressed();
+                    favicon_changed();
                 }
 
                 return S_OK;
@@ -227,20 +228,21 @@ auto WebView::accelerator_key_pressed() -> void
 }
 
 //==============================================================================
-auto WebView::favicon() -> void
+auto WebView::favicon_changed() -> void
 {
-    EventRegistrationToken acceleratorKeyPressedToken;
+    EventRegistrationToken faviconChangedToken;
 
-    winrt::check_hresult(m_core20->add_DocumentTitleChanged(
-        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+    winrt::check_hresult(m_core20->add_FaviconChanged(
+        Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
+            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
-                accelerator_key_pressed_handler(args);
+                //
+                OutputDebugString("BASE WebView::favicon_changed()");
+
                 return S_OK;
             })
             .Get(),
-        &acceleratorKeyPressedToken));
+        &faviconChangedToken));
 }
 
 //==============================================================================
