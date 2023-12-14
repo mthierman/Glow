@@ -90,7 +90,7 @@ struct WebView
     std::string m_name;
     std::string m_class;
     ATOM m_classAtom{};
-    UINT_PTR m_id{0};
+    UINT_PTR m_id{};
     bool m_initialized{false};
 };
 

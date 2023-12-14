@@ -26,11 +26,16 @@ auto narrow(const std::wstring& utf16) -> std::string
                                     nullptr, nullptr)};
 
     if (length > 0)
-        WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
-                            static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
-                            nullptr);
+    {
+        if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
+                                static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
+                                nullptr) > 0)
+            return utf8;
 
-    return utf8;
+        else return {};
+    }
+
+    else return {};
 }
 
 //==============================================================================
@@ -46,10 +51,15 @@ auto widen(const std::string& utf8) -> std::wstring
                                     static_cast<int>(utf8.length()), nullptr, 0)};
 
     if (length > 0)
-        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
-                            static_cast<int>(utf8.length()), utf16.data(), length);
+    {
+        if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
+                                static_cast<int>(utf8.length()), utf16.data(), length) > 0)
+            return utf16;
 
-    return utf16;
+        else return {};
+    }
+
+    else return {};
 }
 
 //==============================================================================

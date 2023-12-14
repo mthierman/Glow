@@ -41,15 +41,14 @@ auto Database::write() -> void
 
     if (std::filesystem::exists(path))
     {
-        std::string string;
-        auto error{string.data()};
+        std::string error;
 
-        auto dbExec{sqlite3_exec(p_db.get(), sql.c_str(), nullptr, 0, &error)};
+        auto dbExec{sqlite3_exec(p_db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
 
         if (dbExec != SQLITE_OK)
         {
             std::println("{}", error);
-            sqlite3_free(error);
+            sqlite3_free(error.data());
         }
     }
 }

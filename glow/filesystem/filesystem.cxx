@@ -13,7 +13,7 @@ namespace glow::filesystem
 {
 
 //==============================================================================
-auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
+auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path
 {
     wil::unique_cotaskmem_string buffer;
     winrt::check_hresult(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer));
