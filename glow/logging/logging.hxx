@@ -17,14 +17,13 @@
 
 #include <text/text.hxx>
 
-//==============================================================================
 namespace glow::logging
 {
 
-//==============================================================================
 auto debug(std::string string, std::source_location location = std::source_location::current())
     -> void;
 auto msgbox(std::string string) -> void;
 auto errorbox(std::string string) -> void;
 auto hr(HRESULT hresult) -> void;
+
 } // namespace glow::logging

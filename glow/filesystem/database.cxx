@@ -8,16 +8,13 @@
 
 #include <filesystem/database.hxx>
 
-//==============================================================================
 namespace glow::filesystem
 {
 
-//==============================================================================
 Database::Database() {}
 
 Database::~Database() {}
 
-//==============================================================================
 auto Database::open() -> void
 {
     if (sqlite3_open(path.string().c_str(), std::out_ptr(p_db)) != SQLITE_OK)
@@ -53,5 +50,4 @@ auto Database::write() -> void
     }
 }
 
-//==============================================================================
 } // namespace glow::filesystem

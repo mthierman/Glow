@@ -8,24 +8,19 @@
 
 #include <gui/webview_composition.hxx>
 
-//==============================================================================
 namespace glow::gui
 {
 
-//==============================================================================
 CompositionHost::CompositionHost() {}
 
-//==============================================================================
 CompositionHost* CompositionHost::GetInstance()
 {
     static CompositionHost instance;
     return &instance;
 }
 
-//==============================================================================
 CompositionHost::~CompositionHost() {}
 
-//==============================================================================
 auto CompositionHost::Initialize(HWND hwnd) -> void
 {
     EnsureDispatcherQueue();
@@ -39,7 +34,6 @@ auto CompositionHost::Initialize(HWND hwnd) -> void
     }
 }
 
-//==============================================================================
 auto CompositionHost::EnsureDispatcherQueue() -> void
 {
     namespace abi = ABI::Windows::System;
@@ -60,7 +54,6 @@ auto CompositionHost::EnsureDispatcherQueue() -> void
     }
 }
 
-//==============================================================================
 auto CompositionHost::CreateDesktopWindowTarget(HWND window) -> void
 {
     namespace abi = ABI::Windows::UI::Composition::Desktop;
@@ -72,7 +65,6 @@ auto CompositionHost::CreateDesktopWindowTarget(HWND window) -> void
     m_target = target;
 }
 
-//==============================================================================
 auto CompositionHost::CreateCompositionRoot() -> void
 {
     auto root{m_compositor.CreateContainerVisual()};
@@ -82,7 +74,6 @@ auto CompositionHost::CreateCompositionRoot() -> void
     m_target.Root(root);
 }
 
-//==============================================================================
 WebViewComp::WebViewComp(std::string name, HWND hwnd, int id) : m_hwndParent(hwnd), m_id(id)
 {
     auto brush{reinterpret_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH))};
@@ -118,10 +109,8 @@ WebViewComp::WebViewComp(std::string name, HWND hwnd, int id) : m_hwndParent(hwn
     ::ShowWindow(m_hwnd.get(), SW_SHOW);
 }
 
-//==============================================================================
 WebViewComp::~WebViewComp() {}
 
-//==============================================================================
 auto WebViewComp::create_webview() -> winrt::IAsyncAction
 {
     CompositionHost* compHost{CompositionHost::GetInstance()};
@@ -168,7 +157,6 @@ auto WebViewComp::create_webview() -> winrt::IAsyncAction
     ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
 }
 
-//==============================================================================
 auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<WebViewComp>(hwnd, uMsg, lParam)};
@@ -184,7 +172,6 @@ auto CALLBACK WebViewComp::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM 
     return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-//==============================================================================
 auto WebViewComp::on_window_pos_changed() -> int
 {
     if (controller)
@@ -202,5 +189,4 @@ auto WebViewComp::on_window_pos_changed() -> int
     return 0;
 }
 
-//==============================================================================
 } // namespace glow::gui

@@ -10,9 +10,9 @@
 
 #include <gui/app.hxx>
 
-//==============================================================================
 namespace glow
 {
+
 struct App : glow::gui::App
 {
     using glow::gui::App::App;
@@ -21,12 +21,10 @@ struct App : glow::gui::App
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
-    //==============================================================================
     auto on_notify() -> int;
     auto on_window_pos_changed() -> int;
 };
 
-//==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
@@ -51,7 +49,6 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     return 1;
 }
 
-//==============================================================================
 auto App::on_notify() -> int
 {
     RECT clientRect{0};
@@ -69,4 +66,5 @@ auto App::on_window_pos_changed() -> int
 
     return 0;
 }
+
 } // namespace glow

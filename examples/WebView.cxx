@@ -17,7 +17,6 @@
 
 #include "WebView.hxx"
 
-//==============================================================================
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {

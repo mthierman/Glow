@@ -8,11 +8,9 @@
 
 #include <filesystem/filesystem.hxx>
 
-//==============================================================================
 namespace glow::filesystem
 {
 
-//==============================================================================
 auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path
 {
     wil::unique_cotaskmem_string buffer;
@@ -39,5 +37,4 @@ auto get_wpgmptr() -> std::filesystem::path
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-//==============================================================================
 } // namespace glow::filesystem

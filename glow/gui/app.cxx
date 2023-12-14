@@ -8,22 +8,18 @@
 
 #include <gui/app.hxx>
 
-//==============================================================================
 namespace glow::gui
 {
 
-//==============================================================================
-App::App(std::string name) : m_name(name), m_class(glow::text::randomize(name))
+App::App(const std::string& name) : m_name(name), m_class(glow::text::randomize(name))
 {
     m_classAtom = register_window();
     create_window();
     show_window_default();
 }
 
-//==============================================================================
 App::~App() {}
 
-//==============================================================================
 auto App::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
@@ -42,7 +38,6 @@ auto App::register_window() -> ATOM
     return RegisterClassExA(&wcex);
 }
 
-//==============================================================================
 auto App::create_window() -> void
 {
     CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
@@ -55,16 +50,12 @@ auto App::create_window() -> void
     // SetMenu(m_hwnd.get(), hmenu);
 }
 
-//==============================================================================
 auto App::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
-//==============================================================================
 auto App::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
-//==============================================================================
 auto App::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
-//==============================================================================
 auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<App>(hwnd, uMsg, lParam)};
@@ -83,13 +74,11 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
-//==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-//==============================================================================
 auto App::on_close() -> int
 {
     m_hwnd.reset();
@@ -97,7 +86,6 @@ auto App::on_close() -> int
     return 0;
 }
 
-//==============================================================================
 auto App::on_destroy() -> int
 {
     PostQuitMessage(0);
@@ -105,5 +93,4 @@ auto App::on_destroy() -> int
     return 0;
 }
 
-//==============================================================================
 } // namespace glow::gui

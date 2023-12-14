@@ -19,11 +19,9 @@
 
 #include <wil/resource.h>
 
-//==============================================================================
 namespace glow::gui
 {
 
-//==============================================================================
 struct Bounds
 {
     int x{};
@@ -32,7 +30,6 @@ struct Bounds
     int height{};
 };
 
-//==============================================================================
 template <class T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance{nullptr};
@@ -50,7 +47,6 @@ template <class T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
     return pInstance;
 }
 
-//==============================================================================
 auto message_loop() -> void;
 auto check_theme() -> bool;
 auto set_darkmode(HWND hwnd) -> bool;
@@ -61,4 +57,5 @@ auto window_mica(HWND hwnd) -> bool;
 auto window_maximize(HWND hwnd) -> bool;
 auto window_fullscreen(HWND hwnd) -> bool;
 auto window_topmost(HWND hwnd) -> bool;
+
 } // namespace glow::gui

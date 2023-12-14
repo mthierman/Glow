@@ -14,14 +14,11 @@
 #include <random>
 #include <string>
 
-//==============================================================================
 namespace glow::text
 {
 
-//==============================================================================
 auto narrow(const std::wstring& utf16) -> std::string;
 auto widen(const std::string& utf8) -> std::wstring;
 auto randomize(const std::string& string) -> std::string;
 
-//==============================================================================
 } // namespace glow::text

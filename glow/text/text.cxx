@@ -8,11 +8,9 @@
 
 #include <text/text.hxx>
 
-//==============================================================================
 namespace glow::text
 {
 
-//==============================================================================
 auto narrow(const std::wstring& utf16) -> std::string
 {
     constexpr int intMax = std::numeric_limits<int>::max();
@@ -38,7 +36,6 @@ auto narrow(const std::wstring& utf16) -> std::string
     else return {};
 }
 
-//==============================================================================
 auto widen(const std::string& utf8) -> std::wstring
 {
     constexpr int intMax = std::numeric_limits<int>::max();
@@ -62,7 +59,6 @@ auto widen(const std::string& utf8) -> std::wstring
     else return {};
 }
 
-//==============================================================================
 auto randomize(const std::string& string) -> std::string
 {
     std::random_device rd;
@@ -75,5 +71,4 @@ auto randomize(const std::string& string) -> std::string
     return (string + randomNumber);
 }
 
-//==============================================================================
 } // namespace glow::text

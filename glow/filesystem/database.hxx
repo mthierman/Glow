@@ -20,17 +20,14 @@
 
 #include <filesystem/filesystem.hxx>
 
-//==============================================================================
 namespace glow::filesystem
 {
 
-//==============================================================================
 struct Database
 {
     Database();
     ~Database();
 
-    //==============================================================================
     auto open() -> void;
     auto write() -> void;
 
@@ -43,5 +40,5 @@ struct Database
     sqlite3_ptr p_db;
     std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
 };
-//==============================================================================
+
 } // namespace glow::filesystem

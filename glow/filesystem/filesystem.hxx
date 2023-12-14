@@ -19,14 +19,11 @@
 
 #include <wil/resource.h>
 
-//==============================================================================
 namespace glow::filesystem
 {
 
-//==============================================================================
 auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path;
 auto get_pgmptr() -> std::filesystem::path;
 auto get_wpgmptr() -> std::filesystem::path;
 
-//==============================================================================
 } // namespace glow::filesystem

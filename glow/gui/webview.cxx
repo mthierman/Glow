@@ -10,8 +10,8 @@
 
 namespace glow::gui
 {
-//==============================================================================
-WebView::WebView(std::string name, HWND parentHwnd, int id)
+
+WebView::WebView(const std::string& name, HWND parentHwnd, int id)
     : m_name(name), m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
@@ -28,7 +28,6 @@ WebView::WebView(std::string name, HWND parentHwnd, int id)
 
 WebView::~WebView() {}
 
-//==============================================================================
 auto WebView::register_window() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
@@ -60,7 +59,6 @@ auto WebView::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto WebView::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
-//==============================================================================
 auto WebView::navigate(const std::string url) -> void
 {
     auto wideUrl{glow::text::widen(url)};
@@ -73,7 +71,6 @@ auto WebView::post_json(const json jsonMessage) -> void
     if (m_core20) m_core20->PostWebMessageAsJson(wideUrl.c_str());
 }
 
-//==============================================================================
 auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<WebView>(hwnd, uMsg, lParam)};
@@ -105,7 +102,6 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-//==============================================================================
 auto WebView::create_environment() -> void
 {
     // auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
@@ -180,7 +176,6 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
             .Get()));
 }
 
-//==============================================================================
 auto WebView::source_changed() -> void
 {
     EventRegistrationToken token;
@@ -280,7 +275,6 @@ auto WebView::document_title_changed() -> void
         &token));
 }
 
-//==============================================================================
 auto WebView::initialized() -> void
 {
     if (!m_initialized)
@@ -291,5 +285,4 @@ auto WebView::initialized() -> void
     }
 }
 
-//==============================================================================
 } // namespace glow::gui

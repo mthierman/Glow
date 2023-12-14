@@ -15,37 +15,32 @@
 #include <gui/gui.hxx>
 #include <text/text.hxx>
 
-//==============================================================================
 namespace glow::gui
 {
 
-//==============================================================================
 struct App
 {
-    App(std::string name);
+    App(const std::string& name);
     virtual ~App();
 
-    //==============================================================================
-    wil::unique_hwnd m_hwnd;
-
-  protected:
     auto register_window() -> ATOM;
     auto create_window() -> void;
 
-    //==============================================================================
     auto show_window_default() -> void;
     auto show_window() -> void;
     auto hide_window() -> void;
 
-    //==============================================================================
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
-    //==============================================================================
     virtual auto on_close() -> int;
     virtual auto on_destroy() -> int;
 
-    //==============================================================================
+    wil::unique_hwnd m_hwnd;
+    std::string m_name;
+    std::string m_class;
+    ATOM m_classAtom{};
+
     HCURSOR m_cursor{
         reinterpret_cast<HCURSOR>(LoadImageA(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
                                              IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -55,12 +50,6 @@ struct App
     wil::unique_hicon m_icon{reinterpret_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCE(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
     HBRUSH m_background{reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
-
-    //==============================================================================
-    std::string m_name;
-    std::string m_class;
-    ATOM m_classAtom{};
 };
 
-//==============================================================================
 } // namespace glow::gui

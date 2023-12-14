@@ -8,11 +8,9 @@
 
 #include <gui/gui.hxx>
 
-//==============================================================================
 namespace glow::gui
 {
 
-//==============================================================================
 auto message_loop() -> void
 {
     MSG msg{};
@@ -32,7 +30,6 @@ auto message_loop() -> void
     return;
 }
 
-//==============================================================================
 auto check_theme() -> bool
 {
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
@@ -43,7 +40,6 @@ auto check_theme() -> bool
     return false;
 }
 
-//==============================================================================
 auto set_darkmode(HWND hwnd) -> bool
 {
     auto dark{TRUE};
@@ -61,7 +57,6 @@ auto set_darkmode(HWND hwnd) -> bool
     return false;
 }
 
-//==============================================================================
 auto set_darktitle() -> bool
 {
     enum class PreferredAppMode
@@ -90,7 +85,6 @@ auto set_darktitle() -> bool
     return true;
 }
 
-//==============================================================================
 auto window_cloak(HWND hwnd) -> bool
 {
     auto cloak{TRUE};
@@ -100,7 +94,6 @@ auto window_cloak(HWND hwnd) -> bool
     return true;
 }
 
-//==============================================================================
 auto window_uncloak(HWND hwnd) -> bool
 {
     auto uncloak{FALSE};
@@ -110,7 +103,6 @@ auto window_uncloak(HWND hwnd) -> bool
     return true;
 }
 
-//==============================================================================
 auto window_mica(HWND hwnd) -> bool
 {
     MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
@@ -125,7 +117,6 @@ auto window_mica(HWND hwnd) -> bool
     return true;
 }
 
-//==============================================================================
 auto window_maximize(HWND hwnd) -> bool
 {
     auto style{GetWindowLongPtrA(hwnd, GWL_STYLE)};
@@ -148,7 +139,6 @@ auto window_maximize(HWND hwnd) -> bool
     }
 }
 
-//==============================================================================
 auto window_fullscreen(HWND hwnd) -> bool
 {
     static RECT pos;
@@ -180,7 +170,6 @@ auto window_fullscreen(HWND hwnd) -> bool
     }
 }
 
-//==============================================================================
 auto window_topmost(HWND hwnd) -> bool
 {
     FLASHWINFO fwi{sizeof(FLASHWINFO)};
@@ -208,5 +197,4 @@ auto window_topmost(HWND hwnd) -> bool
     }
 }
 
-//==============================================================================
 } // namespace glow::gui
