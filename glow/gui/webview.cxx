@@ -189,7 +189,7 @@ auto WebView::source_changed() -> void
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
             {
-                //
+                // source_changed_handler();
 
                 return S_OK;
             })
@@ -256,7 +256,7 @@ auto WebView::favicon_changed() -> void
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
-                //
+                // favicon_changed_handler();
 
                 return S_OK;
             })
@@ -272,7 +272,7 @@ auto WebView::document_title_changed() -> void
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
-                //
+                // document_title_changed_handler();
 
                 return S_OK;
             })
