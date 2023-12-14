@@ -15,6 +15,8 @@
 #include <string>
 #include <vector>
 
+#include <wil/resource.h>
+
 #include <text/text.hxx>
 
 //==============================================================================
@@ -30,10 +32,10 @@ struct Console
   private:
     struct FILE_DELETER
     {
-        auto operator()(FILE* file) noexcept -> void { ::fclose(file); }
+        auto operator()(::FILE* pFile) noexcept -> void { ::fclose(pFile); }
     };
     using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
-    file_ptr file;
+    file_ptr p_File;
 };
 
 //==============================================================================
