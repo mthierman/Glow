@@ -26,26 +26,26 @@ namespace glow::gui
 //==============================================================================
 struct Bounds
 {
-    int x{0};
-    int y{0};
-    int width{0};
-    int height{0};
+    int x{};
+    int y{};
+    int width{};
+    int height{};
 };
 
 //==============================================================================
-template <class T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <class T> T* InstanceFromWndProc(HWND hwnd, UINT message, LPARAM lparam)
 {
     T* pInstance{nullptr};
 
-    if (uMsg == WM_NCCREATE)
+    if (message == WM_NCCREATE)
     {
-        LPCREATESTRUCT pCreateStruct = reinterpret_cast<LPCREATESTRUCT>(lParam);
-        pInstance = reinterpret_cast<T*>(pCreateStruct->lpCreateParams);
-        pInstance->m_hwnd.reset(hWnd);
-        ::SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lparam)};
+        pInstance = reinterpret_cast<T*>(lpCreateStruct->lpCreateParams);
+        pInstance->m_hwnd.reset(hwnd);
+        SetWindowLongPtrA(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<T*>(::GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    else pInstance = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
 
     return pInstance;
 }

@@ -15,14 +15,14 @@ namespace glow::console
 //==============================================================================
 Console::Console()
 {
-    ::AllocConsole();
+    AllocConsole();
 
-    ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
-                     MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+    EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+                   MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    ::freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stdout);
-    ::freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stderr);
-    ::freopen_s(std::out_ptr(p_file), "CONIN$", "r", stdin);
+    freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stdout);
+    freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stderr);
+    freopen_s(std::out_ptr(p_file), "CONIN$", "r", stdin);
 
     std::cout.clear();
     std::clog.clear();
@@ -30,14 +30,14 @@ Console::Console()
     std::cin.clear();
 }
 
-Console::~Console() { ::FreeConsole(); }
+Console::~Console() { FreeConsole(); }
 
 //==============================================================================
 auto get_argv() -> std::vector<std::string>
 {
     int argc{};
     wil::unique_hlocal_ptr<PWSTR[]> args;
-    args.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
+    args.reset(CommandLineToArgvW(GetCommandLineW(), &argc));
 
     std::vector<std::string> argv;
 

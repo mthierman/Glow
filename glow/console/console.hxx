@@ -32,7 +32,7 @@ struct Console
   private:
     struct FILE_DELETER
     {
-        auto operator()(::FILE* pFile) noexcept -> void { ::fclose(pFile); }
+        auto operator()(FILE* pFile) noexcept -> void { fclose(pFile); }
     };
     using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
     file_ptr p_file;

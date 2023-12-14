@@ -38,7 +38,8 @@ target_sources(
 
 target_include_directories(
     glow
-    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
+    PUBLIC ${PROJECT_BINARY_DIR}/include
+           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
            ${sqlite_SOURCE_DIR}
