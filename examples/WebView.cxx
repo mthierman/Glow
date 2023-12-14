@@ -12,6 +12,7 @@
 
 #include <console/console.hxx>
 #include <gui/app.hxx>
+#include <gui/gui.hxx>
 #include <gui/webview.hxx>
 
 #include "WebView.hxx"
@@ -28,19 +29,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     auto wv{std::make_unique<glow::gui::WebView>("WebView", app->m_hwnd.get(), 1)};
 
-    MSG msg{nullptr};
-    int r{0};
-
-    while ((r = ::GetMessage(&msg, nullptr, 0, 0)) != 0)
-    {
-        if (r == -1) return 0;
-
-        else
-        {
-            ::TranslateMessage(&msg);
-            ::DispatchMessage(&msg);
-        }
-    }
+    glow::gui::message_loop();
 
     return 0;
 }
