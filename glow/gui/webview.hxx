@@ -50,6 +50,7 @@ struct WebView
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 
     //==============================================================================
+    virtual auto source_changed() -> void;
     virtual auto navigation_completed() -> void;
     virtual auto web_message_received() -> void;
     virtual auto accelerator_key_pressed() -> void;

@@ -181,9 +181,25 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
 }
 
 //==============================================================================
+auto WebView::source_changed() -> void
+{
+    EventRegistrationToken token;
+
+    winrt::check_hresult(m_core20->add_SourceChanged(
+        Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
+            [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+            {
+                //
+
+                return S_OK;
+            })
+            .Get(),
+        &token));
+}
+
 auto WebView::navigation_completed() -> void
 {
-    EventRegistrationToken tokenNavigationCompleted;
+    EventRegistrationToken token;
 
     winrt::check_hresult(m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
@@ -191,15 +207,16 @@ auto WebView::navigation_completed() -> void
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
             {
                 initialized();
+
                 return S_OK;
             })
             .Get(),
-        &tokenNavigationCompleted));
+        &token));
 }
 
 auto WebView::web_message_received() -> void
 {
-    EventRegistrationToken tokenWebMessageReceived;
+    EventRegistrationToken token;
 
     winrt::check_hresult(m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
@@ -207,15 +224,16 @@ auto WebView::web_message_received() -> void
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
             {
                 web_message_received_handler();
+
                 return S_OK;
             })
             .Get(),
-        &tokenWebMessageReceived));
+        &token));
 }
 
 auto WebView::accelerator_key_pressed() -> void
 {
-    EventRegistrationToken tokenAcceleratorKeyPressed;
+    EventRegistrationToken token;
 
     winrt::check_hresult(m_controller4->add_AcceleratorKeyPressed(
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -223,15 +241,16 @@ auto WebView::accelerator_key_pressed() -> void
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
             {
                 accelerator_key_pressed_handler(args);
+
                 return S_OK;
             })
             .Get(),
-        &tokenAcceleratorKeyPressed));
+        &token));
 }
 
 auto WebView::favicon_changed() -> void
 {
-    EventRegistrationToken tokenFaviconChanged;
+    EventRegistrationToken token;
 
     winrt::check_hresult(m_core20->add_FaviconChanged(
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
@@ -242,12 +261,12 @@ auto WebView::favicon_changed() -> void
                 return S_OK;
             })
             .Get(),
-        &tokenFaviconChanged));
+        &token));
 }
 
 auto WebView::document_title_changed() -> void
 {
-    EventRegistrationToken tokenTitleChanged;
+    EventRegistrationToken token;
 
     winrt::check_hresult(m_core20->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -258,7 +277,7 @@ auto WebView::document_title_changed() -> void
                 return S_OK;
             })
             .Get(),
-        &tokenTitleChanged));
+        &token));
 }
 
 //==============================================================================
