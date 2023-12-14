@@ -13,56 +13,47 @@ namespace glow::text
 {
 
 //==============================================================================
-auto narrow(std::wstring wstring) -> std::string
+auto narrow(const std::wstring& utf16) -> std::string
 {
-    if (!wstring.empty())
-    {
-        auto inSize{static_cast<int>(wstring.size())};
+    constexpr int intMax = std::numeric_limits<int>::max();
+    if (utf16.length() > static_cast<size_t>(intMax))
+        throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
-        auto outSize{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                         wstring.data(), inSize, nullptr, 0, nullptr, nullptr)};
+    std::string utf8;
 
-        if (outSize > 0)
-        {
-            std::string out;
-            out.resize(static_cast<size_t>(outSize));
+    auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                    utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
+                                    nullptr, nullptr)};
 
-            if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                    wstring.data(), inSize, out.data(), outSize, nullptr,
-                                    nullptr) > 0)
-                return out;
-        }
-    }
+    if (length > 0)
+        WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
+                            static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
+                            nullptr);
 
-    return {};
+    return utf8;
 }
 
 //==============================================================================
-auto widen(std::string string) -> std::wstring
+auto widen(const std::string& utf8) -> std::wstring
 {
-    if (!string.empty())
-    {
-        auto inSize{static_cast<int>(string.size())};
+    constexpr int intMax = std::numeric_limits<int>::max();
+    if (utf8.length() > static_cast<size_t>(intMax))
+        throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
-        auto outSize{
-            MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, string.data(), inSize, nullptr, 0)};
+    std::wstring utf16;
 
-        if (outSize > 0)
-        {
-            std::wstring out;
-            out.resize(static_cast<size_t>(outSize));
+    auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
+                                    static_cast<int>(utf8.length()), nullptr, 0)};
 
-            if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, string.data(), inSize,
-                                    out.data(), outSize) > 0)
-                return out;
-        }
-    }
+    if (length > 0)
+        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
+                            static_cast<int>(utf8.length()), utf16.data(), length);
 
-    return {};
+    return utf16;
 }
 
 //==============================================================================
-auto randomize(std::string string) -> std::string
+auto randomize(const std::string& string) -> std::string
 {
     std::random_device rd;
     std::mt19937 mt(rd());

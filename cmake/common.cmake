@@ -43,3 +43,9 @@ target_link_options(
     $<$<CXX_COMPILER_ID:MSVC>:
     /WX>
 )
+
+target_compile_definitions(
+    glow_flags
+    INTERFACE NOMINMAX
+              WIN32_LEAN_AND_MEAN
+)

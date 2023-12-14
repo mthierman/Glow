@@ -54,9 +54,9 @@ auto main() -> int
     std::println("{}", glow::filesystem::get_pgmptr().string());
     std::println("{}", glow::text::randomize("Randomized!"));
 
-    glow::logging::debug("debug() test");
-    glow::logging::msgbox("msgbox() test");
-    glow::logging::errorbox("errorbox() test");
+    // glow::logging::debug("debug() test");
+    // glow::logging::msgbox("msgbox() test");
+    // glow::logging::errorbox("errorbox() test");
 
     settings s;
     json j = s;

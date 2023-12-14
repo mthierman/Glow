@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <shellapi.h>
 
 #include <iostream>
 #include <memory>
