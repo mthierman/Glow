@@ -12,6 +12,7 @@
 #include <wrl.h>
 #include <winrt/Windows.Foundation.h>
 #include <WebView2.h>
+#include <WebView2EnvironmentOptions.h>
 
 #include <string>
 
@@ -66,6 +67,7 @@ struct WebView
     //==============================================================================
     wil::unique_hwnd m_hwnd;
     wil::unique_hwnd m_hwndParent;
+    winrt::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
     winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
     winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
     winrt::com_ptr<ICoreWebView2> m_core{nullptr};

@@ -108,6 +108,13 @@ auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 //==============================================================================
 auto WebView::create_environment() -> void
 {
+    // auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
+    // auto options6{Microsoft::WRL::ComPtr<ICoreWebView2EnvironmentOptions6>()};
+    // options.As(&options6);
+    // std::wstring browserArgsBuffer = L"--allow-file-access-from-files";
+    // auto browserArgs = browserArgsBuffer.data();
+    // options->get_AdditionalBrowserArguments(&browserArgs);
+
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
