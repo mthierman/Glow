@@ -23,25 +23,24 @@
 //==============================================================================
 namespace glow::filesystem
 {
+
 //==============================================================================
 struct Database
 {
     Database();
     ~Database();
 
-  private:
-    struct sqlite3_deleter
-    {
-        auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
-    };
-    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
-
-  public:
+    //==============================================================================
     auto open() -> void;
     auto write() -> void;
 
   private:
-    sqlite3_ptr db;
+    struct sqlite3_deleter
+    {
+        auto operator()(sqlite3* pDb) noexcept -> void { sqlite3_close(pDb); }
+    };
+    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
+    sqlite3_ptr p_db;
     std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
 };
 //==============================================================================

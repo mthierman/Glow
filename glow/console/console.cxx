@@ -20,9 +20,9 @@ Console::Console()
     ::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE), SC_CLOSE,
                      MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    ::freopen_s(std::out_ptr(p_File), "CONOUT$", "w", stdout);
-    ::freopen_s(std::out_ptr(p_File), "CONOUT$", "w", stderr);
-    ::freopen_s(std::out_ptr(p_File), "CONIN$", "r", stdin);
+    ::freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stdout);
+    ::freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stderr);
+    ::freopen_s(std::out_ptr(p_file), "CONIN$", "r", stdin);
 
     std::cout.clear();
     std::clog.clear();

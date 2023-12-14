@@ -21,7 +21,7 @@ Database::~Database() {}
 //==============================================================================
 auto Database::open() -> void
 {
-    if (sqlite3_open(path.string().c_str(), std::out_ptr(db)) != SQLITE_OK)
+    if (sqlite3_open(path.string().c_str(), std::out_ptr(p_db)) != SQLITE_OK)
         throw std::runtime_error("Failed to open SQLite");
 }
 
@@ -46,9 +46,9 @@ auto Database::write() -> void
         std::string string;
         auto error{string.data()};
 
-        auto debExec{sqlite3_exec(db.get(), sql.c_str(), nullptr, 0, &error)};
+        auto dbExec{sqlite3_exec(p_db.get(), sql.c_str(), nullptr, 0, &error)};
 
-        if (debExec != SQLITE_OK)
+        if (dbExec != SQLITE_OK)
         {
             std::println("{}", error);
             sqlite3_free(error);

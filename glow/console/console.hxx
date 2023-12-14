@@ -35,7 +35,7 @@ struct Console
         auto operator()(::FILE* pFile) noexcept -> void { ::fclose(pFile); }
     };
     using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
-    file_ptr p_File;
+    file_ptr p_file;
 };
 
 //==============================================================================
