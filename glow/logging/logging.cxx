@@ -15,21 +15,21 @@ namespace glow::logging
 //==============================================================================
 auto debug(std::string string, std::source_location location) -> void
 {
-    ::OutputDebugString(("file_name: " + std::string(location.file_name()) + "\n").c_str());
-    ::OutputDebugString(("function_name: " + std::string(location.function_name()) + "\n").c_str());
-    ::OutputDebugString(("line: " + std::to_string(location.line()) + "\n").c_str());
-    ::OutputDebugString(("column: " + std::to_string(location.column()) + "\n").c_str());
-    ::OutputDebugString((string + "\n").c_str());
+    OutputDebugStringA(("file_name: " + std::string(location.file_name()) + "\n").c_str());
+    OutputDebugStringA(("function_name: " + std::string(location.function_name()) + "\n").c_str());
+    OutputDebugStringA(("line: " + std::to_string(location.line()) + "\n").c_str());
+    OutputDebugStringA(("column: " + std::to_string(location.column()) + "\n").c_str());
+    OutputDebugStringA((string + "\n").c_str());
 }
 
 //==============================================================================
-auto msgbox(std::string string) -> void { ::MessageBox(nullptr, string.c_str(), "Message", 0); }
+auto msgbox(std::string string) -> void { MessageBoxA(nullptr, string.c_str(), "Message", 0); }
 
 //==============================================================================
 auto errorbox(std::string string) -> void
 {
-    std::string error = string + ". Error: " + std::to_string(::GetLastError());
-    ::MessageBox(nullptr, error.c_str(), "Error", 0);
+    std::string error = string + ". Error: " + std::to_string(GetLastError());
+    MessageBoxA(nullptr, error.c_str(), "Error", 0);
 }
 
 //==============================================================================
