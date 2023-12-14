@@ -14,9 +14,9 @@ namespace glow::gui
 WebView::WebView(std::string name, HWND parentHwnd, int id)
     : m_name(name), m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
 {
-    ::SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    ::SetEnvironmentVariable("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                             "--allow-file-access-from-files");
+    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            "--allow-file-access-from-files");
 
     m_classAtom = register_window();
     create_window();
@@ -38,27 +38,27 @@ auto WebView::register_window() -> ATOM
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandle(nullptr);
+    wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = m_background;
     wcex.hCursor = m_cursor;
     wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon;
     wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon;
 
-    return ::RegisterClassEx(&wcex);
+    return RegisterClassExA(&wcex);
 }
 
 auto WebView::create_window() -> void
 {
-    ::CreateWindowEx(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
-                     reinterpret_cast<HMENU>(m_id), ::GetModuleHandle(nullptr), this);
+    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+                    reinterpret_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
-auto WebView::show_window_default() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
+auto WebView::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
-auto WebView::show_window() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
+auto WebView::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
-auto WebView::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
+auto WebView::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 //==============================================================================
 auto WebView::navigate(const std::string url) -> void
@@ -88,13 +88,13 @@ auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
         return self->handle_message(uMsg, wParam, lParam);
     }
 
-    else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+    else return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
 auto WebView::on_window_pos_changed() -> int
 {
     RECT rect{};
-    ::GetClientRect(m_hwnd.get(), &rect);
+    GetClientRect(m_hwnd.get(), &rect);
     if (m_controller4) { m_controller4->put_Bounds(rect); }
 
     return 0;
@@ -102,7 +102,7 @@ auto WebView::on_window_pos_changed() -> int
 
 auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
+    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 //==============================================================================
@@ -283,11 +283,10 @@ auto WebView::document_title_changed() -> void
 //==============================================================================
 auto WebView::initialized() -> void
 {
-    OutputDebugString("BASE WebView::initialized()");
     if (!m_initialized)
     {
         window_uncloak(m_hwnd.get());
-        ::SendMessage(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+        SendMessageA(m_hwndParent.get(), WM_NOTIFY, 0, 0);
         m_initialized = true;
     }
 }

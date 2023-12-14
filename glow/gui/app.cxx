@@ -33,36 +33,36 @@ auto App::register_window() -> ATOM
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = 0;
-    wcex.hInstance = ::GetModuleHandle(nullptr);
+    wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = m_background;
     wcex.hCursor = m_cursor;
     wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon;
     wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon;
 
-    return ::RegisterClassEx(&wcex);
+    return RegisterClassExA(&wcex);
 }
 
 //==============================================================================
 auto App::create_window() -> void
 {
-    ::CreateWindowEx(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
-                     WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                     CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, ::GetModuleHandle(nullptr),
-                     this);
+    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
+                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
+                    this);
 
-    // auto menu = ::CreateMenu();
-    // ::AppendMenu(menu, MF_STRING, 0, "Hello World");
-    // ::SetMenu(m_hwnd.get(), menu);
+    // auto hmenu{CreateMenu()};
+    // AppendMenuA(hmenu, MF_STRING, 0, "Hello World");
+    // SetMenu(m_hwnd.get(), hmenu);
 }
 
 //==============================================================================
-auto App::show_window_default() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
+auto App::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
 //==============================================================================
-auto App::show_window() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
+auto App::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 //==============================================================================
-auto App::hide_window() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
+auto App::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 //==============================================================================
 auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -80,13 +80,13 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         return self->handle_message(hwnd, uMsg, wParam, lParam);
     }
 
-    else return ::DefWindowProc(hwnd, uMsg, wParam, lParam);
+    else return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
 //==============================================================================
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    return ::DefWindowProc(m_hwnd.get(), uMsg, wParam, lParam);
+    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 //==============================================================================
@@ -100,7 +100,7 @@ auto App::on_close() -> int
 //==============================================================================
 auto App::on_destroy() -> int
 {
-    ::PostQuitMessage(0);
+    PostQuitMessage(0);
 
     return 0;
 }
