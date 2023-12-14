@@ -15,18 +15,16 @@ namespace glow::filesystem
 //==============================================================================
 auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 {
-    std::wstring wstring;
-    auto buffer{wstring.data()};
+    wil::unique_cotaskmem_string buffer;
     winrt::check_hresult(::SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer));
 
-    return std::filesystem::path(buffer);
+    return std::filesystem::path(buffer.get());
 }
 
 auto get_pgmptr() -> std::filesystem::path
 {
-    std::string string;
-    auto buffer{string.data()};
-    _get_pgmptr(&buffer);
+    std::string buffer;
+    _get_pgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
@@ -34,9 +32,8 @@ auto get_pgmptr() -> std::filesystem::path
 
 auto get_wpgmptr() -> std::filesystem::path
 {
-    std::wstring wstring;
-    auto buffer{wstring.data()};
-    _get_wpgmptr(&buffer);
+    std::wstring buffer;
+    _get_wpgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
