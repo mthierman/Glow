@@ -10,6 +10,9 @@
 
 #include <Windows.h>
 
+#include <string>
+#include <string_view>
+
 #include <wil/resource.h>
 
 #include <gui/gui.hxx>
@@ -20,7 +23,7 @@ namespace glow::gui
 
 struct App
 {
-    App(const std::string& name);
+    App(std::string_view name);
     virtual ~App();
 
     auto register_window() -> ATOM;

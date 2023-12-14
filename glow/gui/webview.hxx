@@ -15,6 +15,7 @@
 #include <WebView2EnvironmentOptions.h>
 
 #include <string>
+#include <string_view>
 
 #include <nlohmann/json.hpp>
 #include <gui/gui.hxx>
@@ -27,7 +28,7 @@ using json = nlohmann::json;
 
 struct WebView
 {
-    WebView(const std::string& name, HWND parentHwnd, int id);
+    WebView(std::string_view name, HWND parentHwnd, int id);
     virtual ~WebView();
 
     auto register_window() -> ATOM;
@@ -36,7 +37,7 @@ struct WebView
     auto show_window() -> void;
     auto hide_window() -> void;
 
-    auto navigate(const std::string url) -> void;
+    auto navigate(std::string_view url) -> void;
     auto post_json(const json jsonMessage) -> void;
 
     static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;

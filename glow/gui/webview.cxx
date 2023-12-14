@@ -11,8 +11,8 @@
 namespace glow::gui
 {
 
-WebView::WebView(const std::string& name, HWND parentHwnd, int id)
-    : m_name(name), m_class(glow::text::randomize(name)), m_hwndParent(parentHwnd), m_id(id)
+WebView::WebView(std::string_view name, HWND parentHwnd, int id)
+    : m_name(name), m_class(glow::text::randomize(name.data())), m_hwndParent(parentHwnd), m_id(id)
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
@@ -48,8 +48,8 @@ auto WebView::register_window() -> ATOM
 
 auto WebView::create_window() -> void
 {
-    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD | WS_BORDER,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
                     reinterpret_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
@@ -59,9 +59,9 @@ auto WebView::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto WebView::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
-auto WebView::navigate(const std::string url) -> void
+auto WebView::navigate(std::string_view url) -> void
 {
-    auto wideUrl{glow::text::widen(url)};
+    auto wideUrl{glow::text::widen(url.data())};
     if (m_core20) m_core20->Navigate(wideUrl.c_str());
 }
 

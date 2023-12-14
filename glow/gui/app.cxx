@@ -11,7 +11,7 @@
 namespace glow::gui
 {
 
-App::App(const std::string& name) : m_name(name), m_class(glow::text::randomize(name))
+App::App(std::string_view name) : m_name(name), m_class(glow::text::randomize(name.data()))
 {
     m_classAtom = register_window();
     create_window();
