@@ -36,14 +36,14 @@ Console::~Console() { ::FreeConsole(); }
 auto get_argv() -> std::vector<std::string>
 {
     int argc{};
-    wil::unique_hlocal_ptr<PWSTR[]> buffer;
-    buffer.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
+    wil::unique_hlocal_ptr<PWSTR[]> args;
+    args.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
 
     std::vector<std::string> argv;
 
     for (int i = 0; i < argc; i++)
     {
-        auto arg{glow::text::narrow(buffer[i])};
+        auto arg{glow::text::narrow(args[i])};
         argv.push_back(arg);
     }
 

@@ -12,12 +12,12 @@
 #include <dwmapi.h>
 #include <ShlObj.h>
 
-#include <wil/resource.h>
+#include <memory>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <memory>
+#include <wil/resource.h>
 
 //==============================================================================
 namespace glow::gui

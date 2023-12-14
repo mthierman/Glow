@@ -17,34 +17,26 @@ auto known_folder(KNOWNFOLDERID knownFolderId) -> std::filesystem::path
 {
     std::wstring wstring;
     auto buffer{wstring.data()};
+    winrt::check_hresult(::SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer));
 
-    if (SUCCEEDED(::SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer)))
-        return std::filesystem::path(buffer);
-
-    else return {};
+    return std::filesystem::path(buffer);
 }
 
-//==============================================================================
 auto get_pgmptr() -> std::filesystem::path
 {
     std::string string;
     auto buffer{string.data()};
-
     _get_pgmptr(&buffer);
-
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-//==============================================================================
 auto get_wpgmptr() -> std::filesystem::path
 {
     std::wstring wstring;
     auto buffer{wstring.data()};
-
     _get_wpgmptr(&buffer);
-
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
