@@ -44,8 +44,19 @@ target_link_options(
     /WX>
 )
 
+add_library(
+    glow_definitions
+    INTERFACE
+)
+
+add_library(
+    glow::definitions
+    ALIAS
+    glow_definitions
+)
+
 target_compile_definitions(
-    glow_flags
+    glow_definitions
     INTERFACE NOMINMAX
               WIN32_LEAN_AND_MEAN
 )

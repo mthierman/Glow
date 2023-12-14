@@ -57,6 +57,7 @@ target_link_libraries(
     glow
     PRIVATE glow::flags
     PUBLIC glow::features
+           glow::definitions
            nlohmann_json::nlohmann_json
            tomlplusplus::tomlplusplus
            sqlite::sqlite
