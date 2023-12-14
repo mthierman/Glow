@@ -33,13 +33,13 @@ struct Bounds
 };
 
 //==============================================================================
-template <class T> T* InstanceFromWndProc(HWND hwnd, UINT message, LPARAM lparam)
+template <class T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* pInstance{nullptr};
 
-    if (message == WM_NCCREATE)
+    if (uMsg == WM_NCCREATE)
     {
-        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lparam)};
+        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
         pInstance = reinterpret_cast<T*>(lpCreateStruct->lpCreateParams);
         pInstance->m_hwnd.reset(hwnd);
         SetWindowLongPtrA(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
