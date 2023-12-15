@@ -11,7 +11,7 @@
 namespace glow::gui
 {
 
-WebView::WebView(std::string_view name, HWND parentHwnd, int id)
+WebView::WebView(std::string_view name, HWND parentHwnd, int64_t id)
     : m_name(name), m_class(glow::text::randomize(name.data())), m_hwndParent(parentHwnd), m_id(id)
 {
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");

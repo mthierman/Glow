@@ -28,7 +28,7 @@ using json = nlohmann::json;
 
 struct WebView
 {
-    WebView(std::string_view name, HWND parentHwnd, int id);
+    WebView(std::string_view name, HWND parentHwnd, int64_t id);
     virtual ~WebView();
 
     auto register_window() -> ATOM;
@@ -68,7 +68,7 @@ struct WebView
     std::string m_name;
     std::string m_class;
     ATOM m_classAtom{};
-    UINT_PTR m_id{};
+    int64_t m_id{};
 
     winrt::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
     winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
@@ -79,15 +79,16 @@ struct WebView
     winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
     bool m_initialized{false};
 
-    HCURSOR m_cursor{
-        reinterpret_cast<HCURSOR>(LoadImageA(nullptr, reinterpret_cast<LPCSTR>(IDC_ARROW),
-                                             IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    HICON m_defaultIcon{
-        reinterpret_cast<HICON>(LoadImageA(nullptr, reinterpret_cast<LPCSTR>(IDI_APPLICATION),
-                                           IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    wil::unique_hicon m_icon{reinterpret_cast<HICON>(LoadImageA(
-        GetModuleHandleA(nullptr), MAKEINTRESOURCE(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-    HBRUSH m_background{reinterpret_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
+    HCURSOR m_cursor{static_cast<HCURSOR>(
+        LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+
+    HICON m_defaultIcon{static_cast<HICON>(
+        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+
+    wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
+        GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+
+    HBRUSH m_background{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 };
 
 } // namespace glow::gui
