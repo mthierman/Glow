@@ -22,7 +22,7 @@ struct App : glow::gui::App
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 
     auto on_notify() -> int;
-    auto on_window_pos_changed() -> int;
+    auto on_size() -> int;
 };
 
 auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -30,7 +30,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     switch (uMsg)
     {
     case WM_NOTIFY: return on_notify();
-    case WM_WINDOWPOSCHANGED: return on_window_pos_changed();
+    case WM_SIZE: return on_size();
     }
 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
@@ -51,18 +51,17 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 
 auto App::on_notify() -> int
 {
-    RECT clientRect{0};
-    GetClientRect(m_hwnd.get(), &clientRect);
-    EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
+    on_size();
 
     return 0;
 }
 
-auto App::on_window_pos_changed() -> int
+auto App::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), enum_child_proc, reinterpret_cast<LPARAM>(&clientRect));
+    Sleep(1);
 
     return 0;
 }

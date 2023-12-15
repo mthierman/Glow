@@ -15,6 +15,7 @@
 #include <wil/resource.h>
 
 #include <algorithm>
+#include <cstdint>
 #include <iostream>
 #include <filesystem>
 #include <fstream>
