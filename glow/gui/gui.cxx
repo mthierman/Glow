@@ -78,7 +78,7 @@ auto set_darktitle() -> bool
 
     if (!ord135) return false;
 
-    auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
+    auto SetPreferredAppMode{std::bit_cast<fnSetPreferredAppMode>(ord135)};
     SetPreferredAppMode(PreferredAppMode::AllowDark);
     FreeLibrary(uxtheme);
 

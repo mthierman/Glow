@@ -12,6 +12,7 @@
 #include <dwmapi.h>
 #include <ShlObj.h>
 
+#include <bit>
 #include <memory>
 
 #include <winrt/Windows.Foundation.h>
@@ -36,13 +37,13 @@ template <class T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
 
     if (uMsg == WM_NCCREATE)
     {
-        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
-        pInstance = reinterpret_cast<T*>(lpCreateStruct->lpCreateParams);
+        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+        pInstance = static_cast<T*>(lpCreateStruct->lpCreateParams);
         pInstance->m_hwnd.reset(hwnd);
-        SetWindowLongPtrA(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pInstance));
+        SetWindowLongPtrA(hwnd, GWLP_USERDATA, std::bit_cast<LONG_PTR>(pInstance));
     }
 
-    else pInstance = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
+    else pInstance = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
 
     return pInstance;
 }

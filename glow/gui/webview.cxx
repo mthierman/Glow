@@ -50,7 +50,7 @@ auto WebView::create_window() -> void
 {
     CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD | WS_BORDER,
                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
-                    reinterpret_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
 auto WebView::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }

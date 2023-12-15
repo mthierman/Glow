@@ -14,6 +14,7 @@
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
 
+#include <bit>
 #include <cstdint>
 #include <string>
 #include <string_view>

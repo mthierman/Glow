@@ -21,6 +21,8 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
 
+    glow::gui::set_darktitle();
+
     glow::gui::message_loop();
 
     return 0;
