@@ -40,8 +40,8 @@ auto register_window() -> ATOM
 auto create_window(ATOM atom) -> HWND
 {
     return CreateWindowExA(0, MAKEINTATOM(atom), "TEST", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                    GetModuleHandleA(nullptr), nullptr);
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+                           nullptr, GetModuleHandleA(nullptr), nullptr);
 }
 
 auto show_window(HWND hwnd) -> void { ShowWindow(hwnd, SW_SHOWDEFAULT); }
