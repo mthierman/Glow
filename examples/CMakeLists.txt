@@ -1,4 +1,18 @@
 add_executable(
+    Window
+    WIN32
+)
+target_sources(
+    Window
+    PRIVATE Window.cxx
+)
+target_link_libraries(
+    Window
+    PRIVATE glow::glow
+            glow::flags
+)
+
+add_executable(
     App
     WIN32
 )
