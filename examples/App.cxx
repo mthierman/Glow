@@ -8,7 +8,7 @@
 
 #include <Windows.h>
 
-#include <iostream>
+#include <print>
 
 #include <console/console.hxx>
 #include <gui/app.hxx>
@@ -21,9 +21,9 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     glow::console::Console console;
 #endif
 
-    auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
+    std::println("TEST");
 
-    glow::gui::set_darktitle();
+    auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
 
     glow::gui::message_loop();
 
