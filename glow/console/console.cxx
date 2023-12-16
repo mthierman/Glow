@@ -18,14 +18,17 @@ Console::Console()
     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
                    MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stdout);
-    freopen_s(std::out_ptr(p_file), "CONOUT$", "w", stderr);
-    freopen_s(std::out_ptr(p_file), "CONIN$", "r", stdin);
+    wil::unique_file file;
+    auto pFile = file.get();
 
-    std::cout.clear();
-    std::clog.clear();
-    std::cerr.clear();
+    freopen_s(std::out_ptr(pFile), "CONIN$", "r", stdin);
+    freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stdout);
+    freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stderr);
+
     std::cin.clear();
+    std::cout.clear();
+    std::cerr.clear();
+    std::clog.clear();
 }
 
 Console::~Console() { FreeConsole(); }
