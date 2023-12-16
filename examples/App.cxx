@@ -17,13 +17,13 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
+    auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
+
 #ifdef _DEBUG
     glow::console::Console console;
 #endif
 
     std::println("TEST");
-
-    auto mainWindow{std::make_unique<glow::gui::App>("MainWindow")};
 
     glow::gui::message_loop();
 

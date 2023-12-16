@@ -20,15 +20,8 @@ Console::Console()
 
     wil::unique_file file;
     auto pFile = file.get();
-
-    freopen_s(std::out_ptr(pFile), "CONIN$", "r", stdin);
     freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stdout);
     freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stderr);
-
-    std::cin.clear();
-    std::cout.clear();
-    std::cerr.clear();
-    std::clog.clear();
 }
 
 Console::~Console() { FreeConsole(); }
