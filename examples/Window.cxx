@@ -8,8 +8,6 @@
 
 #include <Windows.h>
 
-#include <bit>
-
 #include <gui/gui.hxx>
 
 auto size() -> int
@@ -37,13 +35,49 @@ auto CALLBACK new_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
+struct Window
+{
+    Window();
+    ~Window();
+
+    wil::unique_hwnd hwnd;
+
+    // auto CALLBACK new_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+};
+
+Window::Window()
+{
+    auto atom{glow::gui::register_window()};
+    hwnd.reset(glow::gui::create_window(atom));
+    glow::gui::show_window(hwnd.get());
+}
+
+Window::~Window() {}
+
+// auto CALLBACK Window::new_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+// {
+//     switch (uMsg)
+//     {
+//         // case WM_SIZE: OutputDebugStringA("RESIZE\n"); return 0;
+//         // case WM_CLOSE: PostQuitMessage(0); return 0;
+//         // case WM_SIZE: size();
+//         // case WM_CLOSE: close();
+//     }
+
+//     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
+// }
+
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    auto atom{glow::gui::register_window()};
-    wil::unique_hwnd hwnd{glow::gui::create_window(atom)};
-    glow::gui::show_window(hwnd.get());
-    SetWindowLongPtrA(hwnd.get(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(new_wnd_proc));
+    // auto atom{glow::gui::register_window()};
+    // wil::unique_hwnd hwnd{glow::gui::create_window(atom)};
+    // glow::gui::show_window(hwnd.get());
+    // SetWindowLongPtrA(hwnd.get(), GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(new_wnd_proc));
+
+    Window window;
+
+    // SetWindowLongPtrA(window.hwnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(new_wnd_proc));
 
     glow::gui::message_loop();
 

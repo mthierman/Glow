@@ -11,6 +11,7 @@
 namespace glow::gui
 {
 
+// https://stackoverflow.com/questions/117792/best-method-for-storing-this-pointer-for-use-in-wndproc
 auto register_window() -> ATOM
 {
     HCURSOR cursor{static_cast<HCURSOR>(
