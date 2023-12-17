@@ -18,8 +18,9 @@ target_sources(
             filesystem/filesystem.cxx
             gui/app.cxx
             gui/gui.cxx
-            gui/webview.cxx
             # gui/webview_composition.cxx
+            gui/webview.cxx
+            gui/window.cxx
             logging/logging.cxx
             text/text.cxx
     PUBLIC FILE_SET
@@ -32,6 +33,7 @@ target_sources(
            gui/gui.hxx
            # gui/webview_composition.hxx
            gui/webview.hxx
+           gui/window.hxx
            logging/logging.hxx
            text/text.hxx
 )

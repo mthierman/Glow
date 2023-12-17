@@ -4,7 +4,7 @@ add_executable(
 )
 target_sources(
     Window
-    PRIVATE Window.cxx
+    PRIVATE Window2.cxx
 )
 target_link_libraries(
     Window

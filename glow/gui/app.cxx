@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <gui/app.hxx>
+#include "app.hxx"
 
 namespace glow::gui
 {

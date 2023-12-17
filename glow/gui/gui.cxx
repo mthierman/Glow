@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <gui/gui.hxx>
+#include "gui.hxx"
 
 namespace glow::gui
 {
@@ -28,7 +28,7 @@ auto register_window() -> ATOM
     wcex.lpfnWndProc = DefWindowProcA;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof(void*);
     wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = background;
     wcex.hCursor = cursor;
