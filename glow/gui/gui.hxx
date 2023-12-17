@@ -31,24 +31,7 @@ struct Bounds
     int height{};
 };
 
-template <typename T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam)
-{
-    T* pInstance{nullptr};
-
-    if (uMsg == WM_NCCREATE)
-    {
-        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
-        pInstance = static_cast<T*>(lpCreateStruct->lpCreateParams);
-        pInstance->m_hwnd.reset(hwnd);
-        SetWindowLongPtrA(hwnd, GWLP_USERDATA, std::bit_cast<LONG_PTR>(pInstance));
-    }
-
-    else pInstance = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, GWLP_USERDATA));
-
-    return pInstance;
-}
-
-template <typename T> T* NewInstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <typename T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* self{nullptr};
 
@@ -57,7 +40,7 @@ template <typename T> T* NewInstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lPa
         auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
         self->m_hwnd.reset(hWnd);
-        SetWindowLongPtrA(hWnd, 0, reinterpret_cast<LONG_PTR>(self));
+        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
     }
 
     else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
@@ -65,9 +48,6 @@ template <typename T> T* NewInstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lPa
     return self;
 }
 
-// auto register_window() -> ATOM;
-// auto create_window(ATOM atom) -> HWND;
-// auto show_window(HWND hwnd) -> void;
 auto message_loop() -> void;
 
 auto check_theme() -> bool;

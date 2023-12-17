@@ -11,42 +11,6 @@
 namespace glow::gui
 {
 
-// https://stackoverflow.com/questions/117792/best-method-for-storing-this-pointer-for-use-in-wndproc
-// auto register_window() -> ATOM
-// {
-//     HCURSOR cursor{static_cast<HCURSOR>(
-//         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-//     HICON icon{static_cast<HICON>(
-//         LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-//     HBRUSH background{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
-
-//     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-//     wcex.lpszClassName = "TEST";
-//     wcex.lpszMenuName = "TEST";
-//     wcex.lpfnWndProc = DefWindowProcA;
-//     wcex.style = 0;
-//     wcex.cbClsExtra = 0;
-//     wcex.cbWndExtra = sizeof(void*);
-//     wcex.hInstance = GetModuleHandleA(nullptr);
-//     wcex.hbrBackground = background;
-//     wcex.hCursor = cursor;
-//     wcex.hIcon = icon;
-//     wcex.hIconSm = icon;
-
-//     return RegisterClassExA(&wcex);
-// }
-
-// auto create_window(ATOM atom) -> HWND
-// {
-//     return CreateWindowExA(0, MAKEINTATOM(atom), "TEST", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-//                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-//                            nullptr, GetModuleHandleA(nullptr), nullptr);
-// }
-
-// auto show_window(HWND hwnd) -> void { ShowWindow(hwnd, SW_SHOWDEFAULT); }
-
 auto message_loop() -> void
 {
     MSG msg{};

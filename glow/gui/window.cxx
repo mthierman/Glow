@@ -19,8 +19,6 @@ Window::Window()
     m_atom = register_class();
     create();
     show();
-
-    // SetWindowLongPtrA(m_hwnd.get(), 0, reinterpret_cast<LONG_PTR>(this));
 }
 
 Window::~Window() {}
@@ -62,25 +60,12 @@ auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    // Window* self{nullptr};
-
-    // if (uMsg == WM_NCCREATE)
-    // {
-    //     auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
-    //     self = static_cast<Window*>(lpCreateStruct->lpCreateParams);
-    //     SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
-    //     self->m_hwnd.reset(hWnd);
-    // }
-
-    // else self = std::bit_cast<Window*>(GetWindowLongPtrA(hWnd, 0));
-
-    auto self{NewInstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
 
     if (self)
     {
         switch (uMsg)
         {
-        case WM_SIZE: return self->on_size();
         case WM_CLOSE: return self->on_close();
         }
 
@@ -98,12 +83,6 @@ auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 auto Window::on_close() -> int
 {
     PostQuitMessage(0);
-    return 0;
-}
-
-auto Window::on_size() -> int
-{
-    OutputDebugStringA("WM_SIZE\n");
     return 0;
 }
 
