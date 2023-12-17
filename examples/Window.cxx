@@ -11,7 +11,7 @@
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    glow::gui::Window window{"MainWindow"};
+    glow::gui::Window window{"Test"};
 
     glow::gui::message_loop();
 

@@ -8,13 +8,7 @@
 
 #pragma once
 
-#include <Windows.h>
-
-#include <bit>
-#include <initializer_list>
-#include <print>
-
-#include <gui/gui.hxx>
+#include "gui.hxx"
 
 namespace glow::gui
 {
@@ -38,11 +32,14 @@ struct Window
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close() -> int;
+    virtual auto on_destroy() -> int;
 
   public:
     std::string m_title{"Window"};
     ATOM m_atom;
     wil::unique_hwnd m_hwnd;
+    wil::unique_hicon hIconRc{static_cast<HICON>(LoadImageA(
+        GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
 } // namespace glow::gui

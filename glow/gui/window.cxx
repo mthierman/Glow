@@ -8,8 +8,6 @@
 
 #include "window.hxx"
 
-#include <gui/gui.hxx>
-
 namespace glow::gui
 {
 
@@ -31,8 +29,8 @@ auto Window::register_class() -> ATOM
     HCURSOR hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
-    HICON hIcon{static_cast<HICON>(
-        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    // HICON hIcon{static_cast<HICON>(
+    //     LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
     HBRUSH hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 
@@ -46,8 +44,10 @@ auto Window::register_class() -> ATOM
     wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = hbrBackground;
     wcex.hCursor = hCursor;
-    wcex.hIcon = hIcon;
-    wcex.hIconSm = hIcon;
+    // wcex.hIcon = hIconRc.get() ? hIconRc.get() : hIcon;
+    // wcex.hIconSm = hIconRc.get() ? hIconRc.get() : hIcon;
+    wcex.hIcon = hIconRc.get();
+    wcex.hIconSm = hIconRc.get();
 
     return RegisterClassExA(&wcex);
 }
@@ -55,8 +55,8 @@ auto Window::register_class() -> ATOM
 auto Window::create_window() -> HWND
 {
     return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(),
-                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN & ~WS_VISIBLE, CW_USEDEFAULT,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                            GetModuleHandleA(nullptr), this);
 }
 
@@ -78,6 +78,7 @@ auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
         switch (uMsg)
         {
         case WM_CLOSE: return self->on_close();
+        case WM_DESTROY: return self->on_destroy();
         }
 
         return self->handle_message(hWnd, uMsg, wParam, lParam);
@@ -93,7 +94,15 @@ auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 
 auto Window::on_close() -> int
 {
+    m_hwnd.reset();
+
+    return 0;
+}
+
+auto Window::on_destroy() -> int
+{
     PostQuitMessage(0);
+
     return 0;
 }
 
