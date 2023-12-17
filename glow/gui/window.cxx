@@ -29,8 +29,8 @@ auto Window::register_class() -> ATOM
     HCURSOR hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
-    // HICON hIcon{static_cast<HICON>(
-    //     LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    HICON hIcon{static_cast<HICON>(
+        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
 
     HBRUSH hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 
@@ -44,10 +44,8 @@ auto Window::register_class() -> ATOM
     wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = hbrBackground;
     wcex.hCursor = hCursor;
-    // wcex.hIcon = hIconRc.get() ? hIconRc.get() : hIcon;
-    // wcex.hIconSm = hIconRc.get() ? hIconRc.get() : hIcon;
-    wcex.hIcon = hIconRc.get();
-    wcex.hIconSm = hIconRc.get();
+    wcex.hIcon = hIconRc.get() ? hIconRc.get() : hIcon;
+    wcex.hIconSm = hIconRc.get() ? hIconRc.get() : hIcon;
 
     return RegisterClassExA(&wcex);
 }

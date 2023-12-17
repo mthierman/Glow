@@ -85,6 +85,21 @@ auto set_darktitle() -> bool
     return true;
 }
 
+auto allow_dark_mode(HWND hwnd, bool enable) -> void
+{
+    auto uxtheme{LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+
+    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hWnd, bool allow);
+
+    fnAllowDarkModeForWindow AllowDarkModeForWindow = nullptr;
+
+    AllowDarkModeForWindow =
+        reinterpret_cast<fnAllowDarkModeForWindow>(GetProcAddress(uxtheme, MAKEINTRESOURCEA(133)));
+    // auto _AllowDarkModeForWindow{std::bit_cast<fnAllowDarkModeForWindow>(ord133)};
+    AllowDarkModeForWindow(hwnd, enable);
+    FreeLibrary(uxtheme);
+}
+
 auto window_cloak(HWND hwnd) -> bool
 {
     auto cloak{TRUE};

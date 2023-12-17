@@ -53,6 +53,7 @@ auto message_loop() -> void;
 auto check_theme() -> bool;
 auto set_darkmode(HWND hwnd) -> bool;
 auto set_darktitle() -> bool;
+auto allow_dark_mode(HWND hwnd, bool enable) -> void;
 auto window_cloak(HWND hwnd) -> bool;
 auto window_uncloak(HWND hwnd) -> bool;
 auto window_mica(HWND hwnd) -> bool;
