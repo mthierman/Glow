@@ -21,10 +21,14 @@ struct Window
 {
     Window();
     virtual ~Window();
-    ATOM m_class;
+    auto register_class() -> ATOM;
+    auto create() -> HWND;
+    auto show() -> void;
+
+    ATOM m_atom;
     wil::unique_hwnd m_hwnd;
-    static auto CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    virtual auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close() -> int;
     virtual auto on_size() -> int;
 };

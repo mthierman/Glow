@@ -48,9 +48,26 @@ template <typename T> T* InstanceFromWndProc(HWND hwnd, UINT uMsg, LPARAM lParam
     return pInstance;
 }
 
-auto register_window() -> ATOM;
-auto create_window(ATOM atom) -> HWND;
-auto show_window(HWND hwnd) -> void;
+template <typename T> T* NewInstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
+{
+    T* self{nullptr};
+
+    if (uMsg == WM_NCCREATE)
+    {
+        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+        self = static_cast<T*>(lpCreateStruct->lpCreateParams);
+        self->m_hwnd.reset(hWnd);
+        SetWindowLongPtrA(hWnd, 0, reinterpret_cast<LONG_PTR>(self));
+    }
+
+    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
+
+    return self;
+}
+
+// auto register_window() -> ATOM;
+// auto create_window(ATOM atom) -> HWND;
+// auto show_window(HWND hwnd) -> void;
 auto message_loop() -> void;
 
 auto check_theme() -> bool;
