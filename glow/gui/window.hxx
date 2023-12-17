@@ -21,6 +21,7 @@ struct Window
 {
     Window();
     virtual ~Window();
+    ATOM m_class;
     wil::unique_hwnd m_hwnd;
     static auto CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
