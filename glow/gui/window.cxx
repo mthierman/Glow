@@ -14,16 +14,17 @@ namespace glow::gui
 {
 
 // https://stackoverflow.com/questions/117792/best-method-for-storing-this-pointer-for-use-in-wndproc
-Window::Window()
-{
-    m_atom = register_class();
-    create();
-    show_normal();
-}
+Window::Window() { create(); }
 
-Window::Window(std::string title) : Window() { set_title(title); }
+Window::Window(std::string title) : m_title{title} { create(); }
 
 Window::~Window() {}
+
+auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
+
+auto Window::hide() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
+
+auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
 
 auto Window::register_class() -> ATOM
 {
@@ -51,7 +52,7 @@ auto Window::register_class() -> ATOM
     return RegisterClassExA(&wcex);
 }
 
-auto Window::create() -> HWND
+auto Window::create_window() -> HWND
 {
     return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(),
                            WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN & ~WS_VISIBLE, CW_USEDEFAULT,
@@ -59,13 +60,14 @@ auto Window::create() -> HWND
                            GetModuleHandleA(nullptr), this);
 }
 
+auto Window::create() -> void
+{
+    m_atom = register_class();
+    create_window();
+    show_normal();
+}
+
 auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
-
-auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
-
-auto Window::hide() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
-
-auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
