@@ -18,8 +18,10 @@ Window::Window()
 {
     m_atom = register_class();
     create();
-    show();
+    show_normal();
 }
+
+Window::Window(std::string title) : Window() { set_title(title); }
 
 Window::~Window() {}
 
@@ -34,8 +36,8 @@ auto Window::register_class() -> ATOM
     HBRUSH hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
-    wcex.lpszClassName = "TEST";
-    wcex.lpszMenuName = "TEST";
+    wcex.lpszClassName = m_title.c_str();
+    wcex.lpszMenuName = m_title.c_str();
     wcex.lpfnWndProc = Window::WndProc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
@@ -51,12 +53,19 @@ auto Window::register_class() -> ATOM
 
 auto Window::create() -> HWND
 {
-    return CreateWindowExA(0, MAKEINTATOM(m_atom), "TEST", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-                           nullptr, GetModuleHandleA(nullptr), this);
+    return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(),
+                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN & ~WS_VISIBLE, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                           GetModuleHandleA(nullptr), this);
 }
 
-auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
+auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
+
+auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
+
+auto Window::hide() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
+
+auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
