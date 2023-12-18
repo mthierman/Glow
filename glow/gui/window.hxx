@@ -36,10 +36,16 @@ struct Window
 
   public:
     std::string m_title{"Window"};
-    ATOM m_atom;
-    wil::unique_hwnd m_hwnd;
-    wil::unique_hicon hIconRc{static_cast<HICON>(LoadImageA(
+    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
+    wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
+        LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    wil::unique_hicon m_hIcon{static_cast<HICON>(
+        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    wil::unique_hicon m_appIcon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
+    ATOM m_atom{};
+    wil::unique_hwnd m_hwnd{};
 };
 
 } // namespace glow::gui

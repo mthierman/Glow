@@ -26,15 +26,6 @@ auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(),
 
 auto Window::register_class() -> ATOM
 {
-    HCURSOR hCursor{static_cast<HCURSOR>(
-        LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-    HICON hIcon{static_cast<HICON>(
-        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-
-    HBRUSH hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
-
-    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = m_title.c_str();
     wcex.lpszMenuName = m_title.c_str();
     wcex.lpfnWndProc = Window::WndProc;
@@ -42,10 +33,10 @@ auto Window::register_class() -> ATOM
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = sizeof(void*);
     wcex.hInstance = GetModuleHandleA(nullptr);
-    wcex.hbrBackground = hbrBackground;
-    wcex.hCursor = hCursor;
-    wcex.hIcon = hIconRc.get() ? hIconRc.get() : hIcon;
-    wcex.hIconSm = hIconRc.get() ? hIconRc.get() : hIcon;
+    wcex.hbrBackground = m_hbrBackground.get();
+    wcex.hCursor = m_hCursor.get();
+    wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
     return RegisterClassExA(&wcex);
 }
