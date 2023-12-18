@@ -18,11 +18,31 @@ Window::Window(std::string title) : m_title{title} { create(); }
 
 Window::~Window() {}
 
+auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
+
+auto Window::set_popup() -> void
+{
+    glow::gui::window_cloak(m_hwnd.get());
+    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW | WS_POPUP);
+    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    glow::gui::window_uncloak(m_hwnd.get());
+}
+
+auto Window::set_overlapped() -> void
+{
+    glow::gui::window_cloak(m_hwnd.get());
+    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style & ~WS_POPUP | WS_OVERLAPPEDWINDOW);
+    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    glow::gui::window_uncloak(m_hwnd.get());
+}
+
 auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto Window::hide() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
-
-auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
 
 auto Window::register_class() -> ATOM
 {
@@ -53,7 +73,9 @@ auto Window::create() -> void
 {
     m_atom = register_class();
     create_window();
+    glow::gui::window_cloak(m_hwnd.get());
     show_normal();
+    glow::gui::window_uncloak(m_hwnd.get());
 }
 
 auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
@@ -61,6 +83,8 @@ auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
+    OutputDebugString(std::to_string(uMsg).c_str());
+    OutputDebugString("\n");
 
     if (self)
     {
