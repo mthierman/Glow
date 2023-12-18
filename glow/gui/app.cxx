@@ -13,22 +13,22 @@ namespace glow::gui
 
 App::App(std::string_view name) : m_name(name), m_class(glow::text::randomize(name.data()))
 {
-    m_classAtom = register_window();
+    m_classAtom = register_class();
     create_window();
     show_window_default();
 }
 
 App::~App() {}
 
-auto App::register_window() -> ATOM
+auto App::register_class() -> ATOM
 {
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = m_class.c_str();
     wcex.lpszMenuName = m_class.c_str();
-    wcex.lpfnWndProc = App::wnd_proc;
+    wcex.lpfnWndProc = App::WndProc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof(void*);
     wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = m_background;
     wcex.hCursor = m_cursor;
@@ -38,12 +38,12 @@ auto App::register_window() -> ATOM
     return RegisterClassExA(&wcex);
 }
 
-auto App::create_window() -> void
+auto App::create_window() -> HWND
 {
-    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
-                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
-                    this);
+    return CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(),
+                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                           GetModuleHandleA(nullptr), this);
 
     // auto hmenu{CreateMenu()};
     // AppendMenuA(hmenu, MF_STRING, 0, "Hello World");
@@ -56,9 +56,9 @@ auto App::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto App::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
 
-auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto CALLBACK App::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{InstanceFromWndProc<App>(hwnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<App>(hWnd, uMsg, lParam)};
 
     if (self)
     {
@@ -68,13 +68,13 @@ auto CALLBACK App::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         case WM_DESTROY: return self->on_destroy();
         }
 
-        return self->handle_message(hwnd, uMsg, wParam, lParam);
+        return self->handle_message(hWnd, uMsg, wParam, lParam);
     }
 
-    else return DefWindowProcA(hwnd, uMsg, wParam, lParam);
+    else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }

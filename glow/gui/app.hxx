@@ -26,14 +26,14 @@ struct App
     App(std::string_view name);
     virtual ~App();
 
-    auto register_window() -> ATOM;
-    auto create_window() -> void;
+    auto register_class() -> ATOM;
+    auto create_window() -> HWND;
 
     auto show_window_default() -> void;
     auto show_window() -> void;
     auto hide_window() -> void;
 
-    static auto CALLBACK wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    static auto CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     virtual auto on_close() -> int;
