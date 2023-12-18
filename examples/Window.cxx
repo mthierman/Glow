@@ -13,8 +13,6 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 {
     glow::gui::Window window{"Test"};
 
-    window.set_popup();
-
     glow::gui::message_loop();
 
     return 0;
