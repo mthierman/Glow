@@ -11,7 +11,6 @@
 namespace glow::gui
 {
 
-// https://stackoverflow.com/questions/117792/best-method-for-storing-this-pointer-for-use-in-wndproc
 Window::Window() { create(); }
 
 Window::Window(std::string title) : m_title{title} { create(); }
@@ -19,6 +18,23 @@ Window::Window(std::string title) : m_title{title} { create(); }
 Window::~Window() {}
 
 auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
+
+auto Window::set_border(bool enabled) -> void
+{
+    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
+
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
+                      enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
+    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto Window::set_child() -> void
+{
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_CHILD);
+    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
 
 auto Window::set_popup() -> void
 {

@@ -20,6 +20,8 @@ struct Window
     virtual ~Window();
 
     auto set_title(std::string title) -> void;
+    auto set_border(bool enabled) -> void;
+    auto set_child() -> void;
     auto set_popup() -> void;
     auto set_overlapped() -> void;
     auto show() -> void;

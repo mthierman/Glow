@@ -48,8 +48,8 @@ auto WebView::register_window() -> ATOM
 
 auto WebView::create_window() -> void
 {
-    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD | WS_BORDER,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
@@ -58,6 +58,16 @@ auto WebView::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDE
 auto WebView::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto WebView::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
+
+auto WebView::set_border(bool enabled) -> void
+{
+    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
+
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
+                      enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
+    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
 
 auto WebView::navigate(std::string_view url) -> void
 {

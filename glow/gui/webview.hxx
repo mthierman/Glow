@@ -38,6 +38,7 @@ struct WebView
     auto show_window_default() -> void;
     auto show_window() -> void;
     auto hide_window() -> void;
+    auto set_border(bool enabled) -> void;
 
     auto navigate(std::string_view url) -> void;
     auto post_json(const json jsonMessage) -> void;

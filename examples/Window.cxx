@@ -17,6 +17,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     // #endif
 
     glow::gui::Window window{"Test"};
+    window.set_border(false);
 
     glow::gui::message_loop();
 
