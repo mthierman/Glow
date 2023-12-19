@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "logging.hxx"
+#include <logging/logging.hxx>
 
 namespace glow::logging
 {

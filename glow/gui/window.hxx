@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "gui.hxx"
+#include <gui/gui.hxx>
 
 namespace glow::gui
 {
