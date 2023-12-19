@@ -22,22 +22,16 @@ auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(),
 
 auto Window::set_popup() -> void
 {
-    glow::gui::window_cloak(m_hwnd.get());
-    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW | WS_POPUP);
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP);
     SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-    glow::gui::window_uncloak(m_hwnd.get());
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
 auto Window::set_overlapped() -> void
 {
-    glow::gui::window_cloak(m_hwnd.get());
-    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style & ~WS_POPUP | WS_OVERLAPPEDWINDOW);
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW);
     SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
-    glow::gui::window_uncloak(m_hwnd.get());
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
 auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
