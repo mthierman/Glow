@@ -22,14 +22,14 @@ auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(),
 
 auto Window::set_popup() -> void
 {
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP);
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
     SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
 auto Window::set_overlapped() -> void
 {
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW);
+    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
     SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
