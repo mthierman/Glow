@@ -10,7 +10,9 @@
 
 #include <bit>
 
+#include <console/console.hxx>
 #include <gui/app.hxx>
+#include <gui/webview.hxx>
 
 namespace glow
 {

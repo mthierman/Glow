@@ -36,7 +36,7 @@ auto WebView::register_window() -> ATOM
     wcex.lpfnWndProc = WebView::wnd_proc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = 0;
+    wcex.cbWndExtra = sizeof(void*);
     wcex.hInstance = GetModuleHandleA(nullptr);
     wcex.hbrBackground = m_background;
     wcex.hCursor = m_cursor;
