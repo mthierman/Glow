@@ -8,6 +8,9 @@
 
 #include "WebView.hxx"
 
+#include <console/console.hxx>
+#include <gui/webview.hxx>
+
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {

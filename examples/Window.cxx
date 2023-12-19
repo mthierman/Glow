@@ -16,7 +16,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     //     glow::console::Console console;
     // #endif
 
-    glow::gui::Window window{"Test"};
+    glow::gui::Window window{"Window"};
 
     glow::gui::message_loop();
 

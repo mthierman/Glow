@@ -27,7 +27,7 @@ struct App
     virtual ~App();
 
     auto register_class() -> ATOM;
-    auto create_window() -> HWND;
+    virtual auto create_window() -> HWND;
 
     auto show_window_default() -> void;
     auto show_window() -> void;

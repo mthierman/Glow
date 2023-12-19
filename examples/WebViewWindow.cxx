@@ -6,17 +6,13 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <console/console.hxx>
-#include <gui/webview_window.hxx>
+#include "WebViewWindow.hxx"
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    // #ifdef _DEBUG
-    //     glow::console::Console console;
-    // #endif
-
-    glow::gui::WebViewWindow window{"Test"};
+    glow::App app{"WebViewWindow"};
+    // glow::gui::WebViewWindow wv{"Test"};
 
     glow::gui::message_loop();
 

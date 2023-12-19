@@ -11,6 +11,7 @@
 #include <bit>
 
 #include <gui/app.hxx>
+#include <gui/webview_window.hxx>
 
 namespace glow
 {
