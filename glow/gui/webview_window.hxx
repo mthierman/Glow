@@ -6,19 +6,17 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <console/console.hxx>
+#pragma once
+
 #include <gui/window.hxx>
 
-auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
-    -> int
+namespace glow::gui
 {
-    // #ifdef _DEBUG
-    //     glow::console::Console console;
-    // #endif
 
-    glow::gui::Window window{"Test"};
+struct WebViewWindow : glow::gui::Window
+{
+    using glow::gui::Window::Window;
+};
 
-    glow::gui::message_loop();
 
-    return 0;
-}
+} // namespace glow

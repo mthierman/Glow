@@ -52,6 +52,20 @@ target_link_libraries(
             glow::flags
 )
 
+add_executable(
+    WebViewWindow
+    WIN32
+)
+target_sources(
+    WebViewWindow
+    PRIVATE WebViewWindow.cxx
+)
+target_link_libraries(
+    WebViewWindow
+    PRIVATE glow::glow
+            glow::flags
+)
+
 # add_executable( WebViewComposition WIN32 ) target_sources( WebViewComposition PRIVATE
 # WebViewComposition.cxx WebView.hxx ) target_link_libraries( WebViewComposition PRIVATE glow::glow
 # glow::flags CoreMessaging.lib )

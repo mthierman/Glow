@@ -7,7 +7,7 @@
 // clang-format on
 
 #include <console/console.hxx>
-#include <gui/window.hxx>
+#include <gui/webview_window.hxx>
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
@@ -16,7 +16,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     //     glow::console::Console console;
     // #endif
 
-    glow::gui::Window window{"Test"};
+    glow::gui::WebViewWindow window{"Test"};
 
     glow::gui::message_loop();
 
