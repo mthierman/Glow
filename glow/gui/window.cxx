@@ -11,15 +11,14 @@
 namespace glow::gui
 {
 
-MainWindow::MainWindow() { create(); }
+Window::Window() { create(); }
 
-MainWindow::~MainWindow() {}
+Window::~Window() {}
 
-auto MainWindow::create() -> void
+auto Window::create() -> void
 {
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
-    auto classInfo{
-        GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(MainWindow::m_atom), &wcex)};
+    auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(Window::m_atom), &wcex)};
 
     if (!classInfo)
     {
@@ -27,7 +26,7 @@ auto MainWindow::create() -> void
 
         wcex.lpszClassName = "MainWindow";
         wcex.lpszMenuName = 0;
-        wcex.lpfnWndProc = MainWindow::WndProc;
+        wcex.lpfnWndProc = Window::WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = sizeof(void*);
@@ -37,20 +36,19 @@ auto MainWindow::create() -> void
         wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
         wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-        MainWindow::m_atom = RegisterClassExA(&wcex);
+        Window::m_atom = RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, MAKEINTATOM(MainWindow::m_atom), "Window",
-                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
-                    this);
+    CreateWindowExA(0, MAKEINTATOM(Window::m_atom), "Window", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                    GetModuleHandleA(nullptr), this);
 
     glow::gui::show_normal(m_hwnd.get());
 }
 
-auto CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{InstanceFromWndProc<MainWindow>(hWnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
 
     if (self)
     {
@@ -65,12 +63,12 @@ auto CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lP
     else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto MainWindow::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto MainWindow::on_close() -> int
+auto Window::on_close() -> int
 {
     m_hwnd.reset();
 

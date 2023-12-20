@@ -5,6 +5,7 @@ add_executable(
 target_sources(
     App
     PRIVATE App.cxx
+            App.hxx
 )
 target_link_libraries(
     App

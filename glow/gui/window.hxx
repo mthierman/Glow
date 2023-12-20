@@ -13,10 +13,10 @@
 namespace glow::gui
 {
 
-struct MainWindow
+struct Window
 {
-    MainWindow();
-    virtual ~MainWindow();
+    Window();
+    virtual ~Window();
 
     auto create() -> void;
 
