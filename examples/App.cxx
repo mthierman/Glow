@@ -10,15 +10,33 @@
 #include <gui/window.hxx>
 #include <gui/webview.hxx>
 
-struct App final : public glow::gui::Window
+struct App final : public glow::gui::MainWindow
 {
+    using glow::gui::MainWindow::MainWindow;
+
+    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
+
     auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_destroy() -> int;
     auto on_notify() -> int;
     auto on_size() -> int;
-
-    static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 };
+
+auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
+{
+    auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
+
+    auto rcParent{(LPRECT)lParam};
+
+    if (childId == 1)
+    {
+        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left),
+                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
+        // Sleep(1);
+    }
+
+    return 1;
+}
 
 auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
@@ -56,29 +74,11 @@ auto App::on_size() -> int
     return 0;
 }
 
-auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
-{
-    auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
-
-    auto rcParent{(LPRECT)lParam};
-
-    if (childId == 1)
-    {
-        SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left),
-                     (rcParent->bottom - rcParent->top), SWP_NOZORDER);
-        // Sleep(1);
-    }
-
-    return 1;
-}
-
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
     App app;
-    app.create();
-    glow::gui::WebView2 wv{app.m_hwnd.get(), 1};
-    wv.create();
+    App app2;
 
     glow::gui::message_loop();
 

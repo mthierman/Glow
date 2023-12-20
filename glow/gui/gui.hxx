@@ -61,4 +61,14 @@ auto window_maximize(HWND hwnd) -> bool;
 auto window_fullscreen(HWND hwnd) -> bool;
 auto window_topmost(HWND hwnd) -> bool;
 
+auto show_normal(HWND hwnd) -> void;
+auto show(HWND hwnd) -> void;
+auto hide(HWND hwnd) -> void;
+
+auto set_title(HWND hwnd, std::string title) -> void;
+auto set_border(HWND hwnd, bool enabled) -> void;
+auto set_child(HWND hwnd) -> void;
+auto set_popup(HWND hwnd) -> void;
+auto set_overlapped(HWND hwnd) -> void;
+
 } // namespace glow::gui

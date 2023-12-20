@@ -212,4 +212,57 @@ auto window_topmost(HWND hwnd) -> bool
     }
 }
 
+auto show_normal(HWND hwnd) -> void
+{
+    glow::gui::window_cloak(hwnd);
+    ShowWindow(hwnd, SW_SHOWNORMAL);
+    glow::gui::window_uncloak(hwnd);
+}
+
+auto show(HWND hwnd) -> void
+{
+    glow::gui::window_cloak(hwnd);
+    ShowWindow(hwnd, SW_SHOW);
+    glow::gui::window_uncloak(hwnd);
+}
+
+auto hide(HWND hwnd) -> void
+{
+    glow::gui::window_cloak(hwnd);
+    ShowWindow(hwnd, SW_HIDE);
+    glow::gui::window_uncloak(hwnd);
+}
+
+auto set_title(HWND hwnd, std::string title) -> void { SetWindowTextA(hwnd, title.c_str()); }
+
+auto set_border(HWND hwnd, bool enabled) -> void
+{
+    auto style{GetWindowLongPtrA(hwnd, GWL_STYLE)};
+
+    SetWindowLongPtrA(hwnd, GWL_STYLE, enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto set_child(HWND hwnd) -> void
+{
+    SetWindowLongPtrA(hwnd, GWL_STYLE, WS_CHILD);
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto set_popup(HWND hwnd) -> void
+{
+    SetWindowLongPtrA(hwnd, GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto set_overlapped(HWND hwnd) -> void
+{
+    SetWindowLongPtrA(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
+    SetWindowPos(hwnd, nullptr, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
 } // namespace glow::gui

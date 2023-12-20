@@ -11,93 +11,46 @@
 namespace glow::gui
 {
 
-Window::Window() {}
+MainWindow::MainWindow() { create(); }
 
-Window::Window(std::string title) : Window() { m_title = title; }
+MainWindow::~MainWindow() {}
 
-Window::~Window() {}
-
-auto Window::create() -> void
+auto MainWindow::create() -> void
 {
-    create_window();
-    glow::gui::window_cloak(m_hwnd.get());
-    show_normal();
-    glow::gui::window_uncloak(m_hwnd.get());
-}
+    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+    auto classInfo{
+        GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(MainWindow::m_atom), &wcex)};
 
-auto Window::register_class() -> void
-{
-    wcex.lpszClassName = "Window";
-    wcex.lpszMenuName = 0;
-    wcex.lpfnWndProc = Window::WndProc;
-    wcex.style = 0;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = sizeof(void*);
-    wcex.hInstance = GetModuleHandleA(nullptr);
-    wcex.hbrBackground = m_hbrBackground.get();
-    wcex.hCursor = m_hCursor.get();
-    wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-    wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-
-    RegisterClassExA(&wcex);
-}
-
-auto Window::create_window() -> void
-{
-    auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), "Window", &wcex)};
     if (!classInfo)
     {
         OutputDebugStringA("Registering Window class...");
-        register_class();
+
+        wcex.lpszClassName = "MainWindow";
+        wcex.lpszMenuName = 0;
+        wcex.lpfnWndProc = MainWindow::WndProc;
+        wcex.style = 0;
+        wcex.cbClsExtra = 0;
+        wcex.cbWndExtra = sizeof(void*);
+        wcex.hInstance = GetModuleHandleA(nullptr);
+        wcex.hbrBackground = m_hbrBackground.get();
+        wcex.hCursor = m_hCursor.get();
+        wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+
+        MainWindow::m_atom = RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, "Window", m_title.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                    GetModuleHandleA(nullptr), this);
+    CreateWindowExA(0, MAKEINTATOM(MainWindow::m_atom), "Window",
+                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
+                    this);
+
+    glow::gui::show_normal(m_hwnd.get());
 }
 
-auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
-
-auto Window::show() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
-
-auto Window::hide() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
-
-auto Window::set_title(std::string title) -> void { SetWindowTextA(m_hwnd.get(), title.c_str()); }
-
-auto Window::set_border(bool enabled) -> void
+auto CALLBACK MainWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
-                      enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
-    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-}
-
-auto Window::set_child() -> void
-{
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_CHILD);
-    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-}
-
-auto Window::set_popup() -> void
-{
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
-    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-}
-
-auto Window::set_overlapped() -> void
-{
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
-    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-}
-
-auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
+    auto self{InstanceFromWndProc<MainWindow>(hWnd, uMsg, lParam)};
 
     if (self)
     {
@@ -112,12 +65,12 @@ auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto MainWindow::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto Window::on_close() -> int
+auto MainWindow::on_close() -> int
 {
     m_hwnd.reset();
 

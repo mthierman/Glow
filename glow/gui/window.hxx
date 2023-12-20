@@ -13,32 +13,20 @@
 namespace glow::gui
 {
 
-struct Window
+struct MainWindow
 {
-    Window();
-    Window(std::string title);
-    virtual ~Window();
+    MainWindow();
+    virtual ~MainWindow();
 
-    virtual auto create() -> void;
-    virtual auto register_class() -> void;
-    virtual auto create_window() -> void;
-
-    auto show_normal() -> void;
-    auto show() -> void;
-    auto hide() -> void;
-    auto set_title(std::string title) -> void;
-    auto set_border(bool enabled) -> void;
-    auto set_child() -> void;
-    auto set_popup() -> void;
-    auto set_overlapped() -> void;
+    auto create() -> void;
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close() -> int;
 
-    std::string m_title{"Window"};
+    inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
-    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     wil::unique_hicon m_hIcon{static_cast<HICON>(
