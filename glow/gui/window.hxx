@@ -19,6 +19,7 @@ struct Window
     Window(std::string title);
     virtual ~Window();
 
+    virtual auto create() -> void;
     virtual auto register_class() -> void;
     virtual auto create_window() -> void;
 
@@ -35,6 +36,7 @@ struct Window
     virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close() -> int;
 
+    std::string m_title{"Window"};
     wil::unique_hwnd m_hwnd{};
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(

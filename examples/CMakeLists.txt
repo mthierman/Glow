@@ -1,18 +1,4 @@
 add_executable(
-    Window
-    WIN32
-)
-target_sources(
-    Window
-    PRIVATE Window.cxx
-)
-target_link_libraries(
-    Window
-    PRIVATE glow::glow
-            glow::flags
-)
-
-add_executable(
     App
     WIN32
 )
@@ -33,35 +19,6 @@ target_sources(
 )
 target_link_libraries(
     Console
-    PRIVATE glow::glow
-            glow::flags
-)
-
-add_executable(
-    WebView
-    WIN32
-)
-target_sources(
-    WebView
-    PRIVATE WebView.cxx
-            WebView.hxx
-)
-target_link_libraries(
-    WebView
-    PRIVATE glow::glow
-            glow::flags
-)
-
-add_executable(
-    WebViewWindow
-    WIN32
-)
-target_sources(
-    WebViewWindow
-    PRIVATE WebViewWindow.cxx
-)
-target_link_libraries(
-    WebViewWindow
     PRIVATE glow::glow
             glow::flags
 )

@@ -11,17 +11,19 @@
 namespace glow::gui
 {
 
-Window::Window()
+Window::Window() {}
+
+Window::Window(std::string title) : Window() { m_title = title; }
+
+Window::~Window() {}
+
+auto Window::create() -> void
 {
     create_window();
     glow::gui::window_cloak(m_hwnd.get());
     show_normal();
     glow::gui::window_uncloak(m_hwnd.get());
 }
-
-Window::Window(std::string title) : Window() { set_title(title); }
-
-Window::~Window() {}
 
 auto Window::register_class() -> void
 {
@@ -45,12 +47,12 @@ auto Window::create_window() -> void
     auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), "Window", &wcex)};
     if (!classInfo)
     {
-        OutputDebugStringA("Registering class...");
+        OutputDebugStringA("Registering Window class...");
         register_class();
     }
 
-    CreateWindowExA(0, "Window", "Window", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+    CreateWindowExA(0, "Window", m_title.c_str(), WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                     GetModuleHandleA(nullptr), this);
 }
 

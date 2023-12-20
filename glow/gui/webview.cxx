@@ -6,31 +6,39 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <gui/webview_window.hxx>
+#include <gui/webview.hxx>
 
 namespace glow::gui
 {
 
-WebViewWindow::WebViewWindow(std::string name, HWND parentHwnd, int64_t id)
-    : m_class{glow::text::randomize(name.data())}, m_hwndParent{parentHwnd}, m_id{id}
+WebView2::WebView2(HWND parentHwnd, int64_t id)
 {
-    m_title = name;
+    m_hwndParent.reset(parentHwnd);
+    m_id = id;
+}
+
+WebView2::WebView2(std::string title, HWND parentHwnd, int64_t id) : WebView2(parentHwnd, id)
+{
+    m_title = title;
+}
+
+auto WebView2::create() -> void
+{
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    m_atom = register_class();
     create_window();
+    glow::gui::window_cloak(m_hwnd.get());
     show_normal();
-
-    create_environment();
+    glow::gui::window_uncloak(m_hwnd.get());
 }
 
-auto WebViewWindow::register_class() -> ATOM
+auto WebView2::register_class() -> void
 {
-    wcex.lpszClassName = m_class.c_str();
-    wcex.lpszMenuName = m_class.c_str();
-    wcex.lpfnWndProc = Window::WndProc;
+    wcex.lpszClassName = "WebView2";
+    wcex.lpszMenuName = 0;
+    wcex.lpfnWndProc = WebView2::WndProc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = sizeof(void*);
@@ -40,25 +48,25 @@ auto WebViewWindow::register_class() -> ATOM
     wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
     wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-    return RegisterClassExA(&wcex);
+    RegisterClassExA(&wcex);
 }
 
-auto WebViewWindow::create_window() -> HWND
+auto WebView2::create_window() -> void
 {
-    return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(), WS_CHILD, CW_USEDEFAULT,
-                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
-                           std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+    auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), "WebView2", &wcex)};
+    if (!classInfo)
+    {
+        OutputDebugStringA("Registering WebView2 class...");
+        register_class();
+    }
+
+    CreateWindowExA(0, "WebView2", "WebView2", WS_CHILD, CW_USEDEFAULT, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(), std::bit_cast<HMENU>(m_id),
+                    GetModuleHandleA(nullptr), this);
 }
 
-auto WebViewWindow::create_environment() -> void
+auto WebView2::create_environment() -> void
 {
-    // auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
-    // auto options6{Microsoft::WRL::ComPtr<ICoreWebView2EnvironmentOptions6>()};
-    // options.As(&options6);
-    // std::wstring browserArgsBuffer = L"--allow-file-access-from-files";
-    // auto browserArgs = browserArgsBuffer.data();
-    // options->get_AdditionalBrowserArguments(&browserArgs);
-
     winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -71,7 +79,7 @@ auto WebViewWindow::create_environment() -> void
             .Get()));
 }
 
-auto WebViewWindow::create_controller(ICoreWebView2Environment* environment) -> void
+auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 {
     winrt::check_hresult(environment->CreateCoreWebView2Controller(
         m_hwnd.get(),

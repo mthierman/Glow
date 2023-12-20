@@ -19,13 +19,15 @@
 namespace glow::gui
 {
 
-struct WebViewWindow final : public glow::gui::Window
+struct WebView2 final : public glow::gui::Window
 {
     // using glow::gui::Window::Window;
-    WebViewWindow(std::string name, HWND parentHwnd, int64_t id);
+    WebView2(HWND parentHwnd, int64_t id);
+    WebView2(std::string name, HWND parentHwnd, int64_t id);
 
-    auto register_class() -> ATOM;
-    auto create_window() -> HWND override;
+    auto create() -> void override;
+    auto register_class() -> void override;
+    auto create_window() -> void override;
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 

@@ -10,10 +10,8 @@
 #include <gui/window.hxx>
 #include <gui/webview.hxx>
 
-struct TestApp final : public glow::gui::Window
+struct App final : public glow::gui::Window
 {
-    using glow::gui::Window::Window;
-
     auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_destroy() -> int;
     auto on_notify() -> int;
@@ -22,7 +20,7 @@ struct TestApp final : public glow::gui::Window
     static auto enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL;
 };
 
-auto TestApp::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -34,21 +32,21 @@ auto TestApp::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto TestApp::on_destroy() -> int
+auto App::on_destroy() -> int
 {
     PostQuitMessage(0);
 
     return 0;
 }
 
-auto TestApp::on_notify() -> int
+auto App::on_notify() -> int
 {
     on_size();
 
     return 0;
 }
 
-auto TestApp::on_size() -> int
+auto App::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
@@ -58,7 +56,7 @@ auto TestApp::on_size() -> int
     return 0;
 }
 
-auto CALLBACK TestApp::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
+auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
     auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
 
@@ -68,7 +66,7 @@ auto CALLBACK TestApp::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     {
         SetWindowPos(hwnd, nullptr, 0, 0, (rcParent->right - rcParent->left),
                      (rcParent->bottom - rcParent->top), SWP_NOZORDER);
-        Sleep(1);
+        // Sleep(1);
     }
 
     return 1;
@@ -77,13 +75,10 @@ auto CALLBACK TestApp::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    TestApp app;
-    glow::gui::WebView wv{"WebView2", app.m_hwnd.get(), 1};
-    // glow::Window window;
-    // glow::Window window2{"MainWindow2"};
-
-    // glow::gui::WebViewWindow wv;
-    // glow::gui::WebViewWindow wv{"Test2", window.m_hwnd.get(), 1};
+    App app;
+    app.create();
+    glow::gui::WebView2 wv{app.m_hwnd.get(), 1};
+    wv.create();
 
     glow::gui::message_loop();
 
