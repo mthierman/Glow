@@ -12,9 +12,9 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     -> int
 {
     App app;
-    // App app2;
+    App app2;
     glow::gui::WebView2 wv1{app.m_hwnd.get(), 1};
-    glow::gui::WebView2 wv2{app.m_hwnd.get(), 2};
+    glow::gui::WebView2 wv2{app2.m_hwnd.get(), 2};
 
     glow::gui::message_loop();
 
