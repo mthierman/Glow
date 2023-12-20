@@ -15,17 +15,13 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     -> int
 {
     App app;
-    App app2;
-    glow::gui::WebView2 wv1{app.m_hwnd.get(), 1};
-    glow::gui::WebView2 wv2{app2.m_hwnd.get(), 2};
 
-    Window window;
-    glow::gui::WebView2 wv3{window.m_hwnd.get(), 1};
-    glow::gui::WebView2 wv4{window.m_hwnd.get(), 2};
+    std::vector<std::unique_ptr<glow::gui::WebView2>> webviews;
+    webviews.push_back(std::make_unique<glow::gui::WebView2>(app.m_hwnd.get(), 1));
+    webviews.push_back(std::make_unique<glow::gui::WebView2>(app.m_hwnd.get(), 2));
 
-    Window window2;
-    glow::gui::WebView2 wv5{window2.m_hwnd.get(), 1};
-    glow::gui::WebView2 wv6{window2.m_hwnd.get(), 2};
+    glow::gui::set_border(webviews.at(0)->m_hwnd.get(), true);
+    glow::gui::set_border(webviews.at(1)->m_hwnd.get(), true);
 
     glow::gui::message_loop();
 
