@@ -5,9 +5,9 @@ add_executable(
 
 target_sources(
     App
-    PRIVATE App.cxx
-            App.hxx
-            Window.hxx
+    PRIVATE App/App.cxx
+            App/App.hxx
+            App/Window.hxx
             ${PROJECT_SOURCE_DIR}/data/glow.manifest
 )
 
@@ -21,7 +21,7 @@ add_executable(Console)
 
 target_sources(
     Console
-    PRIVATE Console.cxx
+    PRIVATE Console/Console.cxx
             ${PROJECT_SOURCE_DIR}/data/glow.manifest
 )
 
