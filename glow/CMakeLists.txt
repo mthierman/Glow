@@ -7,7 +7,7 @@ add_library(
 )
 
 configure_file(
-    config/glow.hxx.in
+    ${PROJECT_SOURCE_DIR}/config/glow.hxx.in
     ${PROJECT_BINARY_DIR}/include/config/glow.hxx
 )
 
@@ -23,7 +23,11 @@ target_sources(
             text/text.cxx
     PUBLIC FILE_SET
            HEADERS
+           BASE_DIRS
+           ${CMAKE_CURRENT_SOURCE_DIR}
+           ${PROJECT_BINARY_DIR}/include
            FILES
+           ${PROJECT_BINARY_DIR}/include/config/glow.hxx
            console/console.hxx
            filesystem/database.hxx
            filesystem/filesystem.hxx
@@ -36,8 +40,7 @@ target_sources(
 
 target_include_directories(
     glow
-    PUBLIC ${PROJECT_BINARY_DIR}/include
-           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
+    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include
            ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
            ${sqlite_SOURCE_DIR}

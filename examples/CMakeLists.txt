@@ -2,12 +2,15 @@ add_executable(
     App
     WIN32
 )
+
 target_sources(
     App
     PRIVATE App.cxx
             App.hxx
             Window.hxx
+            ${PROJECT_SOURCE_DIR}/data/glow.manifest
 )
+
 target_link_libraries(
     App
     PRIVATE glow::glow
@@ -15,10 +18,13 @@ target_link_libraries(
 )
 
 add_executable(Console)
+
 target_sources(
     Console
     PRIVATE Console.cxx
+            ${PROJECT_SOURCE_DIR}/data/glow.manifest
 )
+
 target_link_libraries(
     Console
     PRIVATE glow::glow

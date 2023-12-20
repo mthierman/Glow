@@ -1,19 +1,9 @@
-project(
+add_executable(IconConverter)
+
+target_sources(
     IconConverter
-    VERSION 0.0.1
-    LANGUAGES CXX
-)
-
-add_executable(${PROJECT_NAME})
-
-target_sources(
-    ${PROJECT_NAME}
     PRIVATE IconConverter.cxx
-            ${GLOW_DATA_MANIFEST}
-)
-
-target_sources(
-    ${PROJECT_NAME}
+            ${PROJECT_SOURCE_DIR}/data/glow.manifest
     PRIVATE FILE_SET
             HEADERS
             FILES
@@ -21,7 +11,7 @@ target_sources(
 )
 
 target_link_libraries(
-    ${PROJECT_NAME}
+    IconConverter
     PRIVATE glow::glow
             glow::flags
             windowscodecs.lib
