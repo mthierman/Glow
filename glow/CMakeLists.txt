@@ -16,7 +16,6 @@ target_sources(
     PRIVATE console/console.cxx
             filesystem/database.cxx
             filesystem/filesystem.cxx
-            gui/app.cxx
             gui/gui.cxx
             # gui/webview_composition.cxx gui/webview_window.cxx
             gui/webview.cxx
@@ -29,7 +28,6 @@ target_sources(
            console/console.hxx
            filesystem/database.hxx
            filesystem/filesystem.hxx
-           gui/app.hxx
            gui/gui.hxx
            # gui/webview_composition.hxx gui/webview_window.hxx
            gui/webview.hxx

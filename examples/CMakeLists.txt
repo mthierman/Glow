@@ -59,7 +59,6 @@ add_executable(
 target_sources(
     WebViewWindow
     PRIVATE WebViewWindow.cxx
-            WebViewWindow.hxx
 )
 target_link_libraries(
     WebViewWindow

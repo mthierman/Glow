@@ -6,113 +6,51 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <gui/webview.hxx>
+#include <gui/webview_window.hxx>
 
 namespace glow::gui
 {
 
-WebView::WebView(std::string_view name, HWND parentHwnd, int64_t id)
-    : m_name(name), m_class(glow::text::randomize(name.data())), m_hwndParent(parentHwnd), m_id(id)
+WebViewWindow::WebViewWindow(std::string name, HWND parentHwnd, int64_t id)
+    : m_class{glow::text::randomize(name.data())}, m_hwndParent{parentHwnd}, m_id{id}
 {
+    m_title = name;
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");
 
-    m_classAtom = register_window();
+    m_atom = register_class();
     create_window();
-    show_window_default();
+    show_normal();
 
-    window_cloak(m_hwnd.get());
     create_environment();
 }
 
-WebView::~WebView() {}
-
-auto WebView::register_window() -> ATOM
+auto WebViewWindow::register_class() -> ATOM
 {
-    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wcex.lpszClassName = m_class.c_str();
     wcex.lpszMenuName = m_class.c_str();
-    wcex.lpfnWndProc = WebView::wnd_proc;
+    wcex.lpfnWndProc = Window::WndProc;
     wcex.style = 0;
     wcex.cbClsExtra = 0;
     wcex.cbWndExtra = sizeof(void*);
     wcex.hInstance = GetModuleHandleA(nullptr);
-    wcex.hbrBackground = m_background;
-    wcex.hCursor = m_cursor;
-    wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon;
-    wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon;
+    wcex.hbrBackground = m_lightHbrBackground.get();
+    wcex.hCursor = m_hCursor.get();
+    wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
     return RegisterClassExA(&wcex);
 }
 
-auto WebView::create_window() -> void
+auto WebViewWindow::create_window() -> HWND
 {
-    CreateWindowExA(0, MAKEINTATOM(m_classAtom), m_name.c_str(), WS_CHILD, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
-                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+    return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(), WS_CHILD, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+                           std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
-auto WebView::show_window_default() -> void { ShowWindow(m_hwnd.get(), SW_SHOWDEFAULT); }
-
-auto WebView::show_window() -> void { ShowWindow(m_hwnd.get(), SW_SHOW); }
-
-auto WebView::hide_window() -> void { ShowWindow(m_hwnd.get(), SW_HIDE); }
-
-auto WebView::set_border(bool enabled) -> void
-{
-    auto style{GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-
-    SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
-                      enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
-    SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-}
-
-auto WebView::navigate(std::string_view url) -> void
-{
-    auto wideUrl{glow::text::widen(url.data())};
-    if (m_core20) m_core20->Navigate(wideUrl.c_str());
-}
-
-auto WebView::post_json(const json jsonMessage) -> void
-{
-    auto wideUrl{glow::text::widen(jsonMessage)};
-    if (m_core20) m_core20->PostWebMessageAsJson(wideUrl.c_str());
-}
-
-auto CALLBACK WebView::wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    auto self{InstanceFromWndProc<WebView>(hwnd, uMsg, lParam)};
-
-    if (self)
-    {
-        switch (uMsg)
-        {
-        case WM_WINDOWPOSCHANGED: return self->on_window_pos_changed();
-        }
-
-        return self->handle_message(uMsg, wParam, lParam);
-    }
-
-    else return DefWindowProcA(hwnd, uMsg, wParam, lParam);
-}
-
-auto WebView::on_window_pos_changed() -> int
-{
-    RECT rect{};
-    GetClientRect(m_hwnd.get(), &rect);
-    if (m_controller4) { m_controller4->put_Bounds(rect); }
-
-    return 0;
-}
-
-auto WebView::handle_message(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
-}
-
-auto WebView::create_environment() -> void
+auto WebViewWindow::create_environment() -> void
 {
     // auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
     // auto options6{Microsoft::WRL::ComPtr<ICoreWebView2EnvironmentOptions6>()};
@@ -133,7 +71,7 @@ auto WebView::create_environment() -> void
             .Get()));
 }
 
-auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
+auto WebViewWindow::create_controller(ICoreWebView2Environment* environment) -> void
 {
     winrt::check_hresult(environment->CreateCoreWebView2Controller(
         m_hwnd.get(),
@@ -175,124 +113,15 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
 
                     m_core20->Navigate(L"https://www.google.com/");
 
-                    navigation_completed();
-                    accelerator_key_pressed();
-                    favicon_changed();
-                    document_title_changed();
+                    // navigation_completed();
+                    // accelerator_key_pressed();
+                    // favicon_changed();
+                    // document_title_changed();
                 }
 
                 return S_OK;
             })
             .Get()));
-}
-
-auto WebView::source_changed() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_core20->add_SourceChanged(
-        Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
-            {
-                // source_changed_handler();
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::navigation_completed() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_core20->add_NavigationCompleted(
-        Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
-            {
-                initialized();
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::web_message_received() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_core20->add_WebMessageReceived(
-        Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-            {
-                web_message_received_handler();
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::accelerator_key_pressed() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_controller4->add_AcceleratorKeyPressed(
-        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender,
-                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
-            {
-                accelerator_key_pressed_handler(args);
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::favicon_changed() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_core20->add_FaviconChanged(
-        Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                // favicon_changed_handler();
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::document_title_changed() -> void
-{
-    EventRegistrationToken token;
-
-    winrt::check_hresult(m_core20->add_DocumentTitleChanged(
-        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                // document_title_changed_handler();
-
-                return S_OK;
-            })
-            .Get(),
-        &token));
-}
-
-auto WebView::initialized() -> void
-{
-    if (!m_initialized)
-    {
-        window_uncloak(m_hwnd.get());
-        SendMessageA(m_hwndParent.get(), WM_NOTIFY, 0, 0);
-        m_initialized = true;
-    }
 }
 
 } // namespace glow::gui

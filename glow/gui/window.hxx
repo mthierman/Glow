@@ -34,7 +34,6 @@ struct Window
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close() -> int;
-    // virtual auto on_destroy() -> int;
 
     wil::unique_hwnd m_hwnd{};
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
