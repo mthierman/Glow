@@ -31,10 +31,6 @@ target_link_libraries(
             glow::flags
 )
 
-# add_executable( WebViewComposition WIN32 ) target_sources( WebViewComposition PRIVATE
-# WebViewComposition.cxx WebView.hxx ) target_link_libraries( WebViewComposition PRIVATE glow::glow
-# glow::flags CoreMessaging.lib )
-
 add_custom_command(
     TARGET App
     COMMAND
@@ -52,7 +48,3 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )
-
-# add_custom_command( TARGET WebViewComposition COMMAND ${CMAKE_COMMAND} -E copy
-# ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW}.${WEBVIEW_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
-# ${CMAKE_CURRENT_BINARY_DIR} COMMENT "Copying Microsoft.Web.WebView2.Core.dll..." )
