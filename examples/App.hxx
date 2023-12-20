@@ -40,8 +40,8 @@ auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
 {
     switch (uMsg)
     {
-    case WM_DESTROY: return on_destroy();
     case WM_SIZE: return on_size();
+    case WM_DESTROY: return on_destroy();
     }
 
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);

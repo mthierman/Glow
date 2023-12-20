@@ -50,6 +50,13 @@ struct WebView2
 
     auto initialize() -> void;
 
+    virtual auto source_changed_handler() -> void{};
+    virtual auto web_message_received_handler() -> void{};
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void{};
+    virtual auto favicon_changed_handler() -> void{};
+    virtual auto document_title_changed_handler() -> void{};
+
     inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
 
