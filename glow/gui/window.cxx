@@ -93,8 +93,8 @@ auto Window::show_normal() -> void { ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
-    OutputDebugString(std::to_string(uMsg).c_str());
-    OutputDebugString("\n");
+    // OutputDebugString(std::to_string(uMsg).c_str());
+    // OutputDebugString("\n");
 
     if (self)
     {

@@ -11,6 +11,44 @@
 namespace glow::gui
 {
 
+WebViewWindow::WebViewWindow(std::string name, HWND parentHwnd, int64_t id)
+    : m_title{name}, m_class{glow::text::randomize(name.data())}, m_hwndParent{parentHwnd}, m_id{id}
+{
+    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
+    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
+                            "--allow-file-access-from-files");
+
+    m_atom = register_class();
+    create_window();
+    show_normal();
+
+    create_environment();
+}
+
+auto WebViewWindow::register_class() -> ATOM
+{
+    wcex.lpszClassName = m_class.c_str();
+    wcex.lpszMenuName = m_class.c_str();
+    wcex.lpfnWndProc = Window::WndProc;
+    wcex.style = 0;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = sizeof(void*);
+    wcex.hInstance = GetModuleHandleA(nullptr);
+    wcex.hbrBackground = m_lightHbrBackground.get();
+    wcex.hCursor = m_hCursor.get();
+    wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+
+    return RegisterClassExA(&wcex);
+}
+
+auto WebViewWindow::create_window() -> HWND
+{
+    return CreateWindowExA(0, MAKEINTATOM(m_atom), m_title.c_str(), WS_CHILD, CW_USEDEFAULT,
+                           CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
+                           std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+}
+
 auto WebViewWindow::create_environment() -> void
 {
     // auto options{Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()};
@@ -85,4 +123,4 @@ auto WebViewWindow::create_controller(ICoreWebView2Environment* environment) -> 
             .Get()));
 }
 
-} // namespace glow
+} // namespace glow::gui

@@ -10,15 +10,14 @@
 
 #include <bit>
 
-#include <gui/app.hxx>
-#include <gui/webview_window.hxx>
+#include <gui/window.hxx>
 
 namespace glow
 {
 
-struct App : glow::gui::App
+struct Window : glow::gui::Window
 {
-    using glow::gui::App::App;
+    using glow::gui::Window::Window;
 
   private:
     auto handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
@@ -28,7 +27,7 @@ struct App : glow::gui::App
     auto on_size() -> int;
 };
 
-auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -39,7 +38,7 @@ auto App::handle_message(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> 
     return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 }
 
-auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
+auto CALLBACK Window::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
     auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
 
@@ -52,14 +51,14 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     return 1;
 }
 
-auto App::on_notify() -> int
+auto Window::on_notify() -> int
 {
     on_size();
 
     return 0;
 }
 
-auto App::on_size() -> int
+auto Window::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);

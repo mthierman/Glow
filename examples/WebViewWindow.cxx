@@ -7,12 +7,16 @@
 // clang-format on
 
 #include "WebViewWindow.hxx"
+#include <gui/webview_window.hxx>
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
-    glow::App app{"WebViewWindow"};
-    // glow::gui::WebViewWindow wv{"Test"};
+    glow::Window window;
+    // window.create();
+    // glow::Window window{"App"};
+    // glow::gui::WebViewWindow wv;
+    glow::gui::WebViewWindow wv{"Test2", window.m_hwnd.get(), 1};
 
     glow::gui::message_loop();
 

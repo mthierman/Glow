@@ -27,9 +27,8 @@ struct Window
     auto show() -> void;
     auto hide() -> void;
 
-  private:
-    auto register_class() -> ATOM;
-    auto create_window() -> HWND;
+    virtual auto register_class() -> ATOM;
+    virtual auto create_window() -> HWND;
     auto create() -> void;
     auto show_normal() -> void;
 
@@ -38,7 +37,6 @@ struct Window
     virtual auto on_close() -> int;
     virtual auto on_destroy() -> int;
 
-  public:
     std::string m_title{"Window"};
     WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
