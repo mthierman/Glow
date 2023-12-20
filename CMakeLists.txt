@@ -27,10 +27,6 @@ set(WEBVIEW2_VER
 )
 
 option(
-    ENABLE_GLOW_ICONCONVERTER
-    OFF
-)
-option(
     ENABLE_GLOW_EXAMPLES
     OFF
 )
@@ -39,7 +35,7 @@ option(
     OFF
 )
 option(
-    ENABLE_GLOW_GENERATE_EXAMPLE_ICONS
+    ENABLE_GLOW_ICONCONVERTER
     OFF
 )
 
@@ -58,13 +54,6 @@ include(cmake/buildcppwinrt.cmake)
 
 add_subdirectory(glow)
 
-if(ENABLE_GLOW_ICONCONVERTER)
-    add_subdirectory(
-        tools/IconConverter
-        EXCLUDE_FROM_ALL
-    )
-endif()
-
 if(ENABLE_GLOW_EXAMPLES)
     add_subdirectory(examples)
 endif()
@@ -72,6 +61,13 @@ endif()
 if(ENABLE_GLOW_TESTING)
     add_subdirectory(
         testing
+        EXCLUDE_FROM_ALL
+    )
+endif()
+
+if(ENABLE_GLOW_ICONCONVERTER)
+    add_subdirectory(
+        tools/IconConverter
         EXCLUDE_FROM_ALL
     )
 endif()
