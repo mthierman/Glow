@@ -6,6 +6,7 @@ target_sources(
     App
     PRIVATE App.cxx
             App.hxx
+            Window.hxx
 )
 target_link_libraries(
     App

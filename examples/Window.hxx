@@ -8,7 +8,7 @@
 
 #include <gui/window.hxx>
 
-struct App final : public glow::gui::Window
+struct Window final : public glow::gui::Window
 {
     using glow::gui::Window::Window;
 
@@ -16,10 +16,9 @@ struct App final : public glow::gui::Window
 
     auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_size() -> int;
-    auto on_destroy() -> int;
 };
 
-auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
+auto CALLBACK Window::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
 {
     auto childId{GetWindowLongPtrA(hwnd, GWL_ID)};
     auto rcParent{(LPRECT)lParam};
@@ -36,30 +35,22 @@ auto CALLBACK App::enum_child_proc(HWND hwnd, LPARAM lParam) -> BOOL
     return 1;
 }
 
-auto App::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
-    case WM_DESTROY: return on_destroy();
     case WM_SIZE: return on_size();
     }
 
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto App::on_size() -> int
+auto Window::on_size() -> int
 {
     RECT clientRect{0};
     GetClientRect(m_hwnd.get(), &clientRect);
     EnumChildWindows(m_hwnd.get(), enum_child_proc, std::bit_cast<LPARAM>(&clientRect));
     Sleep(1);
-
-    return 0;
-}
-
-auto App::on_destroy() -> int
-{
-    PostQuitMessage(0);
 
     return 0;
 }
