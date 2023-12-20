@@ -96,16 +96,12 @@ auto Window::set_overlapped() -> void
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
-    // OutputDebugString(std::to_string(uMsg).c_str());
-    // OutputDebugString("\n");
 
     if (self)
     {
         switch (uMsg)
         {
-        case WM_CLOSE:
-            return self->on_close();
-            // case WM_DESTROY: return self->on_destroy();
+        case WM_CLOSE: return self->on_close();
         }
 
         return self->handle_message(hWnd, uMsg, wParam, lParam);
@@ -125,12 +121,5 @@ auto Window::on_close() -> int
 
     return 0;
 }
-
-// auto Window::on_destroy() -> int
-// {
-//     PostQuitMessage(0);
-
-//     return 0;
-// }
 
 } // namespace glow::gui
