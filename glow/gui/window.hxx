@@ -38,7 +38,7 @@ struct Window
     virtual auto on_destroy() -> int;
 
     std::string m_title{"Window"};
-    WNDCLASSEX wcex{sizeof(WNDCLASSEX)};
+    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     wil::unique_hicon m_hIcon{static_cast<HICON>(

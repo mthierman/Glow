@@ -12,8 +12,9 @@ namespace glow::gui
 {
 
 WebViewWindow::WebViewWindow(std::string name, HWND parentHwnd, int64_t id)
-    : m_title{name}, m_class{glow::text::randomize(name.data())}, m_hwndParent{parentHwnd}, m_id{id}
+    : m_class{glow::text::randomize(name.data())}, m_hwndParent{parentHwnd}, m_id{id}
 {
+    m_title = name;
     SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
     SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
                             "--allow-file-access-from-files");

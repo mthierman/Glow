@@ -16,7 +16,13 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
     // window.create();
     // glow::Window window{"App"};
     // glow::gui::WebViewWindow wv;
-    glow::gui::WebViewWindow wv{"Test2", window.m_hwnd.get(), 1};
+    // glow::gui::WebViewWindow wv{"Test2", window.m_hwnd.get(), 1};
+
+    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+    GetModuleHandleA(nullptr);
+    auto exists{GetClassInfoExA(GetModuleHandleA(nullptr), "Blah", &wcex)};
+
+    if (exists) OutputDebugStringA("class exists!");
 
     glow::gui::message_loop();
 

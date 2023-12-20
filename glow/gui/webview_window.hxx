@@ -29,7 +29,7 @@ struct WebViewWindow final : public glow::gui::Window
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 
-    std::string m_title{"Test"};
+    // std::string m_title;
     std::string m_class;
     int64_t m_id{};
     wil::unique_hwnd m_hwndParent;
