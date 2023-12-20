@@ -15,6 +15,7 @@ WebView2::WebView2(HWND parentHwnd, int64_t id)
 {
     m_hwndParent.reset(parentHwnd);
     m_id = id;
+    create();
 }
 
 WebView2::~WebView2() {}
@@ -52,9 +53,10 @@ auto WebView2::create() -> void
                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
-    glow::gui::show_normal(m_hwnd.get());
-
     create_environment();
+
+    // glow::gui::show_normal(m_hwnd.get());
+    ShowWindow(m_hwnd.get(), SW_SHOWNORMAL);
 }
 
 auto WebView2::create_environment() -> void
@@ -147,11 +149,6 @@ auto WebView2::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto WebView2::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
-}
-
 auto WebView2::on_close() -> int
 {
     m_hwnd.reset();
@@ -205,7 +202,7 @@ auto WebView2::navigation_completed() -> void
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
             {
-                initialized();
+                initialize();
 
                 return S_OK;
             })
@@ -279,12 +276,11 @@ auto WebView2::document_title_changed() -> void
         &token));
 }
 
-auto WebView2::initialized() -> void
+auto WebView2::initialize() -> void
 {
     if (!m_initialized)
     {
-        window_uncloak(m_hwnd.get());
-        SendMessageA(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+        SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
         m_initialized = true;
     }
 }

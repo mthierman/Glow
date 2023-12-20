@@ -48,7 +48,7 @@ struct WebView2
     auto favicon_changed() -> void;
     auto document_title_changed() -> void;
 
-    auto initialized() -> void;
+    auto initialize() -> void;
 
     inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
