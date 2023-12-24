@@ -27,22 +27,26 @@ set(WEBVIEW2_VER
 )
 
 option(
-    ENABLE_GLOW_EXAMPLES
+    GLOW_LOCAL_LIBS
     OFF
 )
 option(
-    ENABLE_GLOW_TESTING
+    GLOW_EXAMPLES
     OFF
 )
 option(
-    ENABLE_GLOW_ICONCONVERTER
+    GLOW_TESTING
+    OFF
+)
+option(
+    GLOW_ICONCONVERTER
     OFF
 )
 
 include(cmake/common.cmake)
 
 include(FetchContent)
-# include(cmake/libcurl.cmake)
+# include(cmake/curl.cmake)
 include(cmake/sqlite.cmake)
 include(cmake/json.cmake)
 include(cmake/toml.cmake)
@@ -51,6 +55,8 @@ include(cmake/cppwinrt.cmake)
 include(cmake/webview2.cmake)
 
 include(cmake/buildcppwinrt.cmake)
+
+add_subdirectory(sqlite)
 
 add_subdirectory(glow)
 

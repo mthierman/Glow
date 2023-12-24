@@ -40,9 +40,9 @@ target_sources(
 
 target_include_directories(
     glow
-    PUBLIC ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include-winrt
-           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/include
-           ${CMAKE_BINARY_DIR}/_deps/Nuget/${WIL}.${WIL_VER}/include
+    PUBLIC ${webview2_SOURCE_DIR}/build/native/include-winrt
+           ${webview2_SOURCE_DIR}/build/native/include
+           ${wil_SOURCE_DIR}/include
            ${sqlite_SOURCE_DIR}
            ${json_SOURCE_DIR}/single_include
            ${toml_SOURCE_DIR}/include
@@ -51,7 +51,7 @@ target_include_directories(
 target_link_directories(
     glow
     PUBLIC
-    ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/build/native/x64
+    ${webview2_SOURCE_DIR}/build/native/x64
 )
 
 target_link_libraries(

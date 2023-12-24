@@ -34,8 +34,7 @@ target_link_libraries(
 add_custom_command(
     TARGET App
     COMMAND
-        ${CMAKE_COMMAND} -E copy
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/runtimes/win-x64/native/WebView2Loader.dll
+        ${CMAKE_COMMAND} -E copy ${webview2_SOURCE_DIR}/runtimes/win-x64/native/WebView2Loader.dll
         ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Copying WebView2Loader.dll..."
 )
@@ -44,7 +43,7 @@ add_custom_command(
     TARGET App
     COMMAND
         ${CMAKE_COMMAND} -E copy
-        ${CMAKE_BINARY_DIR}/_deps/Nuget/${WEBVIEW2}.${WEBVIEW2_VER}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
+        ${webview2_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
         ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )

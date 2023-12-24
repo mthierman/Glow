@@ -1,6 +1,19 @@
-FetchContent_Declare(
-    json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
-)
+if(GLOW_LOCAL_LIBS)
+    file(
+        TO_CMAKE_PATH
+        "$ENV{LIBRARIES}/json"
+        json_SOURCE_DIR
+    )
 
-FetchContent_MakeAvailable(json)
+    add_subdirectory(
+        ${json_SOURCE_DIR}
+        json
+    )
+else()
+    FetchContent_Declare(
+        json
+        URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+    )
+
+    FetchContent_MakeAvailable(json)
+endif()
