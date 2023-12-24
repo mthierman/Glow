@@ -17,6 +17,7 @@ target_sources(
             filesystem/database.cxx
             filesystem/filesystem.cxx
             gui/gui.cxx
+            gui/mainwindow.cxx
             gui/webview.cxx
             gui/window.cxx
             logging/logging.cxx
@@ -32,6 +33,7 @@ target_sources(
            filesystem/database.hxx
            filesystem/filesystem.hxx
            gui/gui.hxx
+           gui/mainwindow.hxx
            gui/webview.hxx
            gui/window.hxx
            logging/logging.hxx

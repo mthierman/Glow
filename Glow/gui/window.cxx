@@ -54,7 +54,8 @@ auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
     {
         switch (uMsg)
         {
-        case WM_CLOSE: return self->on_close();
+        case WM_CLOSE: return self->on_close(hWnd, uMsg, wParam, lParam);
+        case WM_DESTROY: return self->on_destroy(hWnd, uMsg, wParam, lParam);
         }
 
         return self->handle_message(hWnd, uMsg, wParam, lParam);
@@ -68,11 +69,13 @@ auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto Window::on_close() -> int
+auto Window::on_close(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int
 {
     m_hwnd.reset();
 
     return 0;
 }
+
+auto Window::on_destroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int { return 0; }
 
 } // namespace glow::gui
