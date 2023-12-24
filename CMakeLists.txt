@@ -43,37 +43,35 @@ option(
     OFF
 )
 
-include(cmake/common.cmake)
+include(CMake/Common.cmake)
 
 include(FetchContent)
-# include(cmake/curl.cmake)
-include(cmake/sqlite.cmake)
-include(cmake/json.cmake)
-include(cmake/toml.cmake)
-include(cmake/wil.cmake)
-include(cmake/cppwinrt.cmake)
-include(cmake/webview2.cmake)
+# include(CMake/CURL.cmake)
+include(CMake/SQLite.cmake)
+include(CMake/JSON.cmake)
+include(CMake/TOML.cmake)
+include(CMake/WIL.cmake)
+include(CMake/CPPWinRT.cmake)
+include(CMake/WebView2.cmake)
 
-include(cmake/buildcppwinrt.cmake)
+include(CMake/BuildCPPWinRT.cmake)
 
-add_subdirectory(sqlite)
-
-add_subdirectory(glow)
+add_subdirectory(Glow)
 
 if(GLOW_EXAMPLES)
-    add_subdirectory(examples)
+    add_subdirectory(Examples)
 endif()
 
 if(GLOW_TESTING)
     add_subdirectory(
-        testing
+        Tests
         EXCLUDE_FROM_ALL
     )
 endif()
 
 if(GLOW_ICONCONVERTER)
     add_subdirectory(
-        tools/IconConverter
+        Tools/IconConverter
         EXCLUDE_FROM_ALL
     )
 endif()

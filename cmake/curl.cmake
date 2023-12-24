@@ -4,6 +4,11 @@ if(GLOW_LOCAL_LIBS)
         "$ENV{LIBRARIES}/curl"
         curl_SOURCE_DIR
     )
+
+    add_subdirectory(
+        ${curl_SOURCE_DIR}
+        CURL
+    )
 else()
     FetchContent_Declare(
         curl

@@ -7,7 +7,7 @@ if(GLOW_LOCAL_LIBS)
 
     add_subdirectory(
         ${toml_SOURCE_DIR}
-        toml
+        TOML
     )
 else()
     FetchContent_Declare(

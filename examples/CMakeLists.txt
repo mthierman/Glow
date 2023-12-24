@@ -8,7 +8,7 @@ target_sources(
     PRIVATE App/App.cxx
             App/App.hxx
             App/Window.hxx
-            ${PROJECT_SOURCE_DIR}/data/glow.manifest
+            ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
 target_link_libraries(
@@ -22,7 +22,7 @@ add_executable(Console)
 target_sources(
     Console
     PRIVATE Console/Console.cxx
-            ${PROJECT_SOURCE_DIR}/data/glow.manifest
+            ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
 target_link_libraries(

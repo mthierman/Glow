@@ -3,7 +3,7 @@ add_executable(IconConverter)
 target_sources(
     IconConverter
     PRIVATE IconConverter.cxx
-            ${PROJECT_SOURCE_DIR}/data/glow.manifest
+            ${PROJECT_SOURCE_DIR}/Data/glow.manifest
     PRIVATE FILE_SET
             HEADERS
             FILES

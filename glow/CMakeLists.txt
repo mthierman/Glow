@@ -7,8 +7,8 @@ add_library(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/config/glow.hxx.in
-    ${PROJECT_BINARY_DIR}/include/config/glow.hxx
+    ${PROJECT_SOURCE_DIR}/Config/glow.hxx.in
+    ${CMAKE_CURRENT_BINARY_DIR}/Include/config/glow.hxx
 )
 
 target_sources(
@@ -25,9 +25,9 @@ target_sources(
            HEADERS
            BASE_DIRS
            ${CMAKE_CURRENT_SOURCE_DIR}
-           ${PROJECT_BINARY_DIR}/include
+           ${CMAKE_CURRENT_BINARY_DIR}/Include
            FILES
-           ${PROJECT_BINARY_DIR}/include/config/glow.hxx
+           ${CMAKE_CURRENT_BINARY_DIR}/Include/config/glow.hxx
            console/console.hxx
            filesystem/database.hxx
            filesystem/filesystem.hxx

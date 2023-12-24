@@ -7,7 +7,7 @@ if(GLOW_LOCAL_LIBS)
 
     add_subdirectory(
         ${json_SOURCE_DIR}
-        json
+        JSON
     )
 else()
     FetchContent_Declare(
