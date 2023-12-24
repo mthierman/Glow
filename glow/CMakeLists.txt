@@ -1,9 +1,9 @@
-add_library(glow)
+add_library(Glow)
 
 add_library(
     glow::glow
     ALIAS
-    glow
+    Glow
 )
 
 configure_file(
@@ -12,7 +12,7 @@ configure_file(
 )
 
 target_sources(
-    glow
+    Glow
     PRIVATE console/console.cxx
             filesystem/database.cxx
             filesystem/filesystem.cxx
@@ -39,7 +39,7 @@ target_sources(
 )
 
 target_include_directories(
-    glow
+    Glow
     PUBLIC ${webview2_SOURCE_DIR}/build/native/include-winrt
            ${webview2_SOURCE_DIR}/build/native/include
            ${wil_SOURCE_DIR}/include
@@ -49,13 +49,13 @@ target_include_directories(
 )
 
 target_link_directories(
-    glow
+    Glow
     PUBLIC
     ${webview2_SOURCE_DIR}/build/native/x64
 )
 
 target_link_libraries(
-    glow
+    Glow
     PRIVATE glow::flags
     PUBLIC glow::features
            glow::definitions
@@ -69,6 +69,6 @@ target_link_libraries(
 )
 
 target_compile_definitions(
-    glow
+    Glow
     PUBLIC NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
 )

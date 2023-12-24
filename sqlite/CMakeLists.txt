@@ -1,13 +1,13 @@
-add_library(sqlite)
+add_library(SQLite)
 
 add_library(
     sqlite::sqlite
     ALIAS
-    sqlite
+    SQLite
 )
 
 target_sources(
-    sqlite
+    SQLite
     PRIVATE ${sqlite_SOURCE_DIR}/sqlite3.c
     PUBLIC FILE_SET
            HEADERS
@@ -18,7 +18,7 @@ target_sources(
 )
 
 target_link_libraries(
-    sqlite
+    SQLite
     PRIVATE glow::features
             glow::flags
 )
