@@ -60,18 +60,18 @@ add_subdirectory(sqlite)
 
 add_subdirectory(glow)
 
-if(ENABLE_GLOW_EXAMPLES)
+if(GLOW_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(ENABLE_GLOW_TESTING)
+if(GLOW_TESTING)
     add_subdirectory(
         testing
         EXCLUDE_FROM_ALL
     )
 endif()
 
-if(ENABLE_GLOW_ICONCONVERTER)
+if(GLOW_ICONCONVERTER)
     add_subdirectory(
         tools/IconConverter
         EXCLUDE_FROM_ALL
