@@ -11,7 +11,7 @@ set(WIL
     Microsoft.Windows.ImplementationLibrary
 )
 set(WIL_VER
-    1.0.231028.1
+    1.0.231216.1
 )
 set(CPPWINRT
     Microsoft.Windows.CppWinRT
