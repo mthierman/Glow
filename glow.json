@@ -1,15 +1,15 @@
 {
     "NAME": "Glow",
     "VERSION": "0.0.1",
-    "WEBVIEW": "Microsoft.Web.WebView2",
-    "WEBVIEW_VER": "1.0.2151.40",
+    "WEBVIEW2": "Microsoft.Web.WebView2",
+    "WEBVIEW2_VER": "1.0.2210.55",
     "CPPWINRT": "Microsoft.Windows.CppWinRT",
     "CPPWINRT_VER": "2.0.230706.1",
     "WIL": "Microsoft.Windows.ImplementationLibrary",
-    "WIL_VER": "1.0.231028.1",
-    "URL_WIL": "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231028.1.tar.gz",
+    "WIL_VER": "1.0.231216.1",
+    "URL_WIL": "https://github.com/microsoft/wil/archive/refs/tags/v1.0.231216.1.tar.gz",
     "URL_NLOHMANN_JSON": "https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz",
     "URL_MARZER_TOML": "https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz",
     "URL_SQLITE": "https://www.sqlite.org/2023/sqlite-amalgamation-3440200.zip",
-    "URL_CURL": "https://github.com/curl/curl/releases/download/curl-8_4_0/curl-8.4.0.tar.xz"
+    "URL_CURL": "https://github.com/curl/curl/releases/download/curl-8_5_0/curl-8.5.0.tar.xz"
 }
