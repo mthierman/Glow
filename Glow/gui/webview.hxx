@@ -38,7 +38,7 @@ struct WebView2
     virtual auto on_close() -> int;
     virtual auto on_size() -> int;
 
-    auto navigate(std::string_view url) -> void;
+    auto navigate(std::string url) -> void;
     auto post_json(const json jsonMessage) -> void;
 
     auto source_changed() -> void;

@@ -165,9 +165,9 @@ auto WebView2::on_size() -> int
     return 0;
 }
 
-auto WebView2::navigate(std::string_view url) -> void
+auto WebView2::navigate(std::string url) -> void
 {
-    auto wideUrl{glow::text::widen(url.data())};
+    auto wideUrl{glow::text::widen(url)};
     if (m_core20) m_core20->Navigate(wideUrl.c_str());
 }
 
@@ -280,8 +280,9 @@ auto WebView2::initialize() -> void
 {
     if (!m_initialized)
     {
-        SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
         m_initialized = true;
+        SendMessageA(m_hwndParent.get(), WM_NOTIFY, 0, 0);
+        SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
     }
 }
 
