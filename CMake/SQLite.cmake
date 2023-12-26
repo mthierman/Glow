@@ -4,8 +4,6 @@ if(GLOW_LOCAL_LIBS)
         "$ENV{LIBRARIES}/sqlite-amalgamation-3440200"
         sqlite_SOURCE_DIR
     )
-
-    add_subdirectory(SQLite)
 else()
     FetchContent_Declare(
         sqlite
@@ -14,3 +12,5 @@ else()
 
     FetchContent_MakeAvailable(sqlite)
 endif()
+
+add_subdirectory(SQLite)
