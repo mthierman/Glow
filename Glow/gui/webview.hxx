@@ -12,6 +12,7 @@
 #include <winrt/Windows.Foundation.h>
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
+#include <wil/resource.h>
 
 #include <nlohmann/json.hpp>
 
@@ -47,6 +48,7 @@ struct WebView2
     auto accelerator_key_pressed() -> void;
     auto favicon_changed() -> void;
     auto document_title_changed() -> void;
+    auto frame_navigation_starting() -> void;
 
     auto initialize() -> void;
 

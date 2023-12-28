@@ -51,12 +51,17 @@ template <typename T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam
 auto message_loop() -> void;
 
 auto check_theme() -> bool;
+
 auto set_darkmode(HWND hwnd) -> bool;
 auto set_darktitle() -> bool;
 auto allow_dark_mode(HWND hwnd, bool enable) -> void;
+
 auto window_cloak(HWND hwnd) -> bool;
 auto window_uncloak(HWND hwnd) -> bool;
-auto window_mica(HWND hwnd) -> bool;
+
+auto set_caption_color(HWND hwnd, bool enabled) -> void;
+auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void;
+
 auto window_maximize(HWND hwnd) -> bool;
 auto window_fullscreen(HWND hwnd) -> bool;
 auto window_topmost(HWND hwnd) -> bool;

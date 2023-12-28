@@ -119,6 +119,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
                     accelerator_key_pressed();
                     favicon_changed();
                     document_title_changed();
+                    frame_navigation_starting();
                 }
 
                 return S_OK;
@@ -270,6 +271,24 @@ auto WebView2::document_title_changed() -> void
             {
                 // document_title_changed_handler();
 
+                return S_OK;
+            })
+            .Get(),
+        &token));
+}
+
+auto WebView2::frame_navigation_starting() -> void
+{
+    EventRegistrationToken token;
+
+    winrt::check_hresult(m_core20->add_FrameNavigationStarting(
+        Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
+            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+            {
+                winrt::com_ptr<ICoreWebView2NavigationStartingEventArgs3> navigationStartArgs;
+                // document_title_changed_handler();
+                args->QueryInterface(IID_PPV_ARGS(&navigationStartArgs));
+                navigationStartArgs->put_AdditionalAllowedFrameAncestors(L"*");
                 return S_OK;
             })
             .Get(),

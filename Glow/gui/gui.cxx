@@ -118,18 +118,37 @@ auto window_uncloak(HWND hwnd) -> bool
     return true;
 }
 
-auto window_mica(HWND hwnd) -> bool
+auto set_caption_color(HWND hwnd, bool enabled) -> void
 {
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    auto backdrop{DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW};
+    if (enabled)
+    {
+        auto caption_color{DWMWA_COLOR_DEFAULT};
+        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &caption_color,
+                                         sizeof(caption_color))))
+            return;
+    }
 
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return false;
+    else
+    {
+        auto caption_color{DWMWA_COLOR_NONE};
+        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &caption_color,
+                                         sizeof(caption_color))))
+            return;
+    }
+}
 
-    if (FAILED(
-            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
-        return false;
+auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
+{
+    // MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
 
-    return true;
+    // if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
+
+    MARGINS m{-1};
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType,
+                                     sizeof(&backdropType))))
+        return;
 }
 
 auto window_maximize(HWND hwnd) -> bool
