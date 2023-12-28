@@ -158,11 +158,8 @@ auto set_border_color(HWND hwnd, bool enabled) -> void
 
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
 {
-    // MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-
-    // if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
-
-    MARGINS m{-1};
+    // MARGINS m{-1};
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
     if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
 
     if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType,
