@@ -53,10 +53,10 @@ auto WebView2::create() -> void
                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
-    create_environment();
+    glow::gui::show_normal(m_hwnd.get());
+    // glow::gui::window_cloak(m_hwnd.get());
 
-    // glow::gui::show_normal(m_hwnd.get());
-    ShowWindow(m_hwnd.get(), SW_SHOWNORMAL);
+    create_environment();
 }
 
 auto WebView2::create_environment() -> void
@@ -300,8 +300,8 @@ auto WebView2::initialize() -> void
     if (!m_initialized)
     {
         m_initialized = true;
-        SendMessageA(m_hwndParent.get(), WM_NOTIFY, 0, 0);
         SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
+        // glow::gui::window_uncloak(m_hwnd.get());
     }
 }
 

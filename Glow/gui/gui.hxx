@@ -48,6 +48,13 @@ template <typename T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam
     return self;
 }
 
+template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
+{
+    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
+
+    return self;
+}
+
 auto message_loop() -> void;
 
 auto check_theme() -> bool;
