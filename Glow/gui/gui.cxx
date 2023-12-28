@@ -137,6 +137,25 @@ auto set_caption_color(HWND hwnd, bool enabled) -> void
     }
 }
 
+auto set_border_color(HWND hwnd, bool enabled) -> void
+{
+    if (enabled)
+    {
+        auto border_color{DWMWA_COLOR_DEFAULT};
+        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &border_color,
+                                         sizeof(border_color))))
+            return;
+    }
+
+    else
+    {
+        auto border_color{DWMWA_COLOR_NONE};
+        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &border_color,
+                                         sizeof(border_color))))
+            return;
+    }
+}
+
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
 {
     // MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};

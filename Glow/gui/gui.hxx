@@ -60,6 +60,7 @@ auto window_cloak(HWND hwnd) -> bool;
 auto window_uncloak(HWND hwnd) -> bool;
 
 auto set_caption_color(HWND hwnd, bool enabled) -> void;
+auto set_border_color(HWND hwnd, bool enabled) -> void;
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void;
 
 auto window_maximize(HWND hwnd) -> bool;
