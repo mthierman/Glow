@@ -15,8 +15,6 @@
 #include <string>
 #include <vector>
 
-#include <winrt/Windows.Foundation.h>
-
 #include <wil/resource.h>
 
 namespace glow::filesystem

@@ -81,7 +81,6 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
             {
                 if (controller)
                 {
-                    // m_controller.attach(controller);
                     m_controller = controller;
                     m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
 
