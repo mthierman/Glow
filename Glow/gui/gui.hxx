@@ -59,18 +59,16 @@ template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
 
 auto message_loop() -> void;
 
-auto check_theme() -> bool;
+auto is_dark() -> bool;
 
-auto set_darkmode(HWND hwnd) -> bool;
-auto set_darktitle() -> bool;
-auto allow_dark_mode(HWND hwnd, bool enable) -> void;
-
-auto window_cloak(HWND hwnd) -> bool;
-auto window_uncloak(HWND hwnd) -> bool;
-
+auto set_theme(HWND hwnd) -> void;
+auto set_window_cloak(HWND hwnd, bool enabled) -> void;
 auto set_caption_color(HWND hwnd, bool enabled) -> void;
 auto set_border_color(HWND hwnd, bool enabled) -> void;
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void;
+
+auto set_preferred_app_mode() -> void;
+auto allow_dark_mode(HWND hwnd, bool enable) -> void;
 
 auto window_maximize(HWND hwnd) -> bool;
 auto window_fullscreen(HWND hwnd) -> bool;

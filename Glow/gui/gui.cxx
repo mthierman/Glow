@@ -30,7 +30,7 @@ auto message_loop() -> void
     return;
 }
 
-auto check_theme() -> bool
+auto is_dark() -> bool
 {
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
@@ -40,24 +40,80 @@ auto check_theme() -> bool
     return false;
 }
 
-auto set_darkmode(HWND hwnd) -> bool
+auto set_theme(HWND hwnd) -> void
 {
-    auto dark{TRUE};
-    auto light{FALSE};
-
-    if (check_theme())
+    if (is_dark())
     {
-        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
-
-        return true;
+        auto useImmersiveDarkMode{TRUE};
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useImmersiveDarkMode,
+                              sizeof(useImmersiveDarkMode));
     }
 
-    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &light, sizeof(light));
-
-    return false;
+    else
+    {
+        auto useImmersiveDarkMode{FALSE};
+        DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &useImmersiveDarkMode,
+                              sizeof(useImmersiveDarkMode));
+    }
 }
 
-auto set_darktitle() -> bool
+auto set_window_cloak(HWND hwnd, bool enabled) -> void
+{
+    if (enabled)
+    {
+        auto cloak{TRUE};
+        DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak));
+    }
+
+    else
+    {
+        auto cloak{FALSE};
+        DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak));
+    }
+}
+
+auto set_caption_color(HWND hwnd, bool enabled) -> void
+{
+    if (enabled)
+    {
+        auto captionColor{DWMWA_COLOR_DEFAULT};
+        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &captionColor, sizeof(captionColor));
+    }
+
+    else
+    {
+        auto captionColor{DWMWA_COLOR_NONE};
+        DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &captionColor, sizeof(captionColor));
+    }
+}
+
+auto set_border_color(HWND hwnd, bool enabled) -> void
+{
+    if (enabled)
+    {
+        auto borderColor{DWMWA_COLOR_DEFAULT};
+        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &borderColor, sizeof(borderColor));
+    }
+
+    else
+    {
+        auto borderColor{DWMWA_COLOR_NONE};
+        DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &borderColor, sizeof(borderColor));
+    }
+}
+
+auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
+{
+    // MARGINS m{-1};
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
+
+    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType,
+                                     sizeof(&backdropType))))
+        return;
+}
+
+auto set_preferred_app_mode() -> void
 {
     enum class PreferredAppMode
     {
@@ -67,22 +123,22 @@ auto set_darktitle() -> bool
         ForceLight,
         Max
     };
-
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
 
     auto uxtheme{LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-    if (!uxtheme) return false;
+    if (uxtheme)
+    {
+        auto ord135{GetProcAddress(uxtheme, MAKEINTRESOURCEA(135))};
 
-    auto ord135{GetProcAddress(uxtheme, MAKEINTRESOURCEA(135))};
+        if (ord135)
+        {
+            auto SetPreferredAppMode{std::bit_cast<fnSetPreferredAppMode>(ord135)};
+            SetPreferredAppMode(PreferredAppMode::AllowDark);
+        }
 
-    if (!ord135) return false;
-
-    auto SetPreferredAppMode{std::bit_cast<fnSetPreferredAppMode>(ord135)};
-    SetPreferredAppMode(PreferredAppMode::AllowDark);
-    FreeLibrary(uxtheme);
-
-    return true;
+        FreeLibrary(uxtheme);
+    }
 }
 
 auto allow_dark_mode(HWND hwnd, bool enable) -> void
@@ -98,73 +154,6 @@ auto allow_dark_mode(HWND hwnd, bool enable) -> void
     // auto _AllowDarkModeForWindow{std::bit_cast<fnAllowDarkModeForWindow>(ord133)};
     AllowDarkModeForWindow(hwnd, enable);
     FreeLibrary(uxtheme);
-}
-
-auto window_cloak(HWND hwnd) -> bool
-{
-    auto cloak{TRUE};
-
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak)))) return false;
-
-    return true;
-}
-
-auto window_uncloak(HWND hwnd) -> bool
-{
-    auto uncloak{FALSE};
-
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &uncloak, sizeof(uncloak)))) return false;
-
-    return true;
-}
-
-auto set_caption_color(HWND hwnd, bool enabled) -> void
-{
-    if (enabled)
-    {
-        auto caption_color{DWMWA_COLOR_DEFAULT};
-        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &caption_color,
-                                         sizeof(caption_color))))
-            return;
-    }
-
-    else
-    {
-        auto caption_color{DWMWA_COLOR_NONE};
-        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &caption_color,
-                                         sizeof(caption_color))))
-            return;
-    }
-}
-
-auto set_border_color(HWND hwnd, bool enabled) -> void
-{
-    if (enabled)
-    {
-        auto border_color{DWMWA_COLOR_DEFAULT};
-        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &border_color,
-                                         sizeof(border_color))))
-            return;
-    }
-
-    else
-    {
-        auto border_color{DWMWA_COLOR_NONE};
-        if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &border_color,
-                                         sizeof(border_color))))
-            return;
-    }
-}
-
-auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
-{
-    // MARGINS m{-1};
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
-
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType,
-                                     sizeof(&backdropType))))
-        return;
 }
 
 auto window_maximize(HWND hwnd) -> bool
@@ -247,26 +236,11 @@ auto window_topmost(HWND hwnd) -> bool
     }
 }
 
-auto show_normal(HWND hwnd) -> void
-{
-    glow::gui::window_cloak(hwnd);
-    ShowWindow(hwnd, SW_SHOWNORMAL);
-    glow::gui::window_uncloak(hwnd);
-}
+auto show_normal(HWND hwnd) -> void { ShowWindow(hwnd, SW_SHOWNORMAL); }
 
-auto show(HWND hwnd) -> void
-{
-    glow::gui::window_cloak(hwnd);
-    ShowWindow(hwnd, SW_SHOW);
-    glow::gui::window_uncloak(hwnd);
-}
+auto show(HWND hwnd) -> void { ShowWindow(hwnd, SW_SHOW); }
 
-auto hide(HWND hwnd) -> void
-{
-    glow::gui::window_cloak(hwnd);
-    ShowWindow(hwnd, SW_HIDE);
-    glow::gui::window_uncloak(hwnd);
-}
+auto hide(HWND hwnd) -> void { ShowWindow(hwnd, SW_HIDE); }
 
 auto set_title(HWND hwnd, std::string title) -> void { SetWindowTextA(hwnd, title.c_str()); }
 
