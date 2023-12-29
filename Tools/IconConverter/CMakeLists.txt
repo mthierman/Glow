@@ -14,5 +14,6 @@ target_link_libraries(
     IconConverter
     PRIVATE glow::glow
             glow::flags
+            glow::definitions
             windowscodecs.lib
 )

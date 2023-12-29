@@ -13,6 +13,7 @@ target_link_libraries(
     Tests
     PRIVATE glow::glow
             glow::flags
+            glow::definitions
 )
 
 add_test(
@@ -31,6 +32,7 @@ target_link_libraries(
     Database
     PRIVATE glow::glow
             glow::flags
+            glow::definitions
 )
 
 add_test(

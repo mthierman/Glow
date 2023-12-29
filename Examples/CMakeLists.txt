@@ -15,6 +15,7 @@ target_link_libraries(
     App
     PRIVATE glow::glow
             glow::flags
+            glow::definitions
 )
 
 add_executable(Console)
@@ -29,6 +30,7 @@ target_link_libraries(
     Console
     PRIVATE glow::glow
             glow::flags
+            glow::definitions
 )
 
 add_custom_command(
