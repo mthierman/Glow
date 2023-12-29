@@ -27,7 +27,7 @@ using json = nlohmann::json;
 
 struct WebView2
 {
-    WebView2(HWND parentHwnd, int64_t id);
+    WebView2(std::string, HWND parentHwnd, int64_t id);
     virtual ~WebView2();
 
     auto create() -> void;
@@ -63,6 +63,7 @@ struct WebView2
     inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
 
+    std::string m_url;
     wil::unique_hwnd m_hwndParent;
     int64_t m_id{};
     bool m_initialized{false};

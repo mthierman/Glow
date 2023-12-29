@@ -11,7 +11,7 @@
 namespace glow::text
 {
 
-auto narrow(const std::wstring& utf16) -> std::string
+auto narrow(std::wstring utf16) -> std::string
 {
     constexpr int intMax = std::numeric_limits<int>::max();
     if (utf16.length() > static_cast<size_t>(intMax))
@@ -36,7 +36,7 @@ auto narrow(const std::wstring& utf16) -> std::string
     else return {};
 }
 
-auto widen(const std::string& utf8) -> std::wstring
+auto widen(std::string utf8) -> std::wstring
 {
     constexpr int intMax = std::numeric_limits<int>::max();
     if (utf8.length() > static_cast<size_t>(intMax))
@@ -59,7 +59,7 @@ auto widen(const std::string& utf8) -> std::wstring
     else return {};
 }
 
-auto randomize(const std::string& string) -> std::string
+auto randomize(std::string string) -> std::string
 {
     std::random_device rd;
     std::mt19937 mt(rd());

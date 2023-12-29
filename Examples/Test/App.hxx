@@ -22,8 +22,8 @@ struct App final : public MainWindow
 
     auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_size() -> int;
-    
-    Browser browser{m_hwnd.get(), 1};
+
+    Browser browser{"https://www.google.com/", m_hwnd.get(), 1};
     // glow::gui::WebView2 wv{m_hwnd.get(), 1};
 };
 

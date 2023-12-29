@@ -11,8 +11,9 @@
 namespace glow::gui
 {
 
-WebView2::WebView2(HWND parentHwnd, int64_t id)
+WebView2::WebView2(std::string url, HWND parentHwnd, int64_t id)
 {
+    m_url = url;
     m_hwndParent.reset(parentHwnd);
     m_id = id;
     create();
@@ -112,7 +113,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
                     m_settings8->put_IsWebMessageEnabled(true);
                     m_settings8->put_IsZoomControlEnabled(true);
 
-                    m_core20->Navigate(L"https://www.google.com/");
+                    m_core20->Navigate(glow::text::widen(m_url).c_str());
 
                     navigation_completed();
                     accelerator_key_pressed();
