@@ -38,7 +38,7 @@ auto is_dark() -> bool
     return false;
 }
 
-auto set_theme(HWND hwnd) -> void
+auto use_immersive_dark_mode(HWND hwnd) -> void
 {
     if (is_dark())
     {
@@ -55,9 +55,20 @@ auto set_theme(HWND hwnd) -> void
     }
 }
 
-auto set_window_cloak(HWND hwnd, bool enabled) -> void
+auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void
 {
-    if (enabled)
+    // MARGINS m{-1};
+    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
+    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
+
+    if (FAILED(
+            DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop))))
+        return;
+}
+
+auto cloak(HWND hwnd, bool enable) -> void
+{
+    if (enable)
     {
         auto cloak{TRUE};
         DwmSetWindowAttribute(hwnd, DWMWA_CLOAK, &cloak, sizeof(cloak));
@@ -70,9 +81,11 @@ auto set_window_cloak(HWND hwnd, bool enabled) -> void
     }
 }
 
-auto set_caption_color(HWND hwnd, bool enabled) -> void
+auto make_colorref(int r, int g, int b) -> COLORREF { return RGB(r, g, b); }
+
+auto enable_caption_color(HWND hwnd, bool enable) -> void
 {
-    if (enabled)
+    if (enable)
     {
         auto captionColor{DWMWA_COLOR_DEFAULT};
         DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &captionColor, sizeof(captionColor));
@@ -85,9 +98,9 @@ auto set_caption_color(HWND hwnd, bool enabled) -> void
     }
 }
 
-auto set_border_color(HWND hwnd, bool enabled) -> void
+auto enable_border_color(HWND hwnd, bool enable) -> void
 {
-    if (enabled)
+    if (enable)
     {
         auto borderColor{DWMWA_COLOR_DEFAULT};
         DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &borderColor, sizeof(borderColor));
@@ -100,15 +113,25 @@ auto set_border_color(HWND hwnd, bool enabled) -> void
     }
 }
 
-auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void
+auto set_caption_color(HWND hwnd, COLORREF color) -> void
 {
-    // MARGINS m{-1};
-    MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    if (FAILED(DwmExtendFrameIntoClientArea(hwnd, &m))) return;
+    DwmSetWindowAttribute(hwnd, DWMWA_CAPTION_COLOR, &color, sizeof(color));
+}
 
-    if (FAILED(DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType,
-                                     sizeof(&backdropType))))
-        return;
+auto set_border_color(HWND hwnd, COLORREF color) -> void
+{
+    DwmSetWindowAttribute(hwnd, DWMWA_BORDER_COLOR, &color, sizeof(color));
+}
+
+auto reset_text_color(HWND hwnd) -> void
+{
+    auto textColor{DWMWA_COLOR_DEFAULT};
+    DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
+}
+
+auto set_text_color(HWND hwnd, COLORREF color) -> void
+{
+    DwmSetWindowAttribute(hwnd, DWMWA_TEXT_COLOR, &color, sizeof(color));
 }
 
 auto set_preferred_app_mode() -> void

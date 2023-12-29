@@ -61,11 +61,20 @@ auto message_loop() -> void;
 
 auto is_dark() -> bool;
 
-auto set_theme(HWND hwnd) -> void;
-auto set_window_cloak(HWND hwnd, bool enabled) -> void;
-auto set_caption_color(HWND hwnd, bool enabled) -> void;
-auto set_border_color(HWND hwnd, bool enabled) -> void;
-auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdropType) -> void;
+auto use_immersive_dark_mode(HWND hwnd) -> void;
+auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
+auto cloak(HWND hwnd, bool enable) -> void;
+
+auto make_colorref(int r, int g, int b) -> COLORREF;
+
+auto enable_caption_color(HWND hwnd, bool enable) -> void;
+auto enable_border_color(HWND hwnd, bool enable) -> void;
+
+auto set_caption_color(HWND hwnd, COLORREF color) -> void;
+auto set_border_color(HWND hwnd, COLORREF color) -> void;
+
+auto reset_text_color(HWND hwnd) -> void;
+auto set_text_color(HWND hwnd, COLORREF color) -> void;
 
 auto set_preferred_app_mode() -> void;
 auto allow_dark_mode(HWND hwnd, bool enable) -> void;
