@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <dwmapi.h>
+#include <gdiplus.h>
 #include <ShlObj.h>
 
 #include <algorithm>
@@ -32,6 +33,15 @@ struct Bounds
     int y{};
     int width{};
     int height{};
+};
+
+struct GdiPlus
+{
+    GdiPlus();
+    ~GdiPlus();
+
+    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
 };
 
 template <typename T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)
@@ -60,6 +70,10 @@ template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
 
 auto message_loop() -> void;
 
+auto client_rect(HWND hwnd) -> RECT;
+auto window_rect(HWND hwnd) -> RECT;
+auto window_position(HWND hwnd) -> std::vector<int>;
+
 auto is_dark() -> bool;
 
 auto use_immersive_dark_mode(HWND hwnd) -> void;
@@ -68,6 +82,7 @@ auto cloak(HWND hwnd, bool enable) -> void;
 
 auto clamp_color(int value) -> int;
 auto make_colorref(int r, int g, int b) -> COLORREF;
+auto format_color(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
 
 auto enable_caption_color(HWND hwnd, bool enable) -> void;
 auto enable_border_color(HWND hwnd, bool enable) -> void;

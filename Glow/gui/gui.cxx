@@ -11,6 +11,10 @@
 namespace glow::gui
 {
 
+GdiPlus::GdiPlus() { Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr); }
+
+GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(gdiplusToken); }
+
 auto message_loop() -> void
 {
     MSG msg{};
@@ -26,6 +30,30 @@ auto message_loop() -> void
             DispatchMessageA(&msg);
         }
     }
+}
+
+auto client_rect(HWND hwnd) -> RECT
+{
+    RECT rect{};
+    GetClientRect(hwnd, &rect);
+
+    return rect;
+}
+
+auto window_rect(HWND hwnd) -> RECT
+{
+    RECT rect{};
+    GetWindowRect(hwnd, &rect);
+
+    return rect;
+}
+
+auto window_position(HWND hwnd) -> std::vector<int>
+{
+    auto rect{window_rect(hwnd)};
+
+    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
+                            (rect.bottom - rect.top)};
 }
 
 auto is_dark() -> bool
@@ -86,6 +114,17 @@ auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
 auto make_colorref(int r, int g, int b) -> COLORREF
 {
     return RGB(clamp_color(r), clamp_color(g), clamp_color(b));
+}
+
+std::string format_color(winrt::Windows::UI::ViewManagement::UIColorType colorType)
+{
+    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
+    auto accent{settings.GetColorValue(colorType)};
+
+    auto formatted{
+        std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)};
+
+    return formatted;
 }
 
 auto enable_caption_color(HWND hwnd, bool enable) -> void
