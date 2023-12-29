@@ -54,7 +54,6 @@ auto WebView2::create() -> void
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
     glow::gui::show_normal(m_hwnd.get());
-    // glow::gui::window_cloak(m_hwnd.get());
 
     create_environment();
 }
@@ -82,18 +81,19 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
             {
                 if (controller)
                 {
-                    m_controller.attach(controller);
-                    m_controller4 = m_controller.as<ICoreWebView2Controller4>();
+                    // m_controller.attach(controller);
+                    m_controller = controller;
+                    m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
 
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
                     m_controller4->put_DefaultBackgroundColor(bgColor);
 
                     winrt::check_hresult(m_controller->get_CoreWebView2(m_core.put()));
-                    m_core20 = m_core.as<ICoreWebView2_20>();
+                    m_core20 = m_core.try_query<ICoreWebView2_20>();
 
                     winrt::check_hresult(m_core20->get_Settings(m_settings.put()));
 
-                    m_settings8 = m_settings.as<ICoreWebView2Settings8>();
+                    m_settings8 = m_settings.try_query<ICoreWebView2Settings8>();
 
                     m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
                     m_settings8->put_AreDefaultContextMenusEnabled(true);
@@ -301,7 +301,6 @@ auto WebView2::initialize() -> void
     {
         m_initialized = true;
         SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
-        // glow::gui::window_uncloak(m_hwnd.get());
     }
 }
 

@@ -8,11 +8,12 @@
 
 #pragma once
 
+#include <wil/com.h>
+#include <wil/resource.h>
 #include <wrl.h>
-#include <winrt/Windows.Foundation.h>
+
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
-#include <wil/resource.h>
 
 #include <nlohmann/json.hpp>
 
@@ -66,13 +67,13 @@ struct WebView2
     int64_t m_id{};
     bool m_initialized{false};
 
-    winrt::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
-    winrt::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
-    winrt::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
-    winrt::com_ptr<ICoreWebView2> m_core{nullptr};
-    winrt::com_ptr<ICoreWebView2_20> m_core20{nullptr};
-    winrt::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
-    winrt::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
+    wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+    wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+    wil::com_ptr<ICoreWebView2> m_core{nullptr};
+    wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
+    wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+    wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
