@@ -81,7 +81,12 @@ auto cloak(HWND hwnd, bool enable) -> void
     }
 }
 
-auto make_colorref(int r, int g, int b) -> COLORREF { return RGB(r, g, b); }
+auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
+
+auto make_colorref(int r, int g, int b) -> COLORREF
+{
+    return RGB(clamp_color(r), clamp_color(g), clamp_color(b));
+}
 
 auto enable_caption_color(HWND hwnd, bool enable) -> void
 {

@@ -12,6 +12,7 @@
 #include <dwmapi.h>
 #include <ShlObj.h>
 
+#include <algorithm>
 #include <bit>
 #include <memory>
 
@@ -65,6 +66,7 @@ auto use_immersive_dark_mode(HWND hwnd) -> void;
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
 auto cloak(HWND hwnd, bool enable) -> void;
 
+auto clamp_color(int value) -> int;
 auto make_colorref(int r, int g, int b) -> COLORREF;
 
 auto enable_caption_color(HWND hwnd, bool enable) -> void;
