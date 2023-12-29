@@ -60,7 +60,7 @@ auto WebView2::create() -> void
 
 auto WebView2::create_environment() -> void
 {
-    winrt::check_hresult(CreateCoreWebView2EnvironmentWithOptions(
+    CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
@@ -69,12 +69,12 @@ auto WebView2::create_environment() -> void
 
                 return S_OK;
             })
-            .Get()));
+            .Get());
 }
 
 auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 {
-    winrt::check_hresult(environment->CreateCoreWebView2Controller(
+    environment->CreateCoreWebView2Controller(
         m_hwnd.get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](HRESULT, ICoreWebView2Controller* controller) -> HRESULT
@@ -87,10 +87,10 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
                     m_controller4->put_DefaultBackgroundColor(bgColor);
 
-                    winrt::check_hresult(m_controller->get_CoreWebView2(m_core.put()));
+                    m_controller->get_CoreWebView2(m_core.put());
                     m_core20 = m_core.try_query<ICoreWebView2_20>();
 
-                    winrt::check_hresult(m_core20->get_Settings(m_settings.put()));
+                    m_core20->get_Settings(m_settings.put());
 
                     m_settings8 = m_settings.try_query<ICoreWebView2Settings8>();
 
@@ -123,7 +123,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 
                 return S_OK;
             })
-            .Get()));
+            .Get());
 }
 
 auto CALLBACK WebView2::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -181,7 +181,7 @@ auto WebView2::source_changed() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_SourceChanged(
+    m_core20->add_SourceChanged(
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
             {
@@ -190,14 +190,14 @@ auto WebView2::source_changed() -> void
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::navigation_completed() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_NavigationCompleted(
+    m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
@@ -207,14 +207,14 @@ auto WebView2::navigation_completed() -> void
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::web_message_received() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_WebMessageReceived(
+    m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
@@ -224,14 +224,14 @@ auto WebView2::web_message_received() -> void
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::accelerator_key_pressed() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_controller4->add_AcceleratorKeyPressed(
+    m_controller4->add_AcceleratorKeyPressed(
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
@@ -241,30 +241,29 @@ auto WebView2::accelerator_key_pressed() -> void
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::favicon_changed() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_FaviconChanged(
-        Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                // favicon_changed_handler();
+    m_core20->add_FaviconChanged(Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                     [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                     {
+                                         // favicon_changed_handler();
 
-                return S_OK;
-            })
-            .Get(),
-        &token));
+                                         return S_OK;
+                                     })
+                                     .Get(),
+                                 &token);
 }
 
 auto WebView2::document_title_changed() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_DocumentTitleChanged(
+    m_core20->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
@@ -273,25 +272,25 @@ auto WebView2::document_title_changed() -> void
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::frame_navigation_starting() -> void
 {
     EventRegistrationToken token;
 
-    winrt::check_hresult(m_core20->add_FrameNavigationStarting(
+    m_core20->add_FrameNavigationStarting(
         Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
-                winrt::com_ptr<ICoreWebView2NavigationStartingEventArgs3> navigationStartArgs;
+                wil::com_ptr<ICoreWebView2NavigationStartingEventArgs3> navigationStartArgs;
                 // document_title_changed_handler();
                 args->QueryInterface(IID_PPV_ARGS(&navigationStartArgs));
                 navigationStartArgs->put_AdditionalAllowedFrameAncestors(L"*");
                 return S_OK;
             })
             .Get(),
-        &token));
+        &token);
 }
 
 auto WebView2::initialize() -> void

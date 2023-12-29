@@ -8,9 +8,9 @@
 
 #pragma once
 
+#include <wrl.h>
 #include <wil/com.h>
 #include <wil/resource.h>
-#include <wrl.h>
 
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>

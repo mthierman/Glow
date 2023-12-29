@@ -18,7 +18,9 @@
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
+#include <wil/com.h>
 #include <wil/resource.h>
+#include <wrl.h>
 
 namespace glow::gui
 {
