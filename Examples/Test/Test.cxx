@@ -6,11 +6,15 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <gui/gui.hxx>
+#include "App.hxx"
 
 auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
     -> int
 {
+    App app;
+
+    app.browser.gui.create_environment(app.browser.m_hwnd.get());
+
     glow::gui::message_loop();
 
     return 0;

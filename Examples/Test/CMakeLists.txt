@@ -6,6 +6,8 @@ add_executable(
 target_sources(
     Test
     PRIVATE Test.cxx
+            App.hxx
+            Browser.hxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
