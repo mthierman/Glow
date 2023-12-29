@@ -59,6 +59,9 @@ auto main() -> int
     glow::logging::msgbox("msgbox() test");
     glow::logging::errorbox("errorbox() test");
 
+    auto url1{glow::text::widen("https://www.google.com/")};
+    auto url2{glow::text::narrow(L"https://www.google.com/")};
+
     settings s;
     json j = s;
     println("{}", j.dump());

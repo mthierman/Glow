@@ -23,6 +23,8 @@ auto narrow(std::wstring utf16) -> std::string
                                     utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
                                     nullptr, nullptr)};
 
+    utf8.reserve(length);
+
     if (length > 0)
     {
         if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
@@ -46,6 +48,8 @@ auto widen(std::string utf8) -> std::wstring
 
     auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
                                     static_cast<int>(utf8.length()), nullptr, 0)};
+
+    utf16.reserve(length);
 
     if (length > 0)
     {
