@@ -26,8 +26,6 @@ auto message_loop() -> void
             DispatchMessageA(&msg);
         }
     }
-
-    return;
 }
 
 auto is_dark() -> bool
