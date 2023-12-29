@@ -265,6 +265,12 @@ auto hide(HWND hwnd) -> void { ShowWindow(hwnd, SW_HIDE); }
 
 auto set_title(HWND hwnd, std::string title) -> void { SetWindowTextA(hwnd, title.c_str()); }
 
+auto set_icon(HWND hwnd, HICON hIcon) -> void
+{
+    SendMessageA(hwnd, WM_SETICON, ICON_SMALL, std::bit_cast<LPARAM>(hIcon));
+    SendMessageA(hwnd, WM_SETICON, ICON_BIG, std::bit_cast<LPARAM>(hIcon));
+}
+
 auto set_border(HWND hwnd, bool enabled) -> void
 {
     auto style{GetWindowLongPtrA(hwnd, GWL_STYLE)};
