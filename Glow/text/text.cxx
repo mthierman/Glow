@@ -23,7 +23,7 @@ auto narrow(std::wstring utf16) -> std::string
                                     utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
                                     nullptr, nullptr)};
 
-    utf8.reserve(length);
+    utf8.resize(length);
 
     if (length > 0)
     {
@@ -49,7 +49,7 @@ auto widen(std::string utf8) -> std::wstring
     auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
                                     static_cast<int>(utf8.length()), nullptr, 0)};
 
-    utf16.reserve(length);
+    utf16.resize(length);
 
     if (length > 0)
     {
