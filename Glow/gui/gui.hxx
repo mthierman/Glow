@@ -28,7 +28,7 @@
 namespace glow::gui
 {
 
-struct Bounds
+struct Position
 {
     int x{};
     int y{};
@@ -71,9 +71,9 @@ template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
 
 auto message_loop() -> void;
 
+auto rect_to_position(RECT rect) -> Position;
 auto client_rect(HWND hwnd) -> RECT;
 auto window_rect(HWND hwnd) -> RECT;
-auto window_position(HWND hwnd) -> std::vector<int>;
 
 auto is_dark() -> bool;
 

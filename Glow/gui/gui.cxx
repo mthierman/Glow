@@ -32,6 +32,18 @@ auto message_loop() -> void
     }
 }
 
+auto rect_to_position(RECT rect) -> Position
+{
+    Position p;
+
+    p.x = rect.left;
+    p.y = rect.top;
+    p.width = rect.right - rect.left;
+    p.height = rect.bottom - rect.top;
+
+    return p;
+}
+
 auto client_rect(HWND hwnd) -> RECT
 {
     RECT rect{};
@@ -46,14 +58,6 @@ auto window_rect(HWND hwnd) -> RECT
     GetWindowRect(hwnd, &rect);
 
     return rect;
-}
-
-auto window_position(HWND hwnd) -> std::vector<int>
-{
-    auto rect{window_rect(hwnd)};
-
-    return std::vector<int>{rect.left, rect.top, (rect.right - rect.left),
-                            (rect.bottom - rect.top)};
 }
 
 auto is_dark() -> bool

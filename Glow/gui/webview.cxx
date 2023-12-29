@@ -11,7 +11,7 @@
 namespace glow::gui
 {
 
-WebView2::WebView2(std::string url, HWND parentHwnd, int64_t id)
+WebView2::WebView2(HWND parentHwnd, int64_t id, std::string url)
 {
     m_url = url;
     m_hwndParent.reset(parentHwnd);
