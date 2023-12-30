@@ -50,4 +50,4 @@ add_custom_command(
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )
 
-add_subdirectory(Test)
+add_subdirectory(TestApp)

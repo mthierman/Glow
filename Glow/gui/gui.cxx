@@ -22,7 +22,7 @@ auto message_loop() -> int
 
     while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) return 1;
+        if (r == -1) return 1002;
 
         else
         {

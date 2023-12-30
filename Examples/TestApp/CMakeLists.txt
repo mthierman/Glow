@@ -1,18 +1,18 @@
 add_executable(
-    Test
+    TestApp
     WIN32
 )
 
 target_sources(
-    Test
-    PRIVATE Test.cxx
+    TestApp
+    PRIVATE TestApp.cxx
             App.hxx
             Browser.hxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
 target_link_libraries(
-    Test
+    TestApp
     PRIVATE glow::glow
             glow::flags
             glow::definitions

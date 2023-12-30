@@ -69,8 +69,3 @@ target_link_libraries(
            gdiplus.lib
            WebView2LoaderStatic.lib
 )
-
-target_compile_definitions(
-    Glow
-    PUBLIC NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
-)

@@ -16,6 +16,24 @@ target_compile_features(
 )
 
 add_library(
+    glow_definitions
+    INTERFACE
+)
+
+add_library(
+    glow::definitions
+    ALIAS
+    glow_definitions
+)
+
+target_compile_definitions(
+    glow_definitions
+    INTERFACE NOMINMAX
+              WIN32_LEAN_AND_MEAN
+              NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
+)
+
+add_library(
     glow_flags
     INTERFACE
 )
@@ -35,29 +53,14 @@ target_compile_options(
               /wd4189
               /bigobj
               /diagnostics:caret
-              /Zc:__cplusplus>
+              /Zc:__cplusplus
+              >
 )
 
 target_link_options(
     glow_flags
     INTERFACE
     $<$<CXX_COMPILER_ID:MSVC>:
-    /WX>
-)
-
-add_library(
-    glow_definitions
-    INTERFACE
-)
-
-add_library(
-    glow::definitions
-    ALIAS
-    glow_definitions
-)
-
-target_compile_definitions(
-    glow_definitions
-    INTERFACE NOMINMAX
-              WIN32_LEAN_AND_MEAN
+    /WX
+    >
 )
