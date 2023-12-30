@@ -6,16 +6,15 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "App.hxx"
+#include <filesystem/database.hxx>
 
-auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
-    -> int
+auto main() -> int
 {
-    App app;
+    glow::filesystem::Database db;
 
-    app.browser.gui.create_environment(app.browser.m_hwnd.get());
+    db.open();
 
-    glow::gui::message_loop();
+    db.write();
 
     return 0;
 }

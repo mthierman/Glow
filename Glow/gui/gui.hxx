@@ -38,11 +38,23 @@ struct Position
 
 struct GdiPlus
 {
-    GdiPlus();
-    ~GdiPlus();
+    GdiPlus() { Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr); }
+    ~GdiPlus() { Gdiplus::GdiplusShutdown(gdiplusToken); }
 
     Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken;
+    ULONG_PTR gdiplusToken{};
+};
+
+struct CoInitialize
+{
+    CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)} {}
+    ~CoInitialize()
+    {
+        if (SUCCEEDED(m_result)) CoUninitialize();
+    }
+
+    operator HRESULT() const { return m_result; }
+    HRESULT m_result{};
 };
 
 template <typename T> T* InstanceFromWndProc(HWND hWnd, UINT uMsg, LPARAM lParam)

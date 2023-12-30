@@ -11,6 +11,12 @@
 namespace glow::logging
 {
 
+auto com_error(HRESULT hResult) -> void
+{
+    _com_error comError(hResult);
+    OutputDebugStringA(comError.ErrorMessage());
+}
+
 auto debug(std::string string, std::source_location location) -> void
 {
     OutputDebugStringA(("file_name: " + std::string(location.file_name()) + "\n").c_str());

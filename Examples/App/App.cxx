@@ -6,39 +6,80 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "App.hxx"
-#include "Window.hxx"
+#include <config/glow.hxx>
 
+#include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
 
-using glow::gui::WebView2;
-
-auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, int nCmdShow)
-    -> int
+struct App final : public glow::gui::MainWindow
 {
-    App app;
-    glow::gui::set_title(app.m_hwnd.get(), "App");
-    glow::gui::show_normal(app.m_hwnd.get());
+    using glow::gui::MainWindow::MainWindow;
+    auto handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL override;
+    auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    auto on_parent_notify(WPARAM wParam) -> int;
+    auto on_size() -> int;
+};
 
-    std::vector<std::unique_ptr<glow::gui::WebView2>> app_webviews;
-    app_webviews.push_back(std::make_unique<WebView2>(app.m_hwnd.get(), 1));
-    app_webviews.push_back(std::make_unique<WebView2>(app.m_hwnd.get(), 2));
+auto App::handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
+{
+    auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+    auto rectParent{*std::bit_cast<LPRECT>(lParam)};
+    auto position{glow::gui::rect_to_position(rectParent)};
 
-    glow::gui::set_border(app_webviews.at(0)->m_hwnd.get(), true);
-    glow::gui::set_border(app_webviews.at(1)->m_hwnd.get(), true);
+    if (gwlId == 1)
+        SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
 
-    Window window;
-    glow::gui::set_title(window.m_hwnd.get(), "Window");
-    glow::gui::show_normal(window.m_hwnd.get());
+    return TRUE;
+}
 
-    std::vector<std::unique_ptr<glow::gui::WebView2>> window_webviews;
-    window_webviews.push_back(std::make_unique<WebView2>(window.m_hwnd.get(), 1));
-    window_webviews.push_back(std::make_unique<WebView2>(window.m_hwnd.get(), 2));
+auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_PARENTNOTIFY: return on_parent_notify(wParam);
+    case WM_SIZE: return on_size();
+    }
 
-    glow::gui::set_border(window_webviews.at(0)->m_hwnd.get(), true);
-    glow::gui::set_border(window_webviews.at(1)->m_hwnd.get(), true);
+    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+}
 
-    glow::gui::message_loop();
+auto App::on_parent_notify(WPARAM wParam) -> int
+{
+    // OutputDebugStringA("WM_PARENTNOTIFY\n");
+    // OutputDebugStringA(std::to_string(LOWORD(wParam)).c_str());
+    // OutputDebugStringA("\n");
+
+    on_size();
+
+    return 0;
+}
+
+auto App::on_size() -> int
+{
+    // OutputDebugStringA("WM_SIZE\n");
+
+    RECT clientRect{0};
+    GetClientRect(m_hwnd.get(), &clientRect);
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&clientRect));
+
+    return 0;
+}
+
+auto main() -> int
+{
+    glow::gui::CoInitialize init;
+
+    if (SUCCEEDED(init))
+    {
+        App app;
+        // app.show_normal();
+        glow::gui::WebView2 webView{app.m_hwnd.get(), 1};
+
+        // app.show_normal();
+        // webView.show_normal();
+
+        glow::gui::message_loop();
+    }
 
     return 0;
 }

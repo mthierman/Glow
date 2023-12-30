@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <comdef.h>
 
 #include <print>
 #include <source_location>
@@ -20,6 +21,7 @@
 namespace glow::logging
 {
 
+auto com_error(HRESULT hResult) -> void;
 auto debug(std::string string, std::source_location location = std::source_location::current())
     -> void;
 auto msgbox(std::string string) -> void;

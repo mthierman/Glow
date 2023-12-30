@@ -6,25 +6,14 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <print>
-
 #include <console/console.hxx>
 #include <filesystem/database.hxx>
 #include <filesystem/filesystem.hxx>
-#include <gui/app.hxx>
 #include <gui/gui.hxx>
-#include <gui/webview_composition.hxx>
+#include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
+#include <gui/window.hxx>
 #include <logging/logging.hxx>
 #include <text/text.hxx>
 
-auto main() -> int
-{
-    glow::filesystem::Database db;
-
-    db.open();
-
-    db.write();
-
-    return 0;
-}
+auto main() -> int { return 0; }

@@ -11,9 +11,9 @@
 namespace glow::gui
 {
 
-WebView2::WebView2(HWND parentHwnd, int64_t id, std::string url)
+WebView2::WebView2(HWND hwndParent, int64_t id, std::string url)
 {
-    m_hwndParent.reset(parentHwnd);
+    m_hwndParent = hwndParent;
     m_id = id;
     m_url = url;
 
@@ -40,16 +40,77 @@ WebView2::WebView2(HWND parentHwnd, int64_t id, std::string url)
         WebView2::m_atom = RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, MAKEINTATOM(WebView2::m_atom), "WebView2", WS_CHILD, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, m_hwndParent.get(),
-                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+    CreateWindowExA(0, MAKEINTATOM(WebView2::m_atom), "WebView2", WS_CHILD, 0, 0, 0, 0,
+                    m_hwndParent, std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
-    glow::gui::show_normal(m_hwnd.get());
+    show_normal();
 
     create_environment();
 }
 
 WebView2::~WebView2() {}
+
+auto WebView2::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
+
+auto WebView2::show() -> void { glow::gui::show(m_hwnd.get()); }
+
+auto WebView2::hide() -> void { glow::gui::hide(m_hwnd.get()); }
+
+auto CALLBACK WebView2::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    auto self{InstanceFromWndProc<WebView2>(hWnd, uMsg, lParam)};
+
+    OutputDebugStringA(std::to_string(uMsg).c_str());
+    OutputDebugStringA("\n");
+
+    if (self)
+    {
+        switch (uMsg)
+        {
+        case WM_CLOSE: return self->on_close();
+        case WM_SIZE: return self->on_size();
+        }
+
+        return self->handle_wnd_proc(hWnd, uMsg, wParam, lParam);
+    }
+
+    else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto WebView2::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+}
+
+auto WebView2::on_close() -> int
+{
+    m_hwnd.reset();
+
+    return 0;
+}
+
+auto WebView2::on_size() -> int
+{
+    RECT rect{};
+    GetClientRect(m_hwnd.get(), &rect);
+    if (m_controller4)
+    {
+        OutputDebugStringA("ON_SIZE!");
+        m_controller4->put_Bounds(rect);
+
+        RECT test{};
+        m_controller4->get_Bounds(&test);
+        OutputDebugStringA(std::to_string(test.top).c_str());
+        OutputDebugStringA("\n");
+        OutputDebugStringA(std::to_string(test.bottom).c_str());
+        OutputDebugStringA("\n");
+        OutputDebugStringA(std::to_string(test.left).c_str());
+        OutputDebugStringA("\n");
+        OutputDebugStringA(std::to_string(test.right).c_str());
+    }
+
+    return 0;
+}
 
 auto WebView2::create_environment() -> void
 {
@@ -74,6 +135,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
             {
                 if (controller)
                 {
+                    OutputDebugStringA("Controller exists...");
                     m_controller = controller;
                     m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
 
@@ -109,12 +171,26 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 
                     if (!m_initialized)
                     {
+                        OutputDebugStringA("registering initialized value...");
+                        RECT test{};
+                        GetClientRect(m_hwnd.get(), &test);
+                        // m_controller4->get_Bounds(&test);
+                        OutputDebugStringA(std::to_string(test.top).c_str());
+                        OutputDebugStringA("\n");
+                        OutputDebugStringA(std::to_string(test.bottom).c_str());
+                        OutputDebugStringA("\n");
+                        OutputDebugStringA(std::to_string(test.left).c_str());
+                        OutputDebugStringA("\n");
+                        OutputDebugStringA(std::to_string(test.right).c_str());
+
                         m_initialized = true;
-                        // on_size();
-                        // SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
+
+                        on_size();
                     }
 
+                    source_changed();
                     navigation_completed();
+                    web_message_received();
                     accelerator_key_pressed();
                     favicon_changed();
                     document_title_changed();
@@ -123,45 +199,6 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
                 return S_OK;
             })
             .Get());
-}
-
-auto CALLBACK WebView2::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    auto self{InstanceFromWndProc<WebView2>(hWnd, uMsg, lParam)};
-
-    if (self)
-    {
-        switch (uMsg)
-        {
-        case WM_CLOSE: return self->on_close();
-        case WM_SIZE: return self->on_size();
-        }
-
-        return self->handle_message(hWnd, uMsg, wParam, lParam);
-    }
-
-    else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto WebView2::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
-}
-
-auto WebView2::on_close() -> int
-{
-    m_hwnd.reset();
-
-    return 0;
-}
-
-auto WebView2::on_size() -> int
-{
-    RECT rect{};
-    GetClientRect(m_hwnd.get(), &rect);
-    if (m_controller4) { m_controller4->put_Bounds(rect); }
-
-    return 0;
 }
 
 auto WebView2::navigate(std::string url) -> void

@@ -11,10 +11,6 @@
 namespace glow::gui
 {
 
-GdiPlus::GdiPlus() { Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr); }
-
-GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(gdiplusToken); }
-
 auto message_loop() -> int
 {
     MSG msg{};

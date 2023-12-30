@@ -6,8 +6,6 @@ add_executable(
 target_sources(
     App
     PRIVATE App/App.cxx
-            App/App.hxx
-            App/Window.hxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
@@ -15,7 +13,6 @@ target_link_libraries(
     App
     PRIVATE glow::glow
             glow::flags
-            glow::definitions
 )
 
 add_executable(Console)
@@ -30,7 +27,6 @@ target_link_libraries(
     Console
     PRIVATE glow::glow
             glow::flags
-            glow::definitions
 )
 
 add_custom_command(
@@ -49,5 +45,3 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )
-
-add_subdirectory(TestApp)

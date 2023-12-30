@@ -42,6 +42,23 @@ Window::Window()
 
 Window::~Window() {}
 
+auto Window::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
+
+auto Window::show() -> void { glow::gui::show(m_hwnd.get()); }
+
+auto Window::hide() -> void { glow::gui::hide(m_hwnd.get()); }
+
+auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
+{
+    auto self{InstanceFromEnumChildProc<Window>(hWnd, lParam)};
+
+    if (self) return self->handle_enum_child_proc(hWnd, lParam);
+
+    else return TRUE;
+}
+
+auto Window::handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL { return TRUE; }
+
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<Window>(hWnd, uMsg, lParam)};
@@ -54,15 +71,15 @@ auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
         case WM_DESTROY: return self->on_destroy(hWnd, uMsg, wParam, lParam);
         }
 
-        return self->handle_message(hWnd, uMsg, wParam, lParam);
+        return self->handle_wnd_proc(hWnd, uMsg, wParam, lParam);
     }
 
     else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    return DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Window::on_close(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int

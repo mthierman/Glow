@@ -22,21 +22,24 @@
 
 namespace glow::gui
 {
-
 using json = nlohmann::json;
 
 struct WebView2
 {
-    WebView2(HWND parentHwnd, int64_t id, std::string = "https://www.google.com/");
+    WebView2(HWND hwndParent, int64_t id, std::string = "https://www.google.com/");
     virtual ~WebView2();
+
+    auto show_normal() -> void;
+    auto show() -> void;
+    auto hide() -> void;
+
+    static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto on_close() -> int;
+    virtual auto on_size() -> int;
 
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
-
-    static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    virtual auto on_close() -> int;
-    virtual auto on_size() -> int;
 
     auto navigate(std::string url) -> void;
     auto post_json(const json jsonMessage) -> void;
@@ -60,12 +63,13 @@ struct WebView2
     auto document_title_changed() -> void;
     virtual auto document_title_changed_handler() -> void{};
 
+    HWND m_hwndParent;
+    int64_t m_id{};
+    std::string m_url;
+
     inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
 
-    std::string m_url;
-    wil::unique_hwnd m_hwndParent;
-    int64_t m_id{};
     bool m_initialized{false};
 
     wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};

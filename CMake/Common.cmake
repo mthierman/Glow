@@ -61,6 +61,7 @@ target_link_options(
     glow_flags
     INTERFACE
     $<$<CXX_COMPILER_ID:MSVC>:
+    /entry:mainCRTStartup
     /WX
     >
 )
