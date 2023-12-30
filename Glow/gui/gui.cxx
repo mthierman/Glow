@@ -15,14 +15,14 @@ GdiPlus::GdiPlus() { Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput
 
 GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(gdiplusToken); }
 
-auto message_loop() -> void
+auto message_loop() -> int
 {
     MSG msg{};
     int r{};
 
     while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) return;
+        if (r == -1) return 1;
 
         else
         {
@@ -30,6 +30,8 @@ auto message_loop() -> void
             DispatchMessageA(&msg);
         }
     }
+
+    return 0;
 }
 
 auto rect_to_position(RECT rect) -> Position

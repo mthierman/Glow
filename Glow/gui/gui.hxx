@@ -69,7 +69,7 @@ template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
     return self;
 }
 
-auto message_loop() -> void;
+auto message_loop() -> int;
 
 auto rect_to_position(RECT rect) -> Position;
 auto client_rect(HWND hwnd) -> RECT;
