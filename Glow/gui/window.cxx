@@ -43,7 +43,7 @@ auto Window::create() -> void
                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                     GetModuleHandleA(nullptr), this);
 
-    glow::gui::show_normal(m_hwnd.get());
+    // glow::gui::show_normal(m_hwnd.get());
 }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
