@@ -11,11 +11,7 @@
 namespace glow::gui
 {
 
-Window::Window() { create(); }
-
-Window::~Window() {}
-
-auto Window::create() -> void
+Window::Window()
 {
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
     auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(Window::m_atom), &wcex)};
@@ -42,9 +38,9 @@ auto Window::create() -> void
     CreateWindowExA(0, MAKEINTATOM(Window::m_atom), "Window", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
                     GetModuleHandleA(nullptr), this);
-
-    // glow::gui::show_normal(m_hwnd.get());
 }
+
+Window::~Window() {}
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {

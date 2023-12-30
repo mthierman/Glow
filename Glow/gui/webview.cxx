@@ -13,19 +13,9 @@ namespace glow::gui
 
 WebView2::WebView2(HWND parentHwnd, int64_t id, std::string url)
 {
-    m_url = url;
     m_hwndParent.reset(parentHwnd);
     m_id = id;
-    create();
-}
-
-WebView2::~WebView2() {}
-
-auto WebView2::create() -> void
-{
-    SetEnvironmentVariableA("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "0");
-    SetEnvironmentVariableA("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS",
-                            "--allow-file-access-from-files");
+    m_url = url;
 
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
     auto classInfo{
@@ -58,6 +48,8 @@ auto WebView2::create() -> void
 
     create_environment();
 }
+
+WebView2::~WebView2() {}
 
 auto WebView2::create_environment() -> void
 {
@@ -115,11 +107,17 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 
                     m_core20->Navigate(glow::text::widen(m_url).c_str());
 
+                    if (!m_initialized)
+                    {
+                        m_initialized = true;
+                        // on_size();
+                        // SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
+                    }
+
                     navigation_completed();
                     accelerator_key_pressed();
                     favicon_changed();
                     document_title_changed();
-                    frame_navigation_starting();
                 }
 
                 return S_OK;
@@ -203,7 +201,7 @@ auto WebView2::navigation_completed() -> void
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
             {
-                initialize();
+                // navigation_completed_handler();
 
                 return S_OK;
             })
@@ -274,33 +272,6 @@ auto WebView2::document_title_changed() -> void
             })
             .Get(),
         &token);
-}
-
-auto WebView2::frame_navigation_starting() -> void
-{
-    EventRegistrationToken token;
-
-    m_core20->add_FrameNavigationStarting(
-        Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                wil::com_ptr<ICoreWebView2NavigationStartingEventArgs3> navigationStartArgs;
-                // document_title_changed_handler();
-                args->QueryInterface(IID_PPV_ARGS(&navigationStartArgs));
-                navigationStartArgs->put_AdditionalAllowedFrameAncestors(L"*");
-                return S_OK;
-            })
-            .Get(),
-        &token);
-}
-
-auto WebView2::initialize() -> void
-{
-    if (!m_initialized)
-    {
-        m_initialized = true;
-        SendMessageA(m_hwndParent.get(), WM_SIZE, 0, 0);
-    }
 }
 
 } // namespace glow::gui

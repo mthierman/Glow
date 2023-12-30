@@ -30,8 +30,6 @@ struct WebView2
     WebView2(HWND parentHwnd, int64_t id, std::string = "https://www.google.com/");
     virtual ~WebView2();
 
-    auto create() -> void;
-
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
 
@@ -44,20 +42,22 @@ struct WebView2
     auto post_json(const json jsonMessage) -> void;
 
     auto source_changed() -> void;
-    auto navigation_completed() -> void;
-    auto web_message_received() -> void;
-    auto accelerator_key_pressed() -> void;
-    auto favicon_changed() -> void;
-    auto document_title_changed() -> void;
-    auto frame_navigation_starting() -> void;
-
-    auto initialize() -> void;
-
     virtual auto source_changed_handler() -> void{};
+
+    auto navigation_completed() -> void;
+    virtual auto navigation_completed_handler() -> void{};
+
+    auto web_message_received() -> void;
     virtual auto web_message_received_handler() -> void{};
+
+    auto accelerator_key_pressed() -> void;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> void{};
+
+    auto favicon_changed() -> void;
     virtual auto favicon_changed_handler() -> void{};
+
+    auto document_title_changed() -> void;
     virtual auto document_title_changed_handler() -> void{};
 
     inline static ATOM m_atom;

@@ -18,8 +18,6 @@ struct Window
     Window();
     virtual ~Window();
 
-    auto create() -> void;
-
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_close(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
