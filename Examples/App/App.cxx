@@ -18,6 +18,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 {
     App app;
     glow::gui::set_title(app.m_hwnd.get(), "App");
+    glow::gui::show_normal(app.m_hwnd.get());
 
     std::vector<std::unique_ptr<glow::gui::WebView2>> app_webviews;
     app_webviews.push_back(std::make_unique<WebView2>(app.m_hwnd.get(), 1));
@@ -28,6 +29,7 @@ auto WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine,
 
     Window window;
     glow::gui::set_title(window.m_hwnd.get(), "Window");
+    glow::gui::show_normal(window.m_hwnd.get());
 
     std::vector<std::unique_ptr<glow::gui::WebView2>> window_webviews;
     window_webviews.push_back(std::make_unique<WebView2>(window.m_hwnd.get(), 1));
