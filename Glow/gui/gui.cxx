@@ -311,6 +311,48 @@ auto hide(HWND hwnd) -> void { ShowWindow(hwnd, SW_HIDE); }
 
 auto set_title(HWND hwnd, std::string title) -> void { SetWindowTextA(hwnd, title.c_str()); }
 
+auto icon_application() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_error() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_ERROR, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_question() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_warning() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_WARNING, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_information() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_winlogo() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_WINLOGO, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto icon_shield() -> HICON
+{
+    return static_cast<HICON>(
+        LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
 auto set_icon(HWND hwnd, HICON hIcon) -> void
 {
     SendMessageA(hwnd, WM_SETICON, ICON_SMALL, std::bit_cast<LPARAM>(hIcon));

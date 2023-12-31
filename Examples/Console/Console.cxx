@@ -8,6 +8,4 @@
 
 #include <config/glow.hxx>
 
-#include <logging/logging.hxx>
-
 auto main() -> int { return 0; }

@@ -9,7 +9,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <comdef.h>
 #include <Unknwn.h>
 #include <dwmapi.h>
 #include <gdiplus.h>
@@ -129,6 +128,15 @@ auto show(HWND hwnd) -> void;
 auto hide(HWND hwnd) -> void;
 
 auto set_title(HWND hwnd, std::string title) -> void;
+
+auto icon_application() -> HICON;
+auto icon_error() -> HICON;
+auto icon_question() -> HICON;
+auto icon_warning() -> HICON;
+auto icon_information() -> HICON;
+auto icon_winlogo() -> HICON;
+auto icon_shield() -> HICON;
+
 auto set_icon(HWND hwnd, HICON hIcon) -> void;
 auto set_border(HWND hwnd, bool enabled) -> void;
 auto set_child(HWND hwnd) -> void;
