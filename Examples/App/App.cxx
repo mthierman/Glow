@@ -76,6 +76,8 @@ auto main() -> int
         app.show_normal();
         webView.show_normal();
 
+        glow::logging::box_icon("Error", SHSTOCKICONID::SIID_DEVICEAUDIOPLAYER);
+
         glow::gui::message_loop();
     }
 

@@ -50,10 +50,10 @@ auto box_icon(std::string message, SHSTOCKICONID icon) -> void
 
     if (SUCCEEDED(SHGetStockIconInfo(icon, SHGSI_ICONLOCATION, &sii)))
     {
-        HMODULE hInstance{LoadLibraryW(sii.szPath)};
+        auto hModule{LoadLibraryExW(sii.szPath, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
         MSGBOXPARAMS params{sizeof(MSGBOXPARAMS)};
-        params.hInstance = hInstance;
+        params.hInstance = hModule;
         params.lpszText = message.c_str();
         params.lpszCaption = "Message";
         params.dwStyle = MB_USERICON;
@@ -61,7 +61,7 @@ auto box_icon(std::string message, SHSTOCKICONID icon) -> void
         params.lpfnMsgBoxCallback = nullptr;
         MessageBoxIndirectA(&params);
 
-        FreeLibrary(hInstance);
+        FreeLibrary(hModule);
     }
 }
 
