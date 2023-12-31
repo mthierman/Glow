@@ -8,9 +8,11 @@
 
 #include <config/glow.hxx>
 
+#include <logging/logging.hxx>
+
 auto main() -> int
 {
-    //
+    glow::logging::box_icon("Test", SHSTOCKICONID::SIID_ERROR);
 
     return 0;
 }

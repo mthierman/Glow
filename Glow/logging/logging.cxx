@@ -11,6 +11,12 @@
 namespace glow::logging
 {
 
+auto hr(HRESULT hresult) -> void
+{
+    std::string message{std::system_category().message(hresult)};
+    std::println("{}", message);
+}
+
 auto com_error(HRESULT hResult) -> void
 {
     _com_error comError(hResult);
@@ -34,6 +40,28 @@ auto box_err(std::string message) -> void
     MessageBoxA(nullptr, errorMessage.c_str(), "Error", 0);
 }
 
+auto box_icon(std::string message, SHSTOCKICONID icon) -> void
+{
+    // https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ne-shellapi-shstockiconid
+    SHSTOCKICONINFO sii{sizeof(SHSTOCKICONINFO)};
+
+    if (SUCCEEDED(SHGetStockIconInfo(icon, SHGSI_ICONLOCATION, &sii)))
+    {
+        HMODULE hInstance{LoadLibraryW(sii.szPath)};
+
+        MSGBOXPARAMS params{sizeof(MSGBOXPARAMS)};
+        params.hInstance = hInstance;
+        params.lpszText = message.c_str();
+        params.lpszCaption = "Message";
+        params.dwStyle = MB_USERICON;
+        params.lpszIcon = MAKEINTRESOURCE(-sii.iIcon);
+        params.lpfnMsgBoxCallback = nullptr;
+        MessageBoxIndirectA(&params);
+
+        FreeLibrary(hInstance);
+    }
+}
+
 auto shell_msg(std::string message) -> void
 {
     ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(), "Message", 0);
@@ -43,12 +71,6 @@ auto shell_err(std::string message) -> void
 {
     std::string errorMessage = message + ". Error: " + std::to_string(GetLastError());
     ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, errorMessage.c_str(), "Error", 0);
-}
-
-auto hr(HRESULT hresult) -> void
-{
-    std::string message{std::system_category().message(hresult)};
-    std::println("{}", message);
 }
 
 } // namespace glow::logging

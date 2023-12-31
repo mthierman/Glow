@@ -22,13 +22,16 @@
 namespace glow::logging
 {
 
+auto hr(HRESULT hresult) -> void;
 auto com_error(HRESULT hResult) -> void;
 auto debug(std::string string, std::source_location location = std::source_location::current())
     -> void;
+
 auto box_msg(std::string message) -> void;
 auto box_err(std::string message) -> void;
+auto box_icon(std::string message, SHSTOCKICONID icon) -> void;
+
 auto shell_msg(std::string message) -> void;
 auto shell_err(std::string message) -> void;
-auto hr(HRESULT hresult) -> void;
 
 } // namespace glow::logging
