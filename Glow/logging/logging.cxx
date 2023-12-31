@@ -26,12 +26,23 @@ auto debug(std::string string, std::source_location location) -> void
     OutputDebugStringA((string + "\n").c_str());
 }
 
-auto msgbox(std::string string) -> void { MessageBoxA(nullptr, string.c_str(), "Message", 0); }
+auto box_msg(std::string message) -> void { MessageBoxA(nullptr, message.c_str(), "Message", 0); }
 
-auto errorbox(std::string string) -> void
+auto box_err(std::string message) -> void
 {
-    std::string error = string + ". Error: " + std::to_string(GetLastError());
-    MessageBoxA(nullptr, error.c_str(), "Error", 0);
+    std::string errorMessage = message + ". Error: " + std::to_string(GetLastError());
+    MessageBoxA(nullptr, errorMessage.c_str(), "Error", 0);
+}
+
+auto shell_msg(std::string message) -> void
+{
+    ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(), "Message", 0);
+}
+
+auto shell_err(std::string message) -> void
+{
+    std::string errorMessage = message + ". Error: " + std::to_string(GetLastError());
+    ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, errorMessage.c_str(), "Error", 0);
 }
 
 auto hr(HRESULT hresult) -> void

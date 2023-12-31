@@ -67,5 +67,6 @@ target_link_libraries(
            dwmapi.lib
            Comctl32.lib
            gdiplus.lib
+           ShLwApi.Lib
            WebView2LoaderStatic.lib
 )

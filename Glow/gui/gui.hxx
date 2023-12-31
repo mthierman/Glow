@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <comdef.h>
 #include <Unknwn.h>
 #include <dwmapi.h>
 #include <gdiplus.h>
@@ -38,18 +39,26 @@ struct Position
 
 struct GdiPlus
 {
-    GdiPlus() { Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, nullptr); }
-    ~GdiPlus() { Gdiplus::GdiplusShutdown(gdiplusToken); }
+    GdiPlus()
+    {
+        Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr);
 
-    Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-    ULONG_PTR gdiplusToken{};
+        if (Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr) !=
+            Gdiplus::Status::Ok)
+            throw std::runtime_error("GDI+ startup failed");
+    }
+    ~GdiPlus() { Gdiplus::GdiplusShutdown(m_gdiplusToken); }
+
+    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
+    ULONG_PTR m_gdiplusToken{};
 };
 
-// https://stackoverflow.com/questions/7008047/is-there-a-way-to-get-the-string-representation-of-hresult-value-using-win-api
-// https://stackoverflow.com/questions/47123650/throwing-c-exceptions-with-coinitialize-and-couninitialize
 struct CoInitialize
 {
-    CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)} {}
+    CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
+    {
+        if (FAILED(m_result)) throw std::runtime_error("CoInitialize failed");
+    }
     ~CoInitialize()
     {
         if (SUCCEEDED(m_result)) CoUninitialize();
