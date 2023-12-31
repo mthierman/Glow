@@ -10,6 +10,7 @@
 
 #include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
+#include <logging/logging.hxx>
 
 struct App final : public glow::gui::MainWindow
 {

@@ -32,12 +32,15 @@ auto debug(std::string string, std::source_location location) -> void
     OutputDebugStringA((string + "\n").c_str());
 }
 
-auto box_msg(std::string message) -> void { MessageBoxA(nullptr, message.c_str(), "Message", 0); }
+auto box_msg(std::string message, UINT type) -> void
+{
+    MessageBoxA(nullptr, message.c_str(), "Message", type);
+}
 
 auto box_err(std::string message) -> void
 {
     std::string errorMessage = message + ". Error: " + std::to_string(GetLastError());
-    MessageBoxA(nullptr, errorMessage.c_str(), "Error", 0);
+    MessageBoxA(nullptr, errorMessage.c_str(), "Error", MB_ICONERROR);
 }
 
 auto box_icon(std::string message, SHSTOCKICONID icon) -> void

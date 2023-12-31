@@ -27,7 +27,7 @@ auto com_error(HRESULT hResult) -> void;
 auto debug(std::string string, std::source_location location = std::source_location::current())
     -> void;
 
-auto box_msg(std::string message) -> void;
+auto box_msg(std::string message, UINT type) -> void;
 auto box_err(std::string message) -> void;
 auto box_icon(std::string message, SHSTOCKICONID icon) -> void;
 
