@@ -2,22 +2,22 @@ include(CTest)
 
 enable_testing()
 
-add_executable(Testing)
+add_executable(Testing_Compile)
 
 target_sources(
-    Testing
-    PRIVATE Tests.cxx
+    Testing_Compile
+    PRIVATE Compile.cxx
 )
 
 target_link_libraries(
-    Testing
+    Testing_Compile
     PRIVATE glow::glow
             glow::flags
 )
 
 add_test(
-    NAME Testing
-    COMMAND Testing
+    NAME Testing_Compile
+    COMMAND Testing_Compile
 )
 
 add_executable(Testing_Database)

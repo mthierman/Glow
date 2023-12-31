@@ -1,36 +1,36 @@
 add_executable(
-    App
+    Example_App
     WIN32
 )
 
 target_sources(
-    App
+    Example_App
     PRIVATE App/App.cxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
 target_link_libraries(
-    App
+    Example_App
     PRIVATE glow::glow
             glow::flags
 )
 
-add_executable(Console)
+add_executable(Example_Console)
 
 target_sources(
-    Console
+    Example_Console
     PRIVATE Console/Console.cxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
 )
 
 target_link_libraries(
-    Console
+    Example_Console
     PRIVATE glow::glow
             glow::flags
 )
 
 add_custom_command(
-    TARGET App
+    TARGET Example_App
     COMMAND
         ${CMAKE_COMMAND} -E copy ${webview2_SOURCE_DIR}/runtimes/win-x64/native/WebView2Loader.dll
         ${CMAKE_CURRENT_BINARY_DIR}
@@ -38,7 +38,7 @@ add_custom_command(
 )
 
 add_custom_command(
-    TARGET App
+    TARGET Example_App
     COMMAND
         ${CMAKE_COMMAND} -E copy
         ${webview2_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll
