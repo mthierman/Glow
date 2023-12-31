@@ -86,7 +86,7 @@ struct WebView2
         LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     wil::unique_hicon m_appIcon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH))};
+    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 };
 
 } // namespace glow::gui
