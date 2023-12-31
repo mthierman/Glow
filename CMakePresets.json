@@ -11,12 +11,27 @@
             "name": "Release",
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Unity",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_UNITY_BUILD": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
         }
     ],
     "buildPresets": [
         {
             "name": "Release",
             "configurePreset": "Release"
+        },
+        {
+            "name": "Unity",
+            "configurePreset": "Unity"
         }
     ]
 }
