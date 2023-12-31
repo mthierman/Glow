@@ -1,6 +1,6 @@
-include(CTest)
-
 enable_testing()
+
+# include(CTest)
 
 add_executable(Testing_Compile)
 

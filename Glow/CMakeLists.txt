@@ -40,6 +40,8 @@ target_sources(
            text/text.hxx
 )
 
+# target_precompile_headers( Glow PRIVATE pch.hxx )
+
 target_include_directories(
     Glow
     PUBLIC ${webview2_SOURCE_DIR}/build/native/include-winrt
