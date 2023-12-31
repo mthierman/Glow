@@ -12,11 +12,18 @@ function Enter-DevShell32
     & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
 }
 
-function Invoke-CMake
+function Invoke-ReleaseBuild
 {
     Enter-DevShell64
     cmake --preset Release
     cmake --build --preset Release
+}
+
+function Invoke-UnityBuild
+{
+    Enter-DevShell64
+    cmake --preset Unity
+    cmake --build --preset Unity
 }
 
 function Export-Notes

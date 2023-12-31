@@ -31,7 +31,7 @@ jobs:
       - name: CMake
         run: |
           Import-Module ${{ github.workspace }}\Tools\PowerShell
-          Invoke-CMake
+          Invoke-UnityBuild
 
       # - name: Stable Release
       #   if: github.ref == 'refs/heads/main'
