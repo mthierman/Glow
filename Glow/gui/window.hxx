@@ -22,9 +22,6 @@ struct Window
     auto show() -> void;
     auto hide() -> void;
 
-    static auto CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
-    virtual auto handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL;
-
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 

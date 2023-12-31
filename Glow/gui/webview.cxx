@@ -43,8 +43,6 @@ WebView2::WebView2(HWND hwndParent, int64_t id, std::string url)
     CreateWindowExA(0, MAKEINTATOM(WebView2::m_atom), "WebView2", WS_CHILD, 0, 0, 0, 0,
                     m_hwndParent, std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
-    show_normal();
-
     create_environment();
 }
 
@@ -59,9 +57,6 @@ auto WebView2::hide() -> void { glow::gui::hide(m_hwnd.get()); }
 auto CALLBACK WebView2::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{InstanceFromWndProc<WebView2>(hWnd, uMsg, lParam)};
-
-    OutputDebugStringA(std::to_string(uMsg).c_str());
-    OutputDebugStringA("\n");
 
     if (self)
     {
@@ -93,21 +88,7 @@ auto WebView2::on_size() -> int
 {
     RECT rect{};
     GetClientRect(m_hwnd.get(), &rect);
-    if (m_controller4)
-    {
-        OutputDebugStringA("ON_SIZE!");
-        m_controller4->put_Bounds(rect);
-
-        RECT test{};
-        m_controller4->get_Bounds(&test);
-        OutputDebugStringA(std::to_string(test.top).c_str());
-        OutputDebugStringA("\n");
-        OutputDebugStringA(std::to_string(test.bottom).c_str());
-        OutputDebugStringA("\n");
-        OutputDebugStringA(std::to_string(test.left).c_str());
-        OutputDebugStringA("\n");
-        OutputDebugStringA(std::to_string(test.right).c_str());
-    }
+    if (m_controller4) m_controller4->put_Bounds(rect);
 
     return 0;
 }
@@ -135,7 +116,6 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
             {
                 if (controller)
                 {
-                    OutputDebugStringA("Controller exists...");
                     m_controller = controller;
                     m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
 
@@ -171,20 +151,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
 
                     if (!m_initialized)
                     {
-                        OutputDebugStringA("registering initialized value...");
-                        RECT test{};
-                        GetClientRect(m_hwnd.get(), &test);
-                        // m_controller4->get_Bounds(&test);
-                        OutputDebugStringA(std::to_string(test.top).c_str());
-                        OutputDebugStringA("\n");
-                        OutputDebugStringA(std::to_string(test.bottom).c_str());
-                        OutputDebugStringA("\n");
-                        OutputDebugStringA(std::to_string(test.left).c_str());
-                        OutputDebugStringA("\n");
-                        OutputDebugStringA(std::to_string(test.right).c_str());
-
                         m_initialized = true;
-
                         on_size();
                     }
 

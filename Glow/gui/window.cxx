@@ -6,6 +6,8 @@
 // ╚──────────────╝
 // clang-format on
 
+#include <typeinfo>
+
 #include <gui/window.hxx>
 
 namespace glow::gui
@@ -47,17 +49,6 @@ auto Window::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
 auto Window::show() -> void { glow::gui::show(m_hwnd.get()); }
 
 auto Window::hide() -> void { glow::gui::hide(m_hwnd.get()); }
-
-auto CALLBACK Window::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
-{
-    auto self{InstanceFromEnumChildProc<Window>(hWnd, lParam)};
-
-    if (self) return self->handle_enum_child_proc(hWnd, lParam);
-
-    else return TRUE;
-}
-
-auto Window::handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL { return TRUE; }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {

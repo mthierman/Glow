@@ -45,6 +45,8 @@ struct GdiPlus
     ULONG_PTR gdiplusToken{};
 };
 
+// https://stackoverflow.com/questions/7008047/is-there-a-way-to-get-the-string-representation-of-hresult-value-using-win-api
+// https://stackoverflow.com/questions/47123650/throwing-c-exceptions-with-coinitialize-and-couninitialize
 struct CoInitialize
 {
     CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)} {}

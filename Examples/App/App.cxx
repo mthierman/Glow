@@ -14,17 +14,20 @@
 struct App final : public glow::gui::MainWindow
 {
     using glow::gui::MainWindow::MainWindow;
-    auto handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL override;
+
+    static auto CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
+
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_parent_notify(WPARAM wParam) -> int;
     auto on_size() -> int;
 };
 
-auto App::handle_enum_child_proc(HWND hWnd, LPARAM lParam) -> BOOL
+auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
-    auto rectParent{*std::bit_cast<LPRECT>(lParam)};
-    auto position{glow::gui::rect_to_position(rectParent)};
+
+    auto rect{*std::bit_cast<LPRECT>(lParam)};
+    auto position{glow::gui::rect_to_position(rect)};
 
     if (gwlId == 1)
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
@@ -45,22 +48,16 @@ auto App::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ->
 
 auto App::on_parent_notify(WPARAM wParam) -> int
 {
-    // OutputDebugStringA("WM_PARENTNOTIFY\n");
-    // OutputDebugStringA(std::to_string(LOWORD(wParam)).c_str());
-    // OutputDebugStringA("\n");
-
-    on_size();
+    if (LOWORD(wParam) == WM_CREATE) on_size();
 
     return 0;
 }
 
 auto App::on_size() -> int
 {
-    // OutputDebugStringA("WM_SIZE\n");
-
-    RECT clientRect{0};
-    GetClientRect(m_hwnd.get(), &clientRect);
-    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&clientRect));
+    RECT rect{0};
+    GetClientRect(m_hwnd.get(), &rect);
+    EnumChildWindows(m_hwnd.get(), EnumChildProc, std::bit_cast<LPARAM>(&rect));
 
     return 0;
 }
@@ -72,11 +69,10 @@ auto main() -> int
     if (SUCCEEDED(init))
     {
         App app;
-        // app.show_normal();
         glow::gui::WebView2 webView{app.m_hwnd.get(), 1};
 
-        // app.show_normal();
-        // webView.show_normal();
+        app.show_normal();
+        webView.show_normal();
 
         glow::gui::message_loop();
     }
