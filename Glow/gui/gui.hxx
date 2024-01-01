@@ -93,6 +93,9 @@ template <typename T> T* InstanceFromEnumChildProc(HWND hWnd, LPARAM lParam)
 
 auto message_loop() -> int;
 
+auto get_dpi(HWND hwnd) -> int;
+auto get_scale(HWND hwnd) -> float;
+
 auto rect_to_position(RECT rect) -> Position;
 auto client_rect(HWND hwnd) -> RECT;
 auto window_rect(HWND hwnd) -> RECT;

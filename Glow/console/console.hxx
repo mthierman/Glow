@@ -29,20 +29,6 @@ struct Console
     ~Console();
 };
 
-// struct Console
-// {
-//     Console();
-//     ~Console();
-
-//   private:
-//     struct FILE_DELETER
-//     {
-//         auto operator()(FILE* pFile) noexcept -> void { fclose(pFile); }
-//     };
-//     using file_ptr = std::unique_ptr<FILE, FILE_DELETER>;
-//     file_ptr p_file;
-// };
-
 auto get_argv() -> std::vector<std::string>;
 
 } // namespace glow::console

@@ -30,6 +30,13 @@ auto message_loop() -> int
     return 0;
 }
 
+auto get_dpi(HWND hwnd) -> int { return GetDpiForWindow(hwnd); }
+
+auto get_scale(HWND hwnd) -> float
+{
+    return static_cast<float>(get_dpi(hwnd)) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+}
+
 auto rect_to_position(RECT rect) -> Position
 {
     Position p;

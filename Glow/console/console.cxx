@@ -33,27 +33,6 @@ Console::Console()
 
 Console::~Console() { FreeConsole(); }
 
-// Console::Console()
-// {
-//     AllocConsole();
-
-//     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
-//                    MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-
-//     auto file = p_file.get();
-
-//     freopen_s(std::out_ptr(file), "CONOUT$", "w", stdout);
-//     freopen_s(std::out_ptr(file), "CONOUT$", "w", stderr);
-//     freopen_s(std::out_ptr(file), "CONIN$", "r", stdin);
-
-//     std::cout.clear();
-//     std::clog.clear();
-//     std::cerr.clear();
-//     std::cin.clear();
-// }
-
-// Console::~Console() { FreeConsole(); }
-
 auto get_argv() -> std::vector<std::string>
 {
     int argc{};
