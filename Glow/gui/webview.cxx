@@ -90,11 +90,6 @@ auto WebView2::on_size() -> int
     GetClientRect(m_hwnd.get(), &rect);
     if (m_controller4) m_controller4->put_Bounds(rect);
 
-    // ROUNDED CORNERS: !!!JAGGIES!!!
-    // HRGN hRgn = CreateRoundRectRgn(rect.left, rect.top, rect.right, rect.bottom, 50, 50);
-    // SetWindowRgn(m_hwnd.get(), hRgn, TRUE);
-    // DeleteObject(hRgn);
-
     return 0;
 }
 

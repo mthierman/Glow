@@ -26,7 +26,7 @@ using json = nlohmann::json;
 
 struct WebView2
 {
-    WebView2(HWND hwndParent, int64_t id, std::string = "https://www.google.com/");
+    WebView2(HWND hwndParent, int64_t id, std::string = "https://www.example.com/");
     virtual ~WebView2();
 
     auto show_normal() -> void;
