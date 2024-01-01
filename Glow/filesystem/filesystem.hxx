@@ -13,8 +13,8 @@
 
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <print>
-#include <stdexcept>
 #include <string>
 
 #include <wil/resource.h>
@@ -42,7 +42,8 @@ struct Database
     std::filesystem::path path;
 };
 
-auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path;
+auto known_folder(const KNOWNFOLDERID& knownFolderId = FOLDERID_LocalAppData)
+    -> std::optional<std::filesystem::path>;
 
 auto program_name() -> std::string;
 auto portable() -> std::filesystem::path;

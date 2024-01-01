@@ -50,14 +50,13 @@ auto Database::write() -> void
     }
 }
 
-auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path
+auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::optional<std::filesystem::path>
 {
     wil::unique_cotaskmem_string buffer;
 
-    if (SUCCEEDED(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer)))
-        return std::filesystem::path(buffer.get());
+    if (FAILED(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer))) return std::nullopt;
 
-    else return {};
+    else return std::filesystem::path(buffer.get());
 }
 
 auto program_name() -> std::string
