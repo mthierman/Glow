@@ -45,3 +45,20 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
 )
+
+add_executable(
+    Example_Test
+    WIN32
+)
+
+target_sources(
+    Example_Test
+    PRIVATE Test/Test.cxx
+            ${PROJECT_SOURCE_DIR}/Data/glow.manifest
+)
+
+target_link_libraries(
+    Example_Test
+    PRIVATE glow::glow
+            glow::flags
+)

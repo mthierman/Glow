@@ -18,9 +18,6 @@ Console::Console()
     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
                    MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    wil::unique_file uFile;
-    auto pFile = uFile.get();
-
     freopen_s(std::out_ptr(pFile), "CONIN$", "r", stdin);
     freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stdout);
     freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stderr);
@@ -31,7 +28,11 @@ Console::Console()
     std::clog.clear();
 }
 
-Console::~Console() { FreeConsole(); }
+Console::~Console()
+{
+    fclose(pFile);
+    FreeConsole();
+}
 
 auto get_argv() -> std::vector<std::string>
 {

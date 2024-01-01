@@ -12,7 +12,6 @@
 #include <shellapi.h>
 
 #include <iostream>
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -27,6 +26,8 @@ struct Console
 {
     Console();
     ~Console();
+
+    FILE* pFile;
 };
 
 auto get_argv() -> std::vector<std::string>;
