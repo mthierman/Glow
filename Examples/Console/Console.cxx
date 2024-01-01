@@ -18,20 +18,10 @@
 
 auto main() -> int
 {
-    //
-
     glow::log::debug("test");
-
     glow::log::print("test");
-
-    // glow::log::box("test", MB_ICONINFORMATION);
-
-    // glow::log::shell("test", MB_ICONINFORMATION);
-
     glow::log::box("test");
-
     glow::log::shell("test");
-
     glow::log::stock("test");
 
     return 0;

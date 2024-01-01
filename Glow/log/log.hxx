@@ -30,6 +30,6 @@ auto print(std::string message, std::source_location location = std::source_loca
 
 auto box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
 auto shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto stock(std::string message, SHSTOCKICONID icon = SIID_APPLICATION) -> void;
+auto stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
 
 } // namespace glow::log
