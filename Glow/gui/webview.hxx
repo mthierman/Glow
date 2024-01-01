@@ -40,6 +40,7 @@ struct WebView2
 
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;
+    virtual auto initialized() -> void{};
 
     auto navigate(std::string url) -> void;
     auto post_json(const json jsonMessage) -> void;

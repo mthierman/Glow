@@ -152,6 +152,7 @@ auto WebView2::create_controller(ICoreWebView2Environment* environment) -> void
                     if (!m_initialized)
                     {
                         m_initialized = true;
+                        initialized();
                         on_size();
                     }
 
