@@ -17,13 +17,11 @@ auto narrow(std::wstring utf16) -> std::string
     if (utf16.length() > static_cast<size_t>(intMax))
         throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
-    std::string utf8;
-
     auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
                                     utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
                                     nullptr, nullptr)};
 
-    utf8.resize(length);
+    std::string utf8(length, 0);
 
     if (length > 0)
     {
@@ -44,12 +42,10 @@ auto widen(std::string utf8) -> std::wstring
     if (utf8.length() > static_cast<size_t>(intMax))
         throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
-    std::wstring utf16;
-
     auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
                                     static_cast<int>(utf8.length()), nullptr, 0)};
 
-    utf16.resize(length);
+    std::wstring utf16(length, 0);
 
     if (length > 0)
     {
