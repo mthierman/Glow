@@ -12,7 +12,6 @@
 #include <comdef.h>
 #include <shellapi.h>
 
-#include <filesystem>
 #include <print>
 #include <source_location>
 #include <string>
