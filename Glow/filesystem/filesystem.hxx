@@ -39,10 +39,12 @@ struct Database
     };
     using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
     sqlite3_ptr p_db;
-    std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
+    std::filesystem::path path;
 };
 
 auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path;
+
+auto program_name() -> std::string;
 auto portable() -> std::filesystem::path;
 auto wportable() -> std::filesystem::path;
 

@@ -10,7 +10,7 @@
 
 #include <gui/mainwindow.hxx>
 #include <gui/webview.hxx>
-#include <logging/logging.hxx>
+#include <log/log.hxx>
 
 struct App final : public glow::gui::MainWindow
 {
@@ -89,7 +89,7 @@ auto main() -> int
     }
     catch (std::exception& e)
     {
-        glow::logging::shell_err(e.what());
+        glow::log::shell(e.what());
         std::terminate();
     }
 }

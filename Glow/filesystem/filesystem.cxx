@@ -11,7 +11,7 @@
 namespace glow::filesystem
 {
 
-Database::Database() {}
+Database::Database() { path = (portable() / "db.sqlite"); }
 
 Database::~Database() {}
 
@@ -58,6 +58,15 @@ auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path
         return std::filesystem::path(buffer.get());
 
     else return {};
+}
+
+auto program_name() -> std::string
+{
+    std::string buffer;
+    _get_pgmptr(std::out_ptr(buffer));
+    std::filesystem::path exe{buffer};
+
+    return exe.filename().replace_extension("").string();
 }
 
 auto portable() -> std::filesystem::path

@@ -19,7 +19,7 @@ target_sources(
             gui/mainwindow.cxx
             gui/webview.cxx
             gui/window.cxx
-            logging/logging.cxx
+            log/log.cxx
             text/text.cxx
     PUBLIC FILE_SET
            HEADERS
@@ -34,7 +34,7 @@ target_sources(
            gui/mainwindow.hxx
            gui/webview.hxx
            gui/window.hxx
-           logging/logging.hxx
+           log/log.hxx
            text/text.hxx
 )
 

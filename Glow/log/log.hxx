@@ -12,26 +12,24 @@
 #include <comdef.h>
 #include <shellapi.h>
 
+#include <filesystem>
 #include <print>
 #include <source_location>
 #include <string>
-#include <system_error>
 
+#include <filesystem/filesystem.hxx>
 #include <text/text.hxx>
 
-namespace glow::logging
+namespace glow::log
 {
 
-auto hr(HRESULT hresult) -> void;
-auto com_error(HRESULT hResult) -> void;
-auto debug(std::string string, std::source_location location = std::source_location::current())
+auto debug(std::string message, std::source_location location = std::source_location::current())
+    -> void;
+auto print(std::string message, std::source_location location = std::source_location::current())
     -> void;
 
-auto box_msg(std::string message, UINT type) -> void;
-auto box_err(std::string message) -> void;
-auto box_icon(std::string message, SHSTOCKICONID icon) -> void;
+auto box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto stock(std::string message, SHSTOCKICONID icon = SIID_APPLICATION) -> void;
 
-auto shell_msg(std::string message) -> void;
-auto shell_err(std::string message) -> void;
-
-} // namespace glow::logging
+} // namespace glow::log
