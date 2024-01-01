@@ -101,6 +101,7 @@ auto is_dark() -> bool;
 
 auto use_immersive_dark_mode(HWND hwnd) -> void;
 auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
+auto set_rounded_corners(HWND hwnd, bool enabled) -> void;
 auto cloak(HWND hwnd, bool enable) -> void;
 
 auto clamp_color(int value) -> int;

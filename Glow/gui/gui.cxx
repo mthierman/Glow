@@ -96,6 +96,21 @@ auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void
         return;
 }
 
+auto set_rounded_corners(HWND hwnd, bool enable) -> void
+{
+    if (enable)
+    {
+        auto corner{DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_DEFAULT};
+        DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
+    }
+
+    else
+    {
+        auto corner{DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_DONOTROUND};
+        DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
+    }
+}
+
 auto cloak(HWND hwnd, bool enable) -> void
 {
     if (enable)
