@@ -11,7 +11,7 @@
 namespace glow::logging
 {
 
-auto hr(HRESULT hresult) -> void
+auto hresult(HRESULT hresult) -> void
 {
     std::string message{std::system_category().message(hresult)};
     std::println("{}", message);

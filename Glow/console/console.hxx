@@ -30,6 +30,6 @@ struct Console
     FILE* pFile;
 };
 
-auto get_argv() -> std::vector<std::string>;
+auto argv() -> std::vector<std::string>;
 
 } // namespace glow::console

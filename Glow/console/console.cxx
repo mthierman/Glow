@@ -34,7 +34,7 @@ Console::~Console()
     FreeConsole();
 }
 
-auto get_argv() -> std::vector<std::string>
+auto argv() -> std::vector<std::string>
 {
     int argc{};
     wil::unique_hlocal_ptr<PWSTR[]> args;

@@ -12,15 +12,38 @@
 #include <ShlObj.h>
 
 #include <filesystem>
+#include <memory>
+#include <print>
+#include <stdexcept>
 #include <string>
 
 #include <wil/resource.h>
 
+#include <sqlite3.h>
+
 namespace glow::filesystem
 {
 
+struct Database
+{
+    Database();
+    ~Database();
+
+    auto open() -> void;
+    auto write() -> void;
+
+  private:
+    struct sqlite3_deleter
+    {
+        auto operator()(sqlite3* pDb) noexcept -> void { sqlite3_close(pDb); }
+    };
+    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
+    sqlite3_ptr p_db;
+    std::filesystem::path path{(get_pgmptr() / "db.sqlite")};
+};
+
 auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path;
-auto get_pgmptr() -> std::filesystem::path;
-auto get_wpgmptr() -> std::filesystem::path;
+auto portable() -> std::filesystem::path;
+auto wportable() -> std::filesystem::path;
 
 } // namespace glow::filesystem

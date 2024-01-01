@@ -14,7 +14,6 @@ configure_file(
 target_sources(
     Glow
     PRIVATE console/console.cxx
-            filesystem/database.cxx
             filesystem/filesystem.cxx
             gui/gui.cxx
             gui/mainwindow.cxx
@@ -30,7 +29,6 @@ target_sources(
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/Include/config/glow.hxx
            console/console.hxx
-           filesystem/database.hxx
            filesystem/filesystem.hxx
            gui/gui.hxx
            gui/mainwindow.hxx
