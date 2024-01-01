@@ -100,7 +100,7 @@ auto set_rounded_corners(HWND hwnd, bool enable) -> void
 {
     if (enable)
     {
-        auto corner{DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_DEFAULT};
+        auto corner{DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_ROUND};
         DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
     }
 
