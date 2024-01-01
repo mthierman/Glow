@@ -13,7 +13,6 @@
 
 #include <filesystem>
 #include <string>
-#include <vector>
 
 #include <wil/resource.h>
 
