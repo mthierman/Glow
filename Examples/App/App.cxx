@@ -12,46 +12,33 @@
 #include <gui/webview.hxx>
 #include <logging/logging.hxx>
 
-struct WebView2 final : public glow::gui::WebView2
-{
-    using glow::gui::WebView2::WebView2;
-
-    auto initialized() -> void override;
-};
-
-auto WebView2::initialized() -> void
-{
-    OutputDebugStringA("Initialized!");
-
-    // m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-    m_settings8->put_AreDefaultContextMenusEnabled(false);
-    // m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-    // m_settings8->put_AreDevToolsEnabled(true);
-    // m_settings8->put_AreHostObjectsAllowed(true);
-    // m_settings8->put_HiddenPdfToolbarItems(
-    //     COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-    // m_settings8->put_IsBuiltInErrorPageEnabled(true);
-    // m_settings8->put_IsGeneralAutofillEnabled(true);
-    // m_settings8->put_IsPasswordAutosaveEnabled(true);
-    // m_settings8->put_IsPinchZoomEnabled(true);
-    // m_settings8->put_IsReputationCheckingRequired(true);
-    // m_settings8->put_IsScriptEnabled(true);
-    // m_settings8->put_IsStatusBarEnabled(true);
-    // m_settings8->put_IsSwipeNavigationEnabled(true);
-    // m_settings8->put_IsWebMessageEnabled(true);
-    // m_settings8->put_IsZoomControlEnabled(true);
-}
-
 struct App final : public glow::gui::MainWindow
 {
     using glow::gui::MainWindow::MainWindow;
+
+    static auto run() -> int;
 
     static auto CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
     auto on_parent_notify(WPARAM wParam) -> int;
     auto on_size() -> int;
+
+    glow::gui::GdiPlus gdiInit;
+    glow::gui::CoInitialize coInit;
 };
+
+auto App::run() -> int
+{
+    App app;
+    glow::gui::WebView2 webView{app.m_hwnd.get(), 1};
+
+    webView.show_normal();
+
+    app.show_normal();
+
+    return glow::gui::message_loop();
+}
 
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
@@ -96,18 +83,13 @@ auto App::on_size() -> int
 
 auto main() -> int
 {
-    glow::gui::CoInitialize init;
-
-    if (SUCCEEDED(init))
+    try
     {
-        App app;
-        WebView2 webView{app.m_hwnd.get(), 1};
-
-        app.show_normal();
-        webView.show_normal();
-
-        glow::gui::message_loop();
+        return App::run();
     }
-
-    return 0;
+    catch (std::exception& e)
+    {
+        glow::logging::shell_err(e.what());
+        std::terminate();
+    }
 }
