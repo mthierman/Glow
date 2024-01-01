@@ -15,9 +15,10 @@ auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::filesystem::path
 {
     wil::unique_cotaskmem_string buffer;
 
-    if (FAILED(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer))) return {};
+    if (SUCCEEDED(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer)))
+        return std::filesystem::path(buffer.get());
 
-    return std::filesystem::path(buffer.get());
+    else return {};
 }
 
 auto get_pgmptr() -> std::filesystem::path
