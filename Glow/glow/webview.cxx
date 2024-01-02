@@ -8,7 +8,7 @@
 
 #include <glow/webview.hxx>
 
-namespace glow::gui
+namespace glow::webview
 {
 
 WebView2::WebView2(HWND hwndParent, int64_t id, std::string url)
@@ -48,15 +48,9 @@ WebView2::WebView2(HWND hwndParent, int64_t id, std::string url)
 
 WebView2::~WebView2() {}
 
-auto WebView2::show_normal() -> void { glow::gui::show_normal(m_hwnd.get()); }
-
-auto WebView2::show() -> void { glow::gui::show(m_hwnd.get()); }
-
-auto WebView2::hide() -> void { glow::gui::hide(m_hwnd.get()); }
-
 auto CALLBACK WebView2::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
-    auto self{InstanceFromWndProc<WebView2>(hWnd, uMsg, lParam)};
+    auto self{glow::window::instance_from_wnd_proc<WebView2>(hWnd, uMsg, lParam)};
 
     if (self)
     {
@@ -279,4 +273,4 @@ auto WebView2::document_title_changed() -> void
         &token);
 }
 
-} // namespace glow::gui
+} // namespace glow::webview

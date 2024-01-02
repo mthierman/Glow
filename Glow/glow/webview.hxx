@@ -21,7 +21,7 @@
 #include <glow/text.hxx>
 #include <glow/window.hxx>
 
-namespace glow::gui
+namespace glow::webview
 {
 using json = nlohmann::json;
 

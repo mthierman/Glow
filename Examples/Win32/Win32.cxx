@@ -10,16 +10,13 @@
 
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
-#include <glow/gui.hxx>
-#include <glow/log.hxx>
-#include <glow/mainwindow.hxx>
 #include <glow/text.hxx>
 #include <glow/webview.hxx>
 #include <glow/window.hxx>
 
-struct App final : public glow::gui::MainWindow
+struct App final : public glow::window::MainWindow
 {
-    using glow::gui::MainWindow::MainWindow;
+    using glow::window::MainWindow::MainWindow;
 
     static auto run() -> int;
 
@@ -29,20 +26,19 @@ struct App final : public glow::gui::MainWindow
     auto on_parent_notify(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    glow::gui::GdiPlus gdiInit;
-    glow::gui::CoInitialize coInit;
+    glow::window::GdiPlus gdiInit;
+    glow::window::CoInitialize coInit;
 };
 
 auto App::run() -> int
 {
     App app;
-    glow::gui::WebView2 webView{app.m_hwnd.get(), 1};
+    glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
 
-    webView.show_normal();
+    glow::window::show_normal(webView.m_hwnd.get());
+    glow::window::show_normal(app.m_hwnd.get());
 
-    app.show_normal();
-
-    return glow::gui::message_loop();
+    return glow::window::message_loop();
 }
 
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -50,7 +46,7 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
 
     auto rect{*std::bit_cast<LPRECT>(lParam)};
-    auto position{glow::gui::rect_to_position(rect)};
+    auto position{glow::window::rect_to_position(rect)};
 
     if (gwlId == 1)
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
@@ -94,7 +90,7 @@ auto main() -> int
     }
     catch (std::exception& e)
     {
-        glow::log::shell(e.what());
+        glow::console::debug(e.what());
         std::terminate();
     }
 }

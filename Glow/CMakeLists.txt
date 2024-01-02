@@ -15,11 +15,8 @@ target_sources(
     Glow
     PRIVATE glow/console.cxx
             glow/filesystem.cxx
-            glow/gui.cxx
-            glow/mainwindow.cxx
             glow/webview.cxx
             glow/window.cxx
-            glow/log.cxx
             glow/text.cxx
     PUBLIC FILE_SET
            HEADERS
@@ -30,11 +27,8 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
            glow/console.hxx
            glow/filesystem.hxx
-           glow/gui.hxx
-           glow/mainwindow.hxx
            glow/webview.hxx
            glow/window.hxx
-           glow/log.hxx
            glow/text.hxx
 )
 
@@ -68,6 +62,7 @@ target_link_libraries(
            dwmapi.lib
            Comctl32.lib
            gdiplus.lib
+           windowscodecs.lib
            ShLwApi.Lib
            WebView2LoaderStatic.lib
 )

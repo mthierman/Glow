@@ -6,18 +6,12 @@
 // ╚──────────────╝
 // clang-format on
 
-#pragma once
+#include <glow/config.hxx>
 
+#include <glow/console.hxx>
+#include <glow/filesystem.hxx>
+#include <glow/text.hxx>
+#include <glow/webview.hxx>
 #include <glow/window.hxx>
 
-namespace glow::gui
-{
-
-struct MainWindow : public Window
-{
-    using Window::Window;
-
-    auto on_destroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
-};
-
-} // namespace glow::gui
+auto main() -> int { return 0; }
