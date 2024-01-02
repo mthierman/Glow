@@ -30,7 +30,7 @@ auto Window::create() -> void
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = sizeof(void*);
         wcex.hInstance = GetModuleHandleA(nullptr);
-        wcex.hbrBackground = m_hbrBackground.get();
+        wcex.hbrBackground = m_hbrBackgroundBlack.get();
         wcex.hCursor = m_hCursor.get();
         wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
         wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
@@ -208,6 +208,12 @@ auto Window::child() -> void
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
+auto Window::reparent(HWND parent) -> void
+{
+    SetParent(m_hwnd.get(), parent);
+    child();
+}
+
 auto Window::client_rect() -> RECT
 {
     RECT rect{};
@@ -365,7 +371,7 @@ auto Window::dwm_reset_text_color() -> void
     DwmSetWindowAttribute(m_hwnd.get(), DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-MainWindow::MainWindow(std::string className) : Window(className) {}
+MainWindow::MainWindow(std::string className) : Window{className} {}
 
 auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
@@ -374,7 +380,11 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-WebView::WebView(std::string className) : Window(className) {}
+WebView::WebView(int64_t id, HWND parent, std::string className) : Window{className}
+{
+    m_id = id;
+    m_parent = parent;
+}
 
 auto WebView::create() -> void
 {
@@ -391,7 +401,7 @@ auto WebView::create() -> void
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = sizeof(void*);
         wcex.hInstance = GetModuleHandleA(nullptr);
-        wcex.hbrBackground = m_hbrBackground.get();
+        wcex.hbrBackground = m_hbrBackgroundWhite.get();
         wcex.hCursor = m_hCursor.get();
         wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
         wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
@@ -399,8 +409,105 @@ auto WebView::create() -> void
         RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName, WS_POPUP, 0, 0, 200, 200, nullptr,
-                    nullptr, GetModuleHandleA(nullptr), this);
+    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName, WS_CHILD, 0, 0, 200, 200, m_parent,
+                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+
+    create_environment();
+}
+
+auto WebView::create_environment() -> void
+{
+    CreateCoreWebView2EnvironmentWithOptions(
+        nullptr, nullptr, nullptr,
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
+            {
+                if (createdEnvironment) create_controller(createdEnvironment);
+
+                return S_OK;
+            })
+            .Get());
+}
+
+auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
+{
+    environment->CreateCoreWebView2Controller(
+        m_hwnd.get(),
+        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+            [=, this](HRESULT, ICoreWebView2Controller* controller) -> HRESULT
+            {
+                if (controller)
+                {
+                    m_controller = controller;
+                    m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
+
+                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                    m_controller4->put_DefaultBackgroundColor(bgColor);
+
+                    m_controller->get_CoreWebView2(m_core.put());
+                    m_core20 = m_core.try_query<ICoreWebView2_20>();
+
+                    m_core20->get_Settings(m_settings.put());
+
+                    m_settings8 = m_settings.try_query<ICoreWebView2Settings8>();
+
+                    m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
+                    m_settings8->put_AreDefaultContextMenusEnabled(true);
+                    m_settings8->put_AreDefaultScriptDialogsEnabled(true);
+                    m_settings8->put_AreDevToolsEnabled(true);
+                    m_settings8->put_AreHostObjectsAllowed(true);
+                    m_settings8->put_HiddenPdfToolbarItems(
+                        COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
+                    m_settings8->put_IsBuiltInErrorPageEnabled(true);
+                    m_settings8->put_IsGeneralAutofillEnabled(true);
+                    m_settings8->put_IsPasswordAutosaveEnabled(true);
+                    m_settings8->put_IsPinchZoomEnabled(true);
+                    m_settings8->put_IsReputationCheckingRequired(true);
+                    m_settings8->put_IsScriptEnabled(true);
+                    m_settings8->put_IsStatusBarEnabled(true);
+                    m_settings8->put_IsSwipeNavigationEnabled(true);
+                    m_settings8->put_IsWebMessageEnabled(true);
+                    m_settings8->put_IsZoomControlEnabled(true);
+
+                    m_core20->Navigate(text::widen(m_url).c_str());
+
+                    if (!m_initialized)
+                    {
+                        m_initialized = true;
+                        // initialized();
+                        on_size();
+                    }
+
+                    // source_changed();
+                    // navigation_completed();
+                    // web_message_received();
+                    // accelerator_key_pressed();
+                    // favicon_changed();
+                    // document_title_changed();
+                }
+
+                return S_OK;
+            })
+            .Get());
+}
+
+auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_SIZE: return on_size();
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto WebView::on_size() -> int
+{
+    RECT rect{};
+    GetClientRect(m_hwnd.get(), &rect);
+    if (m_controller4) m_controller4->put_Bounds(rect);
+
+    return 0;
 }
 
 auto message_loop() -> int
@@ -420,6 +527,30 @@ auto message_loop() -> int
     }
 
     return 0;
+}
+
+auto rect_to_position(const RECT& rect) -> Position
+{
+    Position p;
+
+    p.x = rect.left;
+    p.y = rect.top;
+    p.width = rect.right - rect.left;
+    p.height = rect.bottom - rect.top;
+
+    return p;
+}
+
+auto position_to_rect(const Position& position) -> RECT
+{
+    RECT r;
+
+    r.left = position.x;
+    r.top = position.y;
+    r.right = position.width;
+    r.bottom = position.height;
+
+    return r;
 }
 
 auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }

@@ -26,8 +26,17 @@
 #include <bit>
 #include <memory>
 
+#include <WebView2.h>
+#include <WebView2EnvironmentOptions.h>
+
+#include <nlohmann/json.hpp>
+
+#include <glow/console.hxx>
+#include <glow/text.hxx>
+
 namespace glow::window
 {
+using json = nlohmann::json;
 
 template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
@@ -92,6 +101,7 @@ struct Window
     auto overlapped() -> void;
     auto popup() -> void;
     auto child() -> void;
+    auto reparent(HWND parent) -> void;
 
     auto client_rect() -> RECT;
     auto window_rect() -> RECT;
@@ -114,6 +124,7 @@ struct Window
 
     std::string m_className;
     wil::unique_hwnd m_hwnd{};
+    std::string m_url{"https://www.google.com/"};
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -121,7 +132,9 @@ struct Window
         LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     wil::unique_hicon m_appIcon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
+    wil::unique_hbrush m_hbrBackgroundNull{static_cast<HBRUSH>(GetStockObject(NULL_BRUSH))};
+    wil::unique_hbrush m_hbrBackgroundBlack{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
+    wil::unique_hbrush m_hbrBackgroundWhite{static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH))};
 };
 
 struct MainWindow : public Window
@@ -133,12 +146,35 @@ struct MainWindow : public Window
 
 struct WebView : public Window
 {
-    WebView(std::string className = "WebView");
+    WebView(int64_t id, HWND parent, std::string className = "WebView");
 
     virtual auto create() -> void override;
+
+    auto create_environment() -> void;
+    auto create_controller(ICoreWebView2Environment* environment) -> void;
+
+    auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+
+    auto on_size() -> int;
+
+    int64_t m_id{};
+    HWND m_parent{};
+
+    bool m_initialized{false};
+
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
+    wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+    wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+    wil::com_ptr<ICoreWebView2> m_core{nullptr};
+    wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
+    wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+    wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
 };
 
 auto message_loop() -> int;
+
+auto rect_to_position(const RECT& rect) -> Position;
+auto position_to_rect(const Position& position) -> RECT;
 
 auto clamp_color(int value) -> int;
 auto make_colorref(int r, int g, int b) -> COLORREF;
