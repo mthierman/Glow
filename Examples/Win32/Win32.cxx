@@ -6,8 +6,6 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <type_traits>
-
 #include <glow/config.hxx>
 
 #include <glow/console.hxx>
