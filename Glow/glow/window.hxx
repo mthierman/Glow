@@ -158,6 +158,30 @@ struct WebView : public Window
 
     auto on_size() -> int;
 
+    virtual auto initialized() -> void{};
+
+    auto navigate(std::string url) -> void;
+    auto post_json(const json jsonMessage) -> void;
+
+    auto source_changed() -> void;
+    virtual auto source_changed_handler() -> void{};
+
+    auto navigation_completed() -> void;
+    virtual auto navigation_completed_handler() -> void{};
+
+    auto web_message_received() -> void;
+    virtual auto web_message_received_handler() -> void{};
+
+    auto accelerator_key_pressed() -> void;
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> void{};
+
+    auto favicon_changed() -> void;
+    virtual auto favicon_changed_handler() -> void{};
+
+    auto document_title_changed() -> void;
+    virtual auto document_title_changed_handler() -> void{};
+
     int64_t m_id{};
     HWND m_parent{};
 

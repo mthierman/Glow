@@ -476,16 +476,16 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     if (!m_initialized)
                     {
                         m_initialized = true;
-                        // initialized();
+                        initialized();
                         on_size();
                     }
 
-                    // source_changed();
-                    // navigation_completed();
-                    // web_message_received();
-                    // accelerator_key_pressed();
-                    // favicon_changed();
-                    // document_title_changed();
+                    source_changed();
+                    navigation_completed();
+                    web_message_received();
+                    accelerator_key_pressed();
+                    favicon_changed();
+                    document_title_changed();
                 }
 
                 return S_OK;
@@ -510,6 +510,116 @@ auto WebView::on_size() -> int
     if (m_controller4) m_controller4->put_Bounds(rect);
 
     return 0;
+}
+
+auto WebView::navigate(std::string url) -> void
+{
+    auto wideUrl{glow::text::widen(url)};
+    if (m_core20) m_core20->Navigate(wideUrl.c_str());
+}
+
+auto WebView::post_json(const json jsonMessage) -> void
+{
+    auto wideUrl{glow::text::widen(jsonMessage)};
+    if (m_core20) m_core20->PostWebMessageAsJson(wideUrl.c_str());
+}
+
+auto WebView::source_changed() -> void
+{
+    EventRegistrationToken token;
+
+    m_core20->add_SourceChanged(
+        Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
+            [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+            {
+                // source_changed_handler();
+
+                return S_OK;
+            })
+            .Get(),
+        &token);
+}
+
+auto WebView::navigation_completed() -> void
+{
+    EventRegistrationToken token;
+
+    m_core20->add_NavigationCompleted(
+        Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
+            [=, this](ICoreWebView2* sender,
+                      ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
+            {
+                // navigation_completed_handler();
+
+                return S_OK;
+            })
+            .Get(),
+        &token);
+}
+
+auto WebView::web_message_received() -> void
+{
+    EventRegistrationToken token;
+
+    m_core20->add_WebMessageReceived(
+        Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+            [=, this](ICoreWebView2* sender,
+                      ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+            {
+                // web_message_received_handler();
+
+                return S_OK;
+            })
+            .Get(),
+        &token);
+}
+
+auto WebView::accelerator_key_pressed() -> void
+{
+    EventRegistrationToken token;
+
+    m_controller4->add_AcceleratorKeyPressed(
+        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+            [=, this](ICoreWebView2Controller* sender,
+                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+            {
+                // accelerator_key_pressed_handler(args);
+
+                return S_OK;
+            })
+            .Get(),
+        &token);
+}
+
+auto WebView::favicon_changed() -> void
+{
+    EventRegistrationToken token;
+
+    m_core20->add_FaviconChanged(Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
+                                     [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                                     {
+                                         // favicon_changed_handler();
+
+                                         return S_OK;
+                                     })
+                                     .Get(),
+                                 &token);
+}
+
+auto WebView::document_title_changed() -> void
+{
+    EventRegistrationToken token;
+
+    m_core20->add_DocumentTitleChanged(
+        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+            {
+                // document_title_changed_handler();
+
+                return S_OK;
+            })
+            .Get(),
+        &token);
 }
 
 auto message_loop() -> int
