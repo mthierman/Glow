@@ -11,15 +11,19 @@
 namespace glow::window
 {
 
-Window::Window(std::string className)
+Window::Window(std::string className) : m_className(className) {}
+
+Window::~Window() {}
+
+auto Window::create() -> void
 {
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
-    if (!GetClassInfoExA(GetModuleHandleA(nullptr), className.c_str(), &wcex))
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
     {
         OutputDebugStringA("Registering Window class...");
 
-        wcex.lpszClassName = className.c_str();
+        wcex.lpszClassName = m_className.c_str();
         wcex.lpszMenuName = 0;
         wcex.lpfnWndProc = Window::WndProc;
         wcex.style = 0;
@@ -39,8 +43,6 @@ Window::Window(std::string className)
                     CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
                     this);
 }
-
-Window::~Window() {}
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {

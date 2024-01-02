@@ -66,6 +66,8 @@ struct Window
     Window(std::string className = "Window");
     virtual ~Window();
 
+    virtual auto create() -> void;
+
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
@@ -110,6 +112,7 @@ struct Window
     auto dwm_set_text_color(COLORREF color) -> void;
     auto dwm_reset_text_color() -> void;
 
+    std::string m_className;
     wil::unique_hwnd m_hwnd{};
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(

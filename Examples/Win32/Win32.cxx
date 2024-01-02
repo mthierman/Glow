@@ -36,7 +36,8 @@ struct App final : public window::MainWindow
 
 auto App::run() -> int
 {
-    App app;
+    App app{"Win32"};
+    app.create();
     app.show_normal();
 
     return window::message_loop();
