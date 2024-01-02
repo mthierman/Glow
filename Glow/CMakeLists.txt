@@ -24,7 +24,7 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${CMAKE_CURRENT_SOURCE_DIR}
+           ${PROJECT_SOURCE_DIR}/Glow
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
@@ -42,7 +42,7 @@ target_sources(
 
 target_include_directories(
     Glow
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC ${PROJECT_SOURCE_DIR}/Glow
            ${webview2_SOURCE_DIR}/build/native/include-winrt
            ${webview2_SOURCE_DIR}/build/native/include
            ${wil_SOURCE_DIR}/include
