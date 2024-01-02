@@ -80,13 +80,14 @@ auto MainWindow::on_size() -> int
 auto run() -> int
 {
     MainWindow mainWindow{"Win32"};
-    mainWindow(true);
+    mainWindow();
 
     mainWindow.m_webView = std::make_unique<window::WebView>(1, mainWindow.m_hwnd.get());
     mainWindow.m_window = std::make_unique<window::Window>();
 
-    (*mainWindow.m_webView)(true);
-    mainWindow.m_window->operator()(true);
+    (*mainWindow.m_webView)();
+    (*mainWindow.m_window)();
+    // mainWindow.m_window->operator()();
 
     return window::message_loop();
 }

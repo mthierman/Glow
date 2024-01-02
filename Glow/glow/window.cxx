@@ -11,7 +11,7 @@
 namespace glow::window
 {
 
-Window::Window(std::string className) : m_className(className) {}
+Window::Window(std::string className, bool show) : m_className{className}, m_show{show} {}
 
 Window::~Window() {}
 
@@ -45,9 +45,10 @@ auto Window::create_window() -> void
 
 auto Window::operator()(bool show) -> void
 {
+    m_show = show;
     register_window();
     create_window();
-    if (show) show_normal();
+    if (m_show) show_normal();
 }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT

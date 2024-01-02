@@ -72,12 +72,12 @@ struct Position
 
 struct Window
 {
-    Window(std::string className = "Window");
+    Window(std::string className = "Window", bool show = true);
     virtual ~Window();
 
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
-    void operator()(bool show = false);
+    void operator()(bool show = true);
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -125,6 +125,7 @@ struct Window
     auto dwm_reset_text_color() -> void;
 
     std::string m_className;
+    bool m_show{true};
     WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
     std::string m_url{"https://www.google.com/"};
