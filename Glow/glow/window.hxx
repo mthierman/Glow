@@ -75,10 +75,9 @@ struct Window
     Window(std::string className = "Window");
     virtual ~Window();
 
-    void operator()(bool show = false);
-
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
+    void operator()(bool show = false);
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
