@@ -15,11 +15,12 @@
 #include <ShlObj.h>
 #include <wrl.h>
 
+#include <wil/com.h>
+#include <wil/result.h>
+#include <wil/resource.h>
+
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
-
-#include <wil/com.h>
-#include <wil/resource.h>
 
 #include <algorithm>
 #include <bit>
