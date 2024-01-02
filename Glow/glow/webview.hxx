@@ -9,6 +9,7 @@
 #pragma once
 
 #include <wrl.h>
+
 #include <wil/com.h>
 #include <wil/resource.h>
 
@@ -17,8 +18,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include <text/text.hxx>
-#include <gui/window.hxx>
+#include <glow/text.hxx>
+#include <glow/window.hxx>
 
 namespace glow::gui
 {

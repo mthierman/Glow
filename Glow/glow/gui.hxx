@@ -13,17 +13,17 @@
 #include <dwmapi.h>
 #include <gdiplus.h>
 #include <ShlObj.h>
-
-#include <algorithm>
-#include <bit>
-#include <memory>
+#include <wrl.h>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
 #include <wil/com.h>
 #include <wil/resource.h>
-#include <wrl.h>
+
+#include <algorithm>
+#include <bit>
+#include <memory>
 
 namespace glow::gui
 {

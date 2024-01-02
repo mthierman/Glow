@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <console/console.hxx>
+#include <glow/console.hxx>
 
 namespace glow::console
 {

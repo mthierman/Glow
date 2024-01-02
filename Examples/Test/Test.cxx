@@ -6,12 +6,16 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <config/glow.hxx>
+#include <glow/config.hxx>
 
-#include <console/console.hxx>
-#include <gui/mainwindow.hxx>
-#include <gui/webview.hxx>
-#include <log/log.hxx>
+#include <glow/console.hxx>
+#include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
+#include <glow/log.hxx>
+#include <glow/mainwindow.hxx>
+#include <glow/text.hxx>
+#include <glow/webview.hxx>
+#include <glow/window.hxx>
 
 struct App final : public glow::gui::MainWindow
 {

@@ -7,42 +7,43 @@ add_library(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/Config/glow.hxx.in
-    ${CMAKE_CURRENT_BINARY_DIR}/Include/config/glow.hxx
+    ${PROJECT_SOURCE_DIR}/config.hxx.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
 )
 
 target_sources(
     Glow
-    PRIVATE console/console.cxx
-            filesystem/filesystem.cxx
-            gui/gui.cxx
-            gui/mainwindow.cxx
-            gui/webview.cxx
-            gui/window.cxx
-            log/log.cxx
-            text/text.cxx
+    PRIVATE glow/console.cxx
+            glow/filesystem.cxx
+            glow/gui.cxx
+            glow/mainwindow.cxx
+            glow/webview.cxx
+            glow/window.cxx
+            glow/log.cxx
+            glow/text.cxx
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
            ${CMAKE_CURRENT_SOURCE_DIR}
-           ${CMAKE_CURRENT_BINARY_DIR}/Include
+           ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
-           ${CMAKE_CURRENT_BINARY_DIR}/Include/config/glow.hxx
-           console/console.hxx
-           filesystem/filesystem.hxx
-           gui/gui.hxx
-           gui/mainwindow.hxx
-           gui/webview.hxx
-           gui/window.hxx
-           log/log.hxx
-           text/text.hxx
+           ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
+           glow/console.hxx
+           glow/filesystem.hxx
+           glow/gui.hxx
+           glow/mainwindow.hxx
+           glow/webview.hxx
+           glow/window.hxx
+           glow/log.hxx
+           glow/text.hxx
 )
 
 # target_precompile_headers( Glow PRIVATE pch.hxx )
 
 target_include_directories(
     Glow
-    PUBLIC ${webview2_SOURCE_DIR}/build/native/include-winrt
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
+           ${webview2_SOURCE_DIR}/build/native/include-winrt
            ${webview2_SOURCE_DIR}/build/native/include
            ${wil_SOURCE_DIR}/include
            ${sqlite_SOURCE_DIR}

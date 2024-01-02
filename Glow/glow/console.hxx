@@ -8,16 +8,28 @@
 
 #pragma once
 
-#include <gui/window.hxx>
+#include <Windows.h>
+#include <shellapi.h>
 
-namespace glow::gui
+#include <wil/resource.h>
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include <glow/text.hxx>
+
+namespace glow::console
 {
 
-struct MainWindow : public Window
+struct Console
 {
-    using Window::Window;
+    Console();
+    ~Console();
 
-    auto on_destroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
+    FILE* pFile;
 };
 
-} // namespace glow::gui
+auto argv() -> std::vector<std::string>;
+
+} // namespace glow::console

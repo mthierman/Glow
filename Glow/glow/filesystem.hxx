@@ -11,13 +11,13 @@
 #include <Windows.h>
 #include <ShlObj.h>
 
+#include <wil/resource.h>
+
 #include <filesystem>
 #include <memory>
 #include <optional>
 #include <print>
 #include <string>
-
-#include <wil/resource.h>
 
 #include <sqlite3.h>
 

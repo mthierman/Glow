@@ -23,9 +23,9 @@
 #include <utility>
 #include <vector>
 
-#include <console/console.hxx>
-#include <filesystem/filesystem.hxx>
-#include <text/text.hxx>
+#include <glow/console.hxx>
+#include <glow/filesystem.hxx>
+#include <glow/text.hxx>
 
 auto get_bitmap(const std::filesystem::path& inputCanonical, const int& size) -> std::vector<char>;
 auto write_header(std::ofstream& outputStream, uint16_t count) -> void;

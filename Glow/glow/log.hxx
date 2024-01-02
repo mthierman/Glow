@@ -9,15 +9,14 @@
 #pragma once
 
 #include <Windows.h>
-#include <comdef.h>
 #include <shellapi.h>
 
 #include <print>
 #include <source_location>
 #include <string>
 
-#include <filesystem/filesystem.hxx>
-#include <text/text.hxx>
+#include <glow/filesystem.hxx>
+#include <glow/text.hxx>
 
 namespace glow::log
 {

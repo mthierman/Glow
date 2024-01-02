@@ -6,7 +6,16 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <filesystem/database.hxx>
+#include <glow/config.hxx>
+
+#include <glow/console.hxx>
+#include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
+#include <glow/log.hxx>
+#include <glow/mainwindow.hxx>
+#include <glow/text.hxx>
+#include <glow/webview.hxx>
+#include <glow/window.hxx>
 
 auto main() -> int
 {
