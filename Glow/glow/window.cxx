@@ -37,6 +37,8 @@ CoInitialize::~CoInitialize()
     if (SUCCEEDED(m_result)) CoUninitialize();
 }
 
+CoInitialize::operator HRESULT() const { return m_result; }
+
 Window::Window()
 {
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};

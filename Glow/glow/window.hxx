@@ -75,7 +75,7 @@ struct CoInitialize
     CoInitialize();
     ~CoInitialize();
 
-    operator HRESULT() const { return m_result; }
+    operator HRESULT() const;
     HRESULT m_result{};
 };
 
