@@ -13,7 +13,6 @@
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
 #include <glow/text.hxx>
-#include <glow/webview.hxx>
 #include <glow/window.hxx>
 
 using namespace glow;

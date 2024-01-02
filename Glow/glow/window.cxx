@@ -210,8 +210,17 @@ auto Window::child() -> void
 
 auto Window::reparent(HWND parent) -> void
 {
-    SetParent(m_hwnd.get(), parent);
-    child();
+    if (parent)
+    {
+        SetParent(m_hwnd.get(), parent);
+        child();
+    }
+
+    else
+    {
+        SetParent(m_hwnd.get(), nullptr);
+        popup();
+    }
 }
 
 auto Window::client_rect() -> RECT
