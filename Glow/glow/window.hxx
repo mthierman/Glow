@@ -77,11 +77,13 @@ struct Window
 
     void operator()(bool show = false)
     {
-        create();
+        register_window();
+        create_window();
         if (show) show_normal();
     }
 
-    virtual auto create() -> void;
+    virtual auto register_window() -> void;
+    virtual auto create_window() -> void;
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -129,6 +131,7 @@ struct Window
     auto dwm_reset_text_color() -> void;
 
     std::string m_className;
+    WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
     std::string m_url{"https://www.google.com/"};
 
@@ -155,7 +158,8 @@ struct WebView : public Window
     WebView(int64_t id, HWND parent, std::string url = "https://www.google.com/",
             std::string className = "WebView");
 
-    virtual auto create() -> void override;
+    virtual auto register_window() -> void override;
+    virtual auto create_window() -> void override;
 
     auto create_environment() -> void;
     auto create_controller(ICoreWebView2Environment* environment) -> void;

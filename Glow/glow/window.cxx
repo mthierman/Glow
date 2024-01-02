@@ -15,28 +15,29 @@ Window::Window(std::string className) : m_className(className) {}
 
 Window::~Window() {}
 
-auto Window::create() -> void
+auto Window::register_window() -> void
 {
-    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
-
-    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &m_wcex))
     {
-        wcex.lpszClassName = m_className.c_str();
-        wcex.lpszMenuName = 0;
-        wcex.lpfnWndProc = Window::WndProc;
-        wcex.style = 0;
-        wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(void*);
-        wcex.hInstance = GetModuleHandleA(nullptr);
-        wcex.hbrBackground = m_hbrBackgroundBlack.get();
-        wcex.hCursor = m_hCursor.get();
-        wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-        wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wcex.lpszClassName = m_className.c_str();
+        m_wcex.lpszMenuName = 0;
+        m_wcex.lpfnWndProc = Window::WndProc;
+        m_wcex.style = 0;
+        m_wcex.cbClsExtra = 0;
+        m_wcex.cbWndExtra = sizeof(void*);
+        m_wcex.hInstance = GetModuleHandleA(nullptr);
+        m_wcex.hbrBackground = m_hbrBackgroundBlack.get();
+        m_wcex.hCursor = m_hCursor.get();
+        m_wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-        RegisterClassExA(&wcex);
+        RegisterClassExA(&m_wcex);
     }
+}
 
-    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName,
+auto Window::create_window() -> void
+{
+    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName,
                     WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
                     CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
                     this);
@@ -395,29 +396,30 @@ WebView::WebView(int64_t id, HWND parent, std::string url, std::string className
     m_url = url;
 }
 
-auto WebView::create() -> void
+auto WebView::register_window() -> void
 {
-    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
-
-    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &m_wcex))
     {
-        wcex.lpszClassName = m_className.c_str();
-        wcex.lpszMenuName = 0;
-        wcex.lpfnWndProc = WebView::WndProc;
-        wcex.style = 0;
-        wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(void*);
-        wcex.hInstance = GetModuleHandleA(nullptr);
-        wcex.hbrBackground = m_hbrBackgroundBlack.get();
-        wcex.hCursor = m_hCursor.get();
-        wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-        wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wcex.lpszClassName = m_className.c_str();
+        m_wcex.lpszMenuName = 0;
+        m_wcex.lpfnWndProc = WebView::WndProc;
+        m_wcex.style = 0;
+        m_wcex.cbClsExtra = 0;
+        m_wcex.cbWndExtra = sizeof(void*);
+        m_wcex.hInstance = GetModuleHandleA(nullptr);
+        m_wcex.hbrBackground = m_hbrBackgroundBlack.get();
+        m_wcex.hCursor = m_hCursor.get();
+        m_wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-        RegisterClassExA(&wcex);
+        RegisterClassExA(&m_wcex);
     }
+}
 
-    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName, WS_CHILD, 0, 0, 200, 200, m_parent,
-                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+auto WebView::create_window() -> void
+{
+    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 200, 200,
+                    m_parent, std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
     create_environment();
 }
