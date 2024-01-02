@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <shellapi.h>
+#include <comdef.h>
 
 #include <wil/resource.h>
 
@@ -34,6 +35,8 @@ struct Console
 };
 
 auto argv() -> std::vector<std::string>;
+
+auto hresult(HRESULT hr) -> std::string;
 
 auto debug(std::string message, std::source_location location = std::source_location::current())
     -> void;

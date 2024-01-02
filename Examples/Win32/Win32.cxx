@@ -6,6 +6,8 @@
 // ╚──────────────╝
 // clang-format on
 
+#include <type_traits>
+
 #include <glow/config.hxx>
 
 #include <glow/console.hxx>
@@ -37,6 +39,9 @@ auto App::run() -> int
 
     glow::window::show_normal(webView.m_hwnd.get());
     glow::window::show_normal(app.m_hwnd.get());
+
+    glow::console::debug(glow::console::hresult(app.coInit));
+    glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));
 
     return glow::window::message_loop();
 }

@@ -51,6 +51,12 @@ auto argv() -> std::vector<std::string>
     return argv;
 }
 
+auto hresult(HRESULT hr) -> std::string
+{
+    auto comError = _com_error(hr);
+    return std::string(comError.ErrorMessage());
+}
+
 auto debug(std::string message, std::source_location location) -> void
 {
     OutputDebugStringA("Message: ");

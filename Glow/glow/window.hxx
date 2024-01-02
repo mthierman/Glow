@@ -67,6 +67,7 @@ struct GdiPlus
 
     Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
     ULONG_PTR m_gdiplusToken{};
+    Gdiplus::Status m_gdiplusStatus;
 };
 
 struct CoInitialize

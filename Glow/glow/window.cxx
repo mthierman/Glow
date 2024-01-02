@@ -12,19 +12,24 @@ namespace glow::window
 {
 
 GdiPlus::GdiPlus()
+    : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
 {
-    Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr);
-
-    if (Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr) !=
-        Gdiplus::Status::Ok)
-        throw std::runtime_error("GDI+ startup failed");
+    if (m_gdiplusStatus != Gdiplus::Status::Ok) throw std::runtime_error("GDI+ startup failure");
 }
 
-GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(m_gdiplusToken); }
+GdiPlus::~GdiPlus()
+{
+    if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
+}
+
+constexpr auto operator+(Gdiplus::Status g) noexcept
+{
+    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
+}
 
 CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
 {
-    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failed");
+    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
 }
 
 CoInitialize::~CoInitialize()
