@@ -43,6 +43,13 @@ auto Window::create_window() -> void
                     this);
 }
 
+auto Window::operator()(bool show) -> void
+{
+    register_window();
+    create_window();
+    if (show) show_normal();
+}
+
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};

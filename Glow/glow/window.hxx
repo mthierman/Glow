@@ -75,12 +75,7 @@ struct Window
     Window(std::string className = "Window");
     virtual ~Window();
 
-    void operator()(bool show = false)
-    {
-        register_window();
-        create_window();
-        if (show) show_normal();
-    }
+    void operator()(bool show = false);
 
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
