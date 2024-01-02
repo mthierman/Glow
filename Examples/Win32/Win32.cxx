@@ -39,10 +39,9 @@ auto App::run() -> int
     app.create();
     app.show_normal();
 
-    window::WebView webView{1, app.m_hwnd.get(), "https://www.bing.com/"};
+    window::WebView webView{1, app.m_hwnd.get()};
     webView.create();
     webView.show_normal();
-    glow::console::debug(std::to_string(webView.m_id));
 
     return window::message_loop();
 }

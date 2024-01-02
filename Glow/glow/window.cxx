@@ -21,8 +21,6 @@ auto Window::create() -> void
 
     if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
     {
-        OutputDebugStringA("Registering Window class...");
-
         wcex.lpszClassName = m_className.c_str();
         wcex.lpszMenuName = 0;
         wcex.lpfnWndProc = Window::WndProc;
@@ -403,8 +401,6 @@ auto WebView::create() -> void
 
     if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
     {
-        OutputDebugStringA("Registering WebView class...");
-
         wcex.lpszClassName = m_className.c_str();
         wcex.lpszMenuName = 0;
         wcex.lpfnWndProc = WebView::WndProc;
