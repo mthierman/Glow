@@ -16,9 +16,11 @@
 #include <glow/webview.hxx>
 #include <glow/window.hxx>
 
-struct App final : public glow::window::MainWindow
+using namespace glow;
+
+struct App final : public window::MainWindow
 {
-    using glow::window::MainWindow::MainWindow;
+    using MainWindow::MainWindow;
 
     static auto run() -> int;
 
@@ -28,37 +30,16 @@ struct App final : public glow::window::MainWindow
     auto on_parent_notify(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    glow::window::GdiPlus gdiInit;
-    glow::window::CoInitialize coInit;
+    window::GdiPlus gdiInit;
+    window::CoInitialize coInit;
 };
 
 auto App::run() -> int
 {
-    glow::window::Window window;
-    window.show_normal();
-
     App app;
     app.show_normal();
 
-    App app2;
-    app2.show_normal();
-
-    // glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
-    // ShowWindow(webView.m_hwnd.get(), SW_SHOWNORMAL);
-
-    // glow::console::debug(glow::console::hresult(app.coInit));
-    // glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));
-
-    // auto test = glow::window::WindowClass("TestClass");
-
-    // auto testWindow = CreateWindowExA(0, MAKEINTATOM(test.m_atom), "Window",
-    //                                   WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
-    //                                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
-    //                                   nullptr, GetModuleHandleA(nullptr), 0);
-
-    // ShowWindow(testWindow, SW_SHOWNORMAL);
-
-    return glow::window::message_loop();
+    return window::message_loop();
 }
 
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
