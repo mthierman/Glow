@@ -143,7 +143,7 @@ struct Window
 
 struct MainWindow : public Window
 {
-    MainWindow(std::string className = "MainWindow");
+    MainWindow(std::string className = "MainWindow", bool show = true);
 
     auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
@@ -151,7 +151,7 @@ struct MainWindow : public Window
 struct WebView : public Window
 {
     WebView(int64_t id, HWND parent, std::string url = "https://www.google.com/",
-            std::string className = "WebView");
+            std::string className = "WebView", bool show = true);
 
     virtual auto register_window() -> void override;
     virtual auto create_window() -> void override;

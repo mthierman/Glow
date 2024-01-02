@@ -387,7 +387,7 @@ auto Window::dwm_reset_text_color() -> void
     DwmSetWindowAttribute(m_hwnd.get(), DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-MainWindow::MainWindow(std::string className) : Window{className} {}
+MainWindow::MainWindow(std::string className, bool show) : Window{className, show} {}
 
 auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
@@ -396,8 +396,8 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-WebView::WebView(int64_t id, HWND parent, std::string url, std::string className)
-    : Window{className}
+WebView::WebView(int64_t id, HWND parent, std::string url, std::string className, bool show)
+    : Window{className, show}
 {
     m_id = id;
     m_parent = parent;

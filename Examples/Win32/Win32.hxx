@@ -85,9 +85,11 @@ auto run() -> int
     mainWindow.m_webView = std::make_unique<window::WebView>(1, mainWindow.m_hwnd.get());
     mainWindow.m_window = std::make_unique<window::Window>();
 
-    (*mainWindow.m_webView)();
-    (*mainWindow.m_window)();
-    // mainWindow.m_window->operator()();
+    (*mainWindow.m_webView)(false);
+    // (*mainWindow.m_window)();
+    mainWindow.m_window->operator()();
+
+    (*mainWindow.m_webView).show();
 
     return window::message_loop();
 }
