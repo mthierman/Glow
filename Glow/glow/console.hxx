@@ -38,6 +38,9 @@ auto argv() -> std::vector<std::string>;
 
 auto hresult(HRESULT hr) -> std::string;
 
+auto debug_hr(HRESULT hr) -> void;
+auto print_hr(HRESULT hr) -> void;
+
 auto debug(std::string message, std::source_location location = std::source_location::current())
     -> void;
 auto print(std::string message, std::source_location location = std::source_location::current())
