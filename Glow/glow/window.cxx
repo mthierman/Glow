@@ -11,33 +11,26 @@
 namespace glow::window
 {
 
-GdiPlus::GdiPlus()
-    : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
+WindowClass::WindowClass(std::string className)
 {
-    if (m_gdiplusStatus != Gdiplus::Status::Ok) throw std::runtime_error("GDI+ startup failure");
+    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+
+    wcex.lpszClassName = className.c_str();
+    wcex.lpszMenuName = 0;
+    wcex.lpfnWndProc = DefWindowProcA;
+    wcex.style = 0;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = sizeof(void*);
+    wcex.hInstance = GetModuleHandleA(nullptr);
+    wcex.hbrBackground = m_hbrBackground.get();
+    wcex.hCursor = m_hCursor.get();
+    wcex.hIcon = m_hIcon.get();
+    wcex.hIconSm = m_hIcon.get();
+
+    m_atom = RegisterClassExA(&wcex);
 }
 
-GdiPlus::~GdiPlus()
-{
-    if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
-}
-
-constexpr auto operator+(Gdiplus::Status g) noexcept
-{
-    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
-}
-
-CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
-{
-    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
-}
-
-CoInitialize::~CoInitialize()
-{
-    if (SUCCEEDED(m_result)) CoUninitialize();
-}
-
-CoInitialize::operator HRESULT() const { return m_result; }
+WindowClass::~WindowClass() {}
 
 Window::Window()
 {
@@ -515,5 +508,33 @@ auto icon_shield() -> HICON
     return static_cast<HICON>(
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
+
+GdiPlus::GdiPlus()
+    : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
+{
+    if (m_gdiplusStatus != Gdiplus::Status::Ok) throw std::runtime_error("GDI+ startup failure");
+}
+
+GdiPlus::~GdiPlus()
+{
+    if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
+}
+
+constexpr auto operator+(Gdiplus::Status g) noexcept
+{
+    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
+}
+
+CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
+{
+    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
+}
+
+CoInitialize::~CoInitialize()
+{
+    if (SUCCEEDED(m_result)) CoUninitialize();
+}
+
+CoInitialize::operator HRESULT() const { return m_result; }
 
 } // namespace glow::window

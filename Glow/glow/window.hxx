@@ -61,23 +61,17 @@ struct Position
     int height{};
 };
 
-struct GdiPlus
+struct WindowClass
 {
-    GdiPlus();
-    ~GdiPlus();
+    WindowClass(std::string className);
+    ~WindowClass();
 
-    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
-    ULONG_PTR m_gdiplusToken{};
-    Gdiplus::Status m_gdiplusStatus;
-};
-
-struct CoInitialize
-{
-    CoInitialize();
-    ~CoInitialize();
-
-    operator HRESULT() const;
-    HRESULT m_result{};
+    ATOM m_atom;
+    wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
+        LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    wil::unique_hicon m_hIcon{static_cast<HICON>(
+        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
 };
 
 struct Window
@@ -165,5 +159,24 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
+
+struct GdiPlus
+{
+    GdiPlus();
+    ~GdiPlus();
+
+    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
+    ULONG_PTR m_gdiplusToken{};
+    Gdiplus::Status m_gdiplusStatus;
+};
+
+struct CoInitialize
+{
+    CoInitialize();
+    ~CoInitialize();
+
+    operator HRESULT() const;
+    HRESULT m_result{};
+};
 
 } // namespace glow::window
