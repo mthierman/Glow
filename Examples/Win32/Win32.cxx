@@ -34,12 +34,13 @@ struct App final : public window::MainWindow
 auto App::run() -> int
 {
     App app{"Win32"};
-    app.create();
-    app.show_normal();
+    app(true);
 
     window::WebView webView{1, app.m_hwnd.get()};
-    webView.create();
-    webView.show_normal();
+    webView(true);
+
+    window::Window window;
+    window(true);
 
     return window::message_loop();
 }
