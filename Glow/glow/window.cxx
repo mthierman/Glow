@@ -380,10 +380,12 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-WebView::WebView(int64_t id, HWND parent, std::string className) : Window{className}
+WebView::WebView(int64_t id, HWND parent, std::string url, std::string className)
+    : Window{className}
 {
     m_id = id;
     m_parent = parent;
+    m_url = url;
 }
 
 auto WebView::create() -> void
@@ -401,7 +403,7 @@ auto WebView::create() -> void
         wcex.cbClsExtra = 0;
         wcex.cbWndExtra = sizeof(void*);
         wcex.hInstance = GetModuleHandleA(nullptr);
-        wcex.hbrBackground = m_hbrBackgroundWhite.get();
+        wcex.hbrBackground = m_hbrBackgroundBlack.get();
         wcex.hCursor = m_hCursor.get();
         wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
         wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();

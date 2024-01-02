@@ -146,7 +146,8 @@ struct MainWindow : public Window
 
 struct WebView : public Window
 {
-    WebView(int64_t id, HWND parent, std::string className = "WebView");
+    WebView(int64_t id, HWND parent, std::string url = "https://www.google.com/",
+            std::string className = "WebView");
 
     virtual auto create() -> void override;
 
