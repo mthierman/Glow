@@ -61,18 +61,18 @@ struct Position
     int height{};
 };
 
-struct WindowClass
-{
-    WindowClass(std::string className);
-    ~WindowClass();
+// struct WindowClass
+// {
+//     WindowClass(std::string className);
+//     ~WindowClass();
 
-    ATOM m_atom;
-    wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
-        LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    wil::unique_hicon m_hIcon{static_cast<HICON>(
-        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
-};
+//     ATOM m_atom;
+//     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
+//         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+//     wil::unique_hicon m_hIcon{static_cast<HICON>(
+//         LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+//     wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
+// };
 
 struct Window
 {
@@ -106,6 +106,7 @@ struct Window
 
     auto client_rect() -> RECT;
     auto window_rect() -> RECT;
+    auto client_position() -> Position;
     auto window_position() -> Position;
 
     auto dwm_dark_mode(bool enabled) -> void;

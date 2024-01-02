@@ -35,22 +35,22 @@ struct App final : public glow::window::MainWindow
 auto App::run() -> int
 {
     App app;
-    glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
-
     app.show_normal();
+
+    glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
     ShowWindow(webView.m_hwnd.get(), SW_SHOWNORMAL);
 
-    glow::console::debug(glow::console::hresult(app.coInit));
-    glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));
+    // glow::console::debug(glow::console::hresult(app.coInit));
+    // glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));
 
-    auto test = glow::window::WindowClass("TestClass");
+    // auto test = glow::window::WindowClass("TestClass");
 
-    auto testWindow = CreateWindowExA(0, MAKEINTATOM(test.m_atom), "Window",
-                                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
-                                      CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                                      GetModuleHandleA(nullptr), 0);
+    // auto testWindow = CreateWindowExA(0, MAKEINTATOM(test.m_atom), "Window",
+    //                                   WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT,
+    //                                   CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr,
+    //                                   nullptr, GetModuleHandleA(nullptr), 0);
 
-    ShowWindow(testWindow, SW_SHOWNORMAL);
+    // ShowWindow(testWindow, SW_SHOWNORMAL);
 
     return glow::window::message_loop();
 }
@@ -64,7 +64,7 @@ auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
         auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
 
         auto rect{*std::bit_cast<LPRECT>(lParam)};
-        auto position{self->window_position()};
+        auto position{self->client_position()};
 
         if (gwlId == 1)
             SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);

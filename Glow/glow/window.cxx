@@ -11,26 +11,26 @@
 namespace glow::window
 {
 
-WindowClass::WindowClass(std::string className)
-{
-    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+// WindowClass::WindowClass(std::string className)
+// {
+//     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
-    wcex.lpszClassName = className.c_str();
-    wcex.lpszMenuName = 0;
-    wcex.lpfnWndProc = DefWindowProcA;
-    wcex.style = 0;
-    wcex.cbClsExtra = 0;
-    wcex.cbWndExtra = sizeof(void*);
-    wcex.hInstance = GetModuleHandleA(nullptr);
-    wcex.hbrBackground = m_hbrBackground.get();
-    wcex.hCursor = m_hCursor.get();
-    wcex.hIcon = m_hIcon.get();
-    wcex.hIconSm = m_hIcon.get();
+//     wcex.lpszClassName = className.c_str();
+//     wcex.lpszMenuName = 0;
+//     wcex.lpfnWndProc = DefWindowProcA;
+//     wcex.style = 0;
+//     wcex.cbClsExtra = 0;
+//     wcex.cbWndExtra = sizeof(void*);
+//     wcex.hInstance = GetModuleHandleA(nullptr);
+//     wcex.hbrBackground = m_hbrBackground.get();
+//     wcex.hCursor = m_hCursor.get();
+//     wcex.hIcon = m_hIcon.get();
+//     wcex.hIconSm = m_hIcon.get();
 
-    m_atom = RegisterClassExA(&wcex);
-}
+//     m_atom = RegisterClassExA(&wcex);
+// }
 
-WindowClass::~WindowClass() {}
+// WindowClass::~WindowClass() {}
 
 Window::Window()
 {
@@ -248,6 +248,20 @@ auto Window::window_rect() -> RECT
     GetWindowRect(m_hwnd.get(), &rect);
 
     return rect;
+}
+
+auto Window::client_position() -> Position
+{
+    auto rect{client_rect()};
+
+    Position p;
+
+    p.x = rect.left;
+    p.y = rect.top;
+    p.width = rect.right - rect.left;
+    p.height = rect.bottom - rect.top;
+
+    return p;
 }
 
 auto Window::window_position() -> Position
