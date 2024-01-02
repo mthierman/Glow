@@ -88,8 +88,45 @@ struct Window
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
-    virtual auto on_close(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
-    virtual auto on_destroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
+    virtual auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+    virtual auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+
+    auto dpi() -> int;
+    auto scale() -> float;
+
+    auto show_normal() -> void;
+    auto show() -> void;
+    auto hide() -> void;
+
+    auto maximize() -> bool;
+    auto fullscreen() -> bool;
+    auto topmost() -> bool;
+
+    auto title(std::string title) -> void;
+    auto icon(HICON hIcon) -> void;
+    auto border(bool enabled) -> void;
+
+    auto overlapped() -> void;
+    auto popup() -> void;
+    auto child() -> void;
+
+    auto client_rect() -> RECT;
+    auto window_rect() -> RECT;
+    auto window_position() -> Position;
+
+    auto dwm_dark_mode(bool enabled) -> void;
+    auto dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
+    auto dwm_rounded_corners(bool enabled) -> void;
+    auto dwm_cloak(bool enable) -> void;
+
+    auto dwm_caption_color(bool enable) -> void;
+    auto dwm_set_caption_color(COLORREF color) -> void;
+
+    auto dwm_border_color(bool enable) -> void;
+    auto dwm_set_border_color(COLORREF color) -> void;
+
+    auto dwm_set_text_color(COLORREF color) -> void;
+    auto dwm_reset_text_color() -> void;
 
     inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
@@ -107,50 +144,19 @@ struct MainWindow : public Window
 {
     using Window::Window;
 
-    auto on_destroy(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> int;
+    auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
 auto message_loop() -> int;
-
-auto get_dpi(HWND hwnd) -> int;
-auto get_scale(HWND hwnd) -> float;
-
-auto rect_to_position(RECT rect) -> Position;
-auto client_rect(HWND hwnd) -> RECT;
-auto window_rect(HWND hwnd) -> RECT;
-
-auto is_dark() -> bool;
-
-auto use_immersive_dark_mode(HWND hwnd) -> void;
-auto set_system_backdrop(HWND hwnd, DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
-auto set_rounded_corners(HWND hwnd, bool enabled) -> void;
-auto cloak(HWND hwnd, bool enable) -> void;
 
 auto clamp_color(int value) -> int;
 auto make_colorref(int r, int g, int b) -> COLORREF;
 auto format_color(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
 
-auto enable_caption_color(HWND hwnd, bool enable) -> void;
-auto enable_border_color(HWND hwnd, bool enable) -> void;
-
-auto set_caption_color(HWND hwnd, COLORREF color) -> void;
-auto set_border_color(HWND hwnd, COLORREF color) -> void;
-
-auto reset_text_color(HWND hwnd) -> void;
-auto set_text_color(HWND hwnd, COLORREF color) -> void;
+auto check_theme() -> bool;
 
 auto set_preferred_app_mode() -> void;
 auto allow_dark_mode(HWND hwnd, bool enable) -> void;
-
-auto window_maximize(HWND hwnd) -> bool;
-auto window_fullscreen(HWND hwnd) -> bool;
-auto window_topmost(HWND hwnd) -> bool;
-
-auto show_normal(HWND hwnd) -> void;
-auto show(HWND hwnd) -> void;
-auto hide(HWND hwnd) -> void;
-
-auto set_title(HWND hwnd, std::string title) -> void;
 
 auto icon_application() -> HICON;
 auto icon_error() -> HICON;
@@ -159,11 +165,5 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
-
-auto set_icon(HWND hwnd, HICON hIcon) -> void;
-auto set_border(HWND hwnd, bool enabled) -> void;
-auto set_child(HWND hwnd) -> void;
-auto set_popup(HWND hwnd) -> void;
-auto set_overlapped(HWND hwnd) -> void;
 
 } // namespace glow::window

@@ -37,8 +37,8 @@ auto App::run() -> int
     App app;
     glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
 
-    glow::window::show_normal(webView.m_hwnd.get());
-    glow::window::show_normal(app.m_hwnd.get());
+    app.show_normal();
+    ShowWindow(webView.m_hwnd.get(), SW_SHOWNORMAL);
 
     glow::console::debug(glow::console::hresult(app.coInit));
     glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));
@@ -48,13 +48,18 @@ auto App::run() -> int
 
 auto CALLBACK App::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
+    auto self{glow::window::instance<App>(hWnd)};
 
-    auto rect{*std::bit_cast<LPRECT>(lParam)};
-    auto position{glow::window::rect_to_position(rect)};
+    if (self)
+    {
+        auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
 
-    if (gwlId == 1)
-        SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
+        auto rect{*std::bit_cast<LPRECT>(lParam)};
+        auto position{self->window_position()};
+
+        if (gwlId == 1)
+            SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
+    }
 
     return TRUE;
 }
