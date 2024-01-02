@@ -61,22 +61,9 @@ struct Position
     int height{};
 };
 
-// struct WindowClass
-// {
-//     WindowClass(std::string className);
-//     ~WindowClass();
-
-//     ATOM m_atom;
-//     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
-//         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-//     wil::unique_hicon m_hIcon{static_cast<HICON>(
-//         LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-//     wil::unique_hbrush m_hbrBackground{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
-// };
-
 struct Window
 {
-    Window();
+    Window(std::string className = "Window");
     virtual ~Window();
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
@@ -123,7 +110,6 @@ struct Window
     auto dwm_set_text_color(COLORREF color) -> void;
     auto dwm_reset_text_color() -> void;
 
-    inline static ATOM m_atom;
     wil::unique_hwnd m_hwnd{};
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
@@ -137,7 +123,7 @@ struct Window
 
 struct MainWindow : public Window
 {
-    using Window::Window;
+    MainWindow(std::string className = "MainWindow");
 
     auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };

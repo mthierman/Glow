@@ -34,11 +34,17 @@ struct App final : public glow::window::MainWindow
 
 auto App::run() -> int
 {
+    glow::window::Window window;
+    window.show_normal();
+
     App app;
     app.show_normal();
 
-    glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
-    ShowWindow(webView.m_hwnd.get(), SW_SHOWNORMAL);
+    App app2;
+    app2.show_normal();
+
+    // glow::webview::WebView2 webView{app.m_hwnd.get(), 1};
+    // ShowWindow(webView.m_hwnd.get(), SW_SHOWNORMAL);
 
     // glow::console::debug(glow::console::hresult(app.coInit));
     // glow::console::debug(std::to_string(+app.gdiInit.m_gdiplusStatus));

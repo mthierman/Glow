@@ -11,37 +11,15 @@
 namespace glow::window
 {
 
-// WindowClass::WindowClass(std::string className)
-// {
-//     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
-
-//     wcex.lpszClassName = className.c_str();
-//     wcex.lpszMenuName = 0;
-//     wcex.lpfnWndProc = DefWindowProcA;
-//     wcex.style = 0;
-//     wcex.cbClsExtra = 0;
-//     wcex.cbWndExtra = sizeof(void*);
-//     wcex.hInstance = GetModuleHandleA(nullptr);
-//     wcex.hbrBackground = m_hbrBackground.get();
-//     wcex.hCursor = m_hCursor.get();
-//     wcex.hIcon = m_hIcon.get();
-//     wcex.hIconSm = m_hIcon.get();
-
-//     m_atom = RegisterClassExA(&wcex);
-// }
-
-// WindowClass::~WindowClass() {}
-
-Window::Window()
+Window::Window(std::string className)
 {
     WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
-    auto classInfo{GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(Window::m_atom), &wcex)};
 
-    if (!classInfo)
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), className.c_str(), &wcex))
     {
         OutputDebugStringA("Registering Window class...");
 
-        wcex.lpszClassName = "MainWindow";
+        wcex.lpszClassName = className.c_str();
         wcex.lpszMenuName = 0;
         wcex.lpfnWndProc = Window::WndProc;
         wcex.style = 0;
@@ -53,12 +31,13 @@ Window::Window()
         wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
         wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-        Window::m_atom = RegisterClassExA(&wcex);
+        RegisterClassExA(&wcex);
     }
 
-    CreateWindowExA(0, MAKEINTATOM(Window::m_atom), "Window", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                    GetModuleHandleA(nullptr), this);
+    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName,
+                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
+                    this);
 }
 
 Window::~Window() {}
@@ -94,13 +73,6 @@ auto Window::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 }
 
 auto Window::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int { return 0; }
-
-auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
-{
-    PostQuitMessage(0);
-
-    return 0;
-}
 
 auto Window::dpi() -> int { return GetDpiForWindow(m_hwnd.get()); }
 
@@ -389,6 +361,15 @@ auto Window::dwm_reset_text_color() -> void
 {
     auto textColor{DWMWA_COLOR_DEFAULT};
     DwmSetWindowAttribute(m_hwnd.get(), DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
+}
+
+MainWindow::MainWindow(std::string className) : Window(className) {}
+
+auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+{
+    PostQuitMessage(0);
+
+    return 0;
 }
 
 auto message_loop() -> int
