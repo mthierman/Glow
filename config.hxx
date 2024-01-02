@@ -6,16 +6,20 @@
 // ╚──────────────╝
 // clang-format on
 
-// clang-format off
 #pragma once
 
-#define PROJECT_NAME "@PROJECT_NAME@"
-#define PROJECT_VERSION "@PROJECT_VERSION@"
-#define WEBVIEW2 "@WEBVIEW2@"
-#define WEBVIEW2_VER "@WEBVIEW2_VER@"
-#define CPPWINRT "@CPPWINRT@"
-#define CPPWINRT_VER "@CPPWINRT_VER@"
-#define WIL "@WIL@"
-#define WIL_VER "@WIL_VER@"
-#define GDIPVER 0x0110
-// clang-format on
+#include <string>
+
+namespace glow::config
+{
+
+std::string name{"@PROJECT_NAME@"};
+std::string version{"@PROJECT_VERSION@"};
+std::string webView2{"@WEBVIEW2@"};
+std::string webView2Version{"@WEBVIEW2_VER@"};
+std::string cppwinrt{"@WEBVIEW2@"};
+std::string cppwinrtVersion{"@WEBVIEW2_VER@"};
+std::string wil{"@WEBVIEW2@"};
+std::string wilVersion{"@WEBVIEW2_VER@"};
+
+} // namespace glow::config

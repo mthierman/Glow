@@ -7,7 +7,7 @@ add_library(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/config.hxx.in
+    ${PROJECT_SOURCE_DIR}/config.hxx
     ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
 )
 
