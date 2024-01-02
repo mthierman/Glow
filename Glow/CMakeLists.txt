@@ -15,9 +15,8 @@ target_sources(
     Glow
     PRIVATE glow/console.cxx
             glow/filesystem.cxx
-            glow/webview.cxx
-            glow/window.cxx
             glow/text.cxx
+            glow/window.cxx
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
@@ -27,12 +26,9 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
            glow/console.hxx
            glow/filesystem.hxx
-           glow/webview.hxx
-           glow/window.hxx
            glow/text.hxx
+           glow/window.hxx
 )
-
-# target_precompile_headers( Glow PRIVATE pch.hxx )
 
 target_include_directories(
     Glow
