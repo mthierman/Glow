@@ -40,6 +40,10 @@ auto App::run() -> int
     app.create();
     app.show_normal();
 
+    window::WebView webView;
+    webView.create();
+    webView.show_normal();
+
     return window::message_loop();
 }
 

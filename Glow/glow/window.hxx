@@ -131,6 +131,13 @@ struct MainWindow : public Window
     auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
+struct WebView : public Window
+{
+    WebView(std::string className = "WebView");
+
+    virtual auto create() -> void override;
+};
+
 auto message_loop() -> int;
 
 auto clamp_color(int value) -> int;

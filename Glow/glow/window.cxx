@@ -374,6 +374,35 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
+WebView::WebView(std::string className) : Window(className) {}
+
+auto WebView::create() -> void
+{
+    WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
+
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &wcex))
+    {
+        OutputDebugStringA("Registering WebView class...");
+
+        wcex.lpszClassName = m_className.c_str();
+        wcex.lpszMenuName = 0;
+        wcex.lpfnWndProc = WebView::WndProc;
+        wcex.style = 0;
+        wcex.cbClsExtra = 0;
+        wcex.cbWndExtra = sizeof(void*);
+        wcex.hInstance = GetModuleHandleA(nullptr);
+        wcex.hbrBackground = m_hbrBackground.get();
+        wcex.hCursor = m_hCursor.get();
+        wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+
+        RegisterClassExA(&wcex);
+    }
+
+    CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName, WS_POPUP, 0, 0, 200, 200, nullptr,
+                    nullptr, GetModuleHandleA(nullptr), this);
+}
+
 auto message_loop() -> int
 {
     MSG msg{};
