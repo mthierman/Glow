@@ -439,6 +439,8 @@ auto WebView::create_environment() -> void
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
             {
+                // console::debug("TEST");
+                console::debug_hr(errorCode);
                 if (createdEnvironment) create_controller(createdEnvironment);
 
                 return S_OK;
@@ -451,8 +453,10 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
     environment->CreateCoreWebView2Controller(
         m_hwnd.get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [=, this](HRESULT, ICoreWebView2Controller* controller) -> HRESULT
+            [=, this](HRESULT errorCode, ICoreWebView2Controller* controller) -> HRESULT
             {
+                // console::debug("TEST");
+                // console::debug_hr(errorCode);
                 if (controller)
                 {
                     m_controller = controller;

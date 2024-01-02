@@ -57,16 +57,16 @@ auto hresult(HRESULT hr) -> std::string
     return std::string(comError.ErrorMessage());
 }
 
-auto debug_hr(HRESULT hr) -> void
+auto debug_hr(HRESULT hr, std::source_location location) -> void
 {
     auto message{hresult(hr)};
-    debug(message);
+    debug(message, location);
 }
 
-auto print_hr(HRESULT hr) -> void
+auto print_hr(HRESULT hr, std::source_location location) -> void
 {
     auto message{hresult(hr)};
-    print(message);
+    print(message, location);
 }
 auto debug(std::string message, std::source_location location) -> void
 {
