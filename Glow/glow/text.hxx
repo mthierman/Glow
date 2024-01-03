@@ -10,6 +10,8 @@
 
 #include <Windows.h>
 
+#include <bit>
+#include <cstdint>
 #include <limits>
 #include <random>
 #include <string>
@@ -20,5 +22,6 @@ namespace glow::text
 auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
 auto randomize(std::string string) -> std::string;
+auto random_int() -> int64_t;
 
 } // namespace glow::text

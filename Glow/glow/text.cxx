@@ -71,4 +71,12 @@ auto randomize(std::string string) -> std::string
     return (string + randomNumber);
 }
 
+auto random_int() -> int64_t
+{
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_real_distribution<double> dist(1.0, 10.0);
+    return std::bit_cast<int64_t>(dist(mt));
+}
+
 } // namespace glow::text
