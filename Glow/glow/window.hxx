@@ -76,7 +76,7 @@ struct Window
 
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
-    auto operator()(bool show = true) -> void;
+    virtual auto operator()(bool show = true) -> void;
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
