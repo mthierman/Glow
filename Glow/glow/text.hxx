@@ -11,6 +11,8 @@
 #include <Windows.h>
 #include <objbase.h>
 
+#include <wil/win32_helpers.h>
+
 #include <bit>
 #include <cstdint>
 #include <limits>
@@ -22,8 +24,11 @@ namespace glow::text
 
 auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
+
 auto randomize(std::string string) -> std::string;
 auto random_int() -> int64_t;
+
 auto create_guid() -> GUID;
+auto guid_to_string(GUID guid) -> std::string;
 
 } // namespace glow::text

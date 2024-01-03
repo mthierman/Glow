@@ -75,8 +75,8 @@ auto random_int() -> int64_t
 {
     std::random_device rd;
     std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(1.0, 10.0);
-    return std::bit_cast<int64_t>(dist(mt));
+    std::uniform_int_distribution<int64_t> dist(10000);
+    return dist(mt);
 }
 
 auto create_guid() -> GUID
@@ -85,6 +85,13 @@ auto create_guid() -> GUID
     if (SUCCEEDED(CoCreateGuid(&guid))) return guid;
 
     else throw std::runtime_error("GUID creation failure");
+}
+
+auto guid_to_string(GUID guid) -> std::string
+{
+    std::wstring buffer(wil::guid_string_buffer_length, 0);
+    auto stringFromGuid = StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
+    return narrow(buffer);
 }
 
 } // namespace glow::text
