@@ -433,8 +433,8 @@ auto WebView::register_window() -> void
 
 auto WebView::create_window() -> void
 {
-    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 200, 200,
-                    m_parent, std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 0, 0, m_parent,
+                    std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
     create_environment();
 }
@@ -497,11 +497,13 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
 
                     m_core20->Navigate(text::widen(m_url).c_str());
 
+                    SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0);
+                    SendMessageA(m_parent, WM_SIZE, 0, 0);
+
                     if (!m_initialized)
                     {
                         m_initialized = true;
                         initialized();
-                        SendMessageA(m_parent, WM_SIZE, 0, 0);
                     }
 
                     source_changed();
