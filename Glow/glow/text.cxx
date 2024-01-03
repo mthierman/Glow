@@ -30,10 +30,10 @@ auto narrow(std::wstring utf16) -> std::string
                                 nullptr) > 0)
             return utf8;
 
-        else return {};
+        else throw std::runtime_error("UTF16 to UTF8 conversion failure");
     }
 
-    else return {};
+    else throw std::runtime_error("UTF16 to UTF8 conversion failure");
 }
 
 auto widen(std::string utf8) -> std::wstring
@@ -53,10 +53,10 @@ auto widen(std::string utf8) -> std::wstring
                                 static_cast<int>(utf8.length()), utf16.data(), length) > 0)
             return utf16;
 
-        else return {};
+        else throw std::runtime_error("UTF8 to UTF16 conversion failure");
     }
 
-    else return {};
+    else throw std::runtime_error("UTF8 to UTF16 conversion failure");
 }
 
 auto randomize(std::string string) -> std::string
@@ -77,6 +77,14 @@ auto random_int() -> int64_t
     std::mt19937 mt(rd());
     std::uniform_real_distribution<double> dist(1.0, 10.0);
     return std::bit_cast<int64_t>(dist(mt));
+}
+
+auto create_guid() -> GUID
+{
+    GUID guid;
+    if (SUCCEEDED(CoCreateGuid(&guid))) return guid;
+
+    else throw std::runtime_error("GUID creation failure");
 }
 
 } // namespace glow::text

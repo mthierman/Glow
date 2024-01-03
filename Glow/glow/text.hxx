@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <objbase.h>
 
 #include <bit>
 #include <cstdint>
@@ -23,5 +24,6 @@ auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
 auto randomize(std::string string) -> std::string;
 auto random_int() -> int64_t;
+auto create_guid() -> GUID;
 
 } // namespace glow::text
