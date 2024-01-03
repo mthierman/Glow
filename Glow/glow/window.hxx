@@ -153,6 +153,17 @@ struct MainWindow : public Window
 
 struct WebView : public Window
 {
+    struct WebView2
+    {
+        wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
+        wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+        wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+        wil::com_ptr<ICoreWebView2> m_core{nullptr};
+        wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
+        wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+        wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
+    };
+
     WebView(int64_t id, HWND parent, std::string url = "https://www.google.com/",
             std::string className = "WebView", bool show = true);
 
@@ -196,13 +207,7 @@ struct WebView : public Window
     std::string m_url{"https://www.google.com/"};
 
     bool m_initialized{false};
-    wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
-    wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
-    wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
-    wil::com_ptr<ICoreWebView2> m_core{nullptr};
-    wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
-    wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
-    wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
+    WebView2 webView;
 };
 
 auto message_loop() -> int;
