@@ -65,7 +65,6 @@ auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch (uMsg)
     {
     case WM_CLOSE: return on_close(hWnd, wParam, lParam);
-    case WM_DESTROY: return on_destroy(hWnd, wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
@@ -77,8 +76,6 @@ auto Window::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
     return 0;
 }
-
-auto Window::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int { return 0; }
 
 auto Window::dpi() -> int { return GetDpiForWindow(m_hwnd.get()); }
 
@@ -385,6 +382,17 @@ auto Window::dwm_reset_text_color() -> void
 }
 
 MainWindow::MainWindow(std::string className, bool show) : Window{className, show} {}
+
+auto MainWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
+    case WM_DESTROY: return on_destroy(hWnd, wParam, lParam);
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
 
 auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {

@@ -83,7 +83,6 @@ struct Window
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     virtual auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
-    virtual auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     auto dpi() -> int;
     auto scale() -> float;
@@ -145,6 +144,8 @@ struct MainWindow : public Window
 {
     MainWindow(std::string className = "MainWindow", bool show = true);
 
+    virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
+    
     auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
