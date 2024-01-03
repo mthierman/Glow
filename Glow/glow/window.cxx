@@ -55,22 +55,19 @@ auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
     auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};
 
-    if (self)
-    {
-        switch (uMsg)
-        {
-        case WM_CLOSE: return self->on_close(hWnd, wParam, lParam);
-        case WM_DESTROY: return self->on_destroy(hWnd, wParam, lParam);
-        }
-
-        return self->handle_wnd_proc(hWnd, uMsg, wParam, lParam);
-    }
+    if (self) return self->handle_wnd_proc(hWnd, uMsg, wParam, lParam);
 
     else return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Window::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
+    switch (uMsg)
+    {
+    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
+    case WM_DESTROY: return on_destroy(hWnd, wParam, lParam);
+    }
+
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
