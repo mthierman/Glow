@@ -11,6 +11,22 @@
 namespace glow::window
 {
 
+void to_json(nlohmann::json& j, const Position& position)
+{
+    j = nlohmann::json{{"x", position.x},
+                       {"y", position.y},
+                       {"width", position.width},
+                       {"height", position.height}};
+}
+
+void from_json(const nlohmann::json& j, Position& position)
+{
+    j.at("x").get_to(position.x);
+    j.at("y").get_to(position.y);
+    j.at("width").get_to(position.width);
+    j.at("height").get_to(position.height);
+}
+
 Window::Window(std::string className, bool show) : m_className{className}, m_show{show} {}
 
 Window::~Window() {}
@@ -464,42 +480,43 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                 // console::debug_hr(errorCode);
                 if (controller)
                 {
-                    webView.m_controller = controller;
-                    webView.m_controller4 =
-                        webView.m_controller.try_query<ICoreWebView2Controller4>();
+                    m_webView.m_controller = controller;
+                    m_webView.m_controller4 =
+                        m_webView.m_controller.try_query<ICoreWebView2Controller4>();
 
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                    webView.m_controller4->put_DefaultBackgroundColor(bgColor);
+                    m_webView.m_controller4->put_DefaultBackgroundColor(bgColor);
 
                     SendMessageA(m_parent, WM_SIZE, 0, 0);
                     SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0);
 
-                    webView.m_controller->get_CoreWebView2(webView.m_core.put());
-                    webView.m_core20 = webView.m_core.try_query<ICoreWebView2_20>();
+                    m_webView.m_controller->get_CoreWebView2(m_webView.m_core.put());
+                    m_webView.m_core20 = m_webView.m_core.try_query<ICoreWebView2_20>();
 
-                    webView.m_core20->get_Settings(webView.m_settings.put());
+                    m_webView.m_core20->get_Settings(m_webView.m_settings.put());
 
-                    webView.m_settings8 = webView.m_settings.try_query<ICoreWebView2Settings8>();
+                    m_webView.m_settings8 =
+                        m_webView.m_settings.try_query<ICoreWebView2Settings8>();
 
-                    webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-                    webView.m_settings8->put_AreDefaultContextMenusEnabled(true);
-                    webView.m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-                    webView.m_settings8->put_AreDevToolsEnabled(true);
-                    webView.m_settings8->put_AreHostObjectsAllowed(true);
-                    webView.m_settings8->put_HiddenPdfToolbarItems(
+                    m_webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
+                    m_webView.m_settings8->put_AreDefaultContextMenusEnabled(true);
+                    m_webView.m_settings8->put_AreDefaultScriptDialogsEnabled(true);
+                    m_webView.m_settings8->put_AreDevToolsEnabled(true);
+                    m_webView.m_settings8->put_AreHostObjectsAllowed(true);
+                    m_webView.m_settings8->put_HiddenPdfToolbarItems(
                         COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-                    webView.m_settings8->put_IsBuiltInErrorPageEnabled(true);
-                    webView.m_settings8->put_IsGeneralAutofillEnabled(true);
-                    webView.m_settings8->put_IsPasswordAutosaveEnabled(true);
-                    webView.m_settings8->put_IsPinchZoomEnabled(true);
-                    webView.m_settings8->put_IsReputationCheckingRequired(true);
-                    webView.m_settings8->put_IsScriptEnabled(true);
-                    webView.m_settings8->put_IsStatusBarEnabled(true);
-                    webView.m_settings8->put_IsSwipeNavigationEnabled(true);
-                    webView.m_settings8->put_IsWebMessageEnabled(true);
-                    webView.m_settings8->put_IsZoomControlEnabled(true);
+                    m_webView.m_settings8->put_IsBuiltInErrorPageEnabled(true);
+                    m_webView.m_settings8->put_IsGeneralAutofillEnabled(true);
+                    m_webView.m_settings8->put_IsPasswordAutosaveEnabled(true);
+                    m_webView.m_settings8->put_IsPinchZoomEnabled(true);
+                    m_webView.m_settings8->put_IsReputationCheckingRequired(true);
+                    m_webView.m_settings8->put_IsScriptEnabled(true);
+                    m_webView.m_settings8->put_IsStatusBarEnabled(true);
+                    m_webView.m_settings8->put_IsSwipeNavigationEnabled(true);
+                    m_webView.m_settings8->put_IsWebMessageEnabled(true);
+                    m_webView.m_settings8->put_IsZoomControlEnabled(true);
 
-                    webView.m_core20->Navigate(text::widen(m_url).c_str());
+                    m_webView.m_core20->Navigate(text::widen(m_url).c_str());
 
                     source_changed();
                     navigation_completed();
@@ -535,7 +552,7 @@ auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     RECT rect{};
     GetClientRect(m_hwnd.get(), &rect);
-    if (webView.m_controller4) webView.m_controller4->put_Bounds(rect);
+    if (m_webView.m_controller4) m_webView.m_controller4->put_Bounds(rect);
 
     return 0;
 }
@@ -543,20 +560,20 @@ auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 auto WebView::navigate(std::string url) -> void
 {
     auto wideUrl{glow::text::widen(url)};
-    if (webView.m_core20) webView.m_core20->Navigate(wideUrl.c_str());
+    if (m_webView.m_core20) m_webView.m_core20->Navigate(wideUrl.c_str());
 }
 
 auto WebView::post_json(const nlohmann::json jsonMessage) -> void
 {
     auto wideUrl{glow::text::widen(jsonMessage)};
-    if (webView.m_core20) webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
+    if (m_webView.m_core20) m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
 }
 
 auto WebView::source_changed() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_core20->add_SourceChanged(
+    m_webView.m_core20->add_SourceChanged(
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
             {
@@ -572,7 +589,7 @@ auto WebView::navigation_completed() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_core20->add_NavigationCompleted(
+    m_webView.m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
@@ -589,7 +606,7 @@ auto WebView::web_message_received() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_core20->add_WebMessageReceived(
+    m_webView.m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
@@ -606,7 +623,7 @@ auto WebView::accelerator_key_pressed() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_controller4->add_AcceleratorKeyPressed(
+    m_webView.m_controller4->add_AcceleratorKeyPressed(
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
@@ -623,7 +640,7 @@ auto WebView::favicon_changed() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_core20->add_FaviconChanged(
+    m_webView.m_core20->add_FaviconChanged(
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
@@ -639,7 +656,7 @@ auto WebView::document_title_changed() -> void
 {
     EventRegistrationToken token;
 
-    webView.m_core20->add_DocumentTitleChanged(
+    m_webView.m_core20->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {

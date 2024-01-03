@@ -69,6 +69,9 @@ struct Position
     int height{};
 };
 
+void to_json(nlohmann::json& j, const Position& position);
+void from_json(const nlohmann::json& j, Position& position);
+
 struct Window
 {
     Window(std::string className = "Window", bool show = true);
@@ -207,7 +210,7 @@ struct WebView : public Window
     std::string m_url{"https://www.google.com/"};
 
     bool m_initialized{false};
-    WebView2 webView;
+    WebView2 m_webView;
 };
 
 auto message_loop() -> int;
