@@ -470,6 +470,9 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
                     m_controller4->put_DefaultBackgroundColor(bgColor);
 
+                    SendMessageA(m_parent, WM_SIZE, 0, 0);
+                    SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0);
+
                     m_controller->get_CoreWebView2(m_core.put());
                     m_core20 = m_core.try_query<ICoreWebView2_20>();
 
@@ -496,9 +499,6 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     m_settings8->put_IsZoomControlEnabled(true);
 
                     m_core20->Navigate(text::widen(m_url).c_str());
-
-                    SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0);
-                    SendMessageA(m_parent, WM_SIZE, 0, 0);
 
                     if (!m_initialized)
                     {
