@@ -82,6 +82,7 @@ auto random_int() -> int64_t
 auto create_guid() -> GUID
 {
     GUID guid;
+
     if (SUCCEEDED(CoCreateGuid(&guid))) return guid;
 
     else throw std::runtime_error("GUID creation failure");
@@ -90,8 +91,11 @@ auto create_guid() -> GUID
 auto guid_to_string(GUID guid) -> std::string
 {
     std::wstring buffer(wil::guid_string_buffer_length, 0);
-    auto stringFromGuid = StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
-    return narrow(buffer);
+    auto length{StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length)};
+
+    if (length != 0) return narrow(buffer);
+
+    else throw std::runtime_error("String from GUID failure");
 }
 
 } // namespace glow::text
