@@ -645,7 +645,11 @@ auto message_loop() -> int
 
     while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) return 1002;
+        if (r == -1)
+        {
+            auto lastError{HRESULT_FROM_WIN32(GetLastError())};
+            throw std::runtime_error(glow::console::hresult(lastError));
+        }
 
         else
         {
