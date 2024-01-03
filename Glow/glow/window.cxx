@@ -49,6 +49,8 @@ auto Window::operator()(bool show) -> void
     register_window();
     create_window();
     if (m_show) show_normal();
+    m_dpi = dpi();
+    m_scale = scale();
 }
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
@@ -77,7 +79,7 @@ auto Window::on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-auto Window::dpi() -> int { return GetDpiForWindow(m_hwnd.get()); }
+auto Window::dpi() -> int64_t { return GetDpiForWindow(m_hwnd.get()); }
 
 auto Window::scale() -> float
 {
@@ -542,7 +544,7 @@ auto WebView::navigate(std::string url) -> void
     if (m_core20) m_core20->Navigate(wideUrl.c_str());
 }
 
-auto WebView::post_json(const json jsonMessage) -> void
+auto WebView::post_json(const nlohmann::json jsonMessage) -> void
 {
     auto wideUrl{glow::text::widen(jsonMessage)};
     if (m_core20) m_core20->PostWebMessageAsJson(wideUrl.c_str());

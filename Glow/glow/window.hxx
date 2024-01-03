@@ -36,7 +36,6 @@
 
 namespace glow::window
 {
-using json = nlohmann::json;
 
 template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
@@ -77,14 +76,14 @@ struct Window
 
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
-    void operator()(bool show = true);
+    auto operator()(bool show = true) -> void;
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
     virtual auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    auto dpi() -> int;
+    auto dpi() -> int64_t;
     auto scale() -> float;
 
     auto show_normal() -> void;
@@ -123,11 +122,13 @@ struct Window
     auto dwm_set_text_color(COLORREF color) -> void;
     auto dwm_reset_text_color() -> void;
 
-    std::string m_className;
+    std::string m_className{"Window"};
     bool m_show{true};
     WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
-    wil::unique_hwnd m_hwnd{};
-    std::string m_url{"https://www.google.com/"};
+    wil::unique_hwnd m_hwnd{nullptr};
+
+    int64_t m_dpi{};
+    float m_scale{};
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -144,8 +145,9 @@ struct MainWindow : public Window
 {
     MainWindow(std::string className = "MainWindow", bool show = true);
 
-    virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override;
-    
+    virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+        -> LRESULT override;
+
     auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
@@ -167,7 +169,7 @@ struct WebView : public Window
     virtual auto initialized() -> void{};
 
     auto navigate(std::string url) -> void;
-    auto post_json(const json jsonMessage) -> void;
+    auto post_json(const nlohmann::json jsonMessage) -> void;
 
     auto source_changed() -> void;
     virtual auto source_changed_handler() -> void{};
@@ -189,10 +191,10 @@ struct WebView : public Window
     virtual auto document_title_changed_handler() -> void{};
 
     int64_t m_id{};
-    HWND m_parent{};
+    HWND m_parent{nullptr};
+    std::string m_url{"https://www.google.com/"};
 
     bool m_initialized{false};
-
     wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
     wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
     wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
@@ -229,9 +231,9 @@ struct GdiPlus
     GdiPlus();
     ~GdiPlus();
 
-    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
+    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput{};
     ULONG_PTR m_gdiplusToken{};
-    Gdiplus::Status m_gdiplusStatus;
+    Gdiplus::Status m_gdiplusStatus{};
 };
 
 struct CoInitialize
