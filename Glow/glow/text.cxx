@@ -71,11 +71,19 @@ auto randomize(std::string string) -> std::string
     return (string + randomNumber);
 }
 
-auto random_int() -> int64_t
+auto random_int64() -> int64_t
 {
     std::random_device rd;
     std::mt19937 mt(rd());
     std::uniform_int_distribution<int64_t> dist(10000);
+    return dist(mt);
+}
+
+auto random_int32() -> int32_t
+{
+    std::random_device rd;
+    std::mt19937 mt(rd());
+    std::uniform_int_distribution<int32_t> dist(10000);
     return dist(mt);
 }
 

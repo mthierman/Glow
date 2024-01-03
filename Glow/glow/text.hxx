@@ -26,7 +26,8 @@ auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
 
 auto randomize(std::string string) -> std::string;
-auto random_int() -> int64_t;
+auto random_int64() -> int64_t;
+auto random_int32() -> int32_t;
 
 auto create_guid() -> GUID;
 auto guid_to_string(GUID guid) -> std::string;

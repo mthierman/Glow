@@ -446,8 +446,7 @@ auto WebView::create_environment() -> void
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
             {
-                // console::debug("TEST");
-                console::debug_hr(errorCode);
+                // console::debug_hr(errorCode);
                 if (createdEnvironment) create_controller(createdEnvironment);
 
                 return S_OK;
@@ -462,7 +461,6 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Controller* controller) -> HRESULT
             {
-                // console::debug("TEST");
                 // console::debug_hr(errorCode);
                 if (controller)
                 {
@@ -503,7 +501,7 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
                     {
                         m_initialized = true;
                         initialized();
-                        on_size();
+                        SendMessageA(m_parent, WM_SIZE, 0, 0);
                     }
 
                     source_changed();
@@ -523,13 +521,14 @@ auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 {
     switch (uMsg)
     {
-    case WM_SIZE: return on_size();
+    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
+    case WM_SIZE: return on_size(hWnd, wParam, lParam);
     }
 
     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto WebView::on_size() -> int
+auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
     RECT rect{};
     GetClientRect(m_hwnd.get(), &rect);

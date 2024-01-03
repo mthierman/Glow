@@ -148,7 +148,7 @@ struct MainWindow : public Window
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
 
-    auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+    virtual auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
 struct WebView : public Window
@@ -164,31 +164,32 @@ struct WebView : public Window
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
-    auto on_size() -> int;
+    virtual auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
-    virtual auto initialized() -> void{};
+    virtual auto initialized() -> void {}
 
     auto navigate(std::string url) -> void;
     auto post_json(const nlohmann::json jsonMessage) -> void;
 
     auto source_changed() -> void;
-    virtual auto source_changed_handler() -> void{};
+    virtual auto source_changed_handler() -> void {}
 
     auto navigation_completed() -> void;
-    virtual auto navigation_completed_handler() -> void{};
+    virtual auto navigation_completed_handler() -> void {}
 
     auto web_message_received() -> void;
-    virtual auto web_message_received_handler() -> void{};
+    virtual auto web_message_received_handler() -> void {}
 
     auto accelerator_key_pressed() -> void;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> void{};
+        -> void
+    {}
 
     auto favicon_changed() -> void;
-    virtual auto favicon_changed_handler() -> void{};
+    virtual auto favicon_changed_handler() -> void {}
 
     auto document_title_changed() -> void;
-    virtual auto document_title_changed_handler() -> void{};
+    virtual auto document_title_changed_handler() -> void {}
 
     int64_t m_id{};
     HWND m_parent{nullptr};
