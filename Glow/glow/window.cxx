@@ -455,9 +455,9 @@ auto WebView::create_window() -> void
     create_environment();
 }
 
-auto WebView::create_environment() -> void
+auto WebView::create_environment() -> HRESULT
 {
-    CreateCoreWebView2EnvironmentWithOptions(
+    return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
@@ -470,9 +470,9 @@ auto WebView::create_environment() -> void
             .Get());
 }
 
-auto WebView::create_controller(ICoreWebView2Environment* environment) -> void
+auto WebView::create_controller(ICoreWebView2Environment* environment) -> HRESULT
 {
-    environment->CreateCoreWebView2Controller(
+    return environment->CreateCoreWebView2Controller(
         m_hwnd.get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Controller* controller) -> HRESULT
@@ -602,18 +602,18 @@ auto WebView::navigation_completed() -> void
         &token);
 }
 
-auto WebView::web_message_received() -> void
+auto WebView::web_message_received() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_core20->add_WebMessageReceived(
+    return m_webView.m_core20->add_WebMessageReceived(
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
             {
-                // web_message_received_handler();
+                return web_message_received_handler(sender, args);
 
-                return S_OK;
+                // return S_OK;
             })
             .Get(),
         &token);

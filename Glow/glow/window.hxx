@@ -173,8 +173,8 @@ struct WebView : public Window
     virtual auto register_window() -> void override;
     virtual auto create_window() -> void override;
 
-    auto create_environment() -> void;
-    auto create_controller(ICoreWebView2Environment* environment) -> void;
+    auto create_environment() -> HRESULT;
+    auto create_controller(ICoreWebView2Environment* environment) -> HRESULT;
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 
@@ -191,8 +191,13 @@ struct WebView : public Window
     auto navigation_completed() -> void;
     virtual auto navigation_completed_handler() -> void {}
 
-    auto web_message_received() -> void;
-    virtual auto web_message_received_handler() -> void {}
+    auto web_message_received() -> HRESULT;
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
 
     auto accelerator_key_pressed() -> void;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
