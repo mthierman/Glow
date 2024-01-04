@@ -427,6 +427,8 @@ WebView::WebView(int64_t id, HWND parent, std::string url, std::string className
     m_url = url;
 }
 
+auto WebView::operator()(bool show) -> void { Window::operator()(show); }
+
 auto WebView::register_window() -> void
 {
     if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &m_wcex))
