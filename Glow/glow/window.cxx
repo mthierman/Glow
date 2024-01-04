@@ -453,11 +453,9 @@ auto WebView::create_window() -> void
 {
     CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 0, 0, m_parent,
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
-
-    glow::console::hresult_check(create_environment());
 }
 
-auto WebView::create_environment() -> HRESULT
+auto WebView::create() -> HRESULT
 {
     return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
