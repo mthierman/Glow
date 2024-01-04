@@ -51,21 +51,26 @@ auto argv() -> std::vector<std::string>
     return argv;
 }
 
-auto hresult(HRESULT hr) -> std::string
+auto hresult_to_string(HRESULT errorCode) -> std::string
 {
-    auto comError = _com_error(hr);
+    auto comError = _com_error(errorCode);
     return std::string(comError.ErrorMessage());
 }
 
-auto debug_hr(HRESULT hr, std::source_location location) -> void
+auto hresult_check(HRESULT errorCode) -> void
 {
-    auto message{hresult(hr)};
+    if (FAILED(errorCode)) throw std::runtime_error(glow::console::hresult_to_string(errorCode));
+}
+
+auto debug_hr(HRESULT errorCode, std::source_location location) -> void
+{
+    auto message{hresult_to_string(errorCode)};
     debug(message, location);
 }
 
-auto print_hr(HRESULT hr, std::source_location location) -> void
+auto print_hr(HRESULT errorCode, std::source_location location) -> void
 {
-    auto message{hresult(hr)};
+    auto message{hresult_to_string(errorCode)};
     print(message, location);
 }
 auto debug(std::string message, std::source_location location) -> void

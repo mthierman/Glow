@@ -176,7 +176,7 @@ struct WebView : public Window
     virtual auto create_window() -> void override;
 
     auto create_environment() -> HRESULT;
-    auto create_controller(ICoreWebView2Environment* environment) -> HRESULT;
+    auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT;
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 

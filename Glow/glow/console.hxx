@@ -36,10 +36,12 @@ struct Console
 
 auto argv() -> std::vector<std::string>;
 
-auto hresult(HRESULT hr) -> std::string;
-
-auto debug_hr(HRESULT hr, std::source_location location = std::source_location::current()) -> void;
-auto print_hr(HRESULT hr, std::source_location location = std::source_location::current()) -> void;
+auto hresult_to_string(HRESULT errorCode) -> std::string;
+auto hresult_check(HRESULT errorCode) -> void;
+auto debug_hresult(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
+auto print_hresult(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
 
 auto debug(std::string message, std::source_location location = std::source_location::current())
     -> void;

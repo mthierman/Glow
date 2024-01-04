@@ -454,7 +454,7 @@ auto WebView::create_window() -> void
     CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 0, 0, m_parent,
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
-    create_environment();
+    glow::console::hresult_check(create_environment());
 }
 
 auto WebView::create_environment() -> HRESULT
@@ -464,41 +464,51 @@ auto WebView::create_environment() -> HRESULT
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> HRESULT
             {
-                // console::debug_hr(errorCode);
-                if (createdEnvironment) create_controller(createdEnvironment);
+                if (createdEnvironment)
+                {
+                    glow::console::hresult_check(create_controller(createdEnvironment));
+                }
 
-                return S_OK;
+                return errorCode;
             })
             .Get());
 }
 
-auto WebView::create_controller(ICoreWebView2Environment* environment) -> HRESULT
+auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
 {
-    return environment->CreateCoreWebView2Controller(
+    return createdEnvironment->CreateCoreWebView2Controller(
         m_hwnd.get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [=, this](HRESULT errorCode, ICoreWebView2Controller* controller) -> HRESULT
+            [=, this](HRESULT errorCode, ICoreWebView2Controller* createdController) -> HRESULT
             {
-                // console::debug_hr(errorCode);
-                if (controller)
+                if (createdController)
                 {
-                    m_webView.m_controller = controller;
+                    m_webView.m_controller = createdController;
                     m_webView.m_controller4 =
                         m_webView.m_controller.try_query<ICoreWebView2Controller4>();
 
+                    if (!m_webView.m_controller4) return E_POINTER;
+
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                    m_webView.m_controller4->put_DefaultBackgroundColor(bgColor);
+                    glow::console::hresult_check(
+                        m_webView.m_controller4->put_DefaultBackgroundColor(bgColor));
 
                     SendMessageA(m_parent, WM_SIZE, 0, 0);
                     SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0);
 
-                    m_webView.m_controller->get_CoreWebView2(m_webView.m_core.put());
+                    glow::console::hresult_check(
+                        m_webView.m_controller->get_CoreWebView2(m_webView.m_core.put()));
                     m_webView.m_core20 = m_webView.m_core.try_query<ICoreWebView2_20>();
 
-                    m_webView.m_core20->get_Settings(m_webView.m_settings.put());
+                    if (!m_webView.m_core20) return E_POINTER;
+
+                    glow::console::hresult_check(
+                        m_webView.m_core20->get_Settings(m_webView.m_settings.put()));
 
                     m_webView.m_settings8 =
                         m_webView.m_settings.try_query<ICoreWebView2Settings8>();
+
+                    if (!m_webView.m_settings8) return E_POINTER;
 
                     m_webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
                     m_webView.m_settings8->put_AreDefaultContextMenusEnabled(true);
@@ -518,7 +528,8 @@ auto WebView::create_controller(ICoreWebView2Environment* environment) -> HRESUL
                     m_webView.m_settings8->put_IsWebMessageEnabled(true);
                     m_webView.m_settings8->put_IsZoomControlEnabled(true);
 
-                    m_webView.m_core20->Navigate(text::widen(m_url).c_str());
+                    glow::console::hresult_check(
+                        m_webView.m_core20->Navigate(text::widen(m_url).c_str()));
 
                     source_changed();
                     navigation_completed();
@@ -552,9 +563,12 @@ auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 {
-    RECT rect{};
-    GetClientRect(m_hwnd.get(), &rect);
-    if (m_webView.m_controller4) m_webView.m_controller4->put_Bounds(rect);
+    if (m_webView.m_controller4)
+    {
+        RECT rect{};
+        GetClientRect(m_hwnd.get(), &rect);
+        m_webView.m_controller4->put_Bounds(rect);
+    }
 
     return 0;
 }
@@ -677,11 +691,7 @@ auto message_loop() -> int
 
     while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1)
-        {
-            auto lastError{HRESULT_FROM_WIN32(GetLastError())};
-            throw std::runtime_error(glow::console::hresult(lastError));
-        }
+        if (r == -1) { glow::console::hresult_check(HRESULT_FROM_WIN32(GetLastError())); }
 
         else
         {
