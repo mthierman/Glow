@@ -455,8 +455,34 @@ auto WebView::create_window() -> void
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 }
 
-auto WebView::create() -> HRESULT
+auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
+    switch (uMsg)
+    {
+    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
+    case WM_SIZE: return on_size(hWnd, wParam, lParam);
+    }
+
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+{
+    if (m_webView.m_controller4)
+    {
+        RECT rect{};
+        GetClientRect(m_hwnd.get(), &rect);
+        m_webView.m_controller4->put_Bounds(rect);
+    }
+
+    return 0;
+}
+
+auto WebView::create_webview() -> HRESULT
+{
+    // https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/user-data-folder?tabs=win32
+    // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/webview2-idl?view=webview2-1.0.2210.55#createcorewebview2environmentwithoptions
+
     return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
@@ -548,46 +574,11 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
             .Get());
 }
 
-auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-{
-    switch (uMsg)
-    {
-    case WM_CLOSE: return on_close(hWnd, wParam, lParam);
-    case WM_SIZE: return on_size(hWnd, wParam, lParam);
-    }
-
-    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-}
-
-auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
-{
-    if (m_webView.m_controller4)
-    {
-        RECT rect{};
-        GetClientRect(m_hwnd.get(), &rect);
-        m_webView.m_controller4->put_Bounds(rect);
-    }
-
-    return 0;
-}
-
-auto WebView::navigate(std::string url) -> void
-{
-    auto wideUrl{glow::text::widen(url)};
-    if (m_webView.m_core20) m_webView.m_core20->Navigate(wideUrl.c_str());
-}
-
-auto WebView::post_json(const nlohmann::json jsonMessage) -> void
-{
-    auto wideUrl{glow::text::widen(jsonMessage)};
-    if (m_webView.m_core20) m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
-}
-
-auto WebView::source_changed() -> void
+auto WebView::source_changed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_core20->add_SourceChanged(
+    return m_webView.m_core20->add_SourceChanged(
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
             {
@@ -599,11 +590,11 @@ auto WebView::source_changed() -> void
         &token);
 }
 
-auto WebView::navigation_completed() -> void
+auto WebView::navigation_completed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_core20->add_NavigationCompleted(
+    return m_webView.m_core20->add_NavigationCompleted(
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
@@ -633,11 +624,11 @@ auto WebView::web_message_received() -> HRESULT
         &token);
 }
 
-auto WebView::accelerator_key_pressed() -> void
+auto WebView::accelerator_key_pressed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_controller4->add_AcceleratorKeyPressed(
+    return m_webView.m_controller4->add_AcceleratorKeyPressed(
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
@@ -650,11 +641,11 @@ auto WebView::accelerator_key_pressed() -> void
         &token);
 }
 
-auto WebView::favicon_changed() -> void
+auto WebView::favicon_changed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_core20->add_FaviconChanged(
+    return m_webView.m_core20->add_FaviconChanged(
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
@@ -666,11 +657,11 @@ auto WebView::favicon_changed() -> void
         &token);
 }
 
-auto WebView::document_title_changed() -> void
+auto WebView::document_title_changed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    m_webView.m_core20->add_DocumentTitleChanged(
+    return m_webView.m_core20->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
             {
@@ -680,6 +671,18 @@ auto WebView::document_title_changed() -> void
             })
             .Get(),
         &token);
+}
+
+auto WebView::navigate(std::string url) -> void
+{
+    auto wideUrl{glow::text::widen(url)};
+    if (m_webView.m_core20) m_webView.m_core20->Navigate(wideUrl.c_str());
+}
+
+auto WebView::post_json(const nlohmann::json jsonMessage) -> void
+{
+    auto wideUrl{glow::text::widen(jsonMessage)};
+    if (m_webView.m_core20) m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
 }
 
 auto message_loop() -> int

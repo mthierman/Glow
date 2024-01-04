@@ -175,23 +175,19 @@ struct WebView : public Window
     virtual auto register_window() -> void override;
     virtual auto create_window() -> void override;
 
-    auto create() -> HRESULT;
-    auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT;
-
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-
     virtual auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
+
+    virtual auto create_webview() -> HRESULT;
+    virtual auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT;
 
     virtual auto initialized() -> void {}
 
-    auto navigate(std::string url) -> void;
-    auto post_json(const nlohmann::json jsonMessage) -> void;
+    auto source_changed() -> HRESULT;
+    virtual auto source_changed_handler() -> HRESULT { return S_OK; }
 
-    auto source_changed() -> void;
-    virtual auto source_changed_handler() -> void {}
-
-    auto navigation_completed() -> void;
-    virtual auto navigation_completed_handler() -> void {}
+    auto navigation_completed() -> HRESULT;
+    virtual auto navigation_completed_handler() -> HRESULT { return S_OK; }
 
     auto web_message_received() -> HRESULT;
     virtual auto web_message_received_handler(ICoreWebView2* sender,
@@ -201,16 +197,21 @@ struct WebView : public Window
         return S_OK;
     }
 
-    auto accelerator_key_pressed() -> void;
+    auto accelerator_key_pressed() -> HRESULT;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> void
-    {}
+        -> HRESULT
+    {
+        return S_OK;
+    }
 
-    auto favicon_changed() -> void;
-    virtual auto favicon_changed_handler() -> void {}
+    auto favicon_changed() -> HRESULT;
+    virtual auto favicon_changed_handler() -> HRESULT { return S_OK; }
 
-    auto document_title_changed() -> void;
-    virtual auto document_title_changed_handler() -> void {}
+    auto document_title_changed() -> HRESULT;
+    virtual auto document_title_changed_handler() -> HRESULT { return S_OK; }
+
+    auto navigate(std::string url) -> void;
+    auto post_json(const nlohmann::json jsonMessage) -> void;
 
     int64_t m_id{};
     HWND m_parent{nullptr};
