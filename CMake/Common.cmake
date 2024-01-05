@@ -51,6 +51,7 @@ target_compile_options(
               /W4
               /WX
               /wd4100
+              /wd4101
               /wd4189
               /bigobj
               /diagnostics:caret
