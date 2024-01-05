@@ -556,6 +556,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                         m_webView.m_core20->Navigate(text::widen(m_url).c_str()));
 
                     glow::console::hresult_check(source_changed());
+                    glow::console::hresult_check(navigation_starting());
                     glow::console::hresult_check(navigation_completed());
                     glow::console::hresult_check(web_message_received());
                     glow::console::hresult_check(accelerator_key_pressed());
@@ -582,6 +583,19 @@ auto WebView::source_changed() -> HRESULT
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
             { return source_changed_handler(sender, args); })
+            .Get(),
+        &token);
+}
+
+auto WebView::navigation_starting() -> HRESULT
+{
+    EventRegistrationToken token;
+
+    return m_webView.m_core20->add_NavigationStarting(
+        Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
+            [=, this](ICoreWebView2* sender,
+                      ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT
+            { return navigation_starting_handler(sender, args); })
             .Get(),
         &token);
 }

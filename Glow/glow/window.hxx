@@ -191,6 +191,14 @@ struct WebView : public Window
         return S_OK;
     }
 
+    auto navigation_starting() -> HRESULT;
+    virtual auto navigation_starting_handler(ICoreWebView2* sender,
+                                             ICoreWebView2NavigationStartingEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
     auto navigation_completed() -> HRESULT;
     virtual auto navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
