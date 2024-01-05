@@ -236,8 +236,8 @@ struct WebView : public Window
         return S_OK;
     }
 
-    auto navigate(std::string url) -> void;
-    auto post_json(const nlohmann::json jsonMessage) -> void;
+    auto navigate(std::string url) -> HRESULT;
+    auto post_json(const nlohmann::json jsonMessage) -> HRESULT;
 
     HWND m_parent{nullptr};
     std::string m_url{"https://www.google.com/"};

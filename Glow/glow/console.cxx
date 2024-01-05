@@ -57,9 +57,10 @@ auto hresult_to_string(HRESULT errorCode) -> std::string
     return std::string(comError.ErrorMessage());
 }
 
-auto hresult_check(HRESULT errorCode) -> void
+auto hresult_check(HRESULT errorCode) -> HRESULT
 {
-    if (FAILED(errorCode)) throw std::runtime_error(glow::console::hresult_to_string(errorCode));
+    if (SUCCEEDED(errorCode)) return S_OK;
+    else throw std::runtime_error(glow::console::hresult_to_string(errorCode));
 }
 
 auto debug_hr(HRESULT errorCode, std::source_location location) -> void

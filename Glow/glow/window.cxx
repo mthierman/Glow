@@ -670,16 +670,23 @@ auto WebView::document_title_changed() -> HRESULT
         &token);
 }
 
-auto WebView::navigate(std::string url) -> void
+auto WebView::navigate(std::string url) -> HRESULT
 {
     auto wideUrl{glow::text::widen(url)};
-    if (m_webView.m_core20) m_webView.m_core20->Navigate(wideUrl.c_str());
+    if (m_webView.m_core20)
+        return glow::console::hresult_check(m_webView.m_core20->Navigate(wideUrl.c_str()));
+
+    else return S_OK;
 }
 
-auto WebView::post_json(const nlohmann::json jsonMessage) -> void
+auto WebView::post_json(const nlohmann::json jsonMessage) -> HRESULT
 {
     auto wideUrl{glow::text::widen(jsonMessage)};
-    if (m_webView.m_core20) m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
+    if (m_webView.m_core20)
+        return glow::console::hresult_check(
+            m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str()));
+
+    else return S_OK;
 }
 
 GdiPlus::GdiPlus()

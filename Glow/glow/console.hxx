@@ -37,7 +37,7 @@ struct Console
 auto argv() -> std::vector<std::string>;
 
 auto hresult_to_string(HRESULT errorCode) -> std::string;
-auto hresult_check(HRESULT errorCode) -> void;
+auto hresult_check(HRESULT errorCode) -> HRESULT;
 auto debug_hresult(HRESULT errorCode,
                    std::source_location location = std::source_location::current()) -> void;
 auto print_hresult(HRESULT errorCode,
