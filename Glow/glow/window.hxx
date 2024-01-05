@@ -180,6 +180,7 @@ struct WebView : public Window
     virtual auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     virtual auto create_webview() -> HRESULT;
+    virtual auto configure_settings() -> HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT;
 
     virtual auto initialized() -> void {}

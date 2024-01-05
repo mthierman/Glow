@@ -498,6 +498,29 @@ auto WebView::create_webview() -> HRESULT
             .Get());
 }
 
+auto WebView::configure_settings() -> HRESULT
+{
+    glow::console::hresult_check(m_webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_AreDefaultContextMenusEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_AreDefaultScriptDialogsEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_AreDevToolsEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_AreHostObjectsAllowed(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_HiddenPdfToolbarItems(
+        COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsBuiltInErrorPageEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsGeneralAutofillEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsPasswordAutosaveEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsPinchZoomEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsReputationCheckingRequired(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsScriptEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsStatusBarEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsSwipeNavigationEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsWebMessageEnabled(true));
+    glow::console::hresult_check(m_webView.m_settings8->put_IsZoomControlEnabled(true));
+
+    return S_OK;
+}
+
 auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
 {
     return createdEnvironment->CreateCoreWebView2Controller(
@@ -534,23 +557,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
 
                     if (!m_webView.m_settings8) return E_POINTER;
 
-                    m_webView.m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-                    m_webView.m_settings8->put_AreDefaultContextMenusEnabled(true);
-                    m_webView.m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-                    m_webView.m_settings8->put_AreDevToolsEnabled(true);
-                    m_webView.m_settings8->put_AreHostObjectsAllowed(true);
-                    m_webView.m_settings8->put_HiddenPdfToolbarItems(
-                        COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-                    m_webView.m_settings8->put_IsBuiltInErrorPageEnabled(true);
-                    m_webView.m_settings8->put_IsGeneralAutofillEnabled(true);
-                    m_webView.m_settings8->put_IsPasswordAutosaveEnabled(true);
-                    m_webView.m_settings8->put_IsPinchZoomEnabled(true);
-                    m_webView.m_settings8->put_IsReputationCheckingRequired(true);
-                    m_webView.m_settings8->put_IsScriptEnabled(true);
-                    m_webView.m_settings8->put_IsStatusBarEnabled(true);
-                    m_webView.m_settings8->put_IsSwipeNavigationEnabled(true);
-                    m_webView.m_settings8->put_IsWebMessageEnabled(true);
-                    m_webView.m_settings8->put_IsZoomControlEnabled(true);
+                    glow::console::hresult_check(configure_settings());
 
                     glow::console::hresult_check(
                         m_webView.m_core20->Navigate(text::widen(m_url).c_str()));
