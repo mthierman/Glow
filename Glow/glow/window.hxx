@@ -129,6 +129,7 @@ struct Window
     bool m_show{true};
     WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{nullptr};
+    int64_t m_id{glow::text::random_int64()};
 
     int64_t m_dpi{};
     float m_scale{};
@@ -213,7 +214,6 @@ struct WebView : public Window
     auto navigate(std::string url) -> void;
     auto post_json(const nlohmann::json jsonMessage) -> void;
 
-    int64_t m_id{};
     HWND m_parent{nullptr};
     std::string m_url{"https://www.google.com/"};
 
