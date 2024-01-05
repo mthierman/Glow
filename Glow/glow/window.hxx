@@ -185,10 +185,19 @@ struct WebView : public Window
     virtual auto initialized() -> void {}
 
     auto source_changed() -> HRESULT;
-    virtual auto source_changed_handler() -> HRESULT { return S_OK; }
+    virtual auto source_changed_handler(ICoreWebView2* sender,
+                                        ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+    {
+        return S_OK;
+    }
 
     auto navigation_completed() -> HRESULT;
-    virtual auto navigation_completed_handler() -> HRESULT { return S_OK; }
+    virtual auto navigation_completed_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationCompletedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
 
     auto web_message_received() -> HRESULT;
     virtual auto web_message_received_handler(ICoreWebView2* sender,
@@ -199,17 +208,24 @@ struct WebView : public Window
     }
 
     auto accelerator_key_pressed() -> HRESULT;
-    virtual auto accelerator_key_pressed_handler(ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> HRESULT
     {
         return S_OK;
     }
 
     auto favicon_changed() -> HRESULT;
-    virtual auto favicon_changed_handler() -> HRESULT { return S_OK; }
+    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+    {
+        return S_OK;
+    }
 
     auto document_title_changed() -> HRESULT;
-    virtual auto document_title_changed_handler() -> HRESULT { return S_OK; }
+    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+    {
+        return S_OK;
+    }
 
     auto navigate(std::string url) -> void;
     auto post_json(const nlohmann::json jsonMessage) -> void;

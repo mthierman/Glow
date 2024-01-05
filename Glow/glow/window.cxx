@@ -555,12 +555,12 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                     glow::console::hresult_check(
                         m_webView.m_core20->Navigate(text::widen(m_url).c_str()));
 
-                    source_changed();
-                    navigation_completed();
-                    web_message_received();
-                    accelerator_key_pressed();
-                    favicon_changed();
-                    document_title_changed();
+                    glow::console::hresult_check(source_changed());
+                    glow::console::hresult_check(navigation_completed());
+                    glow::console::hresult_check(web_message_received());
+                    glow::console::hresult_check(accelerator_key_pressed());
+                    glow::console::hresult_check(favicon_changed());
+                    glow::console::hresult_check(document_title_changed());
 
                     if (!m_initialized)
                     {
@@ -569,7 +569,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                     }
                 }
 
-                return S_OK;
+                return errorCode;
             })
             .Get());
 }
@@ -581,11 +581,7 @@ auto WebView::source_changed() -> HRESULT
     return m_webView.m_core20->add_SourceChanged(
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
-            {
-                // source_changed_handler();
-
-                return S_OK;
-            })
+            { return source_changed_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -598,11 +594,7 @@ auto WebView::navigation_completed() -> HRESULT
         Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
-            {
-                // navigation_completed_handler();
-
-                return S_OK;
-            })
+            { return navigation_completed_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -615,11 +607,7 @@ auto WebView::web_message_received() -> HRESULT
         Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
             [=, this](ICoreWebView2* sender,
                       ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
-            {
-                return web_message_received_handler(sender, args);
-
-                // return S_OK;
-            })
+            { return web_message_received_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -632,11 +620,7 @@ auto WebView::accelerator_key_pressed() -> HRESULT
         Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
             [=, this](ICoreWebView2Controller* sender,
                       ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
-            {
-                // accelerator_key_pressed_handler(args);
-
-                return S_OK;
-            })
+            { return accelerator_key_pressed_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -648,11 +632,7 @@ auto WebView::favicon_changed() -> HRESULT
     return m_webView.m_core20->add_FaviconChanged(
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                // favicon_changed_handler();
-
-                return S_OK;
-            })
+            { return favicon_changed_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -664,11 +644,7 @@ auto WebView::document_title_changed() -> HRESULT
     return m_webView.m_core20->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            {
-                // document_title_changed_handler();
-
-                return S_OK;
-            })
+            { return document_title_changed_handler(sender, args); })
             .Get(),
         &token);
 }
