@@ -246,6 +246,25 @@ struct WebView : public Window
     WebView2 m_webView;
 };
 
+struct GdiPlus
+{
+    GdiPlus();
+    ~GdiPlus();
+
+    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput{};
+    ULONG_PTR m_gdiplusToken{};
+    Gdiplus::Status m_gdiplusStatus{};
+};
+
+struct CoInitialize
+{
+    CoInitialize();
+    ~CoInitialize();
+
+    operator HRESULT() const;
+    HRESULT m_result{};
+};
+
 auto message_loop() -> int;
 
 auto rect_to_position(const RECT& rect) -> Position;
@@ -267,24 +286,5 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
-
-struct GdiPlus
-{
-    GdiPlus();
-    ~GdiPlus();
-
-    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput{};
-    ULONG_PTR m_gdiplusToken{};
-    Gdiplus::Status m_gdiplusStatus{};
-};
-
-struct CoInitialize
-{
-    CoInitialize();
-    ~CoInitialize();
-
-    operator HRESULT() const;
-    HRESULT m_result{};
-};
 
 } // namespace glow::window

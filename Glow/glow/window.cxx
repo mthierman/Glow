@@ -682,6 +682,34 @@ auto WebView::post_json(const nlohmann::json jsonMessage) -> void
     if (m_webView.m_core20) m_webView.m_core20->PostWebMessageAsJson(wideUrl.c_str());
 }
 
+GdiPlus::GdiPlus()
+    : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
+{
+    if (m_gdiplusStatus != Gdiplus::Status::Ok) throw std::runtime_error("GDI+ startup failure");
+}
+
+GdiPlus::~GdiPlus()
+{
+    if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
+}
+
+constexpr auto operator+(Gdiplus::Status g) noexcept
+{
+    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
+}
+
+CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
+{
+    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
+}
+
+CoInitialize::~CoInitialize()
+{
+    if (SUCCEEDED(m_result)) CoUninitialize();
+}
+
+CoInitialize::operator HRESULT() const { return m_result; }
+
 auto message_loop() -> int
 {
     MSG msg{};
@@ -837,33 +865,5 @@ auto icon_shield() -> HICON
     return static_cast<HICON>(
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
-
-GdiPlus::GdiPlus()
-    : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
-{
-    if (m_gdiplusStatus != Gdiplus::Status::Ok) throw std::runtime_error("GDI+ startup failure");
-}
-
-GdiPlus::~GdiPlus()
-{
-    if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
-}
-
-constexpr auto operator+(Gdiplus::Status g) noexcept
-{
-    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
-}
-
-CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
-{
-    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
-}
-
-CoInitialize::~CoInitialize()
-{
-    if (SUCCEEDED(m_result)) CoUninitialize();
-}
-
-CoInitialize::operator HRESULT() const { return m_result; }
 
 } // namespace glow::window
