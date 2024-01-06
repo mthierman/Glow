@@ -9,11 +9,11 @@
 #pragma once
 
 // clang-format off
-#define GLOW_VERSION "@PROJECT_VERSION@";
-#define WEBVIEW2 "@WEBVIEW2@";
-#define WEBVIEW2_VERSION "@WEBVIEW2_VERSION@";
-#define CPPWINRT "@CPPWINRT@";
-#define CPPWINRT_VERSION "@CPPWINRT_VERSION@";
-#define WIL "@WIL@";
-#define WIL_VERSION "@WIL_VERSION@";
+#define GLOW_VERSION "@PROJECT_VERSION@"
+#define WEBVIEW2 "@WEBVIEW2@"
+#define WEBVIEW2_VERSION "@WEBVIEW2_VERSION@"
+#define CPPWINRT "@CPPWINRT@"
+#define CPPWINRT_VERSION "@CPPWINRT_VERSION@"
+#define WIL "@WIL@"
+#define WIL_VERSION "@WIL_VERSION@"
 // clang-format on
