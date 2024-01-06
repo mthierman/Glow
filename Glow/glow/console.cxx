@@ -136,4 +136,20 @@ auto stock(std::string message, SHSTOCKICONID icon) -> void
     }
 }
 
+auto create_process(std::string process) -> int
+{
+    STARTUPINFOA si{sizeof(STARTUPINFOA)};
+    PROCESS_INFORMATION pi{};
+
+    auto server{(glow::filesystem::portable() / process).string()};
+    auto pServer{server.data()};
+
+    CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+    WaitForSingleObject(pi.hProcess, INFINITE);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    return 0;
+}
+
 } // namespace glow::console
