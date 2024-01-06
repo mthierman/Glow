@@ -10,19 +10,19 @@ project(
 set(WIL
     Microsoft.Windows.ImplementationLibrary
 )
-set(WIL_VER
+set(WIL_VERSION
     1.0.231216.1
 )
 set(CPPWINRT
     Microsoft.Windows.CppWinRT
 )
-set(CPPWINRT_VER
+set(CPPWINRT_VERSION
     2.0.230706.1
 )
 set(WEBVIEW2
     Microsoft.Web.WebView2
 )
-set(WEBVIEW2_VER
+set(WEBVIEW2_VERSION
     1.0.2210.55
 )
 

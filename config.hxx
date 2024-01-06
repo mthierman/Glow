@@ -1,25 +1,19 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// ╔─────────────────────╗
+// │ ╔═╗╦╦═╗╔═╗╦  ╔═╗╦ ╦ │  Airglow - https://github.com/mthierman/Airglow
+// │ ╠═╣║╠╦╝║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
+// │ ╩ ╩╩╩╚═╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
+// ╚─────────────────────╝
 // clang-format on
 
 #pragma once
 
-#include <string>
-
-namespace glow::config
-{
-
-std::string name{"@PROJECT_NAME@"};
-std::string version{"@PROJECT_VERSION@"};
-std::string webView2{"@WEBVIEW2@"};
-std::string webView2Version{"@WEBVIEW2_VER@"};
-std::string cppwinrt{"@WEBVIEW2@"};
-std::string cppwinrtVersion{"@WEBVIEW2_VER@"};
-std::string wil{"@WEBVIEW2@"};
-std::string wilVersion{"@WEBVIEW2_VER@"};
-
-} // namespace glow::config
+// clang-format off
+#define GLOW_VERSION "@PROJECT_VERSION@";
+#define WEBVIEW2 "@WEBVIEW2@";
+#define WEBVIEW2_VERSION "@WEBVIEW2_VERSION@";
+#define CPPWINRT "@CPPWINRT@";
+#define CPPWINRT_VERSION "@CPPWINRT_VERSION@";
+#define WIL "@WIL@";
+#define WIL_VERSION "@WIL_VERSION@";
+// clang-format on
