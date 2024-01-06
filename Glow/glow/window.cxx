@@ -13,10 +13,12 @@ namespace glow::window
 
 void to_json(nlohmann::json& j, const Position& position)
 {
-    j = nlohmann::json{{"x", position.x},
-                       {"y", position.y},
-                       {"width", position.width},
-                       {"height", position.height}};
+    j = nlohmann::json{
+        {"x", position.x},
+        {"y", position.y},
+        {"width", position.width},
+        {"height", position.height},
+    };
 }
 
 void from_json(const nlohmann::json& j, Position& position)
@@ -29,15 +31,17 @@ void from_json(const nlohmann::json& j, Position& position)
 
 void to_json(nlohmann::json& j, const Colors& colors)
 {
-    j = nlohmann::json{{"accent", colors.accent},
-                       {"accentDark1", colors.accentDark1},
-                       {"accentDark2", colors.accentDark2},
-                       {"accentDark3", colors.accentDark3},
-                       {"accentLight1", colors.accentLight1},
-                       {"accentLight2", colors.accentLight2},
-                       {"accentLight3", colors.accentLight3},
-                       {"background", colors.background},
-                       {"foreground", colors.foreground}};
+    j = nlohmann::json{
+        {"accent", colors.accent},
+        {"accentDark1", colors.accentDark1},
+        {"accentDark2", colors.accentDark2},
+        {"accentDark3", colors.accentDark3},
+        {"accentLight1", colors.accentLight1},
+        {"accentLight2", colors.accentLight2},
+        {"accentLight3", colors.accentLight3},
+        {"background", colors.background},
+        {"foreground", colors.foreground},
+    };
 }
 
 void from_json(const nlohmann::json& j, Colors& colors)
