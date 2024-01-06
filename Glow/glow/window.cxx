@@ -569,6 +569,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                     glow::console::hresult_check(accelerator_key_pressed());
                     glow::console::hresult_check(favicon_changed());
                     glow::console::hresult_check(document_title_changed());
+                    glow::console::hresult_check(zoom_factor_changed());
 
                     if (!m_initialized)
                     {
@@ -633,15 +634,14 @@ auto WebView::web_message_received() -> HRESULT
         &token);
 }
 
-auto WebView::accelerator_key_pressed() -> HRESULT
+auto WebView::document_title_changed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    return m_webView.m_controller4->add_AcceleratorKeyPressed(
-        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender,
-                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
-            { return accelerator_key_pressed_handler(sender, args); })
+    return m_webView.m_core20->add_DocumentTitleChanged(
+        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+            { return document_title_changed_handler(sender, args); })
             .Get(),
         &token);
 }
@@ -658,14 +658,27 @@ auto WebView::favicon_changed() -> HRESULT
         &token);
 }
 
-auto WebView::document_title_changed() -> HRESULT
+auto WebView::accelerator_key_pressed() -> HRESULT
 {
     EventRegistrationToken token;
 
-    return m_webView.m_core20->add_DocumentTitleChanged(
-        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
-            { return document_title_changed_handler(sender, args); })
+    return m_webView.m_controller4->add_AcceleratorKeyPressed(
+        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+            [=, this](ICoreWebView2Controller* sender,
+                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+            { return accelerator_key_pressed_handler(sender, args); })
+            .Get(),
+        &token);
+}
+
+auto WebView::zoom_factor_changed() -> HRESULT
+{
+    EventRegistrationToken token;
+
+    return m_webView.m_controller4->add_ZoomFactorChanged(
+        Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
+            [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
+            { return zoom_factor_changed_handler(sender, args); })
             .Get(),
         &token);
 }

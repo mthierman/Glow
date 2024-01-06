@@ -216,10 +216,8 @@ struct WebView : public Window
         return S_OK;
     }
 
-    auto accelerator_key_pressed() -> HRESULT;
-    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
-                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> HRESULT
+    auto document_title_changed() -> HRESULT;
+    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
     {
         return S_OK;
     }
@@ -230,8 +228,17 @@ struct WebView : public Window
         return S_OK;
     }
 
-    auto document_title_changed() -> HRESULT;
-    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+    auto accelerator_key_pressed() -> HRESULT;
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    auto zoom_factor_changed() -> HRESULT;
+    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT
     {
         return S_OK;
     }
