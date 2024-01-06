@@ -42,8 +42,7 @@ struct Database
     std::filesystem::path path;
 };
 
-auto known_folder(const KNOWNFOLDERID& knownFolderId = FOLDERID_LocalAppData)
-    -> std::optional<std::filesystem::path>;
+auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
 
 auto program_name() -> std::string;
 auto portable() -> std::filesystem::path;

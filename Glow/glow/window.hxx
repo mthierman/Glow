@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <bit>
+#include <format>
 #include <memory>
 
 #include <WebView2.h>
@@ -36,6 +37,31 @@
 
 namespace glow::window
 {
+
+struct Position;
+struct Colors;
+struct Window;
+struct MainWindow;
+struct WebView;
+struct GdiPlus;
+struct CoInitialize;
+
+auto message_loop() -> int;
+auto rect_to_position(const RECT& rect) -> Position;
+auto position_to_rect(const Position& position) -> RECT;
+auto clamp_color(int value) -> int;
+auto make_colorref(int r, int g, int b) -> COLORREF;
+auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
+auto check_theme() -> bool;
+auto set_preferred_app_mode() -> void;
+auto allow_dark_mode(HWND hwnd, bool enable) -> void;
+auto icon_application() -> HICON;
+auto icon_error() -> HICON;
+auto icon_question() -> HICON;
+auto icon_warning() -> HICON;
+auto icon_information() -> HICON;
+auto icon_winlogo() -> HICON;
+auto icon_shield() -> HICON;
 
 template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
@@ -71,6 +97,30 @@ struct Position
 
 void to_json(nlohmann::json& j, const Position& position);
 void from_json(const nlohmann::json& j, Position& position);
+
+struct Colors
+{
+    std::string accent{color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
+    std::string accentDark1{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1)};
+    std::string accentDark2{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2)};
+    std::string accentDark3{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3)};
+    std::string accentLight1{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1)};
+    std::string accentLight2{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2)};
+    std::string accentLight3{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3)};
+    std::string background{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background)};
+    std::string foreground{
+        color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
+};
+
+void to_json(nlohmann::json& j, const Colors& colors);
+void from_json(const nlohmann::json& j, Colors& colors);
 
 struct Window
 {
@@ -133,6 +183,9 @@ struct Window
 
     int64_t m_dpi{};
     float m_scale{};
+
+    Position m_position;
+    Colors m_colors;
 
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
@@ -271,27 +324,5 @@ struct CoInitialize
     operator HRESULT() const;
     HRESULT m_result{};
 };
-
-auto message_loop() -> int;
-
-auto rect_to_position(const RECT& rect) -> Position;
-auto position_to_rect(const Position& position) -> RECT;
-
-auto clamp_color(int value) -> int;
-auto make_colorref(int r, int g, int b) -> COLORREF;
-auto format_color(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
-
-auto check_theme() -> bool;
-
-auto set_preferred_app_mode() -> void;
-auto allow_dark_mode(HWND hwnd, bool enable) -> void;
-
-auto icon_application() -> HICON;
-auto icon_error() -> HICON;
-auto icon_question() -> HICON;
-auto icon_warning() -> HICON;
-auto icon_information() -> HICON;
-auto icon_winlogo() -> HICON;
-auto icon_shield() -> HICON;
 
 } // namespace glow::window

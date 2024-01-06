@@ -50,13 +50,15 @@ auto Database::write() -> void
     }
 }
 
-auto known_folder(const KNOWNFOLDERID& knownFolderId) -> std::optional<std::filesystem::path>
+auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
 {
+    // https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid
     wil::unique_cotaskmem_string buffer;
 
-    if (FAILED(SHGetKnownFolderPath(knownFolderId, 0, nullptr, &buffer))) return std::nullopt;
+    if (FAILED(SHGetKnownFolderPath(folderId, 0, nullptr, &buffer)))
+        throw std::runtime_error("SHGetKnownFolderPath failure");
 
-    else return std::filesystem::path(buffer.get());
+    return std::filesystem::path(buffer.get());
 }
 
 auto program_name() -> std::string
