@@ -859,18 +859,27 @@ auto set_preferred_app_mode() -> void
     }
 }
 
-auto allow_dark_mode(HWND hwnd, bool enable) -> void
+auto allow_dark_mode(HWND hWnd, bool enable) -> void
 {
+    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hWnd, bool allow);
+    using fnFlushMenuThemes = void(WINAPI*)();
     auto uxtheme{LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hWnd, bool allow);
+    if (uxtheme)
+    {
+        // fnAllowDarkModeForWindow AllowDarkModeForWindow;
+        // fnFlushMenuThemes FlushMenuThemes;
 
-    fnAllowDarkModeForWindow AllowDarkModeForWindow = nullptr;
+        auto ord133{GetProcAddress(uxtheme, MAKEINTRESOURCEA(133))};
+        auto ord136{GetProcAddress(uxtheme, MAKEINTRESOURCEA(136))};
 
-    AllowDarkModeForWindow =
-        reinterpret_cast<fnAllowDarkModeForWindow>(GetProcAddress(uxtheme, MAKEINTRESOURCEA(133)));
-    // auto _AllowDarkModeForWindow{std::bit_cast<fnAllowDarkModeForWindow>(ord133)};
-    AllowDarkModeForWindow(hwnd, enable);
+        auto AllowDarkModeForWindow{std::bit_cast<fnAllowDarkModeForWindow>(ord133)};
+        auto FlushMenuThemes{std::bit_cast<fnFlushMenuThemes>(ord136)};
+
+        AllowDarkModeForWindow(hWnd, enable);
+        FlushMenuThemes();
+    }
+
     FreeLibrary(uxtheme);
 }
 

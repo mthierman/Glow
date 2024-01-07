@@ -56,6 +56,7 @@ target_link_libraries(
            tomlplusplus::tomlplusplus
            sqlite::sqlite
            dwmapi.lib
+           Uxtheme.lib
            Comctl32.lib
            gdiplus.lib
            windowscodecs.lib

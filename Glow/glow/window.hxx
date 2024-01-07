@@ -54,7 +54,7 @@ auto make_colorref(int r, int g, int b) -> COLORREF;
 auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
 auto check_theme() -> bool;
 auto set_preferred_app_mode() -> void;
-auto allow_dark_mode(HWND hwnd, bool enable) -> void;
+auto allow_dark_mode(HWND hWnd, bool enable) -> void;
 auto icon_application() -> HICON;
 auto icon_error() -> HICON;
 auto icon_question() -> HICON;
