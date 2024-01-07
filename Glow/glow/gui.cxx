@@ -6,9 +6,9 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/window.hxx>
+#include <glow/gui.hxx>
 
-namespace glow::window
+namespace glow::gui
 {
 
 void to_json(nlohmann::json& j, const Position& position)
@@ -925,4 +925,4 @@ auto icon_shield() -> HICON
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-} // namespace glow::window
+} // namespace glow::gui

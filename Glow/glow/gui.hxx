@@ -35,7 +35,7 @@
 #include <glow/console.hxx>
 #include <glow/text.hxx>
 
-namespace glow::window
+namespace glow::gui
 {
 
 struct Position;
@@ -325,4 +325,4 @@ struct CoInitialize
     HRESULT m_result{};
 };
 
-} // namespace glow::window
+} // namespace glow::gui
