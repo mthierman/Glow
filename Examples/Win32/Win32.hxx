@@ -12,16 +12,16 @@
 
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
 #include <glow/text.hxx>
-#include <glow/window.hxx>
 
 namespace App
 {
 using namespace glow;
 
-struct MainWindow final : public window::MainWindow
+struct MainWindow final : public gui::MainWindow
 {
-    using window::MainWindow::MainWindow;
+    using gui::MainWindow::MainWindow;
 
     static auto CALLBACK EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL;
 
@@ -29,11 +29,11 @@ struct MainWindow final : public window::MainWindow
     auto on_parent_notify(WPARAM wParam) -> int;
     auto on_size() -> int;
 
-    window::GdiPlus gdiInit;
-    window::CoInitialize coInit;
+    gui::GdiPlus gdiInit;
+    gui::CoInitialize coInit;
 
-    std::unique_ptr<window::WebView> m_webView;
-    std::unique_ptr<window::Window> m_window;
+    std::unique_ptr<gui::WebView> m_webView;
+    std::unique_ptr<gui::Window> m_window;
 };
 
 auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
@@ -41,7 +41,7 @@ auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
     auto gwlId{GetWindowLongPtrA(hWnd, GWL_ID)};
 
     auto rect{*std::bit_cast<LPRECT>(lParam)};
-    auto position{window::rect_to_position(rect)};
+    auto position{gui::rect_to_position(rect)};
 
     if (gwlId == 1)
         SetWindowPos(hWnd, nullptr, 0, 0, position.width, position.height, SWP_NOZORDER);
@@ -82,8 +82,8 @@ auto run() -> int
     MainWindow mainWindow{"Win32"};
     mainWindow();
 
-    mainWindow.m_webView = std::make_unique<window::WebView>(1, mainWindow.m_hwnd.get());
-    mainWindow.m_window = std::make_unique<window::Window>();
+    mainWindow.m_webView = std::make_unique<gui::WebView>(1, mainWindow.m_hwnd.get());
+    mainWindow.m_window = std::make_unique<gui::Window>();
 
     (*mainWindow.m_webView)(false);
     // (*mainWindow.m_window)();
@@ -91,6 +91,6 @@ auto run() -> int
 
     (*mainWindow.m_webView).show();
 
-    return window::message_loop();
+    return gui::message_loop();
 }
 } // namespace App

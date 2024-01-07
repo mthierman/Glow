@@ -10,8 +10,8 @@
 
 #include <glow/console.hxx>
 #include <glow/filesystem.hxx>
+#include <glow/gui.hxx>
 #include <glow/text.hxx>
-#include <glow/window.hxx>
 
 auto main() -> int
 {
