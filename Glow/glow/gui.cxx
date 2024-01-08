@@ -760,6 +760,15 @@ CoInitialize::~CoInitialize()
 
 CoInitialize::operator HRESULT() const { return m_result; }
 
+auto webview_version() -> std::string
+{
+    wil::unique_cotaskmem_string buffer;
+    if (FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)))
+        throw std::runtime_error("GetAvailableCoreWebView2BrowserVersionString failure");
+
+    return glow::text::narrow(buffer.get());
+}
+
 auto message_loop() -> int
 {
     MSG msg{};
