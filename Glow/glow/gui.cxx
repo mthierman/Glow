@@ -592,6 +592,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                     glow::console::hresult_check(
                         m_webView.m_core20->Navigate(text::widen(m_url).c_str()));
 
+                    glow::console::hresult_check(context_menu_requested());
                     glow::console::hresult_check(source_changed());
                     glow::console::hresult_check(navigation_starting());
                     glow::console::hresult_check(navigation_completed());
@@ -611,6 +612,19 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                 return errorCode;
             })
             .Get());
+}
+
+auto WebView::context_menu_requested() -> HRESULT
+{
+    EventRegistrationToken token;
+
+    return m_webView.m_core20->add_ContextMenuRequested(
+        Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
+            [=, this](ICoreWebView2* sender,
+                      ICoreWebView2ContextMenuRequestedEventArgs* args) -> HRESULT
+            { return context_menu_requested_handler(sender, args); })
+            .Get(),
+        &token);
 }
 
 auto WebView::source_changed() -> HRESULT

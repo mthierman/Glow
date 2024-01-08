@@ -239,6 +239,14 @@ struct WebView : public Window
 
     virtual auto initialized() -> void {}
 
+    auto context_menu_requested() -> HRESULT;
+    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
+                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
     auto source_changed() -> HRESULT;
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
