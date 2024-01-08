@@ -222,7 +222,7 @@ struct WebView : public Window
         wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
     };
 
-    WebView(int64_t id, HWND parent, std::string url = "https://www.google.com/",
+    WebView(int64_t id, HWND parent, std::string url = "about:blank",
             std::string className = "WebView", bool show = true);
 
     virtual auto operator()(bool show = true) -> void override;
@@ -309,7 +309,7 @@ struct WebView : public Window
     auto post_json(const nlohmann::json jsonMessage) -> HRESULT;
 
     HWND m_parent{nullptr};
-    std::string m_url{"https://www.google.com/"};
+    std::string m_url{"about:blank"};
 
     bool m_initialized{false};
     WebView2 m_webView;
