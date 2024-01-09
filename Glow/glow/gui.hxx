@@ -126,16 +126,11 @@ void from_json(const nlohmann::json& j, Colors& colors);
 
 struct Window
 {
-    Window(std::string className = "Window", bool show = true);
+    Window();
     virtual ~Window();
-
-    virtual auto register_window() -> void;
-    virtual auto create_window() -> void;
-    virtual auto operator()(bool show = true) -> void;
 
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-
     virtual auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 
     auto dpi() -> int64_t;
@@ -177,12 +172,10 @@ struct Window
     auto dwm_set_text_color(COLORREF color) -> void;
     auto dwm_reset_text_color() -> void;
 
-    std::string m_className{"Window"};
-    bool m_show{true};
-    WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
+    WNDCLASSEXA m_wndClass{sizeof(WNDCLASSEXA)};
+    ATOM m_atom{};
     wil::unique_hwnd m_hwnd{nullptr};
     int64_t m_id{glow::text::random_int64()};
-
     int64_t m_dpi{};
     float m_scale{};
 
@@ -200,9 +193,15 @@ struct Window
     wil::unique_hbrush m_hbrBackgroundWhite{static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH))};
 };
 
-struct MainWindow : public Window
+struct Overlapped : public Window
 {
-    MainWindow(std::string className = "MainWindow", bool show = true);
+    Overlapped();
+    virtual ~Overlapped();
+};
+
+struct MainWindow : public Overlapped
+{
+    using Overlapped::Overlapped;
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
@@ -223,13 +222,7 @@ struct WebView : public Window
         wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
     };
 
-    WebView(int64_t id, HWND parent, std::string url = "about:blank",
-            std::string className = "WebView", bool show = true);
-
-    virtual auto operator()(bool show = true) -> void override;
-
-    virtual auto register_window() -> void override;
-    virtual auto create_window() -> void override;
+    WebView(int64_t id, HWND parent, std::string url = "about:blank");
 
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
@@ -309,6 +302,7 @@ struct WebView : public Window
     auto navigate(std::string url) -> HRESULT;
     auto post_json(const nlohmann::json jsonMessage) -> HRESULT;
 
+    int64_t m_id{glow::text::random_int64()};
     HWND m_parent{nullptr};
     std::string m_url{"about:blank"};
 

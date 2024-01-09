@@ -57,47 +57,9 @@ void from_json(const nlohmann::json& j, Colors& colors)
     j.at("foreground").get_to(colors.foreground);
 }
 
-Window::Window(std::string className, bool show) : m_className{className}, m_show{show} {}
+Window::Window() {}
 
 Window::~Window() {}
-
-auto Window::register_window() -> void
-{
-    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &m_wcex))
-    {
-        m_wcex.lpszClassName = m_className.c_str();
-        m_wcex.lpszMenuName = 0;
-        m_wcex.lpfnWndProc = Window::WndProc;
-        m_wcex.style = 0;
-        m_wcex.cbClsExtra = 0;
-        m_wcex.cbWndExtra = sizeof(void*);
-        m_wcex.hInstance = GetModuleHandleA(nullptr);
-        m_wcex.hbrBackground = m_hbrBackgroundBlack.get();
-        m_wcex.hCursor = m_hCursor.get();
-        m_wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-        m_wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-
-        RegisterClassExA(&m_wcex);
-    }
-}
-
-auto Window::create_window() -> void
-{
-    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName,
-                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
-                    this);
-}
-
-auto Window::operator()(bool show) -> void
-{
-    m_show = show;
-    register_window();
-    create_window();
-    if (m_show) show_normal();
-    m_dpi = dpi();
-    m_scale = scale();
-}
 
 auto CALLBACK Window::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
@@ -429,7 +391,31 @@ auto Window::dwm_reset_text_color() -> void
     DwmSetWindowAttribute(m_hwnd.get(), DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-MainWindow::MainWindow(std::string className, bool show) : Window{className, show} {}
+Overlapped::Overlapped()
+{
+    m_wndClass.lpszClassName = "Overlapped";
+    m_wndClass.lpszMenuName = 0;
+    m_wndClass.lpfnWndProc = WndProc;
+    m_wndClass.style = 0;
+    m_wndClass.cbClsExtra = 0;
+    m_wndClass.cbWndExtra = sizeof(void*);
+    m_wndClass.hInstance = GetModuleHandleA(nullptr);
+    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
+    m_wndClass.hCursor = m_hCursor.get();
+    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+
+    m_atom = RegisterClassExA(&m_wndClass);
+
+    CreateWindowExA(0, MAKEINTATOM(m_atom), "Overlapped", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+                    GetModuleHandleA(nullptr), this);
+
+    // m_dpi = dpi();
+    // m_scale = scale();
+}
+
+Overlapped::~Overlapped() {}
 
 auto MainWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
@@ -449,40 +435,27 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-WebView::WebView(int64_t id, HWND parent, std::string url, std::string className, bool show)
-    : Window{className, show}
+WebView::WebView(int64_t id, HWND parent, std::string url) : m_id{id}, m_parent{parent}, m_url{url}
 {
-    m_id = id;
-    m_parent = parent;
-    m_url = url;
-}
+    m_wndClass.lpszClassName = "WebView";
+    m_wndClass.lpszMenuName = 0;
+    m_wndClass.lpfnWndProc = WndProc;
+    m_wndClass.style = 0;
+    m_wndClass.cbClsExtra = 0;
+    m_wndClass.cbWndExtra = sizeof(void*);
+    m_wndClass.hInstance = GetModuleHandleA(nullptr);
+    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
+    m_wndClass.hCursor = m_hCursor.get();
+    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-auto WebView::operator()(bool show) -> void { Window::operator()(show); }
+    m_atom = RegisterClassExA(&m_wndClass);
 
-auto WebView::register_window() -> void
-{
-    if (!GetClassInfoExA(GetModuleHandleA(nullptr), m_className.c_str(), &m_wcex))
-    {
-        m_wcex.lpszClassName = m_className.c_str();
-        m_wcex.lpszMenuName = 0;
-        m_wcex.lpfnWndProc = WebView::WndProc;
-        m_wcex.style = 0;
-        m_wcex.cbClsExtra = 0;
-        m_wcex.cbWndExtra = sizeof(void*);
-        m_wcex.hInstance = GetModuleHandleA(nullptr);
-        m_wcex.hbrBackground = m_hbrBackgroundBlack.get();
-        m_wcex.hCursor = m_hCursor.get();
-        m_wcex.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-        m_wcex.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-
-        RegisterClassExA(&m_wcex);
-    }
-}
-
-auto WebView::create_window() -> void
-{
-    CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, WS_CHILD, 0, 0, 0, 0, m_parent,
+    CreateWindowExA(0, MAKEINTATOM(m_atom), "WebView", WS_CHILD, 0, 0, 0, 0, m_parent,
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
+
+    // m_dpi = dpi();
+    // m_scale = scale();
 }
 
 auto WebView::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
