@@ -193,21 +193,21 @@ struct Window
     wil::unique_hbrush m_hbrBackgroundWhite{static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH))};
 };
 
-struct Overlapped : public Window
+struct OverlappedWindow : public Window
 {
-    Overlapped();
-    virtual ~Overlapped();
+    OverlappedWindow();
+    virtual ~OverlappedWindow();
 };
 
-struct Message : public Window
+struct MessageWindow : public Window
 {
-    Message();
-    virtual ~Message();
+    MessageWindow();
+    virtual ~MessageWindow();
 };
 
-struct MainWindow : public Overlapped
+struct MainWindow : public OverlappedWindow
 {
-    using Overlapped::Overlapped;
+    using OverlappedWindow::OverlappedWindow;
 
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;

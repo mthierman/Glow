@@ -391,57 +391,63 @@ auto Window::dwm_reset_text_color() -> void
     DwmSetWindowAttribute(m_hwnd.get(), DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-Overlapped::Overlapped()
+OverlappedWindow::OverlappedWindow()
 {
-    m_wndClass.lpszClassName = "Overlapped";
-    m_wndClass.lpszMenuName = 0;
-    m_wndClass.lpfnWndProc = WndProc;
-    m_wndClass.style = 0;
-    m_wndClass.cbClsExtra = 0;
-    m_wndClass.cbWndExtra = sizeof(void*);
-    m_wndClass.hInstance = GetModuleHandleA(nullptr);
-    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
-    m_wndClass.hCursor = m_hCursor.get();
-    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), "OverlappedWindow", &m_wndClass))
+    {
+        m_wndClass.lpszClassName = "OverlappedWindow";
+        m_wndClass.lpszMenuName = 0;
+        m_wndClass.lpfnWndProc = WndProc;
+        m_wndClass.style = 0;
+        m_wndClass.cbClsExtra = 0;
+        m_wndClass.cbWndExtra = sizeof(void*);
+        m_wndClass.hInstance = GetModuleHandleA(nullptr);
+        m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
+        m_wndClass.hCursor = m_hCursor.get();
+        m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-    m_atom = RegisterClassExA(&m_wndClass);
+        RegisterClassExA(&m_wndClass);
+    }
 
-    CreateWindowExA(0, MAKEINTATOM(m_atom), "Overlapped", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
+    CreateWindowExA(0, "OverlappedWindow", "OverlappedWindow",
+                    WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
+                    CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, GetModuleHandleA(nullptr),
+                    this);
+
+    // m_dpi = dpi();
+    // m_scale = scale();
+}
+
+OverlappedWindow::~OverlappedWindow() {}
+
+MessageWindow::MessageWindow()
+{
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), "MessageWindow", &m_wndClass))
+    {
+        m_wndClass.lpszClassName = "MessageWindow";
+        m_wndClass.lpszMenuName = 0;
+        m_wndClass.lpfnWndProc = WndProc;
+        m_wndClass.style = 0;
+        m_wndClass.cbClsExtra = 0;
+        m_wndClass.cbWndExtra = sizeof(void*);
+        m_wndClass.hInstance = GetModuleHandleA(nullptr);
+        m_wndClass.hbrBackground = 0;
+        m_wndClass.hCursor = 0;
+        m_wndClass.hIcon = 0;
+        m_wndClass.hIconSm = 0;
+
+        RegisterClassExA(&m_wndClass);
+    }
+
+    CreateWindowExA(0, "MessageWindow", "MessageWindow", 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr,
                     GetModuleHandleA(nullptr), this);
 
     // m_dpi = dpi();
     // m_scale = scale();
 }
 
-Overlapped::~Overlapped() {}
-
-Message::Message()
-{
-    m_wndClass.lpszClassName = "Message";
-    m_wndClass.lpszMenuName = 0;
-    m_wndClass.lpfnWndProc = WndProc;
-    m_wndClass.style = 0;
-    m_wndClass.cbClsExtra = 0;
-    m_wndClass.cbWndExtra = sizeof(void*);
-    m_wndClass.hInstance = GetModuleHandleA(nullptr);
-    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
-    m_wndClass.hCursor = m_hCursor.get();
-    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-
-    m_atom = RegisterClassExA(&m_wndClass);
-
-    CreateWindowExA(0, MAKEINTATOM(m_atom), "Overlapped", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND_MESSAGE,
-                    nullptr, GetModuleHandleA(nullptr), this);
-
-    // m_dpi = dpi();
-    // m_scale = scale();
-}
-
-Message::~Message() {}
+MessageWindow::~MessageWindow() {}
 
 auto MainWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
@@ -463,21 +469,24 @@ auto MainWindow::on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
 
 WebView::WebView(int64_t id, HWND parent, std::string url) : m_id{id}, m_parent{parent}, m_url{url}
 {
-    m_wndClass.lpszClassName = "WebView";
-    m_wndClass.lpszMenuName = 0;
-    m_wndClass.lpfnWndProc = WndProc;
-    m_wndClass.style = 0;
-    m_wndClass.cbClsExtra = 0;
-    m_wndClass.cbWndExtra = sizeof(void*);
-    m_wndClass.hInstance = GetModuleHandleA(nullptr);
-    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
-    m_wndClass.hCursor = m_hCursor.get();
-    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
-    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    if (!GetClassInfoExA(GetModuleHandleA(nullptr), "WebView", &m_wndClass))
+    {
+        m_wndClass.lpszClassName = "WebView";
+        m_wndClass.lpszMenuName = 0;
+        m_wndClass.lpfnWndProc = WndProc;
+        m_wndClass.style = 0;
+        m_wndClass.cbClsExtra = 0;
+        m_wndClass.cbWndExtra = sizeof(void*);
+        m_wndClass.hInstance = GetModuleHandleA(nullptr);
+        m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
+        m_wndClass.hCursor = m_hCursor.get();
+        m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+        m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
 
-    m_atom = RegisterClassExA(&m_wndClass);
+        m_atom = RegisterClassExA(&m_wndClass);
+    }
 
-    CreateWindowExA(0, MAKEINTATOM(m_atom), "WebView", WS_CHILD, 0, 0, 0, 0, m_parent,
+    CreateWindowExA(0, "WebView", "WebView", WS_CHILD, 0, 0, 0, 0, m_parent,
                     std::bit_cast<HMENU>(m_id), GetModuleHandleA(nullptr), this);
 
     // m_dpi = dpi();
