@@ -46,8 +46,9 @@ struct WebView;
 struct GdiPlus;
 struct CoInitialize;
 
-auto webview_version() -> std::string;
 auto message_loop() -> int;
+auto webview_version() -> std::string;
+auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
 auto rect_to_position(const RECT& rect) -> Position;
 auto position_to_rect(const Position& position) -> RECT;
 auto clamp_color(int value) -> int;

@@ -774,15 +774,6 @@ CoInitialize::~CoInitialize()
 
 CoInitialize::operator HRESULT() const { return m_result; }
 
-auto webview_version() -> std::string
-{
-    wil::unique_cotaskmem_string buffer;
-    if (FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)))
-        throw std::runtime_error("GetAvailableCoreWebView2BrowserVersionString failure");
-
-    return glow::text::narrow(buffer.get());
-}
-
 auto message_loop() -> int
 {
     MSG msg{};
@@ -800,6 +791,22 @@ auto message_loop() -> int
     }
 
     return 0;
+}
+
+auto webview_version() -> std::string
+{
+    wil::unique_cotaskmem_string buffer;
+    if (FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)))
+        throw std::runtime_error("GetAvailableCoreWebView2BrowserVersionString failure");
+
+    return glow::text::narrow(buffer.get());
+}
+
+auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool
+{
+    if (GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(atom), &wndClass)) return true;
+
+    else return false;
 }
 
 auto rect_to_position(const RECT& rect) -> Position
