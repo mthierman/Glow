@@ -199,6 +199,12 @@ struct Overlapped : public Window
     virtual ~Overlapped();
 };
 
+struct Message : public Window
+{
+    Message();
+    virtual ~Message();
+};
+
 struct MainWindow : public Overlapped
 {
     using Overlapped::Overlapped;

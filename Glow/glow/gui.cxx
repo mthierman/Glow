@@ -417,6 +417,32 @@ Overlapped::Overlapped()
 
 Overlapped::~Overlapped() {}
 
+Message::Message()
+{
+    m_wndClass.lpszClassName = "Message";
+    m_wndClass.lpszMenuName = 0;
+    m_wndClass.lpfnWndProc = WndProc;
+    m_wndClass.style = 0;
+    m_wndClass.cbClsExtra = 0;
+    m_wndClass.cbWndExtra = sizeof(void*);
+    m_wndClass.hInstance = GetModuleHandleA(nullptr);
+    m_wndClass.hbrBackground = m_hbrBackgroundBlack.get();
+    m_wndClass.hCursor = m_hCursor.get();
+    m_wndClass.hIcon = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+    m_wndClass.hIconSm = m_appIcon.get() ? m_appIcon.get() : m_hIcon.get();
+
+    m_atom = RegisterClassExA(&m_wndClass);
+
+    CreateWindowExA(0, MAKEINTATOM(m_atom), "Overlapped", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                    CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, HWND_MESSAGE,
+                    nullptr, GetModuleHandleA(nullptr), this);
+
+    // m_dpi = dpi();
+    // m_scale = scale();
+}
+
+Message::~Message() {}
+
 auto MainWindow::handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
