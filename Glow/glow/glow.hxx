@@ -653,7 +653,7 @@ template <typename T> struct BaseWindow
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
-  public:
+  protected:
     WindowPosition m_windowPosition;
     SystemColors m_colors;
 
@@ -661,6 +661,34 @@ template <typename T> struct BaseWindow
     int64_t m_id{glow::text::random_int64()};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+};
+
+// https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
+template <typename T> struct WebView : BaseWindow<T>
+{
+    // void foo() {}
+
+    auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
+        switch (uMsg)
+        {
+        case WM_CLOSE: return on_close(wParam, lParam);
+        }
+
+        return DefWindowProcA(static_cast<T*>(this)->hwnd(), uMsg, wParam, lParam);
+    }
+
+    auto on_close(WPARAM wParam, LPARAM lParam) -> int { return static_cast<T*>(this)->close(); }
+
+    // using glow::gui::BaseWindow<WebView>::BaseWindow;
+
+    // WebView(HWND parent, std::string url);
+
+    // auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    // auto on_close(WPARAM wParam, LPARAM lParam) -> int;
+
+    // HWND m_parent;
+    // std::string m_url;
 };
 
 // struct WebView : public Window

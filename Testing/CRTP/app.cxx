@@ -1,5 +1,10 @@
 #include "app.hxx"
 
+struct Browser : public glow::gui::WebView<Browser>
+{
+    using glow::gui::WebView<Browser>::WebView;
+};
+
 auto App::run() -> int
 {
     App app;
@@ -8,6 +13,9 @@ auto App::run() -> int
     {
         app.m_vec.emplace_back(std::make_unique<MainWindow>(app.hwnd()))->reveal();
     }
+
+    auto wv = std::make_unique<Browser>();
+    wv->reveal();
 
     return glow::gui::message_loop();
 }
