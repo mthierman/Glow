@@ -140,6 +140,8 @@ struct WindowPosition
     bool maximized{};
     bool fullscreen{};
     bool topmost{};
+    int64_t dpi{};
+    float scale{};
 };
 void to_json(nlohmann::json& j, const WindowPosition& windowPosition);
 void from_json(const nlohmann::json& j, WindowPosition& windowPosition);
@@ -279,6 +281,10 @@ template <typename T> struct BaseWindow
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
         {
+            wil::unique_hicon appIcon{
+                static_cast<HICON>(LoadImageA(GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101),
+                                              IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+
             wcex.lpszClassName = name.c_str();
             wcex.lpszMenuName = 0;
             wcex.lpfnWndProc = T::WndProc;
@@ -289,10 +295,14 @@ template <typename T> struct BaseWindow
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
                 LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-            wcex.hIcon = static_cast<HICON>(
-                LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-            wcex.hIconSm = static_cast<HICON>(
-                LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+            wcex.hIcon = m_icon.get()
+                             ? m_icon.get()
+                             : static_cast<HICON>(LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON,
+                                                             0, 0, LR_SHARED | LR_DEFAULTSIZE));
+            wcex.hIconSm = m_icon.get()
+                               ? m_icon.get()
+                               : static_cast<HICON>(LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON,
+                                                               0, 0, LR_SHARED | LR_DEFAULTSIZE));
 
             if (RegisterClassExA(&wcex) == 0)
                 throw std::runtime_error("Class registration failure");
@@ -648,6 +658,8 @@ template <typename T> struct BaseWindow
 
     wil::unique_hwnd m_hwnd;
     int64_t m_id{glow::text::random_int64()};
+    wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
+        GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
 // struct Window

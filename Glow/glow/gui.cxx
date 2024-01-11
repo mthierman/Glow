@@ -61,6 +61,8 @@ void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
         {"maximized", windowPosition.maximized},
         {"fullscreen", windowPosition.fullscreen},
         {"topmost", windowPosition.topmost},
+        {"dpi", windowPosition.dpi},
+        {"scale", windowPosition.scale},
     };
 }
 
@@ -73,6 +75,8 @@ void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
     j.at("maximized").get_to(windowPosition.maximized);
     j.at("fullscreen").get_to(windowPosition.fullscreen);
     j.at("topmost").get_to(windowPosition.topmost);
+    j.at("dpi").get_to(windowPosition.dpi);
+    j.at("scale").get_to(windowPosition.scale);
 }
 
 void to_json(nlohmann::json& j, const SystemColors& systemColors)
