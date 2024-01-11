@@ -10,7 +10,7 @@
 
 namespace glow::gui
 {
-Colors::Colors()
+SystemColors::SystemColors()
 {
     accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
     accentDark1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
@@ -75,32 +75,32 @@ void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
     j.at("topmost").get_to(windowPosition.topmost);
 }
 
-void to_json(nlohmann::json& j, const Colors& colors)
+void to_json(nlohmann::json& j, const SystemColors& systemColors)
 {
     j = nlohmann::json{
-        {"accent", colors.accent},
-        {"accentDark1", colors.accentDark1},
-        {"accentDark2", colors.accentDark2},
-        {"accentDark3", colors.accentDark3},
-        {"accentLight1", colors.accentLight1},
-        {"accentLight2", colors.accentLight2},
-        {"accentLight3", colors.accentLight3},
-        {"background", colors.background},
-        {"foreground", colors.foreground},
+        {"accent", systemColors.accent},
+        {"accentDark1", systemColors.accentDark1},
+        {"accentDark2", systemColors.accentDark2},
+        {"accentDark3", systemColors.accentDark3},
+        {"accentLight1", systemColors.accentLight1},
+        {"accentLight2", systemColors.accentLight2},
+        {"accentLight3", systemColors.accentLight3},
+        {"background", systemColors.background},
+        {"foreground", systemColors.foreground},
     };
 }
 
-void from_json(const nlohmann::json& j, Colors& colors)
+void from_json(const nlohmann::json& j, SystemColors& systemColors)
 {
-    j.at("accent").get_to(colors.accent);
-    j.at("accentDark1").get_to(colors.accentDark1);
-    j.at("accentDark2").get_to(colors.accentDark2);
-    j.at("accentDark3").get_to(colors.accentDark3);
-    j.at("accentLight1").get_to(colors.accentLight1);
-    j.at("accentLight2").get_to(colors.accentLight2);
-    j.at("accentLight3").get_to(colors.accentLight3);
-    j.at("background").get_to(colors.background);
-    j.at("foreground").get_to(colors.foreground);
+    j.at("accent").get_to(systemColors.accent);
+    j.at("accentDark1").get_to(systemColors.accentDark1);
+    j.at("accentDark2").get_to(systemColors.accentDark2);
+    j.at("accentDark3").get_to(systemColors.accentDark3);
+    j.at("accentLight1").get_to(systemColors.accentLight1);
+    j.at("accentLight2").get_to(systemColors.accentLight2);
+    j.at("accentLight3").get_to(systemColors.accentLight3);
+    j.at("background").get_to(systemColors.background);
+    j.at("foreground").get_to(systemColors.foreground);
 }
 
 auto message_loop() -> int

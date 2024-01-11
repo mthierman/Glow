@@ -112,30 +112,6 @@ auto guid_to_string(GUID guid) -> std::string;
 
 namespace gui
 {
-template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
-{
-    T* self{nullptr};
-
-    if (uMsg == WM_NCCREATE)
-    {
-        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
-        self = static_cast<T*>(lpCreateStruct->lpCreateParams);
-        self->m_hwnd.reset(hWnd);
-        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
-    }
-
-    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
-
-    return self;
-}
-
-template <typename T> T* instance(HWND hWnd)
-{
-    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
-
-    return self;
-}
-
 struct GdiPlus
 {
     GdiPlus();
@@ -168,9 +144,9 @@ struct WindowPosition
 void to_json(nlohmann::json& j, const WindowPosition& windowPosition);
 void from_json(const nlohmann::json& j, WindowPosition& windowPosition);
 
-struct Colors
+struct SystemColors
 {
-    Colors();
+    SystemColors();
 
     std::string accent;
     std::string accentDark1;
@@ -182,8 +158,8 @@ struct Colors
     std::string background;
     std::string foreground;
 };
-void to_json(nlohmann::json& j, const Colors& colors);
-void from_json(const nlohmann::json& j, Colors& colors);
+void to_json(nlohmann::json& j, const SystemColors& systemColors);
+void from_json(const nlohmann::json& j, SystemColors& systemColors);
 
 auto message_loop() -> int;
 auto webview_version() -> std::string;
@@ -203,6 +179,30 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
+
+template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
+{
+    T* self{nullptr};
+
+    if (uMsg == WM_NCCREATE)
+    {
+        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+        self = static_cast<T*>(lpCreateStruct->lpCreateParams);
+        self->m_hwnd.reset(hWnd);
+        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
+    }
+
+    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
+
+    return self;
+}
+
+template <typename T> T* instance(HWND hWnd)
+{
+    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
+
+    return self;
+}
 
 template <typename T> struct MessageWindow
 {
@@ -640,6 +640,9 @@ template <typename T> struct BaseWindow
 
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
+
+    WindowPosition m_windowPosition;
+    SystemColors m_colors;
 
     wil::unique_hwnd m_hwnd;
     int64_t m_id{glow::text::random_int64()};
