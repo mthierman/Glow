@@ -18,28 +18,28 @@ auto App::run() -> int
     return glow::gui::message_loop();
 }
 
-// auto App::handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-// {
-//     switch (uMsg)
-//     {
-//     case WM_NOTIFY: return on_notify(wParam, lParam);
-//     case WM_DESTROY: PostQuitMessage(0); return 0;
-//     }
+auto App::custom_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_NOTIFY: return on_notify(wParam, lParam);
+    case WM_DESTROY: PostQuitMessage(0); return 0;
+    }
 
-//     return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
-// }
+    return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+}
 
-// auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
-// {
-//     auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
+auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
+{
+    auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
 
-//     switch (nmhdr.code)
-//     {
-//     case msg::window_create: m_set.insert(nmhdr.idFrom); break;
-//     case msg::window_close: m_set.erase(nmhdr.idFrom); break;
-//     }
+    switch (nmhdr.code)
+    {
+    case msg::window_create: m_set.insert(nmhdr.idFrom); break;
+    case msg::window_close: m_set.erase(nmhdr.idFrom); break;
+    }
 
-//     if (m_set.empty()) { return close(); }
+    if (m_set.empty()) { return close(); }
 
-//     else return 0;
-// }
+    else return 0;
+}
