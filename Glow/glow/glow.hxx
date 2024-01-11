@@ -270,7 +270,10 @@ template <typename T> struct MessageWindow
 
 template <typename T> struct BaseWindow
 {
-    BaseWindow(std::string name = "BaseWindow")
+    BaseWindow(std::string name = "BaseWindow",
+               DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
+               int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
+               int nHeight = CW_USEDEFAULT, HWND hwndParent = nullptr, HMENU hMenu = nullptr)
     {
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
@@ -295,10 +298,9 @@ template <typename T> struct BaseWindow
                 throw std::runtime_error("Class registration failure");
         }
 
-        if (CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName,
-                            WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT,
-                            CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr,
-                            GetModuleHandleA(nullptr), this) == nullptr)
+        if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
+                            nWidth, nHeight, hwndParent, hMenu, GetModuleHandleA(nullptr),
+                            this) == nullptr)
             throw std::runtime_error("Window creation failure");
     }
 
