@@ -2,14 +2,14 @@
 
 auto App::run() -> int
 {
-    App app;
+    auto app{std::make_unique<App>()};
 
     for (auto i = 0; i < 2; i++)
     {
-        app.m_vec.emplace_back(std::make_unique<MainWindow>(app.hwnd()))->reveal();
+        app->m_vec.emplace_back(std::make_unique<MainWindow>(app->hwnd()))->reveal();
     }
 
-    auto win = std::make_unique<MainWindow>(app.hwnd());
+    auto win = std::make_unique<MainWindow>(app->hwnd());
     win->reveal();
 
     auto wv = std::make_unique<Browser>(win->hwnd(), "https://www.google.com/");
@@ -18,12 +18,11 @@ auto App::run() -> int
     return glow::gui::message_loop();
 }
 
-auto App::custom_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto App::wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
     case WM_NOTIFY: return on_notify(wParam, lParam);
-    case WM_DESTROY: PostQuitMessage(0); return 0;
     }
 
     return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
