@@ -306,6 +306,7 @@ template <typename T> struct BaseWindow
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
                int nHeight = CW_USEDEFAULT, HWND hwndParent = nullptr, HMENU hMenu = nullptr)
     {
+        OutputDebugStringA(name.c_str());
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
@@ -694,6 +695,7 @@ template <typename T> struct BaseWindow
 
     virtual auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
+        OutputDebugStringA("virtual wnd_proc");
         return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
     }
 
@@ -709,35 +711,35 @@ template <typename T> struct BaseWindow
 // https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
 template <typename T> struct WebView : BaseWindow<T>
 {
-    // T* self{static_cast<T*>(this)};
+    T* self{static_cast<T*>(this)};
 
     WebView(HWND parent, std::string url)
-        : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent,
-                        std::bit_cast<HMENU>(static_cast<T*>(this)->m_id))
+        : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(1))
     {
         m_parent = parent;
         m_url = url;
-
         create();
     }
 
-    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override
     {
         switch (uMsg)
         {
-        case WM_SIZE: return on_size(hWnd, wParam, lParam);
+        // case WM_CLOSE: return close();
+        case WM_SIZE: OutputDebugStringA("WM_SIZE"); return on_size(wParam, lParam);
         }
 
-        return DefWindowProcA(static_cast<T*>(this)->hwnd(), uMsg, wParam, lParam);
+        return DefWindowProcA(self->hwnd(), uMsg, wParam, lParam);
     }
 
-    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+    auto on_size(WPARAM wParam, LPARAM lParam) -> int
     {
-        if (m_webView.m_controller4)
+        if (m_webView.controller4)
         {
+            OutputDebugStringA("controller4 exists");
             RECT rect{};
-            GetClientRect(static_cast<T*>(this)->hwnd(), &rect);
-            m_webView.m_controller4->put_Bounds(rect);
+            GetClientRect(self->hwnd(), &rect);
+            m_webView.controller4->put_Bounds(rect);
         }
 
         return 0;
@@ -763,6 +765,7 @@ template <typename T> struct WebView : BaseWindow<T>
 
     auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
     {
+        OutputDebugStringA("create_controller");
         return createdEnvironment->CreateCoreWebView2Controller(
             static_cast<T*>(this)->hwnd(),
             Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
@@ -780,8 +783,8 @@ template <typename T> struct WebView : BaseWindow<T>
                         glow::console::hresult_check(
                             m_webView.controller4->put_DefaultBackgroundColor(bgColor));
 
-                        SendMessageA(m_parent, WM_SIZE, 0, 0);
-                        SendMessageA(static_cast<T*>(this)->hwnd(), WM_SIZE, 0, 0);
+                        // SendMessageA(m_parent, WM_SIZE, 0, 0);
+                        // SendMessageA(static_cast<T*>(this)->hwnd(), WM_SIZE, 0, 0);
 
                         glow::console::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
@@ -789,13 +792,13 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         if (!m_webView.core20) return E_POINTER;
 
-                        glow::console::hresult_check(
-                            m_webView.core20->get_Settings(m_webView.settings.put()));
+                        // glow::console::hresult_check(
+                        //     m_webView.core20->get_Settings(m_webView.settings.put()));
 
-                        m_webView.settings8 =
-                            m_webView.settings.try_query<ICoreWebView2Settings8>();
+                        // m_webView.settings8 =
+                        //     m_webView.settings.try_query<ICoreWebView2Settings8>();
 
-                        if (!m_webView.settings8) return E_POINTER;
+                        // if (!m_webView.settings8) return E_POINTER;
 
                         // glow::console::hresult_check(configure_settings());
 
@@ -826,6 +829,8 @@ template <typename T> struct WebView : BaseWindow<T>
 
     HWND m_parent{nullptr};
     std::string m_url;
+    GdiPlus m_gdiInit;
+    CoInitialize m_coInit;
     WebView2 m_webView;
     bool m_initialized{false};
 };

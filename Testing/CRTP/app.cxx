@@ -4,16 +4,13 @@ auto App::run() -> int
 {
     auto app{std::make_unique<App>()};
 
-    for (auto i = 0; i < 2; i++)
-    {
-        app->m_vec.emplace_back(std::make_unique<MainWindow>(app->hwnd()))->reveal();
-    }
+    // for (auto i = 0; i < 2; i++)
+    // {
+    //     app->m_vec.emplace_back(std::make_unique<MainWindow>(app->hwnd()))->reveal();
+    // }
 
     auto win = std::make_unique<MainWindow>(app->hwnd());
     win->reveal();
-
-    auto wv = std::make_unique<Browser>(win->hwnd(), "https://www.google.com/");
-    wv->reveal();
 
     return glow::gui::message_loop();
 }

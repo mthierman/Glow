@@ -5,7 +5,6 @@
 #include <glow/glow.hxx>
 
 #include "definitions.hxx"
-#include "browser.hxx"
 #include "window.hxx"
 
 struct App : public glow::gui::MessageWindow<App>

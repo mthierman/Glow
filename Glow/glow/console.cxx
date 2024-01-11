@@ -58,7 +58,10 @@ auto hresult_to_string(HRESULT errorCode) -> std::string
 
 auto hresult_check(HRESULT errorCode) -> HRESULT
 {
+    OutputDebugStringA(glow::console::hresult_to_string(errorCode).c_str());
+
     if (SUCCEEDED(errorCode)) return S_OK;
+
     else throw std::runtime_error(glow::console::hresult_to_string(errorCode));
 }
 
