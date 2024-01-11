@@ -32,6 +32,9 @@ auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
     auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
 
+    OutputDebugStringA(std::to_string(nmhdr.idFrom).c_str());
+    OutputDebugStringA("\n");
+
     switch (nmhdr.code)
     {
     case msg::window_create: m_set.insert(nmhdr.idFrom); break;
