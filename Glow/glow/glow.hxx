@@ -675,17 +675,23 @@ template <typename T> struct BaseWindow
 
         else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
 
-        if (self) { return self->handle_wnd_proc(uMsg, wParam, lParam); }
+        if (self) { return self->default_wnd_proc(uMsg, wParam, lParam); }
 
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
-    virtual auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    virtual auto default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
         switch (uMsg)
         {
-        case WM_CREATE: OutputDebugStringA("CREATED!"); return 0;
+        case WM_CLOSE: return close();
         }
+
+        return wnd_proc(uMsg, wParam, lParam);
+    }
+
+    virtual auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
         return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
     }
 

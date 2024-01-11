@@ -10,9 +10,9 @@
 
 struct App : public glow::gui::MessageWindow<App>
 {
-    static auto run() -> int;
-
     using glow::gui::MessageWindow<App>::MessageWindow;
+
+    static auto run() -> int;
 
     auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;

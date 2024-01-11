@@ -6,7 +6,7 @@ MainWindow::MainWindow(HWND app) : BaseWindow()
     notify(m_app, msg::window_create);
 }
 
-auto MainWindow::handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto MainWindow::default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
