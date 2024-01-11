@@ -49,24 +49,13 @@
 
 namespace glow
 {
-namespace text
-{
-auto narrow(std::wstring utf16) -> std::string;
-auto widen(std::string utf8) -> std::wstring;
-auto randomize(std::string string) -> std::string;
-auto random_int64() -> int64_t;
-auto random_int32() -> int32_t;
-auto create_guid() -> GUID;
-auto guid_to_string(GUID guid) -> std::string;
-} // namespace text
-
 namespace console
 {
 struct Console
 {
     Console();
     ~Console();
-    FILE* pFile;
+    FILE* pFile{nullptr};
 };
 auto argv() -> std::vector<std::string>;
 auto hresult_to_string(HRESULT errorCode) -> std::string;
@@ -108,15 +97,26 @@ auto portable() -> std::filesystem::path;
 auto wportable() -> std::filesystem::path;
 } // namespace filesystem
 
+namespace text
+{
+auto narrow(std::wstring utf16) -> std::string;
+auto widen(std::string utf8) -> std::wstring;
+auto randomize(std::string string) -> std::string;
+auto random_int64() -> int64_t;
+auto random_int32() -> int32_t;
+auto create_guid() -> GUID;
+auto guid_to_string(GUID guid) -> std::string;
+} // namespace text
+
 namespace gui
 {
-struct Position;
-struct Colors;
-struct Window;
-struct MainWindow;
-struct WebView;
-struct GdiPlus;
-struct CoInitialize;
+struct Position
+{
+    int x{};
+    int y{};
+    int width{};
+    int height{};
+};
 auto message_loop() -> int;
 auto webview_version() -> std::string;
 auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
@@ -157,13 +157,6 @@ template <typename T> T* instance(HWND hWnd)
 
     return self;
 }
-struct Position
-{
-    int x{};
-    int y{};
-    int width{};
-    int height{};
-};
 void to_json(nlohmann::json& j, const Position& position);
 void from_json(const nlohmann::json& j, Position& position);
 struct Colors
@@ -358,5 +351,4 @@ struct CoInitialize
     HRESULT m_result{};
 };
 } // namespace gui
-
 } // namespace glow

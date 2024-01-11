@@ -10,52 +10,6 @@
 
 namespace glow::gui
 {
-void to_json(nlohmann::json& j, const Position& position)
-{
-    j = nlohmann::json{
-        {"x", position.x},
-        {"y", position.y},
-        {"width", position.width},
-        {"height", position.height},
-    };
-}
-
-void from_json(const nlohmann::json& j, Position& position)
-{
-    j.at("x").get_to(position.x);
-    j.at("y").get_to(position.y);
-    j.at("width").get_to(position.width);
-    j.at("height").get_to(position.height);
-}
-
-void to_json(nlohmann::json& j, const Colors& colors)
-{
-    j = nlohmann::json{
-        {"accent", colors.accent},
-        {"accentDark1", colors.accentDark1},
-        {"accentDark2", colors.accentDark2},
-        {"accentDark3", colors.accentDark3},
-        {"accentLight1", colors.accentLight1},
-        {"accentLight2", colors.accentLight2},
-        {"accentLight3", colors.accentLight3},
-        {"background", colors.background},
-        {"foreground", colors.foreground},
-    };
-}
-
-void from_json(const nlohmann::json& j, Colors& colors)
-{
-    j.at("accent").get_to(colors.accent);
-    j.at("accentDark1").get_to(colors.accentDark1);
-    j.at("accentDark2").get_to(colors.accentDark2);
-    j.at("accentDark3").get_to(colors.accentDark3);
-    j.at("accentLight1").get_to(colors.accentLight1);
-    j.at("accentLight2").get_to(colors.accentLight2);
-    j.at("accentLight3").get_to(colors.accentLight3);
-    j.at("background").get_to(colors.background);
-    j.at("foreground").get_to(colors.foreground);
-}
-
 Window::Window(std::string className, bool show) : m_className{className}, m_show{show} {}
 
 Window::~Window() {}
@@ -952,5 +906,51 @@ auto icon_shield() -> HICON
 {
     return static_cast<HICON>(
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+void to_json(nlohmann::json& j, const Position& position)
+{
+    j = nlohmann::json{
+        {"x", position.x},
+        {"y", position.y},
+        {"width", position.width},
+        {"height", position.height},
+    };
+}
+
+void from_json(const nlohmann::json& j, Position& position)
+{
+    j.at("x").get_to(position.x);
+    j.at("y").get_to(position.y);
+    j.at("width").get_to(position.width);
+    j.at("height").get_to(position.height);
+}
+
+void to_json(nlohmann::json& j, const Colors& colors)
+{
+    j = nlohmann::json{
+        {"accent", colors.accent},
+        {"accentDark1", colors.accentDark1},
+        {"accentDark2", colors.accentDark2},
+        {"accentDark3", colors.accentDark3},
+        {"accentLight1", colors.accentLight1},
+        {"accentLight2", colors.accentLight2},
+        {"accentLight3", colors.accentLight3},
+        {"background", colors.background},
+        {"foreground", colors.foreground},
+    };
+}
+
+void from_json(const nlohmann::json& j, Colors& colors)
+{
+    j.at("accent").get_to(colors.accent);
+    j.at("accentDark1").get_to(colors.accentDark1);
+    j.at("accentDark2").get_to(colors.accentDark2);
+    j.at("accentDark3").get_to(colors.accentDark3);
+    j.at("accentLight1").get_to(colors.accentLight1);
+    j.at("accentLight2").get_to(colors.accentLight2);
+    j.at("accentLight3").get_to(colors.accentLight3);
+    j.at("background").get_to(colors.background);
+    j.at("foreground").get_to(colors.foreground);
 }
 } // namespace glow::gui
