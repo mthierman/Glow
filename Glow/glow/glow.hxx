@@ -685,16 +685,6 @@ template <typename T> struct BaseWindow
 // https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
 template <typename T> struct WebView : BaseWindow<T>
 {
-    // using glow::gui::WebView<T>::WebView;
-
-    // WebView(HWND parent, std::string url)
-    //     : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent,
-    //                     std::bit_cast<HMENU>(static_cast<T*>(this)->m_id))
-    // {
-    //     m_parent = parent;
-    //     m_url = url;
-    // }
-
     WebView(HWND parent, std::string url)
         : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent,
                         std::bit_cast<HMENU>(static_cast<T*>(this)->m_id))
@@ -702,8 +692,6 @@ template <typename T> struct WebView : BaseWindow<T>
         m_parent = parent;
         m_url = url;
     }
-
-    auto print() -> void { OutputDebugStringA(m_url.c_str()); }
 
     HWND m_parent;
     std::string m_url;
