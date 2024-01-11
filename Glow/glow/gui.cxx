@@ -23,6 +23,17 @@ SystemColors::SystemColors()
     foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
 };
 
+WebView2::WebView2()
+{
+    evironmentOptions6 = nullptr;
+    controller = nullptr;
+    controller4 = nullptr;
+    core = nullptr;
+    core20 = nullptr;
+    settings = nullptr;
+    settings8 = nullptr;
+}
+
 GdiPlus::GdiPlus()
     : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
 {

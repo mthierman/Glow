@@ -165,13 +165,15 @@ void from_json(const nlohmann::json& j, SystemColors& systemColors);
 
 struct WebView2
 {
-    wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
-    wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
-    wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
-    wil::com_ptr<ICoreWebView2> m_core{nullptr};
-    wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
-    wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
-    wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
+    WebView2();
+
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+    wil::com_ptr<ICoreWebView2Controller> controller;
+    wil::com_ptr<ICoreWebView2Controller4> controller4;
+    wil::com_ptr<ICoreWebView2> core;
+    wil::com_ptr<ICoreWebView2_20> core20;
+    wil::com_ptr<ICoreWebView2Settings> settings;
+    wil::com_ptr<ICoreWebView2Settings8> settings8;
 };
 
 auto message_loop() -> int;
@@ -707,44 +709,125 @@ template <typename T> struct BaseWindow
 // https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
 template <typename T> struct WebView : BaseWindow<T>
 {
+    // T* self{static_cast<T*>(this)};
+
     WebView(HWND parent, std::string url)
         : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent,
                         std::bit_cast<HMENU>(static_cast<T*>(this)->m_id))
     {
         m_parent = parent;
         m_url = url;
+
+        create();
     }
 
-    // handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)->LRESULT
-    // {
-    //     switch (uMsg)
-    //     {
-    //     case WM_CLOSE: return close();
-    //     case WM_SIZE: return on_size(hWnd, wParam, lParam);
-    //     }
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
+        switch (uMsg)
+        {
+        case WM_SIZE: return on_size(hWnd, wParam, lParam);
+        }
 
-    //     return custom_wnd_proc(hWnd, uMsg, wParam, lParam);
-    // }
+        return DefWindowProcA(static_cast<T*>(this)->hwnd(), uMsg, wParam, lParam);
+    }
 
-    // virtual auto custom_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-    // {
-    //     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
-    // }
+    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+    {
+        if (m_webView.m_controller4)
+        {
+            RECT rect{};
+            GetClientRect(static_cast<T*>(this)->hwnd(), &rect);
+            m_webView.m_controller4->put_Bounds(rect);
+        }
 
-    // auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
-    // {
-    //     if (m_webView.m_controller4)
-    //     {
-    //         RECT rect{};
-    //         GetClientRect(m_hwnd.get(), &rect);
-    //         m_webView.m_controller4->put_Bounds(rect);
-    //     }
+        return 0;
+    }
 
-    //     return 0;
-    // }
+    auto create() -> HRESULT
+    {
+        return CreateCoreWebView2EnvironmentWithOptions(
+            nullptr, nullptr, nullptr,
+            Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+                [=, this](HRESULT errorCode,
+                          ICoreWebView2Environment* createdEnvironment) -> HRESULT
+                {
+                    if (createdEnvironment)
+                    {
+                        glow::console::hresult_check(create_controller(createdEnvironment));
+                    }
 
-    HWND m_parent;
+                    return errorCode;
+                })
+                .Get());
+    }
+
+    auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
+    {
+        return createdEnvironment->CreateCoreWebView2Controller(
+            static_cast<T*>(this)->hwnd(),
+            Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                [=, this](HRESULT errorCode, ICoreWebView2Controller* createdController) -> HRESULT
+                {
+                    if (createdController)
+                    {
+                        m_webView.controller = createdController;
+                        m_webView.controller4 =
+                            m_webView.controller.try_query<ICoreWebView2Controller4>();
+
+                        if (!m_webView.controller4) return E_POINTER;
+
+                        COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
+                        glow::console::hresult_check(
+                            m_webView.controller4->put_DefaultBackgroundColor(bgColor));
+
+                        SendMessageA(m_parent, WM_SIZE, 0, 0);
+                        SendMessageA(static_cast<T*>(this)->hwnd(), WM_SIZE, 0, 0);
+
+                        glow::console::hresult_check(
+                            m_webView.controller->get_CoreWebView2(m_webView.core.put()));
+                        m_webView.core20 = m_webView.core.try_query<ICoreWebView2_20>();
+
+                        if (!m_webView.core20) return E_POINTER;
+
+                        glow::console::hresult_check(
+                            m_webView.core20->get_Settings(m_webView.settings.put()));
+
+                        m_webView.settings8 =
+                            m_webView.settings.try_query<ICoreWebView2Settings8>();
+
+                        if (!m_webView.settings8) return E_POINTER;
+
+                        // glow::console::hresult_check(configure_settings());
+
+                        glow::console::hresult_check(
+                            m_webView.core20->Navigate(text::widen(m_url).c_str()));
+
+                        // glow::console::hresult_check(context_menu_requested());
+                        // glow::console::hresult_check(source_changed());
+                        // glow::console::hresult_check(navigation_starting());
+                        // glow::console::hresult_check(navigation_completed());
+                        // glow::console::hresult_check(web_message_received());
+                        // glow::console::hresult_check(accelerator_key_pressed());
+                        // glow::console::hresult_check(favicon_changed());
+                        // glow::console::hresult_check(document_title_changed());
+                        // glow::console::hresult_check(zoom_factor_changed());
+
+                        if (!m_initialized)
+                        {
+                            m_initialized = true;
+                            // initialized();
+                        }
+                    }
+
+                    return errorCode;
+                })
+                .Get());
+    }
+
+    HWND m_parent{nullptr};
     std::string m_url;
+    WebView2 m_webView;
+    bool m_initialized{false};
 };
 
 // struct WebView : public Window
