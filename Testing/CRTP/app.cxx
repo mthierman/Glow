@@ -3,7 +3,27 @@
 struct Browser : public glow::gui::WebView<Browser>
 {
     using glow::gui::WebView<Browser>::WebView;
+
+    auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto on_close(WPARAM wParam, LPARAM lParam) -> int;
 };
+
+auto Browser::handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+{
+    switch (uMsg)
+    {
+    case WM_CLOSE: return on_close(wParam, lParam);
+    }
+
+    return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+}
+
+auto Browser::on_close(WPARAM wParam, LPARAM lParam) -> int
+{
+    // notify(m_app, msg::window_close);
+
+    return close();
+}
 
 auto App::run() -> int
 {

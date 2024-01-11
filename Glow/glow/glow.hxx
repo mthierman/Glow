@@ -664,21 +664,21 @@ template <typename T> struct BaseWindow
 };
 
 // https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
-template <typename T> struct WebView : BaseWindow<T>
+template <typename T> struct WebView : public BaseWindow<T>
 {
-    // void foo() {}
+    // T* self{static_cast<T*>(this)};
 
-    auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-    {
-        switch (uMsg)
-        {
-        case WM_CLOSE: return on_close(wParam, lParam);
-        }
+    // auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    // {
+    //     switch (uMsg)
+    //     {
+    //     case WM_CLOSE: return on_close(wParam, lParam);
+    //     }
 
-        return DefWindowProcA(static_cast<T*>(this)->hwnd(), uMsg, wParam, lParam);
-    }
+    //     return DefWindowProcA(self->hwnd(), uMsg, wParam, lParam);
+    // }
 
-    auto on_close(WPARAM wParam, LPARAM lParam) -> int { return static_cast<T*>(this)->close(); }
+    // auto on_close(WPARAM wParam, LPARAM lParam) -> int { return self->close(); }
 
     // using glow::gui::BaseWindow<WebView>::BaseWindow;
 
