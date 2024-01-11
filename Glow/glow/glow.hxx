@@ -696,7 +696,6 @@ template <typename T> struct BaseWindow
 
     virtual auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
-        OutputDebugStringA("virtual wnd_proc");
         return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
     }
 
@@ -709,7 +708,6 @@ template <typename T> struct BaseWindow
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
-// https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
 template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
@@ -726,8 +724,7 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         switch (uMsg)
         {
-        // case WM_CLOSE: return close();
-        case WM_SIZE: OutputDebugStringA("WM_SIZE"); return on_size(wParam, lParam);
+        case WM_SIZE: return on_size(wParam, lParam);
         }
 
         return DefWindowProcA(self->hwnd(), uMsg, wParam, lParam);
@@ -737,7 +734,6 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.controller4)
         {
-            OutputDebugStringA("controller4 exists");
             RECT rect{};
             GetClientRect(self->hwnd(), &rect);
             m_webView.controller4->put_Bounds(rect);
@@ -766,7 +762,6 @@ template <typename T> struct WebView : BaseWindow<T>
 
     auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
     {
-        OutputDebugStringA("create_controller");
         return createdEnvironment->CreateCoreWebView2Controller(
             self->hwnd(),
             Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
