@@ -110,31 +110,6 @@ auto guid_to_string(GUID guid) -> std::string;
 
 namespace gui
 {
-struct Position
-{
-    int x{};
-    int y{};
-    int width{};
-    int height{};
-};
-auto message_loop() -> int;
-auto webview_version() -> std::string;
-auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
-auto rect_to_position(const RECT& rect) -> Position;
-auto position_to_rect(const Position& position) -> RECT;
-auto clamp_color(int value) -> int;
-auto make_colorref(int r, int g, int b) -> COLORREF;
-auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
-auto check_theme() -> bool;
-auto set_preferred_app_mode() -> void;
-auto allow_dark_mode(HWND hWnd, bool enable) -> void;
-auto icon_application() -> HICON;
-auto icon_error() -> HICON;
-auto icon_question() -> HICON;
-auto icon_warning() -> HICON;
-auto icon_information() -> HICON;
-auto icon_winlogo() -> HICON;
-auto icon_shield() -> HICON;
 template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* self{nullptr};
@@ -151,14 +126,27 @@ template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lPa
 
     return self;
 }
+
 template <typename T> T* instance(HWND hWnd)
 {
     T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
 
     return self;
 }
-void to_json(nlohmann::json& j, const Position& position);
-void from_json(const nlohmann::json& j, Position& position);
+
+struct WindowPosition
+{
+    int x{};
+    int y{};
+    int width{};
+    int height{};
+    bool maximized{};
+    bool fullscreen{};
+    bool topmost{};
+};
+void to_json(nlohmann::json& j, const WindowPosition& windowPosition);
+void from_json(const nlohmann::json& j, WindowPosition& windowPosition);
+
 struct Colors
 {
     std::string accent{color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
@@ -181,6 +169,26 @@ struct Colors
 };
 void to_json(nlohmann::json& j, const Colors& colors);
 void from_json(const nlohmann::json& j, Colors& colors);
+
+auto message_loop() -> int;
+auto webview_version() -> std::string;
+auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
+auto rect_to_position(const RECT& rect) -> WindowPosition;
+auto position_to_rect(const WindowPosition& windowPosition) -> RECT;
+auto clamp_color(int value) -> int;
+auto make_colorref(int r, int g, int b) -> COLORREF;
+auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
+auto check_theme() -> bool;
+auto set_preferred_app_mode() -> void;
+auto allow_dark_mode(HWND hWnd, bool enable) -> void;
+auto icon_application() -> HICON;
+auto icon_error() -> HICON;
+auto icon_question() -> HICON;
+auto icon_warning() -> HICON;
+auto icon_information() -> HICON;
+auto icon_winlogo() -> HICON;
+auto icon_shield() -> HICON;
+
 struct Window
 {
     Window(std::string className = "Window", bool show = true);

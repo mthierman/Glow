@@ -908,22 +908,28 @@ auto icon_shield() -> HICON
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-void to_json(nlohmann::json& j, const Position& position)
+void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
 {
     j = nlohmann::json{
-        {"x", position.x},
-        {"y", position.y},
-        {"width", position.width},
-        {"height", position.height},
+        {"x", windowPosition.x},
+        {"y", windowPosition.y},
+        {"width", windowPosition.width},
+        {"height", windowPosition.height},
+        {"maximized", windowPosition.maximized},
+        {"fullscreen", windowPosition.fullscreen},
+        {"topmost", windowPosition.topmost},
     };
 }
 
-void from_json(const nlohmann::json& j, Position& position)
+void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
 {
-    j.at("x").get_to(position.x);
-    j.at("y").get_to(position.y);
-    j.at("width").get_to(position.width);
-    j.at("height").get_to(position.height);
+    j.at("x").get_to(windowPosition.x);
+    j.at("y").get_to(windowPosition.y);
+    j.at("width").get_to(windowPosition.width);
+    j.at("height").get_to(windowPosition.height);
+    j.at("maximized").get_to(windowPosition.maximized);
+    j.at("fullscreen").get_to(windowPosition.fullscreen);
+    j.at("topmost").get_to(windowPosition.topmost);
 }
 
 void to_json(nlohmann::json& j, const Colors& colors)
