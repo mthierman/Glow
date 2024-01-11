@@ -712,7 +712,7 @@ template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
 
-    WebView(HWND parent, std::string url)
+    WebView(HWND parent, std::string url = "https://www.google.com/")
         : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent)
     {
         m_parent = parent;

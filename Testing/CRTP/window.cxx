@@ -5,7 +5,7 @@ MainWindow::MainWindow(HWND app) : BaseWindow()
     m_app = app;
     notify(m_app, msg::window_create);
 
-    m_browser = std::make_unique<Browser>(hwnd(), "https://www.google.com/");
+    m_browser = std::make_unique<Browser>(hwnd());
     m_browser->reveal();
 }
 
