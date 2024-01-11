@@ -5,5 +5,7 @@
 
 struct Browser : public glow::gui::WebView<Browser>
 {
-    auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    using glow::gui::WebView<Browser>::WebView;
+
+    // auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 };

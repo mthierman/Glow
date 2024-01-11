@@ -664,6 +664,15 @@ template <typename T> struct BaseWindow
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
+    virtual auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
+        switch (uMsg)
+        {
+        case WM_CREATE: OutputDebugStringA("CREATED!"); return 0;
+        }
+        return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+    }
+
   public:
     WindowPosition m_windowPosition;
     SystemColors m_colors;

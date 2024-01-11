@@ -3,9 +3,10 @@
 #include <set>
 
 #include <glow/glow.hxx>
+
+#include "definitions.hxx"
 #include "browser.hxx"
 #include "window.hxx"
-#include "definitions.hxx"
 
 struct App : public glow::gui::MessageWindow<App>
 {
