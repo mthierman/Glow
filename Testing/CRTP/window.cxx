@@ -74,11 +74,11 @@ auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto hdwp{BeginDeferWindowPos(4)};
 
-        if (gwlId == 1)
-            if (hdwp)
-                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
-                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
-                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
+        // if (gwlId == 1)
+        if (hdwp)
+            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
+                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
+                                      SWP_NOCOPYBITS);
 
         if (hdwp) EndDeferWindowPos(hdwp);
     }

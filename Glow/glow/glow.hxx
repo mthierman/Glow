@@ -339,8 +339,9 @@ template <typename T> struct BaseWindow
         }
 
         if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
-                            nWidth, nHeight, hwndParent, hMenu, GetModuleHandleA(nullptr),
-                            this) == nullptr)
+                            nWidth, nHeight, hwndParent,
+                            (dwStyle == WS_CHILD) ? std::bit_cast<HMENU>(m_id) : hMenu,
+                            GetModuleHandleA(nullptr), this) == nullptr)
             throw std::runtime_error("Window creation failure");
     }
 
@@ -714,7 +715,7 @@ template <typename T> struct WebView : BaseWindow<T>
     T* self{static_cast<T*>(this)};
 
     WebView(HWND parent, std::string url)
-        : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(1))
+        : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent)
     {
         m_parent = parent;
         m_url = url;
