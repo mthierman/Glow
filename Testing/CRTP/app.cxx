@@ -12,8 +12,9 @@ auto App::run() -> int
     auto win = std::make_unique<MainWindow>(app.hwnd());
     win->reveal();
 
-    auto wv = std::make_unique<Browser>(win->hwnd());
+    auto wv = std::make_unique<Browser>(win->hwnd(), "https://www.google.com/");
     wv->reveal();
+    wv->print();
 
     // auto wv = std::make_unique<glow::gui::WebView>(app.hwnd(), "https://www.google.com/");
     // wv->reveal();

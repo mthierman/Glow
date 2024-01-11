@@ -695,11 +695,12 @@ template <typename T> struct WebView : BaseWindow<T>
     //     m_url = url;
     // }
 
-    WebView(HWND parent)
+    WebView(HWND parent, std::string url)
         : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent,
                         std::bit_cast<HMENU>(static_cast<T*>(this)->m_id))
     {
         m_parent = parent;
+        m_url = url;
     }
 
     auto print() -> void { OutputDebugStringA(m_url.c_str()); }
