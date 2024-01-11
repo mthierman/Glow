@@ -47,7 +47,9 @@
 #include <nlohmann/json.hpp>
 #include <sqlite3.h>
 
-namespace glow::text
+namespace glow
+{
+namespace text
 {
 auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
@@ -56,9 +58,9 @@ auto random_int64() -> int64_t;
 auto random_int32() -> int32_t;
 auto create_guid() -> GUID;
 auto guid_to_string(GUID guid) -> std::string;
-} // namespace glow::text
+} // namespace text
 
-namespace glow::console
+namespace console
 {
 struct Console
 {
@@ -80,9 +82,9 @@ auto print(std::string message, std::source_location location = std::source_loca
 auto box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
 auto shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
 auto stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
-} // namespace glow::console
+} // namespace console
 
-namespace glow::filesystem
+namespace filesystem
 {
 struct Database
 {
@@ -90,6 +92,7 @@ struct Database
     ~Database();
     auto open() -> void;
     auto write() -> void;
+
   private:
     struct sqlite3_deleter
     {
@@ -103,9 +106,9 @@ auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesy
 auto program_name() -> std::string;
 auto portable() -> std::filesystem::path;
 auto wportable() -> std::filesystem::path;
-} // namespace glow::filesystem
+} // namespace filesystem
 
-namespace glow::gui
+namespace gui
 {
 struct Position;
 struct Colors;
@@ -243,7 +246,6 @@ struct Window
     wil::unique_hbrush m_hbrBackgroundBlack{static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH))};
     wil::unique_hbrush m_hbrBackgroundWhite{static_cast<HBRUSH>(GetStockObject(WHITE_BRUSH))};
 };
-
 struct MainWindow : public Window
 {
     MainWindow(std::string className = "MainWindow", bool show = true);
@@ -251,7 +253,6 @@ struct MainWindow : public Window
         -> LRESULT override;
     virtual auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
-
 struct WebView : public Window
 {
     struct WebView2
@@ -356,4 +357,6 @@ struct CoInitialize
     operator HRESULT() const;
     HRESULT m_result{};
 };
-} // namespace glow::gui
+} // namespace gui
+
+} // namespace glow
