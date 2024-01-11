@@ -278,6 +278,21 @@ template <typename T> struct MessageWindow
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
+    virtual auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
+        switch (uMsg)
+        {
+        case WM_CLOSE: return close();
+        }
+
+        return custom_wnd_proc(uMsg, wParam, lParam);
+    }
+
+    virtual auto custom_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    {
+        return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+    }
+
     wil::unique_hwnd m_hwnd;
 };
 
@@ -692,6 +707,34 @@ template <typename T> struct WebView : BaseWindow<T>
         m_parent = parent;
         m_url = url;
     }
+
+    // handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)->LRESULT
+    // {
+    //     switch (uMsg)
+    //     {
+    //     case WM_CLOSE: return close();
+    //     case WM_SIZE: return on_size(hWnd, wParam, lParam);
+    //     }
+
+    //     return custom_wnd_proc(hWnd, uMsg, wParam, lParam);
+    // }
+
+    // virtual auto custom_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    // {
+    //     return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    // }
+
+    // auto WebView::on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
+    // {
+    //     if (m_webView.m_controller4)
+    //     {
+    //         RECT rect{};
+    //         GetClientRect(m_hwnd.get(), &rect);
+    //         m_webView.m_controller4->put_Bounds(rect);
+    //     }
+
+    //     return 0;
+    // }
 
     HWND m_parent;
     std::string m_url;
