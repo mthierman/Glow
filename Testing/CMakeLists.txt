@@ -19,3 +19,5 @@ add_test(
     NAME Glow_Testing
     COMMAND Glow_Testing
 )
+
+add_subdirectory(CRTP)
