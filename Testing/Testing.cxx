@@ -7,11 +7,6 @@
 // clang-format on
 
 #include <glow/config.hxx>
-
-#include <glow/console.hxx>
-#include <glow/filesystem.hxx>
-#include <glow/text.hxx>
-#include <glow/webview.hxx>
-#include <glow/window.hxx>
+#include <glow/glow.hxx>
 
 auto main() -> int { return 0; }

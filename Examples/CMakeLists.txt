@@ -7,10 +7,6 @@ target_sources(
     Glow_ExampleWin32
     PRIVATE Win32/Win32.cxx
             ${PROJECT_SOURCE_DIR}/Data/glow.manifest
-    PRIVATE FILE_SET
-            HEADERS
-            FILES
-            Win32/Win32.hxx
 )
 
 target_link_libraries(

@@ -6,17 +6,13 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "Win32.hxx"
+#include <glow/config.hxx>
+#include <glow/glow.hxx>
 
 auto main() -> int
 {
-    try
-    {
-        return App::run();
-    }
-    catch (std::exception& e)
-    {
-        glow::console::debug(e.what());
-        std::terminate();
-    }
+    // glow::gui::Window window;
+    // window.show_normal();
+
+    return glow::gui::message_loop();
 }

@@ -12,32 +12,101 @@
 #include <Unknwn.h>
 #include <dwmapi.h>
 #include <gdiplus.h>
+#include <objbase.h>
+#include <shellapi.h>
+#include <comdef.h>
 #include <ShlObj.h>
 #include <wrl.h>
 
 #include <wil/com.h>
 #include <wil/result.h>
 #include <wil/resource.h>
+#include <wil/win32_helpers.h>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <algorithm>
-#include <bit>
-#include <format>
-#include <memory>
-
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
 
-#include <nlohmann/json.hpp>
+#include <algorithm>
+#include <bit>
+#include <cstdint>
+#include <filesystem>
+#include <format>
+#include <iostream>
+#include <limits>
+#include <memory>
+#include <optional>
+#include <print>
+#include <random>
+#include <source_location>
+#include <string>
+#include <vector>
 
-#include <glow/console.hxx>
-#include <glow/text.hxx>
+#include <nlohmann/json.hpp>
+#include <sqlite3.h>
+
+namespace glow::text
+{
+auto narrow(std::wstring utf16) -> std::string;
+auto widen(std::string utf8) -> std::wstring;
+auto randomize(std::string string) -> std::string;
+auto random_int64() -> int64_t;
+auto random_int32() -> int32_t;
+auto create_guid() -> GUID;
+auto guid_to_string(GUID guid) -> std::string;
+} // namespace glow::text
+
+namespace glow::console
+{
+struct Console
+{
+    Console();
+    ~Console();
+    FILE* pFile;
+};
+auto argv() -> std::vector<std::string>;
+auto hresult_to_string(HRESULT errorCode) -> std::string;
+auto hresult_check(HRESULT errorCode) -> HRESULT;
+auto debug_hresult(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
+auto print_hresult(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
+auto debug(std::string message, std::source_location location = std::source_location::current())
+    -> void;
+auto print(std::string message, std::source_location location = std::source_location::current())
+    -> void;
+auto box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
+} // namespace glow::console
+
+namespace glow::filesystem
+{
+struct Database
+{
+    Database();
+    ~Database();
+    auto open() -> void;
+    auto write() -> void;
+  private:
+    struct sqlite3_deleter
+    {
+        auto operator()(sqlite3* pDb) noexcept -> void { sqlite3_close(pDb); }
+    };
+    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
+    sqlite3_ptr p_db;
+    std::filesystem::path path;
+};
+auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
+auto program_name() -> std::string;
+auto portable() -> std::filesystem::path;
+auto wportable() -> std::filesystem::path;
+} // namespace glow::filesystem
 
 namespace glow::gui
 {
-
 struct Position;
 struct Colors;
 struct Window;
@@ -45,7 +114,6 @@ struct MainWindow;
 struct WebView;
 struct GdiPlus;
 struct CoInitialize;
-
 auto message_loop() -> int;
 auto webview_version() -> std::string;
 auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
@@ -64,7 +132,6 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
-
 template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* self{nullptr};
@@ -81,14 +148,12 @@ template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lPa
 
     return self;
 }
-
 template <typename T> T* instance(HWND hWnd)
 {
     T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
 
     return self;
 }
-
 struct Position
 {
     int x{};
@@ -96,10 +161,8 @@ struct Position
     int width{};
     int height{};
 };
-
 void to_json(nlohmann::json& j, const Position& position);
 void from_json(const nlohmann::json& j, Position& position);
-
 struct Colors
 {
     std::string accent{color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent)};
@@ -120,75 +183,56 @@ struct Colors
     std::string foreground{
         color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
 };
-
 void to_json(nlohmann::json& j, const Colors& colors);
 void from_json(const nlohmann::json& j, Colors& colors);
-
 struct Window
 {
     Window(std::string className = "Window", bool show = true);
     virtual ~Window();
-
     virtual auto register_window() -> void;
     virtual auto create_window() -> void;
     virtual auto operator()(bool show = true) -> void;
-
     static auto CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-
     virtual auto on_close(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
-
     auto dpi() -> int64_t;
     auto scale() -> float;
-
     auto show_normal() -> void;
     auto show() -> void;
     auto hide() -> void;
-
     auto maximize() -> bool;
     auto fullscreen() -> bool;
     auto topmost() -> bool;
-
     auto title(std::string title) -> void;
     auto icon(HICON hIcon) -> void;
     auto border(bool enabled) -> void;
-
     auto overlapped() -> void;
     auto popup() -> void;
     auto child() -> void;
     auto reparent(HWND parent) -> void;
-
     auto client_rect() -> RECT;
     auto window_rect() -> RECT;
     auto client_position() -> Position;
     auto window_position() -> Position;
-
     auto dwm_dark_mode(bool enabled) -> void;
     auto dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
     auto dwm_rounded_corners(bool enabled) -> void;
     auto dwm_cloak(bool enable) -> void;
-
     auto dwm_caption_color(bool enable) -> void;
     auto dwm_set_caption_color(COLORREF color) -> void;
-
     auto dwm_border_color(bool enable) -> void;
     auto dwm_set_border_color(COLORREF color) -> void;
-
     auto dwm_set_text_color(COLORREF color) -> void;
     auto dwm_reset_text_color() -> void;
-
     std::string m_className{"Window"};
     bool m_show{true};
     WNDCLASSEXA m_wcex{sizeof(WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{nullptr};
     int64_t m_id{glow::text::random_int64()};
-
     int64_t m_dpi{};
     float m_scale{};
-
     Position m_position;
     Colors m_colors;
-
     wil::unique_hcursor m_hCursor{static_cast<HCURSOR>(
         LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
     wil::unique_hicon m_hIcon{static_cast<HICON>(
@@ -203,10 +247,8 @@ struct Window
 struct MainWindow : public Window
 {
     MainWindow(std::string className = "MainWindow", bool show = true);
-
     virtual auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         -> LRESULT override;
-
     virtual auto on_destroy(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
 };
 
@@ -222,24 +264,17 @@ struct WebView : public Window
         wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
         wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
     };
-
     WebView(int64_t id, HWND parent, std::string url = "about:blank",
             std::string className = "WebView", bool show = true);
-
     virtual auto operator()(bool show = true) -> void override;
-
     virtual auto register_window() -> void override;
     virtual auto create_window() -> void override;
-
     auto handle_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     virtual auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int;
-
     virtual auto create_webview() -> HRESULT;
     virtual auto configure_settings() -> HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT;
-
     virtual auto initialized() -> void {}
-
     auto context_menu_requested() -> HRESULT;
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
                                                 ICoreWebView2ContextMenuRequestedEventArgs* args)
@@ -247,14 +282,12 @@ struct WebView : public Window
     {
         return S_OK;
     }
-
     auto source_changed() -> HRESULT;
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
     {
         return S_OK;
     }
-
     auto navigation_starting() -> HRESULT;
     virtual auto navigation_starting_handler(ICoreWebView2* sender,
                                              ICoreWebView2NavigationStartingEventArgs* args)
@@ -262,7 +295,6 @@ struct WebView : public Window
     {
         return S_OK;
     }
-
     auto navigation_completed() -> HRESULT;
     virtual auto navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
@@ -270,7 +302,6 @@ struct WebView : public Window
     {
         return S_OK;
     }
-
     auto web_message_received() -> HRESULT;
     virtual auto web_message_received_handler(ICoreWebView2* sender,
                                               ICoreWebView2WebMessageReceivedEventArgs* args)
@@ -278,19 +309,16 @@ struct WebView : public Window
     {
         return S_OK;
     }
-
     auto document_title_changed() -> HRESULT;
     virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
     {
         return S_OK;
     }
-
     auto favicon_changed() -> HRESULT;
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
     {
         return S_OK;
     }
-
     auto accelerator_key_pressed() -> HRESULT;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
@@ -298,24 +326,19 @@ struct WebView : public Window
     {
         return S_OK;
     }
-
     auto zoom_factor_changed() -> HRESULT;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> HRESULT
     {
         return S_OK;
     }
-
     auto navigate(std::string url) -> HRESULT;
     auto post_json(const nlohmann::json jsonMessage) -> HRESULT;
-
     HWND m_parent{nullptr};
     std::string m_url{"about:blank"};
-
     bool m_initialized{false};
     WebView2 m_webView;
 };
-
 struct GdiPlus
 {
     GdiPlus();
@@ -325,7 +348,6 @@ struct GdiPlus
     ULONG_PTR m_gdiplusToken{};
     Gdiplus::Status m_gdiplusStatus{};
 };
-
 struct CoInitialize
 {
     CoInitialize();
@@ -334,5 +356,4 @@ struct CoInitialize
     operator HRESULT() const;
     HRESULT m_result{};
 };
-
 } // namespace glow::gui

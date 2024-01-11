@@ -6,11 +6,10 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/console.hxx>
+#include <glow/glow.hxx>
 
 namespace glow::console
 {
-
 Console::Console()
 {
     AllocConsole();
@@ -151,5 +150,4 @@ auto create_process(std::string process) -> int
 
     return 0;
 }
-
 } // namespace glow::console

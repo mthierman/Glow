@@ -63,10 +63,7 @@ if(GLOW_EXAMPLES)
 endif()
 
 if(GLOW_TESTING)
-    add_subdirectory(
-        Testing
-        EXCLUDE_FROM_ALL
-    )
+    add_subdirectory(Testing)
 endif()
 
 if(GLOW_ICONCONVERTER)

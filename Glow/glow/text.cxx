@@ -6,11 +6,10 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/text.hxx>
+#include <glow/glow.hxx>
 
 namespace glow::text
 {
-
 auto narrow(std::wstring utf16) -> std::string
 {
     constexpr int intMax = std::numeric_limits<int>::max();
@@ -105,5 +104,4 @@ auto guid_to_string(GUID guid) -> std::string
 
     else throw std::runtime_error("String from GUID failure");
 }
-
 } // namespace glow::text

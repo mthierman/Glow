@@ -6,11 +6,10 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/filesystem.hxx>
+#include <glow/glow.hxx>
 
 namespace glow::filesystem
 {
-
 Database::Database() { path = (portable() / "db.sqlite"); }
 
 Database::~Database() {}
@@ -87,5 +86,4 @@ auto wportable() -> std::filesystem::path
 
     return std::filesystem::canonical(exe.remove_filename());
 }
-
 } // namespace glow::filesystem
