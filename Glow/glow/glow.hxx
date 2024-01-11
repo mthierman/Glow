@@ -163,6 +163,17 @@ struct SystemColors
 void to_json(nlohmann::json& j, const SystemColors& systemColors);
 void from_json(const nlohmann::json& j, SystemColors& systemColors);
 
+struct WebView2
+{
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> m_evironmentOptions6{nullptr};
+    wil::com_ptr<ICoreWebView2Controller> m_controller{nullptr};
+    wil::com_ptr<ICoreWebView2Controller4> m_controller4{nullptr};
+    wil::com_ptr<ICoreWebView2> m_core{nullptr};
+    wil::com_ptr<ICoreWebView2_20> m_core20{nullptr};
+    wil::com_ptr<ICoreWebView2Settings> m_settings{nullptr};
+    wil::com_ptr<ICoreWebView2Settings8> m_settings8{nullptr};
+};
+
 auto message_loop() -> int;
 auto webview_version() -> std::string;
 auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
@@ -653,10 +664,9 @@ template <typename T> struct BaseWindow
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
-  protected:
+  public:
     WindowPosition m_windowPosition;
     SystemColors m_colors;
-
     wil::unique_hwnd m_hwnd;
     int64_t m_id{glow::text::random_int64()};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
@@ -666,29 +676,21 @@ template <typename T> struct BaseWindow
 // https://stackoverflow.com/questions/18174441/crtp-and-multilevel-inheritance
 template <typename T> struct WebView : public BaseWindow<T>
 {
-    // T* self{static_cast<T*>(this)};
+    using glow::gui::WebView<T>::WebView;
 
-    // auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
-    // {
-    //     switch (uMsg)
-    //     {
-    //     case WM_CLOSE: return on_close(wParam, lParam);
-    //     }
+    T* self{static_cast<T*>(this)};
 
-    //     return DefWindowProcA(self->hwnd(), uMsg, wParam, lParam);
-    // }
+    WebView(HWND parent, std::string url)
+        : BaseWindow("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(self->m_id))
+    {
+        m_parent = parent;
+        m_url = url;
+    }
 
-    // auto on_close(WPARAM wParam, LPARAM lParam) -> int { return self->close(); }
+    auto print() -> void { OutputDebugStringA(m_url.c_str()); }
 
-    // using glow::gui::BaseWindow<WebView>::BaseWindow;
-
-    // WebView(HWND parent, std::string url);
-
-    // auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-    // auto on_close(WPARAM wParam, LPARAM lParam) -> int;
-
-    // HWND m_parent;
-    // std::string m_url;
+    HWND m_parent;
+    std::string m_url;
 };
 
 // struct WebView : public Window
