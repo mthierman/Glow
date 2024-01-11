@@ -653,6 +653,7 @@ template <typename T> struct BaseWindow
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
+  public:
     WindowPosition m_windowPosition;
     SystemColors m_colors;
 
