@@ -3,6 +3,7 @@
 #include <set>
 
 #include <glow/glow.hxx>
+#include "browser.hxx"
 #include "window.hxx"
 #include "definitions.hxx"
 

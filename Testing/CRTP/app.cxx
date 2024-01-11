@@ -4,13 +4,19 @@ auto App::run() -> int
 {
     App app;
 
-    for (auto i = 0; i < 2; i++)
-    {
-        app.m_vec.emplace_back(std::make_unique<MainWindow>(app.hwnd()))->reveal();
-    }
+    // for (auto i = 0; i < 2; i++)
+    // {
+    //     app.m_vec.emplace_back(std::make_unique<MainWindow>(app.hwnd()))->reveal();
+    // }
 
-    auto wv = std::make_unique<glow::gui::WebView>(app.hwnd(), "https://www.google.com/");
+    auto win = std::make_unique<MainWindow>(app.hwnd());
+    win->reveal();
+
+    auto wv = std::make_unique<Browser>(win->hwnd());
     wv->reveal();
+
+    // auto wv = std::make_unique<glow::gui::WebView>(app.hwnd(), "https://www.google.com/");
+    // wv->reveal();
 
     // auto wv = std::make_unique<Browser>();
     // wv->reveal();

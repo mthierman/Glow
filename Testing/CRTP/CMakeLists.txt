@@ -5,11 +5,11 @@ add_executable(
 
 target_sources(
     CRTP
-    PRIVATE app.cxx
+    PRIVATE main.cxx
+            app.cxx
             app.hxx
-            main.cxx
-            webview.cxx
-            webview.hxx
+            browser.cxx
+            browser.hxx
             window.cxx
             window.hxx
             win32.manifest
