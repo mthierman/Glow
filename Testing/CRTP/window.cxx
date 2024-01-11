@@ -1,6 +1,10 @@
 #include "window.hxx"
 
-MainWindow::MainWindow(HWND app) : m_app{app} { notify(m_app, msg::window_create); }
+MainWindow::MainWindow(HWND app) : BaseWindow()
+{
+    m_app = app;
+    notify(m_app, msg::window_create);
+}
 
 auto MainWindow::handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {

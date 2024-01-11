@@ -5,6 +5,8 @@
 
 struct MainWindow : public glow::gui::BaseWindow<MainWindow>
 {
+    using glow::gui::BaseWindow<MainWindow>::BaseWindow;
+
     MainWindow(HWND app);
 
     auto handle_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
