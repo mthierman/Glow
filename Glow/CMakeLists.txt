@@ -23,6 +23,7 @@ target_sources(
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
            glow/helpers.hxx
+           glow/test.hxx
 )
 
 target_include_directories(

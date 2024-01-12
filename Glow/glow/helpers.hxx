@@ -50,159 +50,160 @@
 
 namespace glow
 {
-struct Console
-{
-    Console()
-    {
-        m_file = nullptr;
+// struct Console
+// {
+//     Console()
+//     {
+//         m_file = nullptr;
 
-        AllocConsole();
+//         AllocConsole();
 
-        EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
-                       MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+//         EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+//                        MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-        freopen_s(std::out_ptr(m_file), "CONIN$", "r", stdin);
-        freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stdout);
-        freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stderr);
+//         freopen_s(std::out_ptr(m_file), "CONIN$", "r", stdin);
+//         freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stdout);
+//         freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stderr);
 
-        std::cin.clear();
-        std::cout.clear();
-        std::cerr.clear();
-        std::clog.clear();
-    }
+//         std::cin.clear();
+//         std::cout.clear();
+//         std::cerr.clear();
+//         std::clog.clear();
+//     }
 
-    ~Console()
-    {
-        fclose(m_file);
-        FreeConsole();
-    }
+//     ~Console()
+//     {
+//         fclose(m_file);
+//         FreeConsole();
+//     }
 
-    FILE* m_file;
-};
+//     FILE* m_file;
+// };
 
-struct Database
-{
-    Database() { m_path = (path_portable() / "db.sqlite"); }
+// struct Database
+// {
+//     Database() { m_path = (path_portable() / "db.sqlite"); }
 
-    auto open()
-    {
-        if (sqlite3_open(m_path.string().c_str(), std::out_ptr(m_db)) != SQLITE_OK)
-            throw std::runtime_error("Failed to open SQLite");
-    }
+//     auto open()
+//     {
+//         if (sqlite3_open(m_path.string().c_str(), std::out_ptr(m_db)) != SQLITE_OK)
+//             throw std::runtime_error("Failed to open SQLite");
+//     }
 
-    auto write()
-    {
-        std::string sql{"CREATE TABLE CONFIG("
-                        "X INT NOT NULL,"
-                        "Y INT NOT NULL,"
-                        "WIDTH INT NOT NULL,"
-                        "HEIGHT INT NOT NULL,"
-                        "MENU INT NOT NULL,"
-                        "SPLIT INT NOT NULL,"
-                        "MAXIMIZED INT NOT NULL,"
-                        "FULLSCREEN INT NOT NULL,"
-                        "TOPMOST INT NOT NULL,"
-                        "MAIN TEXT NOT NULL,"
-                        "SIDE TEXT NOT NULL);"};
+//     auto write()
+//     {
+//         std::string sql{"CREATE TABLE CONFIG("
+//                         "X INT NOT NULL,"
+//                         "Y INT NOT NULL,"
+//                         "WIDTH INT NOT NULL,"
+//                         "HEIGHT INT NOT NULL,"
+//                         "MENU INT NOT NULL,"
+//                         "SPLIT INT NOT NULL,"
+//                         "MAXIMIZED INT NOT NULL,"
+//                         "FULLSCREEN INT NOT NULL,"
+//                         "TOPMOST INT NOT NULL,"
+//                         "MAIN TEXT NOT NULL,"
+//                         "SIDE TEXT NOT NULL);"};
 
-        if (std::filesystem::exists(m_path))
-        {
-            std::string error;
+//         if (std::filesystem::exists(m_path))
+//         {
+//             std::string error;
 
-            auto dbExec{sqlite3_exec(m_db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
+//             auto dbExec{sqlite3_exec(m_db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
 
-            if (dbExec != SQLITE_OK)
-            {
-                std::println("{}", error);
-                sqlite3_free(error.data());
-            }
-        }
-    }
+//             if (dbExec != SQLITE_OK)
+//             {
+//                 std::println("{}", error);
+//                 sqlite3_free(error.data());
+//             }
+//         }
+//     }
 
-  private:
-    struct sqlite3_deleter
-    {
-        auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
-    };
-    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
-    sqlite3_ptr m_db;
-    std::filesystem::path m_path;
-};
+//   private:
+//     struct sqlite3_deleter
+//     {
+//         auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
+//     };
+//     using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
+//     sqlite3_ptr m_db;
+//     std::filesystem::path m_path;
+// };
 
-struct GdiPlus
-{
-    GdiPlus()
-        : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
-    {
-        if (m_gdiplusStatus != Gdiplus::Status::Ok)
-            throw std::runtime_error("GDI+ startup failure");
-    }
+// struct GdiPlus
+// {
+//     GdiPlus()
+//         : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput,
+//         nullptr)}
+//     {
+//         if (m_gdiplusStatus != Gdiplus::Status::Ok)
+//             throw std::runtime_error("GDI+ startup failure");
+//     }
 
-    ~GdiPlus()
-    {
-        if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
-    }
+//     ~GdiPlus()
+//     {
+//         if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
+//     }
 
-    constexpr auto operator+(Gdiplus::Status gdiplusStatus) noexcept
-    {
-        return static_cast<std::underlying_type_t<Gdiplus::Status>>(gdiplusStatus);
-    }
+//     constexpr auto operator+(Gdiplus::Status gdiplusStatus) noexcept
+//     {
+//         return static_cast<std::underlying_type_t<Gdiplus::Status>>(gdiplusStatus);
+//     }
 
-    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
-    ULONG_PTR m_gdiplusToken;
-    Gdiplus::Status m_gdiplusStatus;
-};
+//     Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
+//     ULONG_PTR m_gdiplusToken;
+//     Gdiplus::Status m_gdiplusStatus;
+// };
 
-struct CoInitialize
-{
-    CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
-    {
-        if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
-    }
+// struct CoInitialize
+// {
+//     CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
+//     {
+//         if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
+//     }
 
-    ~CoInitialize()
-    {
-        if (SUCCEEDED(m_result)) CoUninitialize();
-    }
+//     ~CoInitialize()
+//     {
+//         if (SUCCEEDED(m_result)) CoUninitialize();
+//     }
 
-    operator HRESULT() const { return m_result; }
-    HRESULT m_result;
-};
+//     operator HRESULT() const { return m_result; }
+//     HRESULT m_result;
+// };
 
-struct WebView2
-{
-    WebView2()
-    {
-        evironmentOptions6 = nullptr;
-        controller = nullptr;
-        controller4 = nullptr;
-        core = nullptr;
-        core20 = nullptr;
-        settings = nullptr;
-        settings8 = nullptr;
-    }
+// struct WebView2
+// {
+//     WebView2()
+//     {
+//         evironmentOptions6 = nullptr;
+//         controller = nullptr;
+//         controller4 = nullptr;
+//         core = nullptr;
+//         core20 = nullptr;
+//         settings = nullptr;
+//         settings8 = nullptr;
+//     }
 
-    wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
-    wil::com_ptr<ICoreWebView2Controller> controller;
-    wil::com_ptr<ICoreWebView2Controller4> controller4;
-    wil::com_ptr<ICoreWebView2> core;
-    wil::com_ptr<ICoreWebView2_20> core20;
-    wil::com_ptr<ICoreWebView2Settings> settings;
-    wil::com_ptr<ICoreWebView2Settings8> settings8;
-};
+//     wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+//     wil::com_ptr<ICoreWebView2Controller> controller;
+//     wil::com_ptr<ICoreWebView2Controller4> controller4;
+//     wil::com_ptr<ICoreWebView2> core;
+//     wil::com_ptr<ICoreWebView2_20> core20;
+//     wil::com_ptr<ICoreWebView2Settings> settings;
+//     wil::com_ptr<ICoreWebView2Settings8> settings8;
+// };
 
-struct WindowPosition
-{
-    int x{};
-    int y{};
-    int width{};
-    int height{};
-    bool maximized{};
-    bool fullscreen{};
-    bool topmost{};
-    int64_t dpi{};
-    float scale{};
-};
+// struct WindowPosition
+// {
+//     int x{};
+//     int y{};
+//     int width{};
+//     int height{};
+//     bool maximized{};
+//     bool fullscreen{};
+//     bool topmost{};
+//     int64_t dpi{};
+//     float scale{};
+// };
 
 // void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
 // {
@@ -232,34 +233,38 @@ struct WindowPosition
 //     j.at("scale").get_to(windowPosition.scale);
 // }
 
-struct SystemColors
-{
-    SystemColors()
-    {
-        accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-        accentDark1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-        accentDark2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-        accentDark3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-        accentLight1 =
-            color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-        accentLight2 =
-            color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-        accentLight3 =
-            color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-        background = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-        foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-    }
+// struct SystemColors
+// {
+//     SystemColors()
+//     {
+//         accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+//         accentDark1 =
+//         color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+//         accentDark2 =
+//         color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+//         accentDark3 =
+//         color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+//         accentLight1 =
+//             color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+//         accentLight2 =
+//             color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+//         accentLight3 =
+//             color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+//         background =
+//         color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background); foreground
+//         = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+//     }
 
-    std::string accent;
-    std::string accentDark1;
-    std::string accentDark2;
-    std::string accentDark3;
-    std::string accentLight1;
-    std::string accentLight2;
-    std::string accentLight3;
-    std::string background;
-    std::string foreground;
-};
+//     std::string accent;
+//     std::string accentDark1;
+//     std::string accentDark2;
+//     std::string accentDark3;
+//     std::string accentLight1;
+//     std::string accentLight2;
+//     std::string accentLight3;
+//     std::string background;
+//     std::string foreground;
+// };
 
 // void to_json(nlohmann::json& j, const SystemColors& systemColors)
 // {
@@ -453,7 +458,7 @@ auto path_portable_wide()
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-auto narrow(std::wstring utf16)
+auto narrow(std::wstring utf16) -> std::string
 {
     constexpr int intMax = std::numeric_limits<int>::max();
     if (utf16.length() > static_cast<size_t>(intMax))
@@ -583,29 +588,29 @@ auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass)
     else return false;
 }
 
-auto rect_to_position(const RECT& rect)
-{
-    WindowPosition windowPosition;
+// auto rect_to_position(const RECT& rect)
+// {
+//     WindowPosition windowPosition;
 
-    windowPosition.x = rect.left;
-    windowPosition.y = rect.top;
-    windowPosition.width = rect.right - rect.left;
-    windowPosition.height = rect.bottom - rect.top;
+//     windowPosition.x = rect.left;
+//     windowPosition.y = rect.top;
+//     windowPosition.width = rect.right - rect.left;
+//     windowPosition.height = rect.bottom - rect.top;
 
-    return windowPosition;
-}
+//     return windowPosition;
+// }
 
-auto position_to_rect(const WindowPosition& windowPosition)
-{
-    RECT rect{};
+// auto position_to_rect(const WindowPosition& windowPosition)
+// {
+//     RECT rect{};
 
-    rect.left = windowPosition.x;
-    rect.top = windowPosition.y;
-    rect.right = windowPosition.width;
-    rect.bottom = windowPosition.height;
+//     rect.left = windowPosition.x;
+//     rect.top = windowPosition.y;
+//     rect.right = windowPosition.width;
+//     rect.bottom = windowPosition.height;
 
-    return rect;
-}
+//     return rect;
+// }
 
 auto clamp_color(int value) { return std::ranges::clamp(value, 0, 255); }
 
@@ -619,7 +624,7 @@ auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType)
     auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
     auto accent{settings.GetColorValue(colorType)};
 
-    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)
+    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A);
 }
 
 auto check_theme()
