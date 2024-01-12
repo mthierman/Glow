@@ -60,7 +60,7 @@ auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
     return std::filesystem::path(buffer.get());
 }
 
-auto program_name() -> std::string
+auto app_name() -> std::string
 {
     std::string buffer;
     _get_pgmptr(std::out_ptr(buffer));
@@ -69,7 +69,7 @@ auto program_name() -> std::string
     return exe.filename().replace_extension("").string();
 }
 
-auto portable() -> std::filesystem::path
+auto path_portable() -> std::filesystem::path
 {
     std::string buffer;
     _get_pgmptr(std::out_ptr(buffer));
@@ -78,7 +78,7 @@ auto portable() -> std::filesystem::path
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-auto wportable() -> std::filesystem::path
+auto path_portable_wide() -> std::filesystem::path
 {
     std::wstring buffer;
     _get_wpgmptr(std::out_ptr(buffer));

@@ -57,6 +57,7 @@ struct Console
     ~Console();
     FILE* pFile{nullptr};
 };
+
 auto argv() -> std::vector<std::string>;
 auto hresult_string(HRESULT errorCode) -> std::string;
 auto hresult_check(HRESULT errorCode) -> HRESULT;
@@ -94,9 +95,9 @@ struct Database
 };
 
 auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
-auto program_name() -> std::string;
-auto portable() -> std::filesystem::path;
-auto wportable() -> std::filesystem::path;
+auto app_name() -> std::string;
+auto path_portable() -> std::filesystem::path;
+auto path_portable_wide() -> std::filesystem::path;
 } // namespace filesystem
 
 namespace text
