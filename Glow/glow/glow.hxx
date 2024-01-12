@@ -719,7 +719,7 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         m_parent = parent;
         m_url = url;
-        create();
+        glow::console::hresult_check(create());
     }
 
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override
@@ -790,15 +790,15 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         if (!m_webView.core20) return E_POINTER;
 
-                        // glow::console::hresult_check(
-                        //     m_webView.core20->get_Settings(m_webView.settings.put()));
+                        glow::console::hresult_check(
+                            m_webView.core20->get_Settings(m_webView.settings.put()));
 
-                        // m_webView.settings8 =
-                        //     m_webView.settings.try_query<ICoreWebView2Settings8>();
+                        m_webView.settings8 =
+                            m_webView.settings.try_query<ICoreWebView2Settings8>();
 
-                        // if (!m_webView.settings8) return E_POINTER;
+                        if (!m_webView.settings8) return E_POINTER;
 
-                        // glow::console::hresult_check(configure_settings());
+                        glow::console::hresult_check(configure_settings());
 
                         glow::console::hresult_check(
                             m_webView.core20->Navigate(text::widen(m_url).c_str()));
@@ -816,13 +816,229 @@ template <typename T> struct WebView : BaseWindow<T>
                         if (!m_initialized)
                         {
                             m_initialized = true;
-                            // initialized();
+                            initialized();
                         }
                     }
 
                     return errorCode;
                 })
                 .Get());
+    }
+
+    auto configure_settings() -> HRESULT
+    {
+        glow::console::hresult_check(
+            m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_AreDefaultContextMenusEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_AreDefaultScriptDialogsEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_AreDevToolsEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_AreHostObjectsAllowed(true));
+        glow::console::hresult_check(m_webView.settings8->put_HiddenPdfToolbarItems(
+            COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE));
+        glow::console::hresult_check(m_webView.settings8->put_IsBuiltInErrorPageEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsGeneralAutofillEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsPasswordAutosaveEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsPinchZoomEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsReputationCheckingRequired(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsScriptEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsStatusBarEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsSwipeNavigationEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsWebMessageEnabled(true));
+        glow::console::hresult_check(m_webView.settings8->put_IsZoomControlEnabled(true));
+
+        return S_OK;
+    }
+
+    auto initialized() -> void {}
+
+    auto context_menu_requested() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_ContextMenuRequested(
+            Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
+                [=, this](ICoreWebView2* sender,
+                          ICoreWebView2ContextMenuRequestedEventArgs* args) -> HRESULT
+                { return context_menu_requested_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto source_changed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_SourceChanged(
+            Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
+                [=, this](ICoreWebView2* sender,
+                          ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+                { return source_changed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto navigation_starting() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_NavigationStarting(
+            Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
+                [=, this](ICoreWebView2* sender,
+                          ICoreWebView2NavigationStartingEventArgs* args) -> HRESULT
+                { return navigation_starting_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto navigation_completed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_NavigationCompleted(
+            Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
+                [=, this](ICoreWebView2* sender,
+                          ICoreWebView2NavigationCompletedEventArgs* args) -> HRESULT
+                { return navigation_completed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto web_message_received() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_WebMessageReceived(
+            Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
+                [=, this](ICoreWebView2* sender,
+                          ICoreWebView2WebMessageReceivedEventArgs* args) -> HRESULT
+                { return web_message_received_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto document_title_changed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_DocumentTitleChanged(
+            Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
+                [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                { return document_title_changed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto favicon_changed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.core20->add_FaviconChanged(
+            Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
+                [=, this](ICoreWebView2* sender, IUnknown* args) -> HRESULT
+                { return favicon_changed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto accelerator_key_pressed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.controller4->add_AcceleratorKeyPressed(
+            Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
+                [=, this](ICoreWebView2Controller* sender,
+                          ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> HRESULT
+                { return accelerator_key_pressed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto zoom_factor_changed() -> HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.controller4->add_ZoomFactorChanged(
+            Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
+                [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> HRESULT
+                { return zoom_factor_changed_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
+                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto source_changed_handler(ICoreWebView2* sender,
+                                        ICoreWebView2SourceChangedEventArgs* args) -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto navigation_starting_handler(ICoreWebView2* sender,
+                                             ICoreWebView2NavigationStartingEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto navigation_completed_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationCompletedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> HRESULT
+    {
+        return S_OK;
+    }
+
+    auto navigate(std::string url) -> HRESULT
+    {
+        auto wideUrl{glow::text::widen(url)};
+        if (m_webView.core20)
+            return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
+
+        else return S_OK;
+    }
+
+    auto post_json(const nlohmann::json json) -> HRESULT
+    {
+        auto wideJson{glow::text::widen(json)};
+        if (m_webView.core20)
+            return glow::console::hresult_check(
+                m_webView.core20->PostWebMessageAsJson(wideJson.c_str()));
+
+        else return S_OK;
     }
 
     HWND m_parent{nullptr};
