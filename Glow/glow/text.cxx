@@ -70,7 +70,7 @@ auto randomize(std::string string) -> std::string
     return (string + randomNumber);
 }
 
-auto random_int64()
+auto random_int64() -> int64_t
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -78,7 +78,7 @@ auto random_int64()
     return dist(mt);
 }
 
-auto random_int32()
+auto random_int32() -> int32_t
 {
     std::random_device rd;
     std::mt19937 mt(rd());
@@ -86,7 +86,7 @@ auto random_int32()
     return dist(mt);
 }
 
-auto create_guid()
+auto create_guid() -> GUID
 {
     GUID guid;
 
@@ -95,7 +95,7 @@ auto create_guid()
     else throw std::runtime_error("GUID creation failure");
 }
 
-auto guid_string(GUID guid)
+auto guid_string(GUID guid) -> std::string
 {
     std::wstring buffer(wil::guid_string_buffer_length, 0);
     auto length{StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length)};
