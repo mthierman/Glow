@@ -222,9 +222,8 @@ template <typename T> T* instance(HWND hWnd)
 template <typename T> struct MessageWindow
 {
     MessageWindow(std::string name = "MessageWindow", int64_t id = glow::text::random_int64())
+        : m_id{id}
     {
-        m_id = id;
-
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
@@ -308,9 +307,8 @@ template <typename T> struct BaseWindow
                DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
                int nHeight = CW_USEDEFAULT, HWND hwndParent = nullptr, HMENU hMenu = nullptr)
+        : m_id{id}
     {
-        m_id = id;
-
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
@@ -342,10 +340,6 @@ template <typename T> struct BaseWindow
                 throw std::runtime_error("Class registration failure");
         }
 
-        // if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
-        //                     nWidth, nHeight, hwndParent,
-        //                     (dwStyle == WS_CHILD) ? std::bit_cast<HMENU>(m_id) : hMenu,
-        //                     GetModuleHandleA(nullptr), this) == nullptr)
         if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
                             nWidth, nHeight, hwndParent, hMenu, GetModuleHandleA(nullptr),
                             this) == nullptr)
