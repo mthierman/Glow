@@ -10,7 +10,7 @@
 
 namespace glow::filesystem
 {
-Database::Database() { path = (portable() / "db.sqlite"); }
+Database::Database() { path = (path_portable() / "db.sqlite"); }
 
 Database::~Database() {}
 

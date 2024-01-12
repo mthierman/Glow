@@ -105,14 +105,14 @@ auto source_print(std::string message, std::source_location location) -> void
 
 auto message_box(std::string message, UINT type) -> int
 {
-    auto program{glow::filesystem::program_name()};
+    auto program{glow::filesystem::app_name()};
 
     return MessageBoxA(nullptr, message.c_str(), program.c_str(), type);
 }
 
 auto message_box_shell(std::string message, UINT type) -> int
 {
-    auto program{glow::filesystem::program_name()};
+    auto program{glow::filesystem::app_name()};
 
     return ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(), program.c_str(),
                             type);
@@ -127,7 +127,7 @@ auto message_box_stock(std::string message, SHSTOCKICONID icon) -> void
     {
         auto hModule{LoadLibraryExW(sii.szPath, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-        auto program{glow::filesystem::program_name()};
+        auto program{glow::filesystem::app_name()};
 
         MSGBOXPARAMS params{sizeof(MSGBOXPARAMS)};
         params.hInstance = hModule;
@@ -147,7 +147,7 @@ auto create_process(std::string process) -> int
     STARTUPINFOA si{sizeof(STARTUPINFOA)};
     PROCESS_INFORMATION pi{};
 
-    auto server{(glow::filesystem::portable() / process).string()};
+    auto server{(glow::filesystem::path_portable() / process).string()};
     auto pServer{server.data()};
 
     CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);

@@ -95,7 +95,7 @@ auto create_guid() -> GUID
     else throw std::runtime_error("GUID creation failure");
 }
 
-auto guid_to_string(GUID guid) -> std::string
+auto guid_string(GUID guid) -> std::string
 {
     std::wstring buffer(wil::guid_string_buffer_length, 0);
     auto length{StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length)};
