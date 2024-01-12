@@ -13,10 +13,8 @@ configure_file(
 
 target_sources(
     Glow
-    PRIVATE glow/console.cxx
-            glow/filesystem.cxx
-            glow/gui.cxx
-            glow/text.cxx
+    PRIVATE # glow/console.cxx # glow/filesystem.cxx glow/gui.cxx glow/text.cxx
+            glow/helpers.cxx
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
@@ -24,7 +22,7 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
-           glow/glow.hxx
+           glow/helpers.hxx
 )
 
 target_include_directories(
