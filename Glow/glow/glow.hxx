@@ -276,12 +276,12 @@ template <typename T> struct MessageWindow
 
         else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
 
-        if (self) { return self->default_wnd_proc(uMsg, wParam, lParam); }
+        if (self) { return self->default_wnd_proc(hWnd, uMsg, wParam, lParam); }
 
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
-    virtual auto default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    virtual auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
         switch (uMsg)
         {
@@ -289,12 +289,12 @@ template <typename T> struct MessageWindow
         case WM_DESTROY: PostQuitMessage(0); return 0;
         }
 
-        return wnd_proc(uMsg, wParam, lParam);
+        return wnd_proc(hWnd, uMsg, wParam, lParam);
     }
 
-    virtual auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
-        return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
 
     int64_t m_id;
@@ -680,24 +680,24 @@ template <typename T> struct BaseWindow
 
         else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
 
-        if (self) { return self->default_wnd_proc(uMsg, wParam, lParam); }
+        if (self) { return self->default_wnd_proc(hWnd, uMsg, wParam, lParam); }
 
         else { return DefWindowProcA(hWnd, uMsg, wParam, lParam); }
     }
 
-    virtual auto default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    virtual auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
         switch (uMsg)
         {
         case WM_CLOSE: return close();
         }
 
-        return wnd_proc(uMsg, wParam, lParam);
+        return wnd_proc(hWnd, uMsg, wParam, lParam);
     }
 
-    virtual auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
     {
-        return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
 
   public:
@@ -722,22 +722,22 @@ template <typename T> struct WebView : BaseWindow<T>
         create();
     }
 
-    auto wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override
+    auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT override
     {
         switch (uMsg)
         {
-        case WM_SIZE: return on_size(wParam, lParam);
+        case WM_SIZE: return on_size(hWnd, wParam, lParam);
         }
 
-        return DefWindowProcA(self->hwnd(), uMsg, wParam, lParam);
+        return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
 
-    auto on_size(WPARAM wParam, LPARAM lParam) -> int
+    auto on_size(HWND hWnd, WPARAM wParam, LPARAM lParam) -> int
     {
         if (m_webView.controller4)
         {
             RECT rect{};
-            GetClientRect(self->hwnd(), &rect);
+            GetClientRect(hWnd, &rect);
             m_webView.controller4->put_Bounds(rect);
         }
 

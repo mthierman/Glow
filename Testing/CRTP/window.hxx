@@ -10,7 +10,7 @@ struct MainWindow : public glow::gui::BaseWindow<MainWindow>
 
     MainWindow(HWND app);
 
-    auto default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    auto default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_close(WPARAM wParam, LPARAM lParam) -> int;
     auto on_size(WPARAM wParam, LPARAM lParam) -> int;
 

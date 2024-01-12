@@ -9,7 +9,7 @@ MainWindow::MainWindow(HWND app) : BaseWindow()
     m_browser->reveal();
 }
 
-auto MainWindow::default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto MainWindow::default_wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     switch (uMsg)
     {
@@ -17,7 +17,7 @@ auto MainWindow::default_wnd_proc(UINT uMsg, WPARAM wParam, LPARAM lParam) -> LR
     case WM_SIZE: return on_size(wParam, lParam);
     }
 
-    return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto MainWindow::on_close(WPARAM wParam, LPARAM lParam) -> int
