@@ -1,5 +1,12 @@
 #include "window.hxx"
 
+WindowDimensions::WindowDimensions()
+{
+    rect = {0};
+    scale = 0.0f;
+    hwnd = nullptr;
+}
+
 MainWindow::MainWindow(HWND app) : BaseWindow()
 {
     m_app = app;
@@ -26,13 +33,6 @@ auto MainWindow::on_close(WPARAM wParam, LPARAM lParam) -> int
 
     return close();
 }
-
-struct WindowDimensions
-{
-    RECT rect{};
-    float scale{};
-    HWND hwnd{};
-};
 
 auto MainWindow::on_size(WPARAM wParam, LPARAM lParam) -> int
 {

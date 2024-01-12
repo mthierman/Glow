@@ -9,10 +9,4 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
-auto main() -> int
-{
-    // glow::gui::Window window;
-    // window.show_normal();
-
-    return glow::gui::message_loop();
-}
+auto main() -> int { return glow::gui::message_loop(); }

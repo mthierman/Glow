@@ -1,9 +1,7 @@
 #pragma once
 
 #include <set>
-
 #include <glow/glow.hxx>
-
 #include "definitions.hxx"
 #include "window.hxx"
 

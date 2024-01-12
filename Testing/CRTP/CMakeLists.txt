@@ -10,6 +10,7 @@ target_sources(
             app.hxx
             browser.cxx
             browser.hxx
+            definitions.hxx
             window.cxx
             window.hxx
             win32.manifest

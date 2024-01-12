@@ -4,6 +4,16 @@
 #include "definitions.hxx"
 #include "browser.hxx"
 
+struct WindowDimensions
+{
+    WindowDimensions();
+
+    RECT rect;
+    float scale;
+    HWND hwnd;
+};
+
+
 struct MainWindow : public glow::gui::BaseWindow<MainWindow>
 {
     using glow::gui::BaseWindow<MainWindow>::BaseWindow;
