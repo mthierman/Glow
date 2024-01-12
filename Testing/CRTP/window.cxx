@@ -46,19 +46,6 @@ auto MainWindow::on_size(WPARAM wParam, LPARAM lParam) -> int
     return 0;
 }
 
-enum struct Browsers : int64_t
-{
-    settings = 1,
-    main = 2,
-    side = 3,
-    url = 4,
-};
-
-constexpr auto operator+(Browsers browsers) noexcept
-{
-    return static_cast<std::underlying_type_t<Browsers>>(browsers);
-}
-
 auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
     auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
@@ -74,11 +61,11 @@ auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
         auto hdwp{BeginDeferWindowPos(4)};
 
-        // if (gwlId == 1)
-        if (hdwp)
-            hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
-                                  SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOREDRAW |
-                                      SWP_NOCOPYBITS);
+        if (gwlId == self->m_browser->id())
+            if (hdwp)
+                hdwp = DeferWindowPos(hdwp, hWnd, nullptr, 0, 0, width, height,
+                                      SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOOWNERZORDER |
+                                          SWP_NOREDRAW | SWP_NOCOPYBITS);
 
         if (hdwp) EndDeferWindowPos(hdwp);
     }
