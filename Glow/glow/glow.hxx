@@ -221,8 +221,10 @@ template <typename T> T* instance(HWND hWnd)
 
 template <typename T> struct MessageWindow
 {
-    MessageWindow(std::string name = "MessageWindow")
+    MessageWindow(std::string name = "MessageWindow", int64_t id = glow::text::random_int64())
     {
+        m_id = id;
+
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
@@ -296,17 +298,19 @@ template <typename T> struct MessageWindow
         return DefWindowProcA(hwnd(), uMsg, wParam, lParam);
     }
 
+    int64_t m_id;
     wil::unique_hwnd m_hwnd;
 };
 
 template <typename T> struct BaseWindow
 {
-    BaseWindow(std::string name = "BaseWindow",
+    BaseWindow(std::string name = "BaseWindow", int64_t id = glow::text::random_int64(),
                DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
                int nHeight = CW_USEDEFAULT, HWND hwndParent = nullptr, HMENU hMenu = nullptr)
     {
-        OutputDebugStringA(name.c_str());
+        m_id = id;
+
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
@@ -338,10 +342,13 @@ template <typename T> struct BaseWindow
                 throw std::runtime_error("Class registration failure");
         }
 
+        // if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
+        //                     nWidth, nHeight, hwndParent,
+        //                     (dwStyle == WS_CHILD) ? std::bit_cast<HMENU>(m_id) : hMenu,
+        //                     GetModuleHandleA(nullptr), this) == nullptr)
         if (CreateWindowExA(dwExStyle, wcex.lpszClassName, wcex.lpszClassName, dwStyle, x, y,
-                            nWidth, nHeight, hwndParent,
-                            (dwStyle == WS_CHILD) ? std::bit_cast<HMENU>(m_id) : hMenu,
-                            GetModuleHandleA(nullptr), this) == nullptr)
+                            nWidth, nHeight, hwndParent, hMenu, GetModuleHandleA(nullptr),
+                            this) == nullptr)
             throw std::runtime_error("Window creation failure");
     }
 
@@ -703,7 +710,7 @@ template <typename T> struct BaseWindow
     WindowPosition m_windowPosition;
     SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
-    int64_t m_id{glow::text::random_int64()};
+    int64_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
@@ -712,8 +719,9 @@ template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
 
-    WebView(HWND parent, std::string url = "https://www.google.com/")
-        : BaseWindow<T>("WebView", WS_CHILD, 0, 0, 0, 0, 0, parent)
+    WebView(HWND parent, std::string url = "https://www.google.com/",
+            int64_t id = glow::text::random_int64())
+        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
     {
         m_parent = parent;
         m_url = url;
