@@ -12,14 +12,16 @@ namespace glow::console
 {
 Console::Console()
 {
+    m_file = nullptr;
+
     AllocConsole();
 
     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
                    MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    freopen_s(std::out_ptr(pFile), "CONIN$", "r", stdin);
-    freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stdout);
-    freopen_s(std::out_ptr(pFile), "CONOUT$", "w", stderr);
+    freopen_s(std::out_ptr(m_file), "CONIN$", "r", stdin);
+    freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stdout);
+    freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stderr);
 
     std::cin.clear();
     std::cout.clear();
@@ -29,7 +31,7 @@ Console::Console()
 
 Console::~Console()
 {
-    fclose(pFile);
+    fclose(m_file);
     FreeConsole();
 }
 

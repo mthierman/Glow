@@ -10,30 +10,6 @@
 
 namespace glow::gui
 {
-SystemColors::SystemColors()
-{
-    accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    accentDark1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    accentDark2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    accentDark3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    accentLight1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    accentLight2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    accentLight3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    background = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-};
-
-WebView2::WebView2()
-{
-    evironmentOptions6 = nullptr;
-    controller = nullptr;
-    controller4 = nullptr;
-    core = nullptr;
-    core20 = nullptr;
-    settings = nullptr;
-    settings8 = nullptr;
-}
-
 GdiPlus::GdiPlus()
     : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
 {
@@ -45,9 +21,9 @@ GdiPlus::~GdiPlus()
     if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
 }
 
-constexpr auto operator+(Gdiplus::Status g) noexcept
+constexpr auto operator+(Gdiplus::Status gdiplusStatus) noexcept
 {
-    return static_cast<std::underlying_type_t<Gdiplus::Status>>(g);
+    return static_cast<std::underlying_type_t<Gdiplus::Status>>(gdiplusStatus);
 }
 
 CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
@@ -61,6 +37,30 @@ CoInitialize::~CoInitialize()
 }
 
 CoInitialize::operator HRESULT() const { return m_result; }
+
+WebView2::WebView2()
+{
+    evironmentOptions6 = nullptr;
+    controller = nullptr;
+    controller4 = nullptr;
+    core = nullptr;
+    core20 = nullptr;
+    settings = nullptr;
+    settings8 = nullptr;
+}
+
+SystemColors::SystemColors()
+{
+    accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    accentDark1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    accentDark2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    accentDark3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    accentLight1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    accentLight2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    accentLight3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    background = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+};
 
 void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
 {

@@ -55,7 +55,7 @@ struct Console
 {
     Console();
     ~Console();
-    FILE* pFile{nullptr};
+    FILE* m_file;
 };
 
 auto argv() -> std::vector<std::string>;
@@ -87,11 +87,11 @@ struct Database
   private:
     struct sqlite3_deleter
     {
-        auto operator()(sqlite3* pDb) noexcept -> void { sqlite3_close(pDb); }
+        auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
     };
     using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
-    sqlite3_ptr p_db;
-    std::filesystem::path path;
+    sqlite3_ptr m_db;
+    std::filesystem::path m_path;
 };
 
 auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
@@ -118,9 +118,9 @@ struct GdiPlus
     GdiPlus();
     ~GdiPlus();
 
-    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput{};
-    ULONG_PTR m_gdiplusToken{};
-    Gdiplus::Status m_gdiplusStatus{};
+    Gdiplus::GdiplusStartupInput m_gdiplusStartupInput;
+    ULONG_PTR m_gdiplusToken;
+    Gdiplus::Status m_gdiplusStatus;
 };
 
 struct CoInitialize
@@ -129,7 +129,20 @@ struct CoInitialize
     ~CoInitialize();
 
     operator HRESULT() const;
-    HRESULT m_result{};
+    HRESULT m_result;
+};
+
+struct WebView2
+{
+    WebView2();
+
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+    wil::com_ptr<ICoreWebView2Controller> controller;
+    wil::com_ptr<ICoreWebView2Controller4> controller4;
+    wil::com_ptr<ICoreWebView2> core;
+    wil::com_ptr<ICoreWebView2_20> core20;
+    wil::com_ptr<ICoreWebView2Settings> settings;
+    wil::com_ptr<ICoreWebView2Settings8> settings8;
 };
 
 struct WindowPosition
@@ -163,19 +176,6 @@ struct SystemColors
 };
 void to_json(nlohmann::json& j, const SystemColors& systemColors);
 void from_json(const nlohmann::json& j, SystemColors& systemColors);
-
-struct WebView2
-{
-    WebView2();
-
-    wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
-    wil::com_ptr<ICoreWebView2Controller> controller;
-    wil::com_ptr<ICoreWebView2Controller4> controller4;
-    wil::com_ptr<ICoreWebView2> core;
-    wil::com_ptr<ICoreWebView2_20> core20;
-    wil::com_ptr<ICoreWebView2Settings> settings;
-    wil::com_ptr<ICoreWebView2Settings8> settings8;
-};
 
 auto message_loop() -> int;
 auto webview_version() -> std::string;
