@@ -51,27 +51,27 @@ namespace glow
 {
 namespace console
 {
-auto argv() -> std::vector<std::string>;
-auto hresult_to_string(HRESULT errorCode) -> std::string;
-auto hresult_check(HRESULT errorCode) -> HRESULT;
-auto debug_hresult(HRESULT errorCode,
-                   std::source_location location = std::source_location::current()) -> void;
-auto print_hresult(HRESULT errorCode,
-                   std::source_location location = std::source_location::current()) -> void;
-auto debug(std::string message, std::source_location location = std::source_location::current())
-    -> void;
-auto print(std::string message, std::source_location location = std::source_location::current())
-    -> void;
-auto box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
-
 struct Console
 {
     Console();
     ~Console();
     FILE* pFile{nullptr};
 };
+auto argv() -> std::vector<std::string>;
+auto hresult_string(HRESULT errorCode) -> std::string;
+auto hresult_check(HRESULT errorCode) -> HRESULT;
+auto hresult_debug(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
+auto hresult_print(HRESULT errorCode,
+                   std::source_location location = std::source_location::current()) -> void;
+auto source_debug(std::string message,
+                  std::source_location location = std::source_location::current()) -> void;
+auto source_print(std::string message,
+                  std::source_location location = std::source_location::current()) -> void;
+auto message_box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto message_box_shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto message_box_stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
+auto create_process(std::string process) -> int;
 } // namespace console
 
 namespace filesystem
@@ -803,15 +803,15 @@ template <typename T> struct WebView : BaseWindow<T>
                         glow::console::hresult_check(
                             m_webView.core20->Navigate(text::widen(m_url).c_str()));
 
-                        // glow::console::hresult_check(context_menu_requested());
-                        // glow::console::hresult_check(source_changed());
-                        // glow::console::hresult_check(navigation_starting());
-                        // glow::console::hresult_check(navigation_completed());
-                        // glow::console::hresult_check(web_message_received());
-                        // glow::console::hresult_check(accelerator_key_pressed());
-                        // glow::console::hresult_check(favicon_changed());
-                        // glow::console::hresult_check(document_title_changed());
-                        // glow::console::hresult_check(zoom_factor_changed());
+                        glow::console::hresult_check(context_menu_requested());
+                        glow::console::hresult_check(source_changed());
+                        glow::console::hresult_check(navigation_starting());
+                        glow::console::hresult_check(navigation_completed());
+                        glow::console::hresult_check(web_message_received());
+                        glow::console::hresult_check(accelerator_key_pressed());
+                        glow::console::hresult_check(favicon_changed());
+                        glow::console::hresult_check(document_title_changed());
+                        glow::console::hresult_check(zoom_factor_changed());
 
                         if (!m_initialized)
                         {

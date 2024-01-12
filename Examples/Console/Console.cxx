@@ -11,7 +11,7 @@
 
 auto main() -> int
 {
-    glow::console::print("🌸🌹🍒🍉🥝🍎🖍️🧶");
+    glow::console::source_print("🌸🌹🍒🍉🥝🍎🖍️🧶");
 
     return 0;
 }
