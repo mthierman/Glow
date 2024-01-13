@@ -15,7 +15,7 @@ auto narrow(std::wstring utf16) -> std::string
     constexpr int max{std::numeric_limits<int>::max()};
 
     if (utf16.length() > static_cast<size_t>(max))
-        throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
+        throw std::overflow_error("Input string too long");
 
     auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
                                     utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
@@ -38,7 +38,7 @@ auto widen(std::string utf8) -> std::wstring
     constexpr int max{std::numeric_limits<int>::max()};
 
     if (utf8.length() > static_cast<size_t>(max))
-        throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
+        throw std::overflow_error("Input string too long");
 
     auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
                                     static_cast<int>(utf8.length()), nullptr, 0)};
