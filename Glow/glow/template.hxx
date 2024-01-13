@@ -122,6 +122,19 @@ template <typename T> struct MessageWindow
 
 template <typename T> struct BaseWindow
 {
+    struct WindowPosition
+    {
+        int x{};
+        int y{};
+        int width{};
+        int height{};
+        bool maximized{};
+        bool fullscreen{};
+        bool topmost{};
+        int64_t dpi{};
+        float scale{};
+    };
+
     BaseWindow(std::string name = "BaseWindow", int64_t id = glow::text::random_int64(),
                DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
@@ -347,11 +360,11 @@ template <typename T> struct BaseWindow
         return rect;
     }
 
-    auto client_position() -> glow::gui::WindowPosition
+    auto client_position() -> WindowPosition
     {
         auto rect{client_rect()};
 
-        glow::gui::WindowPosition p;
+        WindowPosition p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -361,11 +374,11 @@ template <typename T> struct BaseWindow
         return p;
     }
 
-    auto window_position() -> glow::gui::WindowPosition
+    auto window_position() -> WindowPosition
     {
         auto rect{window_rect()};
 
-        glow::gui::WindowPosition p;
+        WindowPosition p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -520,7 +533,7 @@ template <typename T> struct BaseWindow
     }
 
   public:
-    glow::gui::WindowPosition m_windowPosition;
+    WindowPosition m_windowPosition;
     glow::gui::SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
     int64_t m_id{};
@@ -531,6 +544,17 @@ template <typename T> struct BaseWindow
 template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
+
+    struct WebView2
+    {
+        wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+        wil::com_ptr<ICoreWebView2Controller> controller;
+        wil::com_ptr<ICoreWebView2Controller4> controller4;
+        wil::com_ptr<ICoreWebView2> core;
+        wil::com_ptr<ICoreWebView2_20> core20;
+        wil::com_ptr<ICoreWebView2Settings> settings;
+        wil::com_ptr<ICoreWebView2Settings8> settings8;
+    };
 
     WebView(HWND parent, std::string url = "https://www.google.com/",
             int64_t id = glow::text::random_int64())
@@ -864,7 +888,7 @@ template <typename T> struct WebView : BaseWindow<T>
     std::string m_url;
     glow::gui::GdiPlus m_gdiInit;
     glow::gui::CoInitialize m_coInit;
-    glow::gui::WebView2 m_webView;
+    WebView2 m_webView;
     bool m_initialized{false};
 };
 } // namespace window

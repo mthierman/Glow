@@ -38,17 +38,6 @@ CoInitialize::~CoInitialize()
 
 CoInitialize::operator HRESULT() const { return m_result; }
 
-WebView2::WebView2()
-{
-    evironmentOptions6 = nullptr;
-    controller = nullptr;
-    controller4 = nullptr;
-    core = nullptr;
-    core20 = nullptr;
-    settings = nullptr;
-    settings8 = nullptr;
-}
-
 SystemColors::SystemColors()
 {
     accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
@@ -62,33 +51,33 @@ SystemColors::SystemColors()
     foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
 };
 
-void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
-{
-    j = nlohmann::json{
-        {"x", windowPosition.x},
-        {"y", windowPosition.y},
-        {"width", windowPosition.width},
-        {"height", windowPosition.height},
-        {"maximized", windowPosition.maximized},
-        {"fullscreen", windowPosition.fullscreen},
-        {"topmost", windowPosition.topmost},
-        {"dpi", windowPosition.dpi},
-        {"scale", windowPosition.scale},
-    };
-}
+// void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
+// {
+//     j = nlohmann::json{
+//         {"x", windowPosition.x},
+//         {"y", windowPosition.y},
+//         {"width", windowPosition.width},
+//         {"height", windowPosition.height},
+//         {"maximized", windowPosition.maximized},
+//         {"fullscreen", windowPosition.fullscreen},
+//         {"topmost", windowPosition.topmost},
+//         {"dpi", windowPosition.dpi},
+//         {"scale", windowPosition.scale},
+//     };
+// }
 
-void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
-{
-    j.at("x").get_to(windowPosition.x);
-    j.at("y").get_to(windowPosition.y);
-    j.at("width").get_to(windowPosition.width);
-    j.at("height").get_to(windowPosition.height);
-    j.at("maximized").get_to(windowPosition.maximized);
-    j.at("fullscreen").get_to(windowPosition.fullscreen);
-    j.at("topmost").get_to(windowPosition.topmost);
-    j.at("dpi").get_to(windowPosition.dpi);
-    j.at("scale").get_to(windowPosition.scale);
-}
+// void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
+// {
+//     j.at("x").get_to(windowPosition.x);
+//     j.at("y").get_to(windowPosition.y);
+//     j.at("width").get_to(windowPosition.width);
+//     j.at("height").get_to(windowPosition.height);
+//     j.at("maximized").get_to(windowPosition.maximized);
+//     j.at("fullscreen").get_to(windowPosition.fullscreen);
+//     j.at("topmost").get_to(windowPosition.topmost);
+//     j.at("dpi").get_to(windowPosition.dpi);
+//     j.at("scale").get_to(windowPosition.scale);
+// }
 
 void to_json(nlohmann::json& j, const SystemColors& systemColors)
 {
@@ -153,29 +142,29 @@ auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool
     else return false;
 }
 
-auto rect_to_position(const RECT& rect) -> WindowPosition
-{
-    WindowPosition windowPosition;
+// auto rect_to_position(const RECT& rect) -> WindowPosition
+// {
+//     WindowPosition windowPosition;
 
-    windowPosition.x = rect.left;
-    windowPosition.y = rect.top;
-    windowPosition.width = rect.right - rect.left;
-    windowPosition.height = rect.bottom - rect.top;
+//     windowPosition.x = rect.left;
+//     windowPosition.y = rect.top;
+//     windowPosition.width = rect.right - rect.left;
+//     windowPosition.height = rect.bottom - rect.top;
 
-    return windowPosition;
-}
+//     return windowPosition;
+// }
 
-auto position_to_rect(const WindowPosition& windowPosition) -> RECT
-{
-    RECT rect{};
+// auto position_to_rect(const WindowPosition& windowPosition) -> RECT
+// {
+//     RECT rect{};
 
-    rect.left = windowPosition.x;
-    rect.top = windowPosition.y;
-    rect.right = windowPosition.width;
-    rect.bottom = windowPosition.height;
+//     rect.left = windowPosition.x;
+//     rect.top = windowPosition.y;
+//     rect.right = windowPosition.width;
+//     rect.bottom = windowPosition.height;
 
-    return rect;
-}
+//     return rect;
+// }
 
 auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
 
