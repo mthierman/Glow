@@ -35,11 +35,11 @@ option(
     OFF
 )
 option(
-    GLOW_TESTING
+    GLOW_TESTS
     OFF
 )
 option(
-    GLOW_ICONCONVERTER
+    GLOW_TOOLS
     OFF
 )
 
@@ -65,7 +65,7 @@ add_library(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/config.hxx
+    ${PROJECT_SOURCE_DIR}/src/config.hxx
     ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
 )
 
@@ -126,13 +126,13 @@ target_link_libraries(
 )
 
 if(GLOW_EXAMPLES)
-    add_subdirectory(Examples)
+    add_subdirectory(examples)
 endif()
 
-if(GLOW_TESTING)
-    add_subdirectory(Testing)
+if(GLOW_TESTS)
+    add_subdirectory(tests)
 endif()
 
-if(GLOW_ICONCONVERTER)
-    add_subdirectory(Tools/IconConverter)
+if(GLOW_TOOLS)
+    add_subdirectory(tools)
 endif()

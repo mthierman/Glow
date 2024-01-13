@@ -1,4 +1,4 @@
-<img src="./Data/banner.svg" width="200">
+<img src="./data/banner.svg" width="200">
 
 # C++ Library for Windows
 
