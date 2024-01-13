@@ -885,8 +885,6 @@ template <typename T> struct WebView : BaseWindow<T>
 
     HWND m_parent{nullptr};
     std::string m_url;
-    glow::gui::GdiPlus m_gdiInit;
-    glow::gui::CoInitialize m_coInit;
     WebView2 m_webView;
     bool m_initialized{false};
 };
