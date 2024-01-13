@@ -66,7 +66,7 @@ add_library(
 
 configure_file(
     ${PROJECT_SOURCE_DIR}/src/config.hxx
-    ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
+    ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx
 )
 
 target_sources(
@@ -75,25 +75,26 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/filesystem.cxx
             ${PROJECT_SOURCE_DIR}/src/gui.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
-    PUBLIC FILE_SET
-           HEADERS
-           BASE_DIRS
-           ${PROJECT_SOURCE_DIR}/src
-           ${PROJECT_SOURCE_DIR}/include
-           ${CMAKE_CURRENT_BINARY_DIR}/config
-           FILES
-           ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
-           ${PROJECT_SOURCE_DIR}/src/console.hxx
-           ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
-           ${PROJECT_SOURCE_DIR}/src/gui.hxx
-           ${PROJECT_SOURCE_DIR}/src/text.hxx
-           ${PROJECT_SOURCE_DIR}/src/window.hxx
-           ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
+    PRIVATE FILE_SET
+            HEADERS
+            BASE_DIRS
+            ${PROJECT_SOURCE_DIR}/src
+            ${PROJECT_SOURCE_DIR}/include
+            ${CMAKE_CURRENT_BINARY_DIR}/include
+            FILES
+            ${PROJECT_SOURCE_DIR}/src/console.hxx
+            ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
+            ${PROJECT_SOURCE_DIR}/src/gui.hxx
+            ${PROJECT_SOURCE_DIR}/src/text.hxx
+            ${PROJECT_SOURCE_DIR}/src/window.hxx
+            ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
+            ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx
 )
 
 target_include_directories(
     Glow
     PUBLIC ${PROJECT_SOURCE_DIR}/include
+           ${CMAKE_CURRENT_BINARY_DIR}/include
            ${webview2_SOURCE_DIR}/build/native/include-winrt
            ${webview2_SOURCE_DIR}/build/native/include
            ${wil_SOURCE_DIR}/include
