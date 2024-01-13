@@ -157,8 +157,6 @@ struct WindowPosition
     int64_t dpi{};
     float scale{};
 };
-void to_json(nlohmann::json& j, const WindowPosition& windowPosition);
-void from_json(const nlohmann::json& j, WindowPosition& windowPosition);
 
 struct SystemColors
 {
@@ -174,6 +172,9 @@ struct SystemColors
     std::string background;
     std::string foreground;
 };
+
+void to_json(nlohmann::json& j, const WindowPosition& windowPosition);
+void from_json(const nlohmann::json& j, WindowPosition& windowPosition);
 void to_json(nlohmann::json& j, const SystemColors& systemColors);
 void from_json(const nlohmann::json& j, SystemColors& systemColors);
 
