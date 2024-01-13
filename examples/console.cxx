@@ -8,7 +8,6 @@
 
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
-#include <glow/config.hxx>
 
 auto main() -> int
 {
