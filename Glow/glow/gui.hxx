@@ -12,16 +12,11 @@
 #include <Unknwn.h>
 #include <dwmapi.h>
 #include <gdiplus.h>
-#include <objbase.h>
-#include <shellapi.h>
-#include <comdef.h>
-#include <ShlObj.h>
 #include <wrl.h>
 
+#include <string>
+
 #include <wil/com.h>
-#include <wil/result.h>
-#include <wil/resource.h>
-#include <wil/win32_helpers.h>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
@@ -29,88 +24,13 @@
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
 
-#include <algorithm>
-#include <bit>
-#include <cstdint>
-#include <filesystem>
-#include <format>
-#include <iostream>
-#include <limits>
-#include <memory>
-#include <optional>
-#include <print>
-#include <random>
-#include <source_location>
-#include <string>
-#include <vector>
-
 #include <nlohmann/json.hpp>
-#include <sqlite3.h>
+
+#include <glow/console.hxx>
+#include <glow/text.hxx>
 
 namespace glow
 {
-namespace console
-{
-struct Console
-{
-    Console();
-    ~Console();
-    FILE* m_file;
-};
-
-auto argv() -> std::vector<std::string>;
-auto hresult_string(HRESULT errorCode) -> std::string;
-auto hresult_check(HRESULT errorCode) -> HRESULT;
-auto hresult_debug(HRESULT errorCode,
-                   std::source_location location = std::source_location::current()) -> void;
-auto hresult_print(HRESULT errorCode,
-                   std::source_location location = std::source_location::current()) -> void;
-auto source_debug(std::string message,
-                  std::source_location location = std::source_location::current()) -> void;
-auto source_print(std::string message,
-                  std::source_location location = std::source_location::current()) -> void;
-auto message_box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto message_box_shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto message_box_stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
-auto create_process(std::string process) -> int;
-} // namespace console
-
-namespace filesystem
-{
-struct Database
-{
-    Database();
-    ~Database();
-    auto open() -> void;
-    auto write() -> void;
-
-  private:
-    struct sqlite3_deleter
-    {
-        auto operator()(sqlite3* db) noexcept -> void { sqlite3_close(db); }
-    };
-    using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
-    sqlite3_ptr m_db;
-    std::filesystem::path m_path;
-};
-
-auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
-auto app_name() -> std::string;
-auto path_portable() -> std::filesystem::path;
-auto path_portable_wide() -> std::filesystem::path;
-} // namespace filesystem
-
-namespace text
-{
-auto narrow(std::wstring utf16) -> std::string;
-auto widen(std::string utf8) -> std::wstring;
-auto randomize(std::string string) -> std::string;
-auto random_int64() -> int64_t;
-auto random_int32() -> int32_t;
-auto create_guid() -> GUID;
-auto guid_string(GUID guid) -> std::string;
-} // namespace text
-
 namespace gui
 {
 struct GdiPlus

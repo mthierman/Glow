@@ -24,7 +24,10 @@ target_sources(
            ${CMAKE_CURRENT_BINARY_DIR}/config
            FILES
            ${CMAKE_CURRENT_BINARY_DIR}/config/glow/config.hxx
-           glow/glow.hxx
+           glow/console.hxx
+           glow/filesystem.hxx
+           glow/gui.hxx
+           glow/text.hxx
 )
 
 target_include_directories(

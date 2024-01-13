@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/glow.hxx>
+#include <glow/text.hxx>
 
 namespace glow::text
 {
