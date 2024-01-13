@@ -691,7 +691,7 @@ template <typename T> struct WebView : BaseWindow<T>
         return S_OK;
     }
 
-    auto initialized() -> void {}
+    virtual auto initialized() -> void {}
 
     auto context_menu_requested() -> HRESULT
     {
