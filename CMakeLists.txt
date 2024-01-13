@@ -43,18 +43,18 @@ option(
     OFF
 )
 
-include(CMake/Common.cmake)
+include(cmake/Common.cmake)
 
 include(FetchContent)
-# include(CMake/CURL.cmake)
-include(CMake/SQLite.cmake)
-include(CMake/JSON.cmake)
-include(CMake/TOML.cmake)
-include(CMake/WIL.cmake)
-include(CMake/CPPWinRT.cmake)
-include(CMake/WebView2.cmake)
+# include(cmake/CURL.cmake)
+include(cmake/SQLite.cmake)
+include(cmake/JSON.cmake)
+include(cmake/TOML.cmake)
+include(cmake/WIL.cmake)
+include(cmake/CPPWinRT.cmake)
+include(cmake/WebView2.cmake)
 
-include(CMake/BuildCPPWinRT.cmake)
+include(cmake/BuildCPPWinRT.cmake)
 
 add_library(Glow)
 
