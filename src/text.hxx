@@ -13,6 +13,7 @@
 
 #include <random>
 #include <string>
+#include <type_traits>
 
 #include <wil/win32_helpers.h>
 
@@ -23,9 +24,27 @@ namespace text
 auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
 auto randomize(std::string string) -> std::string;
-auto random_int64() -> int64_t;
-auto random_int32() -> int32_t;
-auto create_guid() -> GUID;
+auto guid() -> GUID;
 auto guid_string(GUID guid) -> std::string;
+
+template <typename T, typename R = std::mt19937_64> auto random()
+{
+    constexpr T max{std::numeric_limits<T>::max()};
+    R rng{std::random_device{}()};
+    
+    if constexpr (std::is_integral_v<T>)
+    {
+        std::uniform_int_distribution<T> dist(0, max);
+        return dist(rng);
+    }
+
+    else if constexpr (std::is_floating_point_v<T>)
+    {
+        std::uniform_real_distribution<T> dist(0, max);
+        return dist(rng);
+    }
+
+    else throw std::runtime_error("Random number generation failure");
+}
 } // namespace text
 } // namespace glow

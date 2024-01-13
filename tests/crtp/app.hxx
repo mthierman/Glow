@@ -14,6 +14,6 @@ struct App : public glow::window::MessageWindow<App>
     auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
     auto on_notify(WPARAM wParam, LPARAM lParam) -> int;
 
-    std::set<int64_t> m_set;
+    std::set<uint64_t> m_set;
     std::vector<std::unique_ptr<MainWindow>> m_vec;
 };

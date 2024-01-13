@@ -39,7 +39,7 @@ namespace window
 {
 template <typename T> struct MessageWindow
 {
-    MessageWindow(std::string name = "MessageWindow", int64_t id = glow::text::random_int64())
+    MessageWindow(std::string name = "MessageWindow", uint64_t id = glow::text::random<uint64_t>())
         : m_id{id}
     {
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
@@ -115,7 +115,7 @@ template <typename T> struct MessageWindow
         return DefWindowProcA(hWnd, uMsg, wParam, lParam);
     }
 
-    int64_t m_id;
+    uint64_t m_id;
     wil::unique_hwnd m_hwnd;
 };
 
@@ -130,11 +130,11 @@ template <typename T> struct BaseWindow
         bool maximized{};
         bool fullscreen{};
         bool topmost{};
-        int64_t dpi{};
+        uint64_t dpi{};
         float scale{};
     };
 
-    BaseWindow(std::string name = "BaseWindow", int64_t id = glow::text::random_int64(),
+    BaseWindow(std::string name = "BaseWindow", uint64_t id = glow::text::random<uint64_t>(),
                DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
                int nHeight = CW_USEDEFAULT, HWND hwndParent = nullptr, HMENU hMenu = nullptr)
@@ -195,9 +195,9 @@ template <typename T> struct BaseWindow
         SendMessageA(hWnd, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
     }
 
-    auto id() const -> int64_t { return m_id; }
+    auto id() const -> uint64_t { return m_id; }
 
-    auto dpi() -> int64_t { return GetDpiForWindow(hwnd()); };
+    auto dpi() -> uint64_t { return GetDpiForWindow(hwnd()); };
 
     auto scale() -> float
     {
@@ -535,7 +535,7 @@ template <typename T> struct BaseWindow
     WindowPosition m_windowPosition;
     glow::gui::SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
-    int64_t m_id{};
+    uint64_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
@@ -556,7 +556,7 @@ template <typename T> struct WebView : BaseWindow<T>
     };
 
     WebView(HWND parent, std::string url = "https://www.google.com/",
-            int64_t id = glow::text::random_int64())
+            uint64_t id = glow::text::random<uint64_t>())
         : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
     {
         m_parent = parent;
