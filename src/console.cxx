@@ -89,6 +89,7 @@ auto hresult_print(HRESULT errorCode, std::source_location location) -> void
     auto errorMessage{hresult_string(errorCode)};
     source_print(errorMessage, location);
 }
+
 auto source_debug(std::string message, std::source_location location) -> void
 {
     OutputDebugStringA("Message: ");
