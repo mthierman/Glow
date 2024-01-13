@@ -21,18 +21,17 @@
 
 #include <wil/com.h>
 
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.UI.ViewManagement.h>
+// #include <winrt/Windows.Foundation.h>
+// #include <winrt/Windows.UI.ViewManagement.h>
 
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
 
 #include <nlohmann/json.hpp>
 
-#include <glow/console.hxx>
-#include <glow/filesystem.hxx>
-#include <glow/gui.hxx>
-#include <glow/text.hxx>
+#include "console.hxx"
+#include "gui.hxx"
+#include "text.hxx"
 
 namespace glow
 {

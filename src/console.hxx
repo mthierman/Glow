@@ -20,8 +20,8 @@
 
 #include <wil/resource.h>
 
-#include <glow/text.hxx>
-#include <glow/filesystem.hxx>
+#include "text.hxx"
+#include "filesystem.hxx"
 
 namespace glow
 {

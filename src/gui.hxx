@@ -26,8 +26,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include <glow/console.hxx>
-#include <glow/text.hxx>
+#include "console.hxx"
+#include "text.hxx"
 
 namespace glow
 {

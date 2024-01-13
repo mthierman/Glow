@@ -6,7 +6,7 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/filesystem.hxx>
+#include "filesystem.hxx"
 
 namespace glow::filesystem
 {
