@@ -58,6 +58,13 @@ auto hresult_string(HRESULT errorCode) -> std::string
     return std::string(comError.ErrorMessage());
 }
 
+auto last_error() -> HRESULT { return HRESULT_FROM_WIN32(GetLastError()); }
+
+auto last_error_string() -> std::string
+{
+    return hresult_string(HRESULT_FROM_WIN32(GetLastError()));
+}
+
 auto hresult_check(HRESULT errorCode) -> HRESULT
 {
     auto errorMessage{glow::console::hresult_string(errorCode)};

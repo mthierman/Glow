@@ -36,6 +36,8 @@ struct Console
 
 auto argv() -> std::vector<std::string>;
 auto hresult_string(HRESULT errorCode) -> std::string;
+auto last_error() -> HRESULT;
+auto last_error_string() -> std::string;
 auto hresult_check(HRESULT errorCode) -> HRESULT;
 auto hresult_debug(HRESULT errorCode,
                    std::source_location location = std::source_location::current()) -> void;

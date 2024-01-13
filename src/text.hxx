@@ -17,6 +17,8 @@
 
 #include <wil/win32_helpers.h>
 
+#include "console.hxx"
+
 namespace glow
 {
 namespace text

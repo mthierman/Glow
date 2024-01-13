@@ -114,7 +114,7 @@ auto message_loop() -> int
 
     while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) { glow::console::hresult_check(HRESULT_FROM_WIN32(GetLastError())); }
+        if (r == -1) { glow::console::hresult_check(glow::console::last_error()); }
 
         else
         {
