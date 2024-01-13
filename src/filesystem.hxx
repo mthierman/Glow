@@ -20,6 +20,8 @@
 
 #include <sqlite3.h>
 
+#include "console.hxx"
+
 namespace glow
 {
 namespace filesystem
