@@ -116,5 +116,29 @@ auto icon_warning() -> HICON;
 auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
+
+template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
+{
+    T* self{nullptr};
+
+    if (uMsg == WM_NCCREATE)
+    {
+        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+        self = static_cast<T*>(lpCreateStruct->lpCreateParams);
+        self->m_hwnd.reset(hWnd);
+        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
+    }
+
+    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
+
+    return self;
+}
+
+template <typename T> T* instance_from_window_long_ptr(HWND hWnd)
+{
+    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
+
+    return self;
+}
 } // namespace gui
 } // namespace glow

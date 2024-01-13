@@ -5,9 +5,9 @@
 #include "definitions.hxx"
 #include "window.hxx"
 
-struct App : public glow::gui::MessageWindow<App>
+struct App : public glow::window::MessageWindow<App>
 {
-    using glow::gui::MessageWindow<App>::MessageWindow;
+    using glow::window::MessageWindow<App>::MessageWindow;
 
     static auto run() -> int;
 

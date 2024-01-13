@@ -13,10 +13,9 @@ struct WindowDimensions
     HWND hwnd;
 };
 
-
-struct MainWindow : public glow::gui::BaseWindow<MainWindow>
+struct MainWindow : public glow::window::BaseWindow<MainWindow>
 {
-    using glow::gui::BaseWindow<MainWindow>::BaseWindow;
+    using glow::window::BaseWindow<MainWindow>::BaseWindow;
 
     MainWindow(HWND app);
 

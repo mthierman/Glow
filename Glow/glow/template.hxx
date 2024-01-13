@@ -36,32 +36,8 @@
 
 namespace glow
 {
-namespace gui
+namespace window
 {
-template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
-{
-    T* self{nullptr};
-
-    if (uMsg == WM_NCCREATE)
-    {
-        auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
-        self = static_cast<T*>(lpCreateStruct->lpCreateParams);
-        self->m_hwnd.reset(hWnd);
-        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
-    }
-
-    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
-
-    return self;
-}
-
-template <typename T> T* instance(HWND hWnd)
-{
-    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
-
-    return self;
-}
-
 template <typename T> struct MessageWindow
 {
     MessageWindow(std::string name = "MessageWindow", int64_t id = glow::text::random_int64())
@@ -371,11 +347,11 @@ template <typename T> struct BaseWindow
         return rect;
     }
 
-    auto client_position() -> WindowPosition
+    auto client_position() -> glow::gui::WindowPosition
     {
         auto rect{client_rect()};
 
-        WindowPosition p;
+        glow::gui::WindowPosition p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -385,11 +361,11 @@ template <typename T> struct BaseWindow
         return p;
     }
 
-    auto window_position() -> WindowPosition
+    auto window_position() -> glow::gui::WindowPosition
     {
         auto rect{window_rect()};
 
-        WindowPosition p;
+        glow::gui::WindowPosition p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -544,8 +520,8 @@ template <typename T> struct BaseWindow
     }
 
   public:
-    WindowPosition m_windowPosition;
-    SystemColors m_colors;
+    glow::gui::WindowPosition m_windowPosition;
+    glow::gui::SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
     int64_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
@@ -886,10 +862,10 @@ template <typename T> struct WebView : BaseWindow<T>
 
     HWND m_parent{nullptr};
     std::string m_url;
-    GdiPlus m_gdiInit;
-    CoInitialize m_coInit;
-    WebView2 m_webView;
+    glow::gui::GdiPlus m_gdiInit;
+    glow::gui::CoInitialize m_coInit;
+    glow::gui::WebView2 m_webView;
     bool m_initialized{false};
 };
-} // namespace gui
+} // namespace window
 } // namespace glow
