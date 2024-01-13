@@ -21,14 +21,14 @@ GdiPlus::~GdiPlus()
     if (m_gdiplusStatus == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(m_gdiplusToken);
 }
 
-constexpr auto operator+(Gdiplus::Status gdiplusStatus) noexcept
+constexpr auto operator!(Gdiplus::Status gdiplusStatus) noexcept
 {
     return static_cast<std::underlying_type_t<Gdiplus::Status>>(gdiplusStatus);
 }
 
 CoInitialize::CoInitialize() : m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)}
 {
-    if (FAILED(m_result)) throw std::runtime_error("CoInitialize failure");
+    glow::console::hresult_check(m_result);
 }
 
 CoInitialize::~CoInitialize()
@@ -129,8 +129,7 @@ auto message_loop() -> int
 auto webview_version() -> std::string
 {
     wil::unique_cotaskmem_string buffer;
-    if (FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)))
-        throw std::runtime_error("GetAvailableCoreWebView2BrowserVersionString failure");
+    glow::console::hresult_check(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer));
 
     return glow::text::narrow(buffer.get());
 }
