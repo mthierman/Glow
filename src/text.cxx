@@ -60,32 +60,26 @@ auto widen(std::string utf8) -> std::wstring
 
 auto randomize(std::string string) -> std::string
 {
-    std::random_device rd;
-    std::mt19937 mt(rd());
-    std::uniform_real_distribution<double> dist(1.0, 10.0);
-    auto randomDouble{dist(mt)};
-    auto randomNumber{std::to_string(randomDouble)};
-    std::erase(randomNumber, '.');
-
-    return (string + randomNumber);
+    return string.append(std::to_string(random<int64_t>()));
 }
 
 auto guid() -> GUID
 {
     GUID guid;
 
-    if (SUCCEEDED(CoCreateGuid(&guid))) return guid;
+    if (FAILED(CoCreateGuid(&guid))) throw std::runtime_error("GUID creation failure");
 
-    else throw std::runtime_error("GUID creation failure");
+    else return guid;
 }
 
 auto guid_string(GUID guid) -> std::string
 {
     std::wstring buffer(wil::guid_string_buffer_length, 0);
+
     auto length{StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length)};
 
-    if (length != 0) return narrow(buffer);
+    if (length == 0) throw std::runtime_error("String from GUID failure");
 
-    else throw std::runtime_error("String from GUID failure");
+    else return narrow(buffer);
 }
 } // namespace glow::text
