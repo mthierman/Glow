@@ -1,9 +1,0 @@
-{
-    "name": "glow",
-    "version": "0.0.1",
-    "private": true,
-    "type": "module",
-    "devDependencies": {
-        "prettier": "^3.1.1"
-    }
-}
