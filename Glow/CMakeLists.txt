@@ -13,7 +13,8 @@ configure_file(
 
 target_sources(
     Glow
-    PRIVATE glow/console.cxx
+    PRIVATE glow/glow.cxx
+            glow/console.cxx
             glow/filesystem.cxx
             glow/gui.cxx
             glow/text.cxx
@@ -28,6 +29,7 @@ target_sources(
            glow/console.hxx
            glow/filesystem.hxx
            glow/gui.hxx
+           glow/template.hxx
            glow/text.hxx
 )
 

@@ -6,10 +6,4 @@
 // ╚──────────────╝
 // clang-format on
 
-#pragma once
-
-#include <glow/console.hxx>
-#include <glow/filesystem.hxx>
-#include <glow/gui.hxx>
-#include <glow/template.hxx>
-#include <glow/text.hxx>
+#include <glow/glow.hxx>
