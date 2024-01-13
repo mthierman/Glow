@@ -12,8 +12,9 @@ namespace glow::text
 {
 auto narrow(std::wstring utf16) -> std::string
 {
-    constexpr int intMax = std::numeric_limits<int>::max();
-    if (utf16.length() > static_cast<size_t>(intMax))
+    constexpr int max{std::numeric_limits<int>::max()};
+
+    if (utf16.length() > static_cast<size_t>(max))
         throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
     auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
@@ -22,23 +23,21 @@ auto narrow(std::wstring utf16) -> std::string
 
     std::string utf8(length, 0);
 
-    if (length > 0)
-    {
-        if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
-                                static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
-                                nullptr) > 0)
-            return utf8;
+    if (length == 0) throw std::runtime_error("UTF16 to UTF8 conversion failure");
 
-        else throw std::runtime_error("UTF16 to UTF8 conversion failure");
-    }
+    else if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
+                                 static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
+                                 nullptr) > 0)
+        return utf8;
 
     else throw std::runtime_error("UTF16 to UTF8 conversion failure");
 }
 
 auto widen(std::string utf8) -> std::wstring
 {
-    constexpr int intMax = std::numeric_limits<int>::max();
-    if (utf8.length() > static_cast<size_t>(intMax))
+    constexpr int max{std::numeric_limits<int>::max()};
+
+    if (utf8.length() > static_cast<size_t>(max))
         throw std::overflow_error("Input string is too long: size_t doesn't fit into int");
 
     auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
@@ -46,14 +45,11 @@ auto widen(std::string utf8) -> std::wstring
 
     std::wstring utf16(length, 0);
 
-    if (length > 0)
-    {
-        if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
-                                static_cast<int>(utf8.length()), utf16.data(), length) > 0)
-            return utf16;
+    if (length == 0) throw std::runtime_error("UTF8 to UTF16 conversion failure");
 
-        else throw std::runtime_error("UTF8 to UTF16 conversion failure");
-    }
+    else if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
+                                 static_cast<int>(utf8.length()), utf16.data(), length) > 0)
+        return utf16;
 
     else throw std::runtime_error("UTF8 to UTF16 conversion failure");
 }

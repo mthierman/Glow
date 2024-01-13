@@ -13,7 +13,5 @@ auto main() -> int
 {
     glow::console::source_print("🌸🌹🍒🍉🥝🍎🖍️🧶");
 
-    std::println("{}", glow::text::randomize("Test"));
-
     return 0;
 }

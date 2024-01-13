@@ -45,8 +45,6 @@ template <typename T, typename R = std::mt19937_64> auto random()
 
         return dist(rng);
     }
-
-    else throw std::runtime_error("Random number generation failure");
 }
 } // namespace text
 } // namespace glow
