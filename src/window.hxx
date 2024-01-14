@@ -330,21 +330,9 @@ template <typename T> struct BaseWindow
         }
     }
 
-    auto client_rect() -> RECT
-    {
-        RECT rect{};
-        GetClientRect(hwnd(), &rect);
+    auto client_rect() -> void { GetClientRect(hwnd(), &m_clientRect); }
 
-        return rect;
-    }
-
-    auto window_rect() -> RECT
-    {
-        RECT rect{};
-        GetWindowRect(hwnd(), &rect);
-
-        return rect;
-    }
+    auto window_rect() -> void { GetWindowRect(hwnd(), &m_windowRect); }
 
     auto client_position() -> glow::gui::Position
     {
@@ -519,6 +507,10 @@ template <typename T> struct BaseWindow
     }
 
   public:
+    RECT m_clientRect{};
+    RECT m_windowRect{};
+    uint64_t m_dpi{};
+    float m_scale{};
     glow::gui::Position m_position;
     wil::unique_hwnd m_hwnd;
     uint64_t m_id{};
