@@ -850,8 +850,8 @@ template <typename T> struct WebView : BaseWindow<T>
 
         if (m_webView.core20)
         {
-            if (wideUrl.empty()) wideUrl = L"about:blank";
-            return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
+            if (wideUrl.empty()) return S_OK;
+            else return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
         }
 
         else return S_OK;
