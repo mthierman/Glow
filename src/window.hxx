@@ -623,8 +623,7 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         glow::console::hresult_check(configure_settings());
 
-                        glow::console::hresult_check(
-                            m_webView.core20->Navigate(text::widen(m_url).c_str()));
+                        glow::console::hresult_check(navigate(m_url));
 
                         glow::console::hresult_check(context_menu_requested());
                         glow::console::hresult_check(source_changed());
@@ -848,8 +847,12 @@ template <typename T> struct WebView : BaseWindow<T>
     auto navigate(std::string url) -> HRESULT
     {
         auto wideUrl{glow::text::widen(url)};
+
         if (m_webView.core20)
+        {
+            if (wideUrl.empty()) wideUrl = L"about:blank";
             return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
+        }
 
         else return S_OK;
     }
