@@ -162,6 +162,9 @@ template <typename T> struct BaseWindow
                             nWidth, nHeight, hwndParent, hMenu, GetModuleHandleA(nullptr),
                             this) == nullptr)
             throw std::runtime_error("Window creation failure");
+
+        m_scale = scale();
+        m_dpi = dpi();
     }
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
