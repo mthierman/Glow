@@ -113,6 +113,8 @@ void from_json(const nlohmann::json& j, Position& position)
     j.at("scale").get_to(position.scale);
 }
 
+Notification::Notification() : nmhdr{} {}
+
 auto message_loop() -> int
 {
     MSG msg{};

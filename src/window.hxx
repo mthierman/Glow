@@ -178,11 +178,12 @@ template <typename T> struct BaseWindow
 
     auto notify(HWND hWnd, UINT code) -> void
     {
-        NMHDR nmhdr;
-        nmhdr.code = code;
-        nmhdr.hwndFrom = hwnd();
-        nmhdr.idFrom = id();
-        SendMessageA(hWnd, WM_NOTIFY, nmhdr.idFrom, std::bit_cast<LPARAM>(&nmhdr));
+        glow::gui::Notification notification;
+        notification.nmhdr.code = code;
+        notification.nmhdr.hwndFrom = hwnd();
+        notification.nmhdr.idFrom = id();
+        SendMessageA(hWnd, WM_NOTIFY, notification.nmhdr.idFrom,
+                     std::bit_cast<LPARAM>(&notification));
     }
 
     auto id() const -> uint64_t { return m_id; }

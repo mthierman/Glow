@@ -86,6 +86,16 @@ struct Position
 void to_json(nlohmann::json& j, const Position& Position);
 void from_json(const nlohmann::json& j, Position& Position);
 
+struct Notification
+{
+    Notification();
+
+    NMHDR nmhdr;
+    std::string message;
+};
+// void to_json(nlohmann::json& j, const Notification& notification);
+// void from_json(const nlohmann::json& j, Notification& notification);
+
 auto message_loop() -> int;
 auto webview_version() -> std::string;
 auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
