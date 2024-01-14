@@ -520,7 +520,6 @@ template <typename T> struct BaseWindow
 
   public:
     glow::gui::Position m_position;
-    glow::gui::SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
     uint64_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
