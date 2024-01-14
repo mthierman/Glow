@@ -12,6 +12,8 @@ namespace glow::text
 {
 auto narrow(std::wstring utf16) -> std::string
 {
+    if (utf16.empty()) return {};
+
     constexpr int max{std::numeric_limits<int>::max()};
 
     if (utf16.length() > static_cast<size_t>(max))
@@ -35,6 +37,8 @@ auto narrow(std::wstring utf16) -> std::string
 
 auto widen(std::string utf8) -> std::wstring
 {
+    if (utf8.empty()) return {};
+
     constexpr int max{std::numeric_limits<int>::max()};
 
     if (utf8.length() > static_cast<size_t>(max))
