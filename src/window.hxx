@@ -849,10 +849,9 @@ template <typename T> struct WebView : BaseWindow<T>
 
     auto navigate(std::string url) -> HRESULT
     {
-        auto wideUrl{glow::text::widen(url)};
-
         if (m_webView.core20)
         {
+            auto wideUrl{glow::text::widen(url)};
             if (wideUrl.empty()) return S_OK;
             else return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
         }
@@ -860,12 +859,16 @@ template <typename T> struct WebView : BaseWindow<T>
         else return S_OK;
     }
 
-    auto post_json(const nlohmann::json json) -> HRESULT
+    auto post_json(const nlohmann::json message) -> HRESULT
     {
-        auto wideJson{glow::text::widen(json)};
         if (m_webView.core20)
-            return glow::console::hresult_check(
-                m_webView.core20->PostWebMessageAsJson(wideJson.c_str()));
+        {
+            auto wideJson{glow::text::widen(message.dump())};
+            if (wideJson.empty()) return S_OK;
+            else
+                return glow::console::hresult_check(
+                    m_webView.core20->PostWebMessageAsJson(wideJson.c_str()));
+        }
 
         else return S_OK;
     }
