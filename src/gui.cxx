@@ -10,6 +10,8 @@
 
 namespace glow::gui
 {
+using namespace winrt::Windows::UI::ViewManagement;
+
 GdiPlus::GdiPlus()
     : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
 {
@@ -39,45 +41,16 @@ CoInitialize::~CoInitialize()
 CoInitialize::operator HRESULT() const { return m_result; }
 
 SystemColors::SystemColors()
-{
-    accent = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
-    accentDark1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
-    accentDark2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
-    accentDark3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
-    accentLight1 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
-    accentLight2 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
-    accentLight3 = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
-    background = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Background);
-    foreground = color_to_string(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
-};
-
-// void to_json(nlohmann::json& j, const WindowPosition& windowPosition)
-// {
-//     j = nlohmann::json{
-//         {"x", windowPosition.x},
-//         {"y", windowPosition.y},
-//         {"width", windowPosition.width},
-//         {"height", windowPosition.height},
-//         {"maximized", windowPosition.maximized},
-//         {"fullscreen", windowPosition.fullscreen},
-//         {"topmost", windowPosition.topmost},
-//         {"dpi", windowPosition.dpi},
-//         {"scale", windowPosition.scale},
-//     };
-// }
-
-// void from_json(const nlohmann::json& j, WindowPosition& windowPosition)
-// {
-//     j.at("x").get_to(windowPosition.x);
-//     j.at("y").get_to(windowPosition.y);
-//     j.at("width").get_to(windowPosition.width);
-//     j.at("height").get_to(windowPosition.height);
-//     j.at("maximized").get_to(windowPosition.maximized);
-//     j.at("fullscreen").get_to(windowPosition.fullscreen);
-//     j.at("topmost").get_to(windowPosition.topmost);
-//     j.at("dpi").get_to(windowPosition.dpi);
-//     j.at("scale").get_to(windowPosition.scale);
-// }
+    : accent{color_to_string(UIColorType::Accent)},
+      accentDark1{color_to_string(UIColorType::AccentDark1)},
+      accentDark2{color_to_string(UIColorType::AccentDark2)},
+      accentDark3{color_to_string(UIColorType::AccentDark3)},
+      accentLight1{color_to_string(UIColorType::AccentLight1)},
+      accentLight2{color_to_string(UIColorType::AccentLight2)},
+      accentLight3{color_to_string(UIColorType::AccentLight3)},
+      background{color_to_string(UIColorType::Background)},
+      foreground{color_to_string(UIColorType::Foreground)}
+{}
 
 void to_json(nlohmann::json& j, const SystemColors& systemColors)
 {
@@ -105,6 +78,39 @@ void from_json(const nlohmann::json& j, SystemColors& systemColors)
     j.at("accentLight3").get_to(systemColors.accentLight3);
     j.at("background").get_to(systemColors.background);
     j.at("foreground").get_to(systemColors.foreground);
+}
+
+Position::Position()
+    : x{0}, y{0}, width{0}, height{0}, maximized{false}, fullscreen{false}, topmost{false}, dpi{0},
+      scale{0.0f}
+{}
+
+void to_json(nlohmann::json& j, const Position& position)
+{
+    j = nlohmann::json{
+        {"x", position.x},
+        {"y", position.y},
+        {"width", position.width},
+        {"height", position.height},
+        {"maximized", position.maximized},
+        {"fullscreen", position.fullscreen},
+        {"topmost", position.topmost},
+        {"dpi", position.dpi},
+        {"scale", position.scale},
+    };
+}
+
+void from_json(const nlohmann::json& j, Position& position)
+{
+    j.at("x").get_to(position.x);
+    j.at("y").get_to(position.y);
+    j.at("width").get_to(position.width);
+    j.at("height").get_to(position.height);
+    j.at("maximized").get_to(position.maximized);
+    j.at("fullscreen").get_to(position.fullscreen);
+    j.at("topmost").get_to(position.topmost);
+    j.at("dpi").get_to(position.dpi);
+    j.at("scale").get_to(position.scale);
 }
 
 auto message_loop() -> int
@@ -141,29 +147,29 @@ auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool
     else return false;
 }
 
-// auto rect_to_position(const RECT& rect) -> WindowPosition
-// {
-//     WindowPosition windowPosition;
+auto rect_to_position(const RECT& rect) -> Position
+{
+    Position position;
 
-//     windowPosition.x = rect.left;
-//     windowPosition.y = rect.top;
-//     windowPosition.width = rect.right - rect.left;
-//     windowPosition.height = rect.bottom - rect.top;
+    position.x = rect.left;
+    position.y = rect.top;
+    position.width = rect.right - rect.left;
+    position.height = rect.bottom - rect.top;
 
-//     return windowPosition;
-// }
+    return position;
+}
 
-// auto position_to_rect(const WindowPosition& windowPosition) -> RECT
-// {
-//     RECT rect{};
+auto position_to_rect(const Position& position) -> RECT
+{
+    RECT rect{};
 
-//     rect.left = windowPosition.x;
-//     rect.top = windowPosition.y;
-//     rect.right = windowPosition.width;
-//     rect.bottom = windowPosition.height;
+    rect.left = position.x;
+    rect.top = position.y;
+    rect.right = position.width;
+    rect.bottom = position.height;
 
-//     return rect;
-// }
+    return rect;
+}
 
 auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
 

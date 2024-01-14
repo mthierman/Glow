@@ -121,19 +121,6 @@ template <typename T> struct MessageWindow
 
 template <typename T> struct BaseWindow
 {
-    struct WindowPosition
-    {
-        int x{};
-        int y{};
-        int width{};
-        int height{};
-        bool maximized{};
-        bool fullscreen{};
-        bool topmost{};
-        uint64_t dpi{};
-        float scale{};
-    };
-
     BaseWindow(std::string name = "BaseWindow", uint64_t id = glow::text::random<uint64_t>(),
                DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD dwExStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int nWidth = CW_USEDEFAULT,
@@ -359,11 +346,11 @@ template <typename T> struct BaseWindow
         return rect;
     }
 
-    auto client_position() -> WindowPosition
+    auto client_position() -> glow::gui::Position
     {
         auto rect{client_rect()};
 
-        WindowPosition p;
+        glow::gui::Position p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -373,11 +360,11 @@ template <typename T> struct BaseWindow
         return p;
     }
 
-    auto window_position() -> WindowPosition
+    auto window_position() -> glow::gui::Position
     {
         auto rect{window_rect()};
 
-        WindowPosition p;
+        glow::gui::Position p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -532,7 +519,7 @@ template <typename T> struct BaseWindow
     }
 
   public:
-    WindowPosition m_windowPosition;
+    glow::gui::Position m_position;
     glow::gui::SystemColors m_colors;
     wil::unique_hwnd m_hwnd;
     uint64_t m_id{};
