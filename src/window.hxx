@@ -169,6 +169,8 @@ template <typename T> struct BaseWindow
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
+    auto id() const -> uint64_t { return m_id; }
+
     auto close() -> int
     {
         m_hwnd.reset();
@@ -176,17 +178,17 @@ template <typename T> struct BaseWindow
         return 0;
     }
 
-    auto notify(HWND hWnd, UINT code) -> void
+    auto notify(HWND hWnd, UINT code = WM_APP, std::string message = "") -> void
     {
         glow::gui::Notification notification;
         notification.nmhdr.code = code;
+        notification.message = message;
         notification.nmhdr.hwndFrom = hwnd();
         notification.nmhdr.idFrom = id();
+
         SendMessageA(hWnd, WM_NOTIFY, notification.nmhdr.idFrom,
                      std::bit_cast<LPARAM>(&notification));
     }
-
-    auto id() const -> uint64_t { return m_id; }
 
     auto dpi() -> uint64_t { return GetDpiForWindow(hwnd()); };
 
