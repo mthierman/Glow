@@ -38,15 +38,14 @@ Console::~Console()
 auto argv() -> std::vector<std::string>
 {
     int argc{};
-    wil::unique_hlocal_ptr<PWSTR[]> args;
-    args.reset(CommandLineToArgvW(GetCommandLineW(), &argc));
+    wil::unique_hlocal_ptr<PWSTR[]> buffer;
+    buffer.reset(CommandLineToArgvW(GetCommandLineW(), &argc));
 
     std::vector<std::string> argv;
 
     for (int i = 0; i < argc; i++)
     {
-        auto arg{glow::text::narrow(args[i])};
-        argv.push_back(arg);
+        argv.push_back(glow::text::narrow(buffer[i]));
     }
 
     return argv;
@@ -112,17 +111,13 @@ auto source_print(std::string message, std::source_location location) -> void
 
 auto message_box(std::string message, UINT type) -> int
 {
-    auto program{glow::filesystem::app_name()};
-
-    return MessageBoxA(nullptr, message.c_str(), program.c_str(), type);
+    return MessageBoxA(nullptr, message.c_str(), glow::filesystem::app_name().c_str(), type);
 }
 
 auto message_box_shell(std::string message, UINT type) -> int
 {
-    auto program{glow::filesystem::app_name()};
-
-    return ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(), program.c_str(),
-                            type);
+    return ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(),
+                            glow::filesystem::app_name().c_str(), type);
 }
 
 auto message_box_stock(std::string message, SHSTOCKICONID icon) -> void
