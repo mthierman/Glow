@@ -23,6 +23,7 @@ namespace glow
 {
 namespace text
 {
+auto safe_size(size_t size) -> int;
 auto narrow(std::wstring utf16) -> std::string;
 auto widen(std::string utf8) -> std::wstring;
 auto randomize(std::string string) -> std::string;

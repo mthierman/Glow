@@ -10,26 +10,29 @@
 
 namespace glow::text
 {
+auto safe_size(size_t value) -> int
+{
+    constexpr int max{std::numeric_limits<int>::max()};
+    if (value > static_cast<size_t>(max)) throw std::overflow_error("Input string too long");
+
+    return static_cast<int>(value);
+}
+
 auto narrow(std::wstring utf16) -> std::string
 {
     if (utf16.empty()) return {};
 
-    constexpr int max{std::numeric_limits<int>::max()};
-
-    if (utf16.length() > static_cast<size_t>(max))
-        throw std::overflow_error("Input string too long");
+    auto safeSize{safe_size(utf16.length())};
 
     auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                    utf16.data(), static_cast<int>(utf16.length()), nullptr, 0,
-                                    nullptr, nullptr)};
+                                    utf16.data(), safeSize, nullptr, 0, nullptr, nullptr)};
 
     std::string utf8(length, 0);
 
     if (length == 0) throw std::runtime_error(glow::console::last_error_string());
 
     else if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
-                                 static_cast<int>(utf16.length()), utf8.data(), length, nullptr,
-                                 nullptr) > 0)
+                                 safeSize, utf8.data(), length, nullptr, nullptr) > 0)
         return utf8;
 
     else throw std::runtime_error(glow::console::last_error_string());
@@ -39,20 +42,17 @@ auto widen(std::string utf8) -> std::wstring
 {
     if (utf8.empty()) return {};
 
-    constexpr int max{std::numeric_limits<int>::max()};
+    auto safeSize{safe_size(utf8.length())};
 
-    if (utf8.length() > static_cast<size_t>(max))
-        throw std::overflow_error("Input string too long");
-
-    auto length{MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
-                                    static_cast<int>(utf8.length()), nullptr, 0)};
+    auto length{
+        MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, nullptr, 0)};
 
     std::wstring utf16(length, 0);
 
     if (length == 0) throw std::runtime_error(glow::console::last_error_string());
 
-    else if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(),
-                                 static_cast<int>(utf8.length()), utf16.data(), length) > 0)
+    else if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, utf16.data(),
+                                 length) > 0)
         return utf16;
 
     else throw std::runtime_error(glow::console::last_error_string());
