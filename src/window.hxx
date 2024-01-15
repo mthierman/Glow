@@ -122,7 +122,7 @@ template <typename T> struct BaseWindow
     BaseWindow(std::string name = "BaseWindow", size_t id = glow::text::random<size_t>(),
                DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD exStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
-               int height = CW_USEDEFAULT, HWND parent = nullptr, size_t menu = 0)
+               int height = CW_USEDEFAULT, HWND parent = nullptr, HMENU menu = nullptr)
         : m_id{id}
     {
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
@@ -157,7 +157,7 @@ template <typename T> struct BaseWindow
         }
 
         if (CreateWindowExA(exStyle, wcex.lpszClassName, wcex.lpszClassName, style, x, y, width,
-                            height, parent, std::bit_cast<HMENU>(menu), GetModuleHandleA(nullptr), this) == nullptr)
+                            height, parent, menu, GetModuleHandleA(nullptr), this) == nullptr)
             throw std::runtime_error("Window creation failure");
 
         m_scale = scale();
@@ -526,7 +526,7 @@ template <typename T> struct WebView : BaseWindow<T>
     T* self{static_cast<T*>(this)};
 
     WebView(HWND parent, size_t id = glow::text::random<size_t>())
-        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, id)
+        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
     {
         m_parent = parent;
         glow::console::hresult_check(create());
