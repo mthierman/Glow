@@ -10,10 +10,8 @@
 
 namespace glow::console
 {
-Console::Console()
+Console::Console() : m_file{nullptr}
 {
-    m_file = nullptr;
-
     AllocConsole();
 
     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,

@@ -182,7 +182,7 @@ template <typename T> struct BaseWindow
         m_notification.nmhdr.idFrom = id();
         m_notification.nmhdr.hwndFrom = hwnd();
 
-        PostMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
+        SendMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
                      reinterpret_cast<intptr_t>(&m_notification));
     }
 
