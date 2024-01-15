@@ -29,10 +29,8 @@ auto narrow(std::wstring utf16) -> std::string
 
     std::string utf8(length, 0);
 
-    if (length == 0) throw std::runtime_error(glow::console::last_error_string());
-
-    else if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
-                                 safeSize, utf8.data(), length, nullptr, nullptr) > 0)
+    if (WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, utf16.data(),
+                            safeSize, utf8.data(), length, nullptr, nullptr) > 0)
         return utf8;
 
     else throw std::runtime_error(glow::console::last_error_string());
@@ -49,10 +47,8 @@ auto widen(std::string utf8) -> std::wstring
 
     std::wstring utf16(length, 0);
 
-    if (length == 0) throw std::runtime_error(glow::console::last_error_string());
-
-    else if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, utf16.data(),
-                                 length) > 0)
+    if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, utf16.data(),
+                            length) > 0)
         return utf16;
 
     else throw std::runtime_error(glow::console::last_error_string());
