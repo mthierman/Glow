@@ -121,20 +121,20 @@ template <typename T> T* instance_from_wnd_proc(HWND hwnd, UINT uMsg, LPARAM lPa
 
     if (uMsg == WM_NCCREATE)
     {
-        auto lpCreateStruct{static_cast<LPCREATESTRUCT>(lParam)};
+        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
         self->m_hwnd.reset(hwnd);
-        SetWindowLongPtrA(hwnd, 0, static_cast<LONG_PTR>(self));
+        SetWindowLongPtrA(hwnd, 0, reinterpret_cast<LONG_PTR>(self));
     }
 
-    else self = static_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+    else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
     return self;
 }
 
 template <typename T> T* instance_from_window_long_ptr(HWND hwnd)
 {
-    T* self{static_cast<T*>(GetWindowLongPtrA(hwnd, 0))};
+    T* self{reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0))};
 
     return self;
 }

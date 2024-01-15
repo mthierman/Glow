@@ -24,12 +24,12 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto nmhdr{*static_cast<LPNMHDR>(lParam)};
+    auto nmhdr{reinterpret_cast<NMHDR*>(lParam)};
 
-    switch (nmhdr.code)
+    switch (nmhdr->code)
     {
-    case msg::window_create: m_set.insert(nmhdr.idFrom); break;
-    case msg::window_close: m_set.erase(nmhdr.idFrom); break;
+    case msg::window_create: m_set.insert(nmhdr->idFrom); break;
+    case msg::window_close: m_set.erase(nmhdr->idFrom); break;
     }
 
     if (m_set.empty()) { return close(); }
