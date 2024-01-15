@@ -60,7 +60,7 @@ auto widen(std::string utf8) -> std::wstring
 
 auto randomize(std::string string) -> std::string
 {
-    return string.append(std::to_string(random<int64_t>()));
+    return string.append(std::to_string(random<int>()));
 }
 
 auto guid() -> GUID
