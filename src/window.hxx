@@ -112,6 +112,7 @@ template <typename T> struct MessageWindow
         return DefWindowProcA(hwnd, message, wParam, lParam);
     }
 
+  public:
     uint64_t m_id;
     wil::unique_hwnd m_hwnd;
 };
@@ -524,23 +525,10 @@ template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
 
-    struct WebView2
-    {
-        wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
-        wil::com_ptr<ICoreWebView2Controller> controller;
-        wil::com_ptr<ICoreWebView2Controller4> controller4;
-        wil::com_ptr<ICoreWebView2> core;
-        wil::com_ptr<ICoreWebView2_20> core20;
-        wil::com_ptr<ICoreWebView2Settings> settings;
-        wil::com_ptr<ICoreWebView2Settings8> settings8;
-    };
-
-    WebView(HWND parent, std::string url = "https://www.google.com/",
-            uint64_t id = glow::text::random<uint64_t>())
+    WebView(HWND parent, uint64_t id = glow::text::random<uint64_t>())
         : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
     {
         m_parent = parent;
-        m_url = url;
         glow::console::hresult_check(create());
     }
 
@@ -618,9 +606,7 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         if (!m_webView.settings8) return E_POINTER;
 
-                        glow::console::hresult_check(configure_settings());
-
-                        glow::console::hresult_check(navigate(m_url));
+                        glow::console::hresult_check(settings());
 
                         glow::console::hresult_check(context_menu_requested());
                         glow::console::hresult_check(source_changed());
@@ -632,11 +618,7 @@ template <typename T> struct WebView : BaseWindow<T>
                         glow::console::hresult_check(document_title_changed());
                         glow::console::hresult_check(zoom_factor_changed());
 
-                        if (!m_initialized)
-                        {
-                            m_initialized = true;
-                            initialized();
-                        }
+                        initialized();
                     }
 
                     return errorCode;
@@ -644,7 +626,7 @@ template <typename T> struct WebView : BaseWindow<T>
                 .Get());
     }
 
-    auto configure_settings() -> HRESULT
+    virtual auto settings() -> HRESULT
     {
         glow::console::hresult_check(
             m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true));
@@ -868,9 +850,18 @@ template <typename T> struct WebView : BaseWindow<T>
     }
 
     HWND m_parent{nullptr};
-    std::string m_url;
+
+    struct WebView2
+    {
+        wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+        wil::com_ptr<ICoreWebView2Controller> controller;
+        wil::com_ptr<ICoreWebView2Controller4> controller4;
+        wil::com_ptr<ICoreWebView2> core;
+        wil::com_ptr<ICoreWebView2_20> core20;
+        wil::com_ptr<ICoreWebView2Settings> settings;
+        wil::com_ptr<ICoreWebView2Settings8> settings8;
+    };
     WebView2 m_webView;
-    bool m_initialized{false};
 };
 } // namespace window
 } // namespace glow
