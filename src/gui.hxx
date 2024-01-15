@@ -80,7 +80,7 @@ struct Position
     bool maximized;
     bool fullscreen;
     bool topmost;
-    int64_t dpi;
+    int dpi;
     float scale;
 };
 void to_json(nlohmann::json& j, const Position& Position);
@@ -115,7 +115,7 @@ auto icon_information() -> HICON;
 auto icon_winlogo() -> HICON;
 auto icon_shield() -> HICON;
 
-template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
+template <typename T> T* instance_from_wnd_proc(HWND hwnd, UINT uMsg, LPARAM lParam)
 {
     T* self{nullptr};
 
@@ -123,18 +123,18 @@ template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lPa
     {
         auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
-        self->m_hwnd.reset(hWnd);
-        SetWindowLongPtrA(hWnd, 0, std::bit_cast<LONG_PTR>(self));
+        self->m_hwnd.reset(hwnd);
+        SetWindowLongPtrA(hwnd, 0, std::bit_cast<LONG_PTR>(self));
     }
 
-    else self = std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0));
+    else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
     return self;
 }
 
-template <typename T> T* instance_from_window_long_ptr(HWND hWnd)
+template <typename T> T* instance_from_window_long_ptr(HWND hwnd)
 {
-    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hWnd, 0))};
+    T* self{std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0))};
 
     return self;
 }
