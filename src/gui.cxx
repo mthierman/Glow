@@ -115,6 +115,16 @@ void from_json(const nlohmann::json& j, Position& position)
 
 Notification::Notification() : nmhdr{} {}
 
+void to_json(nlohmann::json& j, const Notification& notification)
+{
+    j = nlohmann::json{{"message", notification.message}};
+}
+
+void from_json(const nlohmann::json& j, Notification& notification)
+{
+    j.at("message").get_to(notification.message);
+}
+
 auto message_loop() -> int
 {
     MSG msg{};
