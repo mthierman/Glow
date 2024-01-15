@@ -48,7 +48,7 @@ template <typename T> struct MessageWindow
             wcex.lpfnWndProc = WndProc;
             wcex.style = 0;
             wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = sizeof(void*);
+            wcex.cbWndExtra = sizeof(size_t);
             wcex.hInstance = GetModuleHandleA(nullptr);
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
@@ -86,7 +86,7 @@ template <typename T> struct MessageWindow
             auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<LONG_PTR>(self));
+            SetWindowLongPtrA(hwnd, 0, std::bit_cast<size_t>(self));
         }
 
         else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
@@ -138,7 +138,7 @@ template <typename T> struct BaseWindow
             wcex.lpfnWndProc = WndProc;
             wcex.style = 0;
             wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = sizeof(void*);
+            wcex.cbWndExtra = sizeof(size_t);
             wcex.hInstance = GetModuleHandleA(nullptr);
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
@@ -175,7 +175,7 @@ template <typename T> struct BaseWindow
         return 0;
     }
 
-    auto notify(HWND receiver, UINT code = WM_APP, std::string message = "") -> void
+    auto notify(HWND receiver, unsigned int code = WM_APP, std::string message = "") -> void
     {
         m_notification.nmhdr.code = code;
         m_notification.message = message;
@@ -183,7 +183,7 @@ template <typename T> struct BaseWindow
         m_notification.nmhdr.hwndFrom = hwnd();
 
         PostMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
-                     std::bit_cast<LPARAM>(&m_notification));
+                     std::bit_cast<size_t>(&m_notification));
     }
 
     auto dpi() -> int { return GetDpiForWindow(hwnd()); };
@@ -483,7 +483,7 @@ template <typename T> struct BaseWindow
             auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<LONG_PTR>(self));
+            SetWindowLongPtrA(hwnd, 0, std::bit_cast<size_t>(self));
         }
 
         else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
