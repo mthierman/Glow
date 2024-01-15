@@ -124,7 +124,7 @@ template <typename T> T* instance_from_wnd_proc(HWND hwnd, UINT uMsg, LPARAM lPa
         auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
         self->m_hwnd.reset(hwnd);
-        SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
+        SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
     }
 
     else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
