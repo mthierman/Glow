@@ -60,10 +60,7 @@ auto hresult_string(HRESULT errorCode) -> std::string
 
 auto last_error() -> HRESULT { return HRESULT_FROM_WIN32(GetLastError()); }
 
-auto last_error_string() -> std::string
-{
-    return hresult_string(HRESULT_FROM_WIN32(GetLastError()));
-}
+auto last_error_string() -> std::string { return hresult_string(last_error()); }
 
 auto hresult_check(HRESULT errorCode) -> HRESULT
 {
