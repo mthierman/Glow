@@ -40,7 +40,7 @@ auto MainWindow::on_size(WPARAM wParam, LPARAM lParam) -> int
     GetClientRect(hwnd(), &dimensions.rect);
     dimensions.scale = scale();
     dimensions.hwnd = hwnd();
-    EnumChildWindows(hwnd(), EnumChildProc, std::bit_cast<LPARAM>(&dimensions));
+    EnumChildWindows(hwnd(), EnumChildProc, static_cast<LPARAM>(&dimensions));
     Sleep(1);
 
     return 0;
@@ -48,12 +48,12 @@ auto MainWindow::on_size(WPARAM wParam, LPARAM lParam) -> int
 
 auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 {
-    auto dimensions{*std::bit_cast<WindowDimensions*>(lParam)};
+    auto dimensions{*static_cast<WindowDimensions*>(lParam)};
     auto self{glow::gui::instance_from_window_long_ptr<MainWindow>(dimensions.hwnd)};
 
     if (self)
     {
-        auto gwlId{std::bit_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+        auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto r = &dimensions.rect;
         auto width{r->right - r->left};

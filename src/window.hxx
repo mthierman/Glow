@@ -83,13 +83,13 @@ template <typename T> struct MessageWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+            auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
         }
 
-        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -183,7 +183,7 @@ template <typename T> struct BaseWindow
         m_notification.nmhdr.hwndFrom = hwnd();
 
         PostMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
-                     std::bit_cast<intptr_t>(&m_notification));
+                     reinterpret_cast<intptr_t>(&m_notification));
     }
 
     auto dpi() -> int { return GetDpiForWindow(hwnd()); };
@@ -283,8 +283,8 @@ template <typename T> struct BaseWindow
 
     auto icon(HICON icon) -> void
     {
-        SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, std::bit_cast<LPARAM>(icon));
-        SendMessageA(hwnd(), WM_SETICON, ICON_BIG, std::bit_cast<LPARAM>(icon));
+        SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, static_cast<LPARAM>(icon));
+        SendMessageA(hwnd(), WM_SETICON, ICON_BIG, static_cast<LPARAM>(icon));
     }
 
     auto border(bool enabled) -> void
@@ -480,13 +480,13 @@ template <typename T> struct BaseWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{std::bit_cast<LPCREATESTRUCT>(lParam)};
+            auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
         }
 
-        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -526,7 +526,7 @@ template <typename T> struct WebView : BaseWindow<T>
     T* self{static_cast<T*>(this)};
 
     WebView(HWND parent, size_t id = glow::text::random<size_t>())
-        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
+        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
     {
         m_parent = parent;
         glow::console::hresult_check(create());

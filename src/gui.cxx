@@ -231,7 +231,7 @@ auto set_preferred_app_mode() -> void
 
         if (ord135)
         {
-            auto SetPreferredAppMode{std::bit_cast<fnSetPreferredAppMode>(ord135)};
+            auto SetPreferredAppMode{reinterpret_cast<fnSetPreferredAppMode>(ord135)};
             SetPreferredAppMode(PreferredAppMode::AllowDark);
         }
 
@@ -253,8 +253,8 @@ auto allow_dark_mode(HWND hWnd, bool enable) -> void
         auto ord133{GetProcAddress(uxtheme, MAKEINTRESOURCEA(133))};
         auto ord136{GetProcAddress(uxtheme, MAKEINTRESOURCEA(136))};
 
-        auto AllowDarkModeForWindow{std::bit_cast<fnAllowDarkModeForWindow>(ord133)};
-        auto FlushMenuThemes{std::bit_cast<fnFlushMenuThemes>(ord136)};
+        auto AllowDarkModeForWindow{reinterpret_cast<fnAllowDarkModeForWindow>(ord133)};
+        auto FlushMenuThemes{reinterpret_cast<fnFlushMenuThemes>(ord136)};
 
         AllowDarkModeForWindow(hWnd, enable);
         FlushMenuThemes();

@@ -24,7 +24,7 @@ auto App::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESUL
 
 auto App::on_notify(WPARAM wParam, LPARAM lParam) -> int
 {
-    auto nmhdr{*std::bit_cast<LPNMHDR>(lParam)};
+    auto nmhdr{*static_cast<LPNMHDR>(lParam)};
 
     switch (nmhdr.code)
     {
