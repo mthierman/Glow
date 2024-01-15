@@ -176,14 +176,13 @@ template <typename T> struct BaseWindow
 
     auto notify(HWND receiver, UINT code = WM_APP, std::string message = "") -> void
     {
-        glow::gui::Notification notification;
-        notification.nmhdr.code = code;
-        notification.message = message;
-        notification.nmhdr.hwndFrom = hwnd();
-        notification.nmhdr.idFrom = id();
+        m_notification.nmhdr.code = code;
+        m_notification.message = message;
+        m_notification.nmhdr.idFrom = id();
+        m_notification.nmhdr.hwndFrom = hwnd();
 
-        SendMessageA(receiver, WM_NOTIFY, notification.nmhdr.idFrom,
-                     std::bit_cast<LPARAM>(&notification));
+        PostMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
+                     std::bit_cast<LPARAM>(&m_notification));
     }
 
     auto dpi() -> uint64_t { return GetDpiForWindow(hwnd()); };
@@ -514,6 +513,7 @@ template <typename T> struct BaseWindow
     uint64_t m_dpi{};
     float m_scale{};
     glow::gui::Position m_position;
+    glow::gui::Notification m_notification;
     wil::unique_hwnd m_hwnd;
     uint64_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
@@ -602,8 +602,7 @@ template <typename T> struct WebView : BaseWindow<T>
                         glow::console::hresult_check(
                             m_webView.controller4->put_DefaultBackgroundColor(bgColor));
 
-                        SendMessageA(m_parent, WM_SIZE, 0, 0);
-                        SendMessageA(self->hwnd(), WM_SIZE, 0, 0);
+                        PostMessageA(m_parent, WM_SIZE, 0, 0);
 
                         glow::console::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
