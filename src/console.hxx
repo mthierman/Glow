@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <shellapi.h>
+#include <comdef.h>
 
 #include <filesystem>
 #include <iostream>
@@ -35,6 +36,7 @@ struct Console
 };
 
 auto argv() -> std::vector<std::string>;
+auto system_error_string(HRESULT errorCode) -> std::string;
 auto hresult_string(HRESULT errorCode) -> std::string;
 auto last_error() -> HRESULT;
 auto last_error_string() -> std::string;

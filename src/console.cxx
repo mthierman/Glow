@@ -46,9 +46,15 @@ auto argv() -> std::vector<std::string>
     return argv;
 }
 
-auto hresult_string(HRESULT errorCode) -> std::string
+auto system_error_string(HRESULT errorCode) -> std::string
 {
     return std::string(std::system_category().message(errorCode));
+}
+
+auto hresult_string(HRESULT errorCode) -> std::string
+{
+    auto comError = _com_error(errorCode);
+    return std::string(comError.ErrorMessage());
 }
 
 auto last_error() -> HRESULT { return HRESULT_FROM_WIN32(GetLastError()); }
