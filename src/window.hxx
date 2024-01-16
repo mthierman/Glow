@@ -589,7 +589,11 @@ template <typename T> struct WebView : BaseWindow<T>
                         glow::console::hresult_check(
                             m_webView.controller4->put_DefaultBackgroundColor(bgColor));
 
-                        PostMessageA(m_parent, WM_SIZE, 0, 0);
+                        // m_webView.controller4->navigate("https://www.bing.com/");
+                        navigate("https://www.bing.com/");
+
+                        SendMessageA(m_parent, WM_SIZE, 0, 0);
+                        SendMessageA(self->hwnd(), WM_SIZE, 0, 0);
 
                         glow::console::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
