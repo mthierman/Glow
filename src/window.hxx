@@ -36,8 +36,7 @@ namespace window
 {
 template <typename T> struct MessageWindow
 {
-    MessageWindow(std::string name = "MessageWindow",
-                  uintptr_t id = glow::text::random<uintptr_t>())
+    MessageWindow(std::string name = "MessageWindow", intptr_t id = glow::text::random<intptr_t>())
         : m_id{id}
     {
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
@@ -49,7 +48,7 @@ template <typename T> struct MessageWindow
             wcex.lpfnWndProc = WndProc;
             wcex.style = 0;
             wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = sizeof(uintptr_t);
+            wcex.cbWndExtra = sizeof(intptr_t);
             wcex.hInstance = GetModuleHandleA(nullptr);
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
@@ -84,13 +83,13 @@ template <typename T> struct MessageWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
+            auto lpCreateStruct{std::bit_cast<CREATESTRUCTA*>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
         }
 
-        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -114,13 +113,13 @@ template <typename T> struct MessageWindow
     }
 
   public:
-    uintptr_t m_id;
+    intptr_t m_id;
     wil::unique_hwnd m_hwnd;
 };
 
 template <typename T> struct BaseWindow
 {
-    BaseWindow(std::string name = "BaseWindow", uintptr_t id = glow::text::random<uintptr_t>(),
+    BaseWindow(std::string name = "BaseWindow", intptr_t id = glow::text::random<intptr_t>(),
                DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD exStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
                int height = CW_USEDEFAULT, HWND parent = nullptr, HMENU menu = nullptr)
@@ -139,7 +138,7 @@ template <typename T> struct BaseWindow
             wcex.lpfnWndProc = WndProc;
             wcex.style = 0;
             wcex.cbClsExtra = 0;
-            wcex.cbWndExtra = sizeof(uintptr_t);
+            wcex.cbWndExtra = sizeof(intptr_t);
             wcex.hInstance = GetModuleHandleA(nullptr);
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
@@ -167,7 +166,7 @@ template <typename T> struct BaseWindow
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
-    auto id() const -> uintptr_t { return m_id; }
+    auto id() const -> intptr_t { return m_id; }
 
     auto close() -> int
     {
@@ -481,13 +480,13 @@ template <typename T> struct BaseWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
+            auto lpCreateStruct{std::bit_cast<CREATESTRUCTA*>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
         }
 
-        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -517,7 +516,7 @@ template <typename T> struct BaseWindow
     glow::gui::Position m_position;
     glow::gui::Notification m_notification;
     wil::unique_hwnd m_hwnd;
-    uintptr_t m_id{};
+    intptr_t m_id{};
     wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
@@ -526,8 +525,8 @@ template <typename T> struct WebView : BaseWindow<T>
 {
     T* self{static_cast<T*>(this)};
 
-    WebView(HWND parent, uintptr_t id = glow::text::random<uintptr_t>())
-        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
+    WebView(HWND parent, intptr_t id = glow::text::random<intptr_t>())
+        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
     {
         m_parent = parent;
         glow::console::hresult_check(create());

@@ -53,7 +53,7 @@ auto CALLBACK MainWindow::EnumChildProc(HWND hWnd, LPARAM lParam) -> BOOL
 
     if (self)
     {
-        auto gwlId{static_cast<size_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
+        auto gwlId{static_cast<intptr_t>(GetWindowLongPtrA(hWnd, GWL_ID))};
 
         auto r = &dimensions->rect;
         auto width{r->right - r->left};
