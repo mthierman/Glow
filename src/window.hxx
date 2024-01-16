@@ -14,7 +14,6 @@
 #include <gdiplus.h>
 #include <wrl.h>
 
-#include <bit>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -83,13 +82,13 @@ template <typename T> struct MessageWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{std::bit_cast<CREATESTRUCTA*>(lParam)};
+            auto lpCreateStruct{reinterpret_cast<CREATESTRUCTA*>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
         }
 
-        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -480,13 +479,13 @@ template <typename T> struct BaseWindow
 
         if (message == WM_NCCREATE)
         {
-            auto lpCreateStruct{std::bit_cast<CREATESTRUCTA*>(lParam)};
+            auto lpCreateStruct{reinterpret_cast<CREATESTRUCTA*>(lParam)};
             self = static_cast<T*>(lpCreateStruct->lpCreateParams);
             self->m_hwnd.reset(hwnd);
-            SetWindowLongPtrA(hwnd, 0, std::bit_cast<intptr_t>(self));
+            SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
         }
 
-        else self = std::bit_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -526,7 +525,7 @@ template <typename T> struct WebView : BaseWindow<T>
     T* self{static_cast<T*>(this)};
 
     WebView(HWND parent, intptr_t id = glow::text::random<intptr_t>())
-        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, std::bit_cast<HMENU>(id))
+        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
     {
         m_parent = parent;
         glow::console::hresult_check(create());
