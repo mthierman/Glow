@@ -47,8 +47,8 @@ auto source_debug(std::string message,
                   std::source_location location = std::source_location::current()) -> void;
 auto source_print(std::string message,
                   std::source_location location = std::source_location::current()) -> void;
-auto message_box(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
-auto message_box_shell(std::string message, UINT type = MB_OK | MB_ICONINFORMATION) -> int;
+auto message_box(std::string message, unsigned int type = MB_OK | MB_ICONINFORMATION) -> int;
+auto message_box_shell(std::string message, unsigned int type = MB_OK | MB_ICONINFORMATION) -> int;
 auto message_box_stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
 auto create_process(std::string process) -> int;
 } // namespace console

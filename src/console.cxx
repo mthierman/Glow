@@ -103,12 +103,12 @@ auto source_print(std::string message, std::source_location location) -> void
     std::println("Line: {} | Column: {}", location.line(), location.column());
 }
 
-auto message_box(std::string message, UINT type) -> int
+auto message_box(std::string message, unsigned int type) -> int
 {
     return MessageBoxA(nullptr, message.c_str(), glow::filesystem::app_name().c_str(), type);
 }
 
-auto message_box_shell(std::string message, UINT type) -> int
+auto message_box_shell(std::string message, unsigned int type) -> int
 {
     return ShellMessageBoxA(GetModuleHandleA(nullptr), nullptr, message.c_str(),
                             glow::filesystem::app_name().c_str(), type);
