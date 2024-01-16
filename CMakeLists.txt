@@ -17,7 +17,7 @@ set(CPPWINRT
     Microsoft.Windows.CppWinRT
 )
 set(CPPWINRT_VERSION
-    2.0.230706.1
+    2.0.240111.5
 )
 set(WEBVIEW2
     Microsoft.Web.WebView2
