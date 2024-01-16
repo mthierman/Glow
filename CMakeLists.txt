@@ -124,6 +124,7 @@ target_link_libraries(
            windowscodecs.lib
            ShLwApi.Lib
            WebView2LoaderStatic.lib
+           WindowsApp.lib
 )
 
 if(GLOW_EXAMPLES)
