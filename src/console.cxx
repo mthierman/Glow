@@ -10,16 +10,17 @@
 
 namespace glow::console
 {
-Console::Console() : m_file{nullptr}
+Console::Console()
 {
     AllocConsole();
 
-    EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
-                   MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+    // Disable close button
+    // EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+    //                MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 
-    freopen_s(std::out_ptr(m_file), "CONIN$", "r", stdin);
-    freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stdout);
-    freopen_s(std::out_ptr(m_file), "CONOUT$", "w", stderr);
+    freopen_s(m_file.addressof(), "CONIN$", "r", stdin);
+    freopen_s(m_file.addressof(), "CONOUT$", "w", stdout);
+    freopen_s(m_file.addressof(), "CONOUT$", "w", stderr);
 
     std::cin.clear();
     std::cout.clear();
@@ -27,11 +28,7 @@ Console::Console() : m_file{nullptr}
     std::clog.clear();
 }
 
-Console::~Console()
-{
-    fclose(m_file);
-    FreeConsole();
-}
+Console::~Console() { FreeConsole(); }
 
 auto argv() -> std::vector<std::string>
 {

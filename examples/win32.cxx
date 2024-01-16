@@ -9,9 +9,13 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
+// #include <iostream>
+
 auto main() -> int
 {
-    //
+    glow::console::Console console;
+
+    std::cout << "Test" << std::endl;
 
     return glow::gui::message_loop();
 }

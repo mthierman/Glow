@@ -31,7 +31,7 @@ struct Console
 {
     Console();
     ~Console();
-    FILE* m_file;
+    wil::unique_file m_file;
 };
 
 auto argv() -> std::vector<std::string>;
