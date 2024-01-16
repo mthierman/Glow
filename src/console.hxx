@@ -10,12 +10,12 @@
 
 #include <Windows.h>
 #include <shellapi.h>
-#include <comdef.h>
 
 #include <filesystem>
 #include <iostream>
 #include <print>
 #include <source_location>
+#include <system_error>
 #include <vector>
 
 #include <wil/resource.h>

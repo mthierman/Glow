@@ -48,8 +48,7 @@ auto argv() -> std::vector<std::string>
 
 auto hresult_string(HRESULT errorCode) -> std::string
 {
-    auto comError = _com_error(errorCode);
-    return std::string(comError.ErrorMessage());
+    return std::string(std::system_category().message(errorCode));
 }
 
 auto last_error() -> HRESULT { return HRESULT_FROM_WIN32(GetLastError()); }
@@ -58,7 +57,7 @@ auto last_error_string() -> std::string { return hresult_string(last_error()); }
 
 auto hresult_check(HRESULT errorCode) -> HRESULT
 {
-    auto errorMessage{glow::console::hresult_string(errorCode)};
+    auto errorMessage{hresult_string(errorCode)};
 
 #if _DEBUG
     OutputDebugStringA(errorMessage.c_str());
