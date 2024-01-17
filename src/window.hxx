@@ -877,7 +877,8 @@ template <typename T> struct WebView : BaseWindow<T>
     WebView2 m_webView;
 
   private:
-    auto derived() -> T& { return static_cast<T&>(*this); }
+    T& derived() { return static_cast<T&>(*this); }
+    T const& derived() const { return static_cast<T const&>(*this); }
 };
 } // namespace window
 } // namespace glow
