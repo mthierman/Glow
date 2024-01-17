@@ -68,9 +68,18 @@ template <typename T> struct MessageWindow
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
+    auto id() const -> intptr_t { return m_id; }
+
     auto close() -> int
     {
         m_hwnd.reset();
+
+        return 0;
+    }
+
+    auto quit() -> int
+    {
+        PostQuitMessage(0);
 
         return 0;
     }
@@ -88,7 +97,7 @@ template <typename T> struct MessageWindow
             SetWindowLongPtrA(hwnd, 0, reinterpret_cast<intptr_t>(self));
         }
 
-        else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+        else { self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0)); }
 
         if (self) { return self->default_wnd_proc(hwnd, message, wParam, lParam); }
 
@@ -100,7 +109,7 @@ template <typename T> struct MessageWindow
         switch (message)
         {
         case WM_CLOSE: return close();
-        case WM_DESTROY: PostQuitMessage(0); return 0;
+        case WM_DESTROY: return quit();
         }
 
         return wnd_proc(hwnd, message, wParam, lParam);
@@ -152,12 +161,16 @@ template <typename T> struct BaseWindow
                                                                0, 0, LR_SHARED | LR_DEFAULTSIZE));
 
             if (RegisterClassExA(&wcex) == 0)
+            {
                 throw std::runtime_error("Class registration failure");
+            }
         }
 
         if (CreateWindowExA(exStyle, wcex.lpszClassName, wcex.lpszClassName, style, x, y, width,
                             height, parent, menu, GetModuleHandleA(nullptr), this) == nullptr)
+        {
             throw std::runtime_error("Window creation failure");
+        }
 
         m_scale = scale();
         m_dpi = dpi();
@@ -384,11 +397,13 @@ template <typename T> struct BaseWindow
     {
         // MARGINS m{-1};
         MARGINS m{0, 0, 0, GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-        if (FAILED(DwmExtendFrameIntoClientArea(m_hwnd.get(), &m))) return;
+        if (FAILED(DwmExtendFrameIntoClientArea(m_hwnd.get(), &m))) { return; }
 
         if (FAILED(DwmSetWindowAttribute(m_hwnd.get(), DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
                                          sizeof(&backdrop))))
+        {
             return;
+        }
     }
 
     auto dwm_rounded_corners(bool enable) -> void
@@ -522,8 +537,6 @@ template <typename T> struct BaseWindow
 
 template <typename T> struct WebView : BaseWindow<T>
 {
-    T* self{static_cast<T*>(this)};
-
     WebView(HWND parent, intptr_t id = glow::text::random<intptr_t>())
         : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
     {
@@ -545,8 +558,8 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.controller4)
         {
-            self->client_rect();
-            m_webView.controller4->put_Bounds(self->m_clientRect);
+            derived().client_rect();
+            m_webView.controller4->put_Bounds(derived().m_clientRect);
         }
 
         return 0;
@@ -573,7 +586,7 @@ template <typename T> struct WebView : BaseWindow<T>
     auto create_controller(ICoreWebView2Environment* createdEnvironment) -> HRESULT
     {
         return createdEnvironment->CreateCoreWebView2Controller(
-            self->hwnd(),
+            derived().hwnd(),
             Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                 [=, this](HRESULT errorCode, ICoreWebView2Controller* createdController) -> HRESULT
                 {
@@ -590,7 +603,7 @@ template <typename T> struct WebView : BaseWindow<T>
                             m_webView.controller4->put_DefaultBackgroundColor(bgColor));
 
                         SendMessageA(m_parent, WM_SIZE, 0, 0);
-                        SendMessageA(self->hwnd(), WM_SIZE, 0, 0);
+                        SendMessageA(derived().hwnd(), WM_SIZE, 0, 0);
 
                         glow::console::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
@@ -862,6 +875,9 @@ template <typename T> struct WebView : BaseWindow<T>
         wil::com_ptr<ICoreWebView2Settings8> settings8;
     };
     WebView2 m_webView;
+
+  private:
+    auto derived() -> T& { return static_cast<T&>(*this); }
 };
 } // namespace window
 } // namespace glow
