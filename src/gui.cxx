@@ -81,7 +81,7 @@ void from_json(const nlohmann::json& j, SystemColors& systemColors)
 }
 
 Position::Position()
-    : x{0}, y{0}, width{0}, height{0}, maximized{false}, fullscreen{false}, topmost{false}, dpi{0},
+    : x{0}, y{0}, width{0}, height{0}, maximize{false}, fullscreen{false}, topmost{false}, dpi{0},
       scale{0.0f}
 {}
 
@@ -92,7 +92,7 @@ void to_json(nlohmann::json& j, const Position& position)
         {"y", position.y},
         {"width", position.width},
         {"height", position.height},
-        {"maximized", position.maximized},
+        {"maximize", position.maximize},
         {"fullscreen", position.fullscreen},
         {"topmost", position.topmost},
         {"dpi", position.dpi},
@@ -106,7 +106,7 @@ void from_json(const nlohmann::json& j, Position& position)
     j.at("y").get_to(position.y);
     j.at("width").get_to(position.width);
     j.at("height").get_to(position.height);
-    j.at("maximized").get_to(position.maximized);
+    j.at("maximize").get_to(position.maximize);
     j.at("fullscreen").get_to(position.fullscreen);
     j.at("topmost").get_to(position.topmost);
     j.at("dpi").get_to(position.dpi);

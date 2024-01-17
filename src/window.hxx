@@ -211,29 +211,19 @@ template <typename T> struct BaseWindow
 
     auto hide() -> void { ShowWindow(hwnd(), SW_HIDE); }
 
-    auto maximize() -> bool
+    auto maximize() -> void
     {
         auto style{GetWindowLongPtrA(hwnd(), GWL_STYLE)};
 
         WINDOWPLACEMENT wp{sizeof(WINDOWPLACEMENT)};
         GetWindowPlacement(hwnd(), &wp);
 
-        if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3)
-        {
-            ShowWindow(hwnd(), SW_SHOWNORMAL);
+        if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3) { ShowWindow(hwnd(), SW_RESTORE); }
 
-            return false;
-        }
-
-        else
-        {
-            ShowWindow(hwnd(), SW_MAXIMIZE);
-
-            return true;
-        }
+        else { ShowWindow(hwnd(), SW_MAXIMIZE); }
     }
 
-    auto fullscreen() -> bool
+    auto fullscreen() -> void
     {
         static RECT pos;
 
@@ -250,8 +240,6 @@ template <typename T> struct BaseWindow
                              mi.rcMonitor.right - mi.rcMonitor.left,
                              mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
             }
-
-            return true;
         }
 
         else
@@ -259,12 +247,10 @@ template <typename T> struct BaseWindow
             SetWindowLongPtrA(hwnd(), GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
             SetWindowPos(hwnd(), nullptr, pos.left, pos.top, (pos.right - pos.left),
                          (pos.bottom - pos.top), SWP_FRAMECHANGED);
-
-            return false;
         }
     }
 
-    auto topmost() -> bool
+    auto topmost() -> void
     {
         FLASHWINFO fwi{sizeof(FLASHWINFO)};
         fwi.hwnd = hwnd();
@@ -277,18 +263,11 @@ template <typename T> struct BaseWindow
         if (style & WS_EX_TOPMOST)
         {
             SetWindowPos(hwnd(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            FlashWindowEx(&fwi);
-
-            return false;
         }
 
-        else
-        {
-            SetWindowPos(hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            FlashWindowEx(&fwi);
+        else { SetWindowPos(hwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE); }
 
-            return true;
-        }
+        FlashWindowEx(&fwi);
     }
 
     auto title(std::string title) -> void { SetWindowTextA(hwnd(), title.c_str()); }

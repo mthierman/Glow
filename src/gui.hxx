@@ -77,7 +77,7 @@ struct Position
     int y;
     int width;
     int height;
-    bool maximized;
+    bool maximize;
     bool fullscreen;
     bool topmost;
     int dpi;
