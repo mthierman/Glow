@@ -841,6 +841,17 @@ template <typename T> struct WebView : BaseWindow<T>
         else return S_OK;
     }
 
+    auto focus() -> HRESULT
+    {
+        if (m_webView.controller4)
+        {
+            return glow::console::hresult_check(m_webView.controller4->MoveFocus(
+                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC));
+        }
+
+        else return S_OK;
+    }
+
     HWND m_parent{nullptr};
 
     struct WebView2
