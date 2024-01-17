@@ -198,9 +198,9 @@ template <typename T> struct BaseWindow
                      reinterpret_cast<uintptr_t>(&m_notification));
     }
 
-    auto dpi() -> int { return GetDpiForWindow(hwnd()); };
+    auto dpi() const -> int { return GetDpiForWindow(hwnd()); };
 
-    auto scale() -> float
+    auto scale() const -> float
     {
         return static_cast<float>(dpi()) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
     };
