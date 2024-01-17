@@ -52,78 +52,12 @@ SystemColors::SystemColors()
       foreground{color_to_string(UIColorType::Foreground)}
 {}
 
-void to_json(nlohmann::json& j, const SystemColors& systemColors)
-{
-    j = nlohmann::json{
-        {"accent", systemColors.accent},
-        {"accentDark1", systemColors.accentDark1},
-        {"accentDark2", systemColors.accentDark2},
-        {"accentDark3", systemColors.accentDark3},
-        {"accentLight1", systemColors.accentLight1},
-        {"accentLight2", systemColors.accentLight2},
-        {"accentLight3", systemColors.accentLight3},
-        {"background", systemColors.background},
-        {"foreground", systemColors.foreground},
-    };
-}
-
-void from_json(const nlohmann::json& j, SystemColors& systemColors)
-{
-    j.at("accent").get_to(systemColors.accent);
-    j.at("accentDark1").get_to(systemColors.accentDark1);
-    j.at("accentDark2").get_to(systemColors.accentDark2);
-    j.at("accentDark3").get_to(systemColors.accentDark3);
-    j.at("accentLight1").get_to(systemColors.accentLight1);
-    j.at("accentLight2").get_to(systemColors.accentLight2);
-    j.at("accentLight3").get_to(systemColors.accentLight3);
-    j.at("background").get_to(systemColors.background);
-    j.at("foreground").get_to(systemColors.foreground);
-}
-
 Position::Position()
     : x{0}, y{0}, width{0}, height{0}, maximize{false}, fullscreen{false}, topmost{false}, dpi{0},
       scale{0.0f}
 {}
 
-void to_json(nlohmann::json& j, const Position& position)
-{
-    j = nlohmann::json{
-        {"x", position.x},
-        {"y", position.y},
-        {"width", position.width},
-        {"height", position.height},
-        {"maximize", position.maximize},
-        {"fullscreen", position.fullscreen},
-        {"topmost", position.topmost},
-        {"dpi", position.dpi},
-        {"scale", position.scale},
-    };
-}
-
-void from_json(const nlohmann::json& j, Position& position)
-{
-    j.at("x").get_to(position.x);
-    j.at("y").get_to(position.y);
-    j.at("width").get_to(position.width);
-    j.at("height").get_to(position.height);
-    j.at("maximize").get_to(position.maximize);
-    j.at("fullscreen").get_to(position.fullscreen);
-    j.at("topmost").get_to(position.topmost);
-    j.at("dpi").get_to(position.dpi);
-    j.at("scale").get_to(position.scale);
-}
-
 Notification::Notification() : nmhdr{} {}
-
-void to_json(nlohmann::json& j, const Notification& notification)
-{
-    j = nlohmann::json{{"message", notification.message}};
-}
-
-void from_json(const nlohmann::json& j, Notification& notification)
-{
-    j.at("message").get_to(notification.message);
-}
 
 auto message_loop() -> int
 {

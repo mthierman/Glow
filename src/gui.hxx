@@ -65,9 +65,10 @@ struct SystemColors
     std::string accentLight3;
     std::string background;
     std::string foreground;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, accent, accentDark1, accentDark2, accentDark3,
+                                   accentLight1, accentLight2, accentLight3, background, foreground)
 };
-void to_json(nlohmann::json& j, const SystemColors& systemColors);
-void from_json(const nlohmann::json& j, SystemColors& systemColors);
 
 struct Position
 {
@@ -82,9 +83,10 @@ struct Position
     bool topmost;
     int dpi;
     float scale;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Position, x, y, width, height, maximize, fullscreen, topmost,
+                                   dpi, scale)
 };
-void to_json(nlohmann::json& j, const Position& Position);
-void from_json(const nlohmann::json& j, Position& Position);
 
 struct Notification
 {
@@ -92,9 +94,9 @@ struct Notification
 
     NMHDR nmhdr;
     std::string message;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)
 };
-void to_json(nlohmann::json& j, const Notification& notification);
-void from_json(const nlohmann::json& j, Notification& notification);
 
 auto message_loop() -> int;
 auto webview_version() -> std::string;
