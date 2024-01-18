@@ -67,9 +67,9 @@ auto hresult_check(HRESULT errorCode) -> HRESULT
 {
     auto errorMessage{hresult_string(errorCode)};
 
-#if _DEBUG
-    OutputDebugStringA(errorMessage.c_str());
-#endif
+    // #if _DEBUG
+    //     OutputDebugStringA(errorMessage.c_str());
+    // #endif
 
     if (SUCCEEDED(errorCode)) return S_OK;
 
