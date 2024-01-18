@@ -26,7 +26,7 @@ auto main() -> int
             {
                 inputCanonical = std::filesystem::canonical(inputFile);
             }
-            catch (std::filesystem::filesystem_error& /*e*/)
+            catch (const std::filesystem::filesystem_error& /*e*/)
             {
                 return 0;
             }
