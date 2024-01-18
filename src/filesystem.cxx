@@ -8,7 +8,9 @@
 
 #include "filesystem.hxx"
 
-namespace glow::filesystem
+namespace glow
+{
+namespace filesystem
 {
 Database::Database() { m_path = (path_portable() / "db.sqlite"); }
 
@@ -85,4 +87,5 @@ auto path_portable_wide() -> std::filesystem::path
 
     return std::filesystem::canonical(exe.remove_filename());
 }
-} // namespace glow::filesystem
+} // namespace filesystem
+} // namespace glow

@@ -8,7 +8,9 @@
 
 #include "gui.hxx"
 
-namespace glow::gui
+namespace glow
+{
+namespace gui
 {
 using namespace winrt::Windows::UI::ViewManagement;
 
@@ -238,4 +240,5 @@ auto icon_shield() -> HICON
     return static_cast<HICON>(
         LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
-} // namespace glow::gui
+} // namespace gui
+} // namespace glow

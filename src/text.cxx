@@ -8,7 +8,9 @@
 
 #include "text.hxx"
 
-namespace glow::text
+namespace glow
+{
+namespace text
 {
 auto safe_size(size_t value) -> int
 {
@@ -78,4 +80,5 @@ auto guid_string(GUID guid) -> std::string
 
     else return narrow(buffer);
 }
-} // namespace glow::text
+} // namespace text
+} // namespace glow

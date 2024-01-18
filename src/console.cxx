@@ -8,7 +8,9 @@
 
 #include "console.hxx"
 
-namespace glow::console
+namespace glow
+{
+namespace console
 {
 Console::Console()
 {
@@ -159,4 +161,5 @@ auto create_process(std::string process) -> int
 
     return 0;
 }
-} // namespace glow::console
+} // namespace console
+} // namespace glow
