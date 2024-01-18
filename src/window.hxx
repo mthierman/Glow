@@ -355,6 +355,13 @@ template <typename T> struct BaseWindow
         return p;
     }
 
+    auto theme() -> void
+    {
+        if (glow::gui::check_theme()) { dwm_dark_mode(true); }
+
+        else { dwm_dark_mode(false); }
+    }
+
     auto dwm_dark_mode(bool enabled) -> void
     {
         if (enabled)
