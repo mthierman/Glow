@@ -12,6 +12,12 @@
 auto main() -> int
 {
     glow::console::source_print("🌸🌹🍒🍉🥝🍎🖍️🧶");
+    glow::gui::SystemColors colors;
+
+    std::println("{}", colors.string.accent);
+    auto json{nlohmann::json{colors.map}};
+
+    std::println("{}", json.dump());
 
     return 0;
 }

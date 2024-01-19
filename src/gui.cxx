@@ -42,6 +42,11 @@ CoInitialize::operator HRESULT() const { return m_result; }
 
 SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISettings()}
 {
+    update();
+}
+
+auto SystemColors::update() -> void
+{
     color.accent = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
     color.accentDark1 =
         settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
@@ -79,18 +84,28 @@ SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISe
     colorref.accentLight3 = to_colorref(color.accentLight3);
     colorref.background = to_colorref(color.background);
     colorref.foreground = to_colorref(color.foreground);
+
+    map.emplace("accent", string.accent);
+    map.emplace("accentDark1", string.accentDark1);
+    map.emplace("accentDark2", string.accentDark2);
+    map.emplace("accentDark3", string.accentDark3);
+    map.emplace("accentLight1", string.accentLight1);
+    map.emplace("accentLight2", string.accentLight2);
+    map.emplace("accentLight3", string.accentLight3);
+    map.emplace("background", string.background);
+    map.emplace("foreground", string.foreground);
 }
 
-auto SystemColors::to_string(winrt::Windows::UI::Color color) -> std::string
+auto SystemColors::to_string(winrt::Windows::UI::Color uiColor) -> std::string
 {
-    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", color.R, color.G, color.B, color.A);
+    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", uiColor.R, uiColor.G, uiColor.B, uiColor.A);
 }
 
-auto SystemColors::to_colorref(winrt::Windows::UI::Color color) -> COLORREF
+auto SystemColors::to_colorref(winrt::Windows::UI::Color uiColor) -> COLORREF
 {
-    return RGB(std::ranges::clamp(static_cast<int>(color.R), 0, 255),
-               std::ranges::clamp(static_cast<int>(color.G), 0, 255),
-               std::ranges::clamp(static_cast<int>(color.B), 0, 255));
+    return RGB(std::ranges::clamp(static_cast<int>(uiColor.R), 0, 255),
+               std::ranges::clamp(static_cast<int>(uiColor.G), 0, 255),
+               std::ranges::clamp(static_cast<int>(uiColor.B), 0, 255));
 }
 
 Position::Position()

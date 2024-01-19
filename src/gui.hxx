@@ -13,6 +13,7 @@
 #include <dwmapi.h>
 #include <gdiplus.h>
 
+#include <map>
 #include <string>
 
 #include <wil/com.h>
@@ -95,16 +96,18 @@ struct SystemColors
 
     SystemColors();
 
-    auto to_string(winrt::Windows::UI::Color color) -> std::string;
-    auto to_colorref(winrt::Windows::UI::Color color) -> COLORREF;
+    auto update() -> void;
+    auto to_string(winrt::Windows::UI::Color uiColor) -> std::string;
+    auto to_colorref(winrt::Windows::UI::Color uiColor) -> COLORREF;
 
     winrt::Windows::UI::ViewManagement::UISettings settings;
 
     Color color;
     String string;
     ColorRef colorref;
+    std::map<std::string, std::string> map;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, string)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, map)
 };
 
 struct Position
