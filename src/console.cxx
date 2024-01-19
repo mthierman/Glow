@@ -32,7 +32,19 @@ Console::Console()
 
 Console::~Console() { FreeConsole(); }
 
-auto argv() -> std::vector<std::string>
+auto argv(int argc, char* argv[]) -> std::vector<std::string>
+{
+    std::vector<std::string> vector;
+
+    for (int i = 0; i < argc; i++)
+    {
+        vector.push_back(argv[i]);
+    }
+
+    return vector;
+}
+
+auto cmd_to_argv() -> std::vector<std::string>
 {
     int argc{};
     wil::unique_hlocal_ptr<PWSTR[]> buffer;

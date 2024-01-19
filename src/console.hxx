@@ -35,7 +35,8 @@ struct Console
     wil::unique_file m_file;
 };
 
-auto argv() -> std::vector<std::string>;
+auto argv(int argc, char* argv[]) -> std::vector<std::string>;
+auto cmd_to_argv() -> std::vector<std::string>;
 auto system_error_string(HRESULT errorCode) -> std::string;
 auto hresult_string(HRESULT errorCode) -> std::string;
 auto last_error() -> HRESULT;
