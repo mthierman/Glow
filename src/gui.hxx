@@ -54,20 +54,57 @@ struct CoInitialize
 
 struct SystemColors
 {
+    struct Color
+    {
+        winrt::Windows::UI::Color accent;
+        winrt::Windows::UI::Color accentDark1;
+        winrt::Windows::UI::Color accentDark2;
+        winrt::Windows::UI::Color accentDark3;
+        winrt::Windows::UI::Color accentLight1;
+        winrt::Windows::UI::Color accentLight2;
+        winrt::Windows::UI::Color accentLight3;
+        winrt::Windows::UI::Color background;
+        winrt::Windows::UI::Color foreground;
+    };
+
+    struct String
+    {
+        std::string accent;
+        std::string accentDark1;
+        std::string accentDark2;
+        std::string accentDark3;
+        std::string accentLight1;
+        std::string accentLight2;
+        std::string accentLight3;
+        std::string background;
+        std::string foreground;
+    };
+
+    struct ColorRef
+    {
+        COLORREF accent;
+        COLORREF accentDark1;
+        COLORREF accentDark2;
+        COLORREF accentDark3;
+        COLORREF accentLight1;
+        COLORREF accentLight2;
+        COLORREF accentLight3;
+        COLORREF background;
+        COLORREF foreground;
+    };
+
     SystemColors();
 
-    std::string accent;
-    std::string accentDark1;
-    std::string accentDark2;
-    std::string accentDark3;
-    std::string accentLight1;
-    std::string accentLight2;
-    std::string accentLight3;
-    std::string background;
-    std::string foreground;
+    auto to_string(winrt::Windows::UI::Color color) -> std::string;
+    auto to_colorref(winrt::Windows::UI::Color color) -> COLORREF;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, accent, accentDark1, accentDark2, accentDark3,
-                                   accentLight1, accentLight2, accentLight3, background, foreground)
+    winrt::Windows::UI::ViewManagement::UISettings settings;
+
+    Color color;
+    String string;
+    ColorRef colorref;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, string)
 };
 
 struct Position
@@ -105,7 +142,6 @@ auto rect_to_position(const RECT& rect) -> Position;
 auto position_to_rect(const Position& position) -> RECT;
 auto clamp_color(int value) -> int;
 auto make_colorref(int r, int g, int b) -> COLORREF;
-auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string;
 auto check_theme() -> bool;
 auto set_preferred_app_mode() -> void;
 auto allow_dark_mode(HWND hWnd, bool enable) -> void;

@@ -12,8 +12,6 @@ namespace glow
 {
 namespace gui
 {
-using namespace winrt::Windows::UI::ViewManagement;
-
 GdiPlus::GdiPlus()
     : m_gdiplusStatus{Gdiplus::GdiplusStartup(&m_gdiplusToken, &m_gdiplusStartupInput, nullptr)}
 {
@@ -42,17 +40,58 @@ CoInitialize::~CoInitialize()
 
 CoInitialize::operator HRESULT() const { return m_result; }
 
-SystemColors::SystemColors()
-    : accent{color_to_string(UIColorType::Accent)},
-      accentDark1{color_to_string(UIColorType::AccentDark1)},
-      accentDark2{color_to_string(UIColorType::AccentDark2)},
-      accentDark3{color_to_string(UIColorType::AccentDark3)},
-      accentLight1{color_to_string(UIColorType::AccentLight1)},
-      accentLight2{color_to_string(UIColorType::AccentLight2)},
-      accentLight3{color_to_string(UIColorType::AccentLight3)},
-      background{color_to_string(UIColorType::Background)},
-      foreground{color_to_string(UIColorType::Foreground)}
-{}
+SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISettings()}
+{
+    color.accent = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
+    color.accentDark1 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
+    color.accentDark2 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark2);
+    color.accentDark3 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark3);
+    color.accentLight1 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight1);
+    color.accentLight2 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight2);
+    color.accentLight3 =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentLight3);
+    color.background =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Background);
+    color.foreground =
+        settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground);
+
+    string.accent = to_string(color.accent);
+    string.accentDark1 = to_string(color.accentDark1);
+    string.accentDark2 = to_string(color.accentDark2);
+    string.accentDark3 = to_string(color.accentDark3);
+    string.accentLight1 = to_string(color.accentLight1);
+    string.accentLight2 = to_string(color.accentLight2);
+    string.accentLight3 = to_string(color.accentLight3);
+    string.background = to_string(color.background);
+    string.foreground = to_string(color.foreground);
+
+    colorref.accent = to_colorref(color.accent);
+    colorref.accentDark1 = to_colorref(color.accentDark1);
+    colorref.accentDark2 = to_colorref(color.accentDark2);
+    colorref.accentDark3 = to_colorref(color.accentDark3);
+    colorref.accentLight1 = to_colorref(color.accentLight1);
+    colorref.accentLight2 = to_colorref(color.accentLight2);
+    colorref.accentLight3 = to_colorref(color.accentLight3);
+    colorref.background = to_colorref(color.background);
+    colorref.foreground = to_colorref(color.foreground);
+}
+
+auto SystemColors::to_string(winrt::Windows::UI::Color color) -> std::string
+{
+    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", color.R, color.G, color.B, color.A);
+}
+
+auto SystemColors::to_colorref(winrt::Windows::UI::Color color) -> COLORREF
+{
+    return RGB(std::ranges::clamp(static_cast<int>(color.R), 0, 255),
+               std::ranges::clamp(static_cast<int>(color.G), 0, 255),
+               std::ranges::clamp(static_cast<int>(color.B), 0, 255));
+}
 
 Position::Position()
     : x{0}, y{0}, width{0}, height{0}, maximize{false}, fullscreen{false}, topmost{false}, dpi{0},
@@ -124,17 +163,6 @@ auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
 auto make_colorref(int r, int g, int b) -> COLORREF
 {
     return RGB(clamp_color(r), clamp_color(g), clamp_color(b));
-}
-
-auto color_to_string(winrt::Windows::UI::ViewManagement::UIColorType colorType) -> std::string
-{
-    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
-    auto accent{settings.GetColorValue(colorType)};
-
-    auto formatted{
-        std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", accent.R, accent.G, accent.B, accent.A)};
-
-    return formatted;
 }
 
 auto check_theme() -> bool
