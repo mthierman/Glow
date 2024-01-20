@@ -57,6 +57,22 @@ target_compile_options(
               /diagnostics:caret
               /Zc:__cplusplus
               >
+              $<$<CXX_COMPILER_ID:Clang>:
+              -Wall
+              -Werror
+              -Wextra
+              -Wpedantic
+              -Wno-language-extension-token
+              -Wno-unused-parameter
+              -Wno-unused-but-set-variable
+              -Wno-unused-variable
+              -Wno-missing-field-initializers
+              -Wno-nonportable-include-path
+              -Wno-sign-compare
+              -Wno-unused-function
+              -Wno-gnu-zero-variadic-macro-arguments
+              -Wno-extra-semi
+              >
 )
 
 target_link_options(
@@ -65,5 +81,8 @@ target_link_options(
     $<$<CXX_COMPILER_ID:MSVC>:
     /entry:mainCRTStartup
     /WX
+    >
+    $<$<CXX_COMPILER_ID:Clang>:
+    -Wl,/entry:mainCRTStartup,/WX
     >
 )
