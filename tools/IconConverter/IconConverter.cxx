@@ -8,13 +8,13 @@
 
 #include "IconConverter.hxx"
 
-auto main() -> int
+auto main(int argc, char* argv[]) -> int
 {
-    auto argv{glow::console::cmd_to_argv()};
+    auto args{glow::console::cmd_to_argv()};
 
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     {
-        if (argv.size() == 3)
+        if (args.size() == 3)
         {
             std::filesystem::path inputFile{argv[1]};
             std::filesystem::path outputFile{argv[2]};

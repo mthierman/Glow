@@ -9,7 +9,7 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
-auto main() -> int
+auto main(int argc, char* argv[]) -> int
 {
     glow::console::source_print("🌸🌹🍒🍉🥝🍎🖍️🧶");
 
