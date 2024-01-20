@@ -105,9 +105,9 @@ struct SystemColors
     Color color;
     String string;
     ColorRef colorref;
-    std::map<std::string, std::string> map;
+    std::map<std::string, std::string> systemColors;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, map)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, systemColors)
 };
 
 struct Position

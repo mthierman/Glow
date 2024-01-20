@@ -47,6 +47,8 @@ SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISe
 
 auto SystemColors::update() -> void
 {
+    settings = winrt::Windows::UI::ViewManagement::UISettings();
+
     color.accent = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
     color.accentDark1 =
         settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::AccentDark1);
@@ -85,15 +87,16 @@ auto SystemColors::update() -> void
     colorref.background = to_colorref(color.background);
     colorref.foreground = to_colorref(color.foreground);
 
-    map.emplace("accent", string.accent);
-    map.emplace("accentDark1", string.accentDark1);
-    map.emplace("accentDark2", string.accentDark2);
-    map.emplace("accentDark3", string.accentDark3);
-    map.emplace("accentLight1", string.accentLight1);
-    map.emplace("accentLight2", string.accentLight2);
-    map.emplace("accentLight3", string.accentLight3);
-    map.emplace("background", string.background);
-    map.emplace("foreground", string.foreground);
+    systemColors.clear();
+    systemColors.emplace("accent", string.accent);
+    systemColors.emplace("accentDark1", string.accentDark1);
+    systemColors.emplace("accentDark2", string.accentDark2);
+    systemColors.emplace("accentDark3", string.accentDark3);
+    systemColors.emplace("accentLight1", string.accentLight1);
+    systemColors.emplace("accentLight2", string.accentLight2);
+    systemColors.emplace("accentLight3", string.accentLight3);
+    systemColors.emplace("background", string.background);
+    systemColors.emplace("foreground", string.foreground);
 }
 
 auto SystemColors::to_string(winrt::Windows::UI::Color uiColor) -> std::string
