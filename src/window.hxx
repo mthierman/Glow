@@ -215,6 +215,8 @@ template <typename T> struct BaseWindow
 
     auto hide() -> void { ShowWindow(hwnd(), SW_HIDE); }
 
+    auto visible() -> bool { return IsWindowVisible(hwnd()); }
+
     auto maximize() -> void
     {
         auto style{GetWindowLongPtrA(hwnd(), GWL_STYLE)};
