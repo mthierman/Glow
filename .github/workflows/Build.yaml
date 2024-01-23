@@ -1,4 +1,4 @@
-name: Build
+name: Glow
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
           submodules: true
 
       - name: Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: deps
         with:
           path: |
@@ -30,7 +30,7 @@ jobs:
 
       - name: CMake
         run: |
-          Import-Module ${{ github.workspace }}\Tools\PowerShell
+          Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-UnityBuild
 
       # - name: Stable Release
