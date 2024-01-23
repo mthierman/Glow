@@ -53,6 +53,6 @@ auto source_print(std::string message,
 auto message_box(std::string message, unsigned int type = MB_OK | MB_ICONINFORMATION) -> int;
 auto message_box_shell(std::string message, unsigned int type = MB_OK | MB_ICONINFORMATION) -> int;
 auto message_box_stock(std::string message, SHSTOCKICONID icon = SIID_INFO) -> void;
-auto create_process(std::string process) -> int;
+auto create_process(std::filesystem::path path) -> int;
 } // namespace console
 } // namespace glow

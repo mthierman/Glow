@@ -158,15 +158,15 @@ auto message_box_stock(std::string message, SHSTOCKICONID icon) -> void
     }
 }
 
-auto create_process(std::string process) -> int
+auto create_process(std::filesystem::path path) -> int
 {
     STARTUPINFOA si{sizeof(STARTUPINFOA)};
     PROCESS_INFORMATION pi{};
 
-    auto server{(glow::filesystem::path_portable() / process).string()};
-    auto pServer{server.data()};
+    auto process{path.string()};
+    auto pProcess{process.data()};
 
-    CreateProcessA(pServer, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+    CreateProcessA(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
     WaitForSingleObject(pi.hProcess, INFINITE);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
