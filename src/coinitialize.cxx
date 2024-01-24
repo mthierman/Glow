@@ -6,17 +6,22 @@
 // ╚──────────────╝
 // clang-format on
 
-#pragma once
+#include "coinitialize.hxx"
 
-#include "../../src/coinitialize.hxx"
-#include "../../src/colors.hxx"
-#include "../../src/console.hxx"
-#include "../../src/database.hxx"
-#include "../../src/filesystem.hxx"
-#include "../../src/gdiplus.hxx"
-#include "../../src/gui.hxx"
-#include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
-#include "../../src/system.hxx"
-#include "../../src/text.hxx"
-#include "../../src/window.hxx"
+namespace glow
+{
+namespace gui
+{
+CoInitialize::CoInitialize()
+{
+    if (FAILED(m_result)) { throw std::runtime_error("CoInitialize failure"); }
+}
+
+CoInitialize::~CoInitialize()
+{
+    if (SUCCEEDED(m_result)) CoUninitialize();
+}
+
+CoInitialize::operator HRESULT() const { return m_result; }
+} // namespace gui
+} // namespace glow

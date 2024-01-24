@@ -8,15 +8,20 @@
 
 #pragma once
 
-#include "../../src/coinitialize.hxx"
-#include "../../src/colors.hxx"
-#include "../../src/console.hxx"
-#include "../../src/database.hxx"
-#include "../../src/filesystem.hxx"
-#include "../../src/gdiplus.hxx"
-#include "../../src/gui.hxx"
-#include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
-#include "../../src/system.hxx"
-#include "../../src/text.hxx"
-#include "../../src/window.hxx"
+#include <Windows.h>
+#include <string>
+#include <nlohmann/json.hpp>
+
+namespace glow
+{
+namespace gui
+{
+struct Notification
+{
+    NMHDR nmhdr{};
+    std::string message{};
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)
+};
+} // namespace gui
+} // namespace glow

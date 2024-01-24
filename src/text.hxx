@@ -17,7 +17,7 @@
 
 #include <wil/win32_helpers.h>
 
-#include "console.hxx"
+#include "system.hxx"
 
 namespace glow
 {

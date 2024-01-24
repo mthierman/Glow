@@ -6,17 +6,20 @@
 // ╚──────────────╝
 // clang-format on
 
-#pragma once
+#include "gdiplus.hxx"
 
-#include "../../src/coinitialize.hxx"
-#include "../../src/colors.hxx"
-#include "../../src/console.hxx"
-#include "../../src/database.hxx"
-#include "../../src/filesystem.hxx"
-#include "../../src/gdiplus.hxx"
-#include "../../src/gui.hxx"
-#include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
-#include "../../src/system.hxx"
-#include "../../src/text.hxx"
-#include "../../src/window.hxx"
+namespace glow
+{
+namespace gui
+{
+GdiPlus::GdiPlus()
+{
+    if (status != Gdiplus::Status::Ok) { throw std::runtime_error("GDI+ startup failure"); }
+}
+
+GdiPlus::~GdiPlus()
+{
+    if (status == Gdiplus::Status::Ok) Gdiplus::GdiplusShutdown(token);
+}
+} // namespace gui
+} // namespace glow

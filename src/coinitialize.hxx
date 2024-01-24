@@ -8,15 +8,22 @@
 
 #pragma once
 
-#include "../../src/coinitialize.hxx"
-#include "../../src/colors.hxx"
-#include "../../src/console.hxx"
-#include "../../src/database.hxx"
-#include "../../src/filesystem.hxx"
-#include "../../src/gdiplus.hxx"
-#include "../../src/gui.hxx"
-#include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
-#include "../../src/system.hxx"
-#include "../../src/text.hxx"
-#include "../../src/window.hxx"
+#include <Windows.h>
+#include <objbase.h>
+#include <stdexcept>
+
+namespace glow
+{
+namespace gui
+{
+struct CoInitialize
+{
+    CoInitialize();
+    ~CoInitialize();
+
+    operator HRESULT() const;
+
+    HRESULT m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)};
+};
+} // namespace gui
+} // namespace glow

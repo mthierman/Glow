@@ -71,9 +71,14 @@ configure_file(
 
 target_sources(
     Glow
-    PRIVATE ${PROJECT_SOURCE_DIR}/src/console.cxx
+    PRIVATE ${PROJECT_SOURCE_DIR}/src/coinitialize.cxx
+            ${PROJECT_SOURCE_DIR}/src/colors.cxx
+            ${PROJECT_SOURCE_DIR}/src/console.cxx
+            ${PROJECT_SOURCE_DIR}/src/database.cxx
             ${PROJECT_SOURCE_DIR}/src/filesystem.cxx
+            ${PROJECT_SOURCE_DIR}/src/gdiplus.cxx
             ${PROJECT_SOURCE_DIR}/src/gui.cxx
+            ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
     PRIVATE FILE_SET
             HEADERS
@@ -82,9 +87,16 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_BINARY_DIR}/include
             FILES
+            ${PROJECT_SOURCE_DIR}/src/coinitialize.hxx
+            ${PROJECT_SOURCE_DIR}/src/colors.hxx
             ${PROJECT_SOURCE_DIR}/src/console.hxx
+            ${PROJECT_SOURCE_DIR}/src/database.hxx
             ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
+            ${PROJECT_SOURCE_DIR}/src/gdiplus.hxx
             ${PROJECT_SOURCE_DIR}/src/gui.hxx
+            ${PROJECT_SOURCE_DIR}/src/notification.hxx
+            ${PROJECT_SOURCE_DIR}/src/positions.hxx
+            ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
             ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx

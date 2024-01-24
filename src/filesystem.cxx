@@ -12,48 +12,9 @@ namespace glow
 {
 namespace filesystem
 {
-Database::Database() { m_path = (path_portable() / "db.sqlite"); }
-
-Database::~Database() {}
-
-auto Database::open() -> void
-{
-    if (sqlite3_open(m_path.string().c_str(), std::out_ptr(m_db)) != SQLITE_OK)
-        throw std::runtime_error("Failed to open SQLite");
-}
-
-auto Database::write() -> void
-{
-    std::string sql{"CREATE TABLE CONFIG("
-                    "X INT NOT NULL,"
-                    "Y INT NOT NULL,"
-                    "WIDTH INT NOT NULL,"
-                    "HEIGHT INT NOT NULL,"
-                    "MENU INT NOT NULL,"
-                    "SPLIT INT NOT NULL,"
-                    "MAXIMIZED INT NOT NULL,"
-                    "FULLSCREEN INT NOT NULL,"
-                    "TOPMOST INT NOT NULL,"
-                    "MAIN TEXT NOT NULL,"
-                    "SIDE TEXT NOT NULL);"};
-
-    if (std::filesystem::exists(m_path))
-    {
-        std::string error;
-
-        auto dbExec{sqlite3_exec(m_db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
-
-        if (dbExec != SQLITE_OK)
-        {
-            std::println("{}", error);
-            sqlite3_free(error.data());
-        }
-    }
-}
-
 auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
 {
-    wil::unique_cotaskmem_string buffer;
+    wil::unique_cotaskmem_string buffer{};
     SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
     return std::filesystem::path(buffer.get());
@@ -61,7 +22,7 @@ auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
 
 auto app_name() -> std::string
 {
-    std::string buffer;
+    std::string buffer{};
     _get_pgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
@@ -70,7 +31,7 @@ auto app_name() -> std::string
 
 auto path_portable() -> std::filesystem::path
 {
-    std::string buffer;
+    std::string buffer{};
     _get_pgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
@@ -79,7 +40,7 @@ auto path_portable() -> std::filesystem::path
 
 auto path_portable_wide() -> std::filesystem::path
 {
-    std::wstring buffer;
+    std::wstring buffer{};
     _get_wpgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 

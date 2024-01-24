@@ -8,15 +8,22 @@
 
 #pragma once
 
-#include "../../src/coinitialize.hxx"
-#include "../../src/colors.hxx"
-#include "../../src/console.hxx"
-#include "../../src/database.hxx"
-#include "../../src/filesystem.hxx"
-#include "../../src/gdiplus.hxx"
-#include "../../src/gui.hxx"
-#include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
-#include "../../src/system.hxx"
-#include "../../src/text.hxx"
-#include "../../src/window.hxx"
+#include <Windows.h>
+#include <gdiplus.h>
+#include <stdexcept>
+
+namespace glow
+{
+namespace gui
+{
+struct GdiPlus
+{
+    GdiPlus();
+    ~GdiPlus();
+
+    uintptr_t token{};
+    Gdiplus::GdiplusStartupInput input{};
+    Gdiplus::Status status{Gdiplus::GdiplusStartup(&token, &input, nullptr)};
+};
+} // namespace gui
+} // namespace glow

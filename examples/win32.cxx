@@ -19,5 +19,11 @@ auto main(int argc, char* argv[]) -> int
     Window win;
     win.reveal();
 
+    glow::gui::GdiPlus gdiplus;
+    glow::gui::CoInitialize conit;
+    glow::gui::SystemColors systemColors;
+
+    OutputDebugStringA(systemColors.string.accent.c_str());
+
     return glow::gui::message_loop();
 }
