@@ -29,6 +29,31 @@ target_link_libraries(
             glow::flags
 )
 
+add_executable(
+    CRTP
+    WIN32
+)
+
+target_sources(
+    CRTP
+    PRIVATE crtp/main.cxx
+            crtp/app.cxx
+            crtp/app.hxx
+            crtp/browser.cxx
+            crtp/browser.hxx
+            crtp/definitions.hxx
+            crtp/window.cxx
+            crtp/window.hxx
+            crtp/win32.manifest
+            crtp/win32.rc
+)
+
+target_link_libraries(
+    CRTP
+    PRIVATE glow::glow
+            glow::flags
+)
+
 add_custom_command(
     TARGET Glow_ExampleWin32
     COMMAND
