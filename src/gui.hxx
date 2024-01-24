@@ -27,7 +27,7 @@
 #include <nlohmann/json.hpp>
 
 #include "console.hxx"
-#include "positions.hxx"
+#include "position.hxx"
 #include "text.hxx"
 
 namespace glow

@@ -34,7 +34,7 @@ auto cmd_to_argv() -> std::vector<std::string>
 
     for (int i = 0; i < argc; i++)
     {
-        argv.push_back(glow::text::narrow(buffer[i]));
+        argv.push_back(glow::text::to_utf8(buffer[i]));
     }
 
     return argv;
@@ -153,5 +153,5 @@ auto create_process(std::filesystem::path path) -> int
 
     return 0;
 }
-} // namespace system
+} // namespace console
 } // namespace glow

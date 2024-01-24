@@ -29,7 +29,7 @@ auto app_name() -> std::string
     return exe.filename().replace_extension("").string();
 }
 
-auto path_portable() -> std::filesystem::path
+auto app_path() -> std::filesystem::path
 {
     std::string buffer{};
     _get_pgmptr(std::out_ptr(buffer));
@@ -38,7 +38,7 @@ auto path_portable() -> std::filesystem::path
     return std::filesystem::canonical(exe.remove_filename());
 }
 
-auto path_portable_wide() -> std::filesystem::path
+auto app_path_wide() -> std::filesystem::path
 {
     std::wstring buffer{};
     _get_wpgmptr(std::out_ptr(buffer));

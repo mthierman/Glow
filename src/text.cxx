@@ -15,12 +15,12 @@ namespace text
 auto safe_size(size_t value) -> int
 {
     constexpr int max{std::numeric_limits<int>::max()};
-    if (value > static_cast<size_t>(max)) throw std::overflow_error("Input string too long");
+    if (value > static_cast<size_t>(max)) throw std::overflow_error("Unsafe size");
 
     return static_cast<int>(value);
 }
 
-auto narrow(std::wstring utf16) -> std::string
+auto to_utf8(std::wstring utf16) -> std::string
 {
     if (utf16.empty()) return {};
 
@@ -38,7 +38,7 @@ auto narrow(std::wstring utf16) -> std::string
     else throw std::runtime_error(glow::console::last_error_string());
 }
 
-auto widen(std::string utf8) -> std::wstring
+auto to_utf16(std::string utf8) -> std::wstring
 {
     if (utf8.empty()) return {};
 
@@ -56,29 +56,27 @@ auto widen(std::string utf8) -> std::wstring
     else throw std::runtime_error(glow::console::last_error_string());
 }
 
-auto randomize(std::string string) -> std::string
-{
-    return string.append(std::to_string(random<int>()));
-}
-
-auto guid() -> GUID
+auto make_guid() -> std::pair<GUID, std::string>
 {
     GUID guid;
 
     if (FAILED(CoCreateGuid(&guid))) throw std::runtime_error("GUID creation failure");
 
-    else return guid;
-}
-
-auto guid_string(GUID guid) -> std::string
-{
     std::wstring buffer(wil::guid_string_buffer_length, 0);
 
-    auto length{StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length)};
+    if (StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0)
+    {
+        throw std::runtime_error("String from GUID failure");
+    }
 
-    if (length == 0) throw std::runtime_error("String from GUID failure");
+    auto string{to_utf8(buffer)};
 
-    else return narrow(buffer);
+    return std::make_pair(guid, string);
+}
+
+auto append_random(std::string string) -> std::string
+{
+    return string.append(std::to_string(make_random<int>()));
 }
 } // namespace text
 } // namespace glow

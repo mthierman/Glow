@@ -16,7 +16,7 @@
 #include "../../src/gdiplus.hxx"
 #include "../../src/gui.hxx"
 #include "../../src/notification.hxx"
-#include "../../src/positions.hxx"
+#include "../../src/position.hxx"
 #include "../../src/system.hxx"
 #include "../../src/text.hxx"
 #include "../../src/window.hxx"

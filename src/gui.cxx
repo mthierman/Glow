@@ -36,7 +36,7 @@ auto webview_version() -> std::string
     wil::unique_cotaskmem_string buffer;
     glow::console::hresult_check(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer));
 
-    return glow::text::narrow(buffer.get());
+    return glow::text::to_utf8(buffer.get());
 }
 
 auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool

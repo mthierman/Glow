@@ -35,7 +35,8 @@ namespace window
 {
 template <typename T> struct MessageWindow
 {
-    MessageWindow(std::string name = "MessageWindow", intptr_t id = glow::text::random<intptr_t>())
+    MessageWindow(std::string name = "MessageWindow",
+                  intptr_t id = glow::text::make_random<intptr_t>())
         : m_id{id}
     {
         WNDCLASSEXA wcex{sizeof(WNDCLASSEXA)};
@@ -129,7 +130,7 @@ template <typename T> struct MessageWindow
 
 template <typename T> struct BaseWindow
 {
-    BaseWindow(std::string name = "BaseWindow", intptr_t id = glow::text::random<intptr_t>(),
+    BaseWindow(std::string name = "BaseWindow", intptr_t id = glow::text::make_random<intptr_t>(),
                DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, DWORD exStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
                int height = CW_USEDEFAULT, HWND parent = nullptr, HMENU menu = nullptr)
@@ -529,7 +530,7 @@ template <typename T> struct BaseWindow
 
 template <typename T> struct WebView : BaseWindow<T>
 {
-    WebView(HWND parent, intptr_t id = glow::text::random<intptr_t>())
+    WebView(HWND parent, intptr_t id = glow::text::make_random<intptr_t>())
         : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<HMENU>(id))
     {
         m_parent = parent;
@@ -834,7 +835,7 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.core20)
         {
-            auto wideUrl{glow::text::widen(url)};
+            auto wideUrl{glow::text::to_utf16(url)};
             if (wideUrl.empty()) return S_OK;
             else return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
         }
@@ -846,7 +847,7 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.core20)
         {
-            auto wideJson{glow::text::widen(message.dump())};
+            auto wideJson{glow::text::to_utf16(message.dump())};
             if (wideJson.empty()) return S_OK;
             else
                 return glow::console::hresult_check(

@@ -24,13 +24,11 @@ namespace glow
 namespace text
 {
 auto safe_size(size_t size) -> int;
-auto narrow(std::wstring utf16) -> std::string;
-auto widen(std::string utf8) -> std::wstring;
-auto randomize(std::string string) -> std::string;
-auto guid() -> GUID;
-auto guid_string(GUID guid) -> std::string;
+auto to_utf8(std::wstring utf16) -> std::string;
+auto to_utf16(std::string utf8) -> std::wstring;
+auto make_guid() -> std::pair<GUID, std::string>;
 
-template <typename T, typename R = std::mt19937_64> auto random()
+template <typename T, typename R = std::mt19937_64> auto make_random()
 {
     constexpr T max{std::numeric_limits<T>::max()};
     R rng{std::random_device{}()};
@@ -49,5 +47,6 @@ template <typename T, typename R = std::mt19937_64> auto random()
         return dist(rng);
     }
 }
+auto append_random(std::string string) -> std::string;
 } // namespace text
 } // namespace glow

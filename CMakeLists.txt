@@ -95,7 +95,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/gdiplus.hxx
             ${PROJECT_SOURCE_DIR}/src/gui.hxx
             ${PROJECT_SOURCE_DIR}/src/notification.hxx
-            ${PROJECT_SOURCE_DIR}/src/positions.hxx
+            ${PROJECT_SOURCE_DIR}/src/position.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
