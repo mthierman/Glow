@@ -16,10 +16,6 @@ Console::Console()
 {
     AllocConsole();
 
-    // Disable close button
-    // EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
-    //                MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
-
     freopen_s(m_file.addressof(), "CONIN$", "r", stdin);
     freopen_s(m_file.addressof(), "CONOUT$", "w", stdout);
     freopen_s(m_file.addressof(), "CONOUT$", "w", stderr);
@@ -31,6 +27,12 @@ Console::Console()
 }
 
 Console::~Console() { FreeConsole(); }
+
+auto Console::disable_close() -> void
+{
+    EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
+                   MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+}
 
 auto argv(int argc, char* argv[]) -> std::vector<std::string>
 {

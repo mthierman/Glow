@@ -32,6 +32,9 @@ struct Console
 {
     Console();
     ~Console();
+
+    auto disable_close() -> void;
+
     wil::unique_file m_file;
 };
 
