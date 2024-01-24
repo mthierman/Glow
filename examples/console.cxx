@@ -12,6 +12,7 @@
 auto main(int argc, char* argv[]) -> int
 {
     //
+    glow::
 
     return 0;
 }
