@@ -22,6 +22,9 @@ auto main(int argc, char* argv[]) -> int
     glow::gui::GdiPlus gdiplus;
     glow::gui::CoInitialize conit;
     glow::gui::SystemColors systemColors;
+    auto cppwinrt{glow::config::cppwinrt};
+
+    OutputDebugStringA(cppwinrt.c_str());
 
     OutputDebugStringA(systemColors.string.accent.c_str());
 

@@ -29,7 +29,6 @@ add_library(
 target_compile_definitions(
     glow_definitions
     INTERFACE NOMINMAX
-              WIN32_LEAN_AND_MEAN
               NLOHMANN_JSON_NAMESPACE_NO_VERSION=1
               GDIPVER=0x0110
 )

@@ -13,5 +13,9 @@ auto main(int argc, char* argv[]) -> int
 {
     glow::console::source_print("🌸🌹🍒🍉🥝🍎🖍️🧶");
 
+    auto cppwinrt{glow::config::cppwinrt};
+
+    glow::console::source_print(cppwinrt);
+
     return 0;
 }
