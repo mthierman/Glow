@@ -9,24 +9,9 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
-struct Window : public glow::window::BaseWindow<Window>
-{
-    using glow::window::BaseWindow<Window>::BaseWindow;
-};
-
 auto main(int argc, char* argv[]) -> int
 {
-    Window win;
-    win.reveal();
-
-    glow::gui::GdiPlus gdiplus;
-    glow::gui::CoInitialize conit;
-    glow::gui::SystemColors systemColors;
-    auto cppwinrt{glow::config::cppwinrt};
-
-    OutputDebugStringA(cppwinrt.c_str());
-
-    OutputDebugStringA(systemColors.string.accent.c_str());
+    //
 
     return glow::gui::message_loop();
 }
