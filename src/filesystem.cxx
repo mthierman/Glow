@@ -53,10 +53,8 @@ auto Database::write() -> void
 
 auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
 {
-    // https://learn.microsoft.com/en-us/windows/win32/shell/knownfolderid
     wil::unique_cotaskmem_string buffer;
-
-    glow::console::hresult_check(SHGetKnownFolderPath(folderId, 0, nullptr, &buffer));
+    SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
     return std::filesystem::path(buffer.get());
 }
