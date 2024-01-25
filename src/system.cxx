@@ -27,7 +27,7 @@ auto argv(int argc, char* argv[]) -> std::vector<std::string>
 auto cmd_to_argv() -> std::vector<std::string>
 {
     int argc{};
-    wil::unique_hlocal_ptr<PWSTR[]> buffer{};
+    wil::unique_hlocal_ptr<wchar_t*[]> buffer{};
     buffer.reset(CommandLineToArgvW(GetCommandLineW(), &argc));
 
     std::vector<std::string> argv{};
@@ -40,6 +40,21 @@ auto cmd_to_argv() -> std::vector<std::string>
     return argv;
 }
 
+auto format_message(HRESULT errorCode) -> std::string
+{
+    wil::unique_hlocal_ptr<char> buffer;
+
+    if (FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                           FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                       nullptr, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                       reinterpret_cast<char*>(&buffer), 0, nullptr) == 0)
+    {
+        throw std::runtime_error("Format message failure");
+    }
+
+    return std::string(buffer.get());
+}
+
 auto system_error_string(HRESULT errorCode) -> std::string
 {
     return std::string(std::system_category().message(errorCode));
@@ -47,8 +62,7 @@ auto system_error_string(HRESULT errorCode) -> std::string
 
 auto hresult_string(HRESULT errorCode) -> std::string
 {
-    auto comError = _com_error(errorCode);
-    return std::string(comError.ErrorMessage());
+    return std::string(_com_error(errorCode).ErrorMessage());
 }
 
 auto last_error() -> HRESULT { return HRESULT_FROM_WIN32(GetLastError()); }
