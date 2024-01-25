@@ -36,11 +36,11 @@ jobs:
       # - name: Stable Release
       #   if: github.ref == 'refs/heads/main'
       #   run: |
-      #     Import-Module ${{ github.workspace }}\Tools\PowerShell
+      #     Import-Module ${{ github.workspace }}\tools\PowerShell
       #     Invoke-StableRelease
 
       # - name: Nightly Release
       #   if: github.ref == 'refs/heads/next'
       #   run: |
-      #     Import-Module ${{ github.workspace }}\Tools\PowerShell
+      #     Import-Module ${{ github.workspace }}\tools\PowerShell
       #     Invoke-NextRelease
