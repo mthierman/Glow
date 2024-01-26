@@ -9,10 +9,42 @@
     "include": [],
     "configurePresets": [
         {
+            "name": "Ninja",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {
             "name": "Ninja Multi-Config",
             "hidden": true,
-            "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build/${presetName}"
+            "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "Visual Studio",
+            "hidden": true,
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "toolset": {
+                "strategy": "external",
+                "value": "v143,host=x64"
+            }
+        },
+        {
+            "name": "MSVC",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "LLVM",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
         },
         {
             "name": "Unity",
@@ -35,93 +67,20 @@
             }
         },
         {
-            "name": "MSVC",
-            "hidden": true,
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "v143,host=x64"
-            },
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl",
-                "CMAKE_CXX_COMPILER": "cl"
-            }
-        },
-        {
-            "name": "LLVM",
-            "hidden": true,
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "v143,host=x64"
-            },
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "Multi MSVC",
-            "inherits": ["Ninja Multi-Config", "MSVC"]
-        },
-        {
-            "name": "Multi LLVM",
-            "inherits": ["Ninja Multi-Config", "LLVM"]
-        },
-        {
-            "name": "Unity MSVC",
-            "inherits": ["Ninja Multi-Config", "MSVC", "Unity"]
-        },
-        {
-            "name": "Unity LLVM",
-            "inherits": ["Ninja Multi-Config", "MSVC", "Unity"]
+            "name": "Default",
+            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
+            "binaryDir": "${sourceDir}/build/${presetName}"
         }
     ],
     "buildPresets": [
         {
             "name": "Release",
-            "configurePreset": "Multi MSVC",
-            "configuration": "Release"
-        },
-        {
-            "name": "Release",
-            "configurePreset": "Multi LLVM",
-            "configuration": "Release"
-        },
-        {
-            "name": "Release",
-            "configurePreset": "Unity MSVC",
-            "configuration": "Release"
-        },
-        {
-            "name": "Release",
-            "configurePreset": "Unity LLVM",
+            "configurePreset": "Default",
             "configuration": "Release"
         },
         {
             "name": "Debug",
-            "configurePreset": "Multi MSVC",
-            "configuration": "Debug"
-        },
-        {
-            "name": "Debug",
-            "configurePreset": "Multi LLVM",
-            "configuration": "Debug"
-        },
-        {
-            "name": "Debug",
-            "configurePreset": "Unity MSVC",
-            "configuration": "Debug"
-        },
-        {
-            "name": "Debug",
-            "configurePreset": "Unity LLVM",
+            "configurePreset": "Default",
             "configuration": "Debug"
         }
     ]
