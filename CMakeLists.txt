@@ -173,14 +173,8 @@ target_link_libraries(
            WindowsApp.lib
 )
 
-if(GLOW_EXAMPLES)
+if(GLOW_EXTRAS)
     add_subdirectory(examples)
-endif()
-
-if(GLOW_TESTS)
     add_subdirectory(tests)
-endif()
-
-if(GLOW_TOOLS)
     add_subdirectory(tools)
 endif()
