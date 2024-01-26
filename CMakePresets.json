@@ -69,19 +69,38 @@
         {
             "name": "Default",
             "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
-            "binaryDir": "${sourceDir}/build/${presetName}"
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "CI",
+            "inherits": ["Default"],
+            "condition": {
+                "type": "equals",
+                "lhs": "$env{CI}",
+                "rhs": "true"
+            }
         }
     ],
     "buildPresets": [
         {
-            "name": "Release",
+            "name": "[Default] Release",
             "configurePreset": "Default",
             "configuration": "Release"
         },
         {
-            "name": "Debug",
+            "name": "[Default] Debug",
             "configurePreset": "Default",
             "configuration": "Debug"
+        },
+        {
+            "name": "CI",
+            "configurePreset": "CI",
+            "configuration": "Release",
+            "condition": {
+                "type": "equals",
+                "lhs": "$env{CI}",
+                "rhs": "true"
+            }
         }
     ]
 }
