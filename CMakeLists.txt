@@ -8,18 +8,8 @@ project(
 )
 
 option(
-    GLOW_EXAMPLES
-    "Build Glow examples"
-    OFF
-)
-option(
-    GLOW_TESTS
-    "Build Glow tests"
-    OFF
-)
-option(
-    GLOW_TOOLS
-    "Build Glow tools"
+    GLOW_EXTRAS
+    "Build Glow examples, tests & tools"
     OFF
 )
 
