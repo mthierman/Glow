@@ -1,34 +1,26 @@
-function Enter-DevShell64
+function Invoke-DevShell
 {
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$Arch = 'amd64'
+    )
+
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     $vspath = & $vswhere -products * -latest -property installationPath
-    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch amd64 -Arch amd64 -SkipAutomaticLocation
+    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch $Arch -Arch $Arch -SkipAutomaticLocation
 }
 
-function Enter-DevShell32
+function Invoke-CMake
 {
-    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-    $vspath = & $vswhere -products * -latest -property installationPath
-    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch x86 -Arch x86 -SkipAutomaticLocation
-}
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$Preset = 'Default'
+    )
 
-function Invoke-ReleaseBuild
-{
-    Enter-DevShell64
-    cmake --preset Release
-    cmake --build --preset Release
-}
-
-function Invoke-UnityBuild
-{
-    Enter-DevShell64
-    cmake --preset Unity
-    cmake --build --preset Unity
-}
-
-function Export-Notes
-{
-    git --no-pager log -5 --oneline --no-decorate | Out-File "..\notes.txt"
+    cmake --preset $Preset
+    cmake --build --preset $Preset
 }
 
 function Compress-Repo
@@ -39,48 +31,7 @@ function Compress-Repo
     Pop-Location
 }
 
-function Get-Commit
-{
-    git rev-parse --short HEAD
-}
-
-# function Get-Name
-# {
-#     (Get-Content .\Glow.json | ConvertFrom-Json).name
-# }
-
-# function Get-Version
-# {
-#     (Get-Content .\Glow.json | ConvertFrom-Json).version
-# }
-
 function Get-Archive
 {
     Get-Item "..\Glow.tar.xz"
-}
-
-function Get-Notes
-{
-    Get-Item "..\notes.txt"
-}
-
-function Invoke-StableRelease
-{
-    Export-Notes
-    Compress-Repo
-    $version = "v$(Get-Version)"
-    $archive = Get-Archive
-    $notes = Get-Notes
-    gh release delete $version -y
-    gh release create $version $archive -F $notes -t "$version"
-}
-
-function Invoke-NextRelease
-{
-    Export-Notes
-    Compress-Repo
-    $archive = Get-Archive
-    $notes = Get-Notes
-    gh release delete Next -y
-    gh release create Next $archive -F $notes -t "Next" -p
 }
