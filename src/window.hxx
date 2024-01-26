@@ -140,10 +140,6 @@ template <typename T> struct BaseWindow
 
         if (!GetClassInfoExA(GetModuleHandleA(nullptr), name.c_str(), &wcex))
         {
-            wil::unique_hicon appIcon{
-                static_cast<HICON>(LoadImageA(GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101),
-                                              IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-
             wcex.lpszClassName = name.c_str();
             wcex.lpszMenuName = 0;
             wcex.lpfnWndProc = WndProc;
@@ -154,12 +150,12 @@ template <typename T> struct BaseWindow
             wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
             wcex.hCursor = static_cast<HCURSOR>(
                 LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-            wcex.hIcon = m_icon.get()
-                             ? m_icon.get()
+            wcex.hIcon = m_hicon.get()
+                             ? m_hicon.get()
                              : static_cast<HICON>(LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON,
                                                              0, 0, LR_SHARED | LR_DEFAULTSIZE));
-            wcex.hIconSm = m_icon.get()
-                               ? m_icon.get()
+            wcex.hIconSm = m_hicon.get()
+                               ? m_hicon.get()
                                : static_cast<HICON>(LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON,
                                                                0, 0, LR_SHARED | LR_DEFAULTSIZE));
 
@@ -182,6 +178,8 @@ template <typename T> struct BaseWindow
     virtual ~BaseWindow() {}
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
+
+    auto hicon() const -> HICON { return m_hicon.get(); }
 
     auto id() const -> intptr_t { return m_id; }
 
@@ -524,7 +522,7 @@ template <typename T> struct BaseWindow
     glow::gui::Notification m_notification;
     wil::unique_hwnd m_hwnd;
     intptr_t m_id{};
-    wil::unique_hicon m_icon{static_cast<HICON>(LoadImageA(
+    wil::unique_hicon m_hicon{static_cast<HICON>(LoadImageA(
         GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
