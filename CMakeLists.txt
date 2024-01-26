@@ -8,6 +8,12 @@ project(
 )
 
 option(
+    GLOW_RESTORE_NUGET
+    "Restore Nuget packages"
+    OFF
+)
+
+option(
     GLOW_EXTRAS
     "Build Glow examples, tests & tools"
     OFF
@@ -35,28 +41,30 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqlite)
 
-execute_process(
-    COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-)
+if(GLOW_RESTORE_NUGET)
+    execute_process(
+        COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
+        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    )
 
-file(
-    TO_CMAKE_PATH
-    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2210.55"
-    webview2_SOURCE_DIR
-)
+    cmake_path(
+        SET
+        webview2_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2210.55"
+    )
 
-file(
-    TO_CMAKE_PATH
-    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
-    wil_SOURCE_DIR
-)
+    cmake_path(
+        SET
+        wil_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
+    )
 
-file(
-    TO_CMAKE_PATH
-    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240111.5"
-    cppwinrt_SOURCE_DIR
-)
+    cmake_path(
+        SET
+        cppwinrt_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240111.5"
+    )
+endif()
 
 execute_process(
     COMMAND
