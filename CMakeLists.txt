@@ -30,12 +30,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
-    toml
-    URL https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz
-)
-FetchContent_MakeAvailable(toml)
-
-FetchContent_Declare(
     sqlite
     URL https://www.sqlite.org/2024/sqlite-amalgamation-3450000.zip
 )
@@ -154,7 +148,6 @@ target_include_directories(
            ${wil_SOURCE_DIR}/include
            ${sqlite_SOURCE_DIR}
            ${json_SOURCE_DIR}/single_include
-           ${toml_SOURCE_DIR}/include
 )
 
 target_link_directories(
@@ -169,7 +162,6 @@ target_link_libraries(
     PUBLIC glow::features
            glow::definitions
            nlohmann_json::nlohmann_json
-           tomlplusplus::tomlplusplus
            sqlite::sqlite
            dwmapi.lib
            Uxtheme.lib
