@@ -7,54 +7,98 @@ project(
               CXX
 )
 
-set(WIL
-    Microsoft.Windows.ImplementationLibrary
-)
-set(WIL_VERSION
-    1.0.240122.1
-)
-set(CPPWINRT
-    Microsoft.Windows.CppWinRT
-)
-set(CPPWINRT_VERSION
-    2.0.240111.5
-)
-set(WEBVIEW2
-    Microsoft.Web.WebView2
-)
-set(WEBVIEW2_VERSION
-    1.0.2210.55
-)
-
-option(
-    GLOW_LOCAL_LIBS
-    OFF
-)
 option(
     GLOW_EXAMPLES
+    "Build Glow examples"
     OFF
 )
 option(
     GLOW_TESTS
+    "Build Glow tests"
     OFF
 )
 option(
     GLOW_TOOLS
+    "Build Glow tools"
     OFF
 )
 
 include(cmake/Common.cmake)
 
 include(FetchContent)
-# include(cmake/CURL.cmake)
-include(cmake/SQLite.cmake)
-include(cmake/JSON.cmake)
-include(cmake/TOML.cmake)
-include(cmake/WIL.cmake)
-include(cmake/CPPWinRT.cmake)
-include(cmake/WebView2.cmake)
 
-include(cmake/BuildCPPWinRT.cmake)
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
+FetchContent_Declare(
+    toml
+    URL https://github.com/marzer/tomlplusplus/archive/refs/tags/v3.4.0.tar.gz
+)
+FetchContent_MakeAvailable(toml)
+
+FetchContent_Declare(
+    sqlite
+    URL https://www.sqlite.org/2024/sqlite-amalgamation-3450000.zip
+)
+FetchContent_MakeAvailable(sqlite)
+
+execute_process(
+    COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+file(
+    TO_CMAKE_PATH
+    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2210.55"
+    webview2_SOURCE_DIR
+)
+
+file(
+    TO_CMAKE_PATH
+    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
+    wil_SOURCE_DIR
+)
+
+file(
+    TO_CMAKE_PATH
+    "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240111.5"
+    cppwinrt_SOURCE_DIR
+)
+
+execute_process(
+    COMMAND
+        cppwinrt -input ${webview2_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd sdk -output
+        ${webview2_SOURCE_DIR}/build/native/include-winrt
+    WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
+)
+
+add_library(SQLite)
+
+add_library(
+    sqlite::sqlite
+    ALIAS
+    SQLite
+)
+
+target_sources(
+    SQLite
+    PRIVATE ${sqlite_SOURCE_DIR}/sqlite3.c
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           ${sqlite_SOURCE_DIR}
+           FILES
+           ${sqlite_SOURCE_DIR}/sqlite3.h
+)
+
+target_link_libraries(
+    SQLite
+    PRIVATE glow::features
+            glow::flags
+)
 
 add_library(Glow)
 
