@@ -1,7 +1,3 @@
-enable_testing()
-
-# include(CTest)
-
 add_executable(Glow_Tests)
 
 target_sources(
