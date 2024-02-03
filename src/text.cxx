@@ -69,9 +69,14 @@ auto make_guid() -> std::pair<GUID, std::string>
         throw std::runtime_error("String from GUID failure");
     }
 
-    auto string{to_utf8(buffer)};
+    return std::make_pair(guid, to_utf8(buffer));
+}
 
-    return std::make_pair(guid, string);
+auto make_winrt_guid() -> std::pair<winrt::guid, std::string>
+{
+    auto guid{winrt::Windows::Foundation::GuidHelper::CreateNewGuid()};
+
+    return std::make_pair(guid, winrt::to_string(winrt::to_hstring(guid)));
 }
 
 auto append_random(std::string string) -> std::string

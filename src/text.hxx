@@ -17,6 +17,8 @@
 
 #include <wil/win32_helpers.h>
 
+#include <winrt/Windows.Foundation.h>
+
 #include "system.hxx"
 
 namespace glow
@@ -27,6 +29,7 @@ auto safe_size(size_t size) -> int;
 auto to_utf8(std::wstring utf16) -> std::string;
 auto to_utf16(std::string utf8) -> std::wstring;
 auto make_guid() -> std::pair<GUID, std::string>;
+auto make_winrt_guid() -> std::pair<winrt::guid, std::string>;
 
 template <typename T, typename R = std::mt19937_64> auto make_random()
 {

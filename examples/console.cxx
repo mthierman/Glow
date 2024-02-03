@@ -11,7 +11,7 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    std::println("{}", glow::text::make_guid().second);
+    // 
 
     return 0;
 }
