@@ -587,7 +587,7 @@ template <typename T> struct WebView : BaseWindow<T>
                     {
                         m_webView.controller = createdController;
                         m_webView.controller4 =
-                            m_webView.controller.template try_query<ICoreWebView2Controller4>();
+                            m_webView.controller.try_query<ICoreWebView2Controller4>();
 
                         if (!m_webView.controller4) return E_POINTER;
 
@@ -600,7 +600,7 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         glow::console::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
-                        m_webView.core20 = m_webView.core.template try_query<ICoreWebView2_20>();
+                        m_webView.core20 = m_webView.core.try_query<ICoreWebView2_20>();
 
                         if (!m_webView.core20) return E_POINTER;
 
@@ -608,7 +608,7 @@ template <typename T> struct WebView : BaseWindow<T>
                             m_webView.core20->get_Settings(m_webView.settings.put()));
 
                         m_webView.settings8 =
-                            m_webView.settings.template try_query<ICoreWebView2Settings8>();
+                            m_webView.settings.try_query<ICoreWebView2Settings8>();
 
                         if (!m_webView.settings8) return E_POINTER;
 
