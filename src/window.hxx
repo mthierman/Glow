@@ -171,8 +171,8 @@ template <typename T> struct BaseWindow
             throw std::runtime_error("Window creation failure");
         }
 
-        m_scale = scale();
-        m_dpi = dpi();
+        dpi();
+        scale();
     }
 
     virtual ~BaseWindow() {}
@@ -201,11 +201,11 @@ template <typename T> struct BaseWindow
                      reinterpret_cast<uintptr_t>(&m_notification));
     }
 
-    auto dpi() const -> int { return GetDpiForWindow(hwnd()); };
+    auto dpi() -> void { m_dpi = GetDpiForWindow(hwnd()); };
 
-    auto scale() const -> float
+    auto scale() -> void
     {
-        return static_cast<float>(dpi()) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+        m_scale = static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
     };
 
     auto reveal() -> void { ShowWindow(hwnd(), SW_SHOWNORMAL); }
