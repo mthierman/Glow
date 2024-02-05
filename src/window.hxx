@@ -880,6 +880,7 @@ template <typename T> struct WebView : BaseWindow<T>
     };
     WebView2 m_webView;
 
+    std::string m_source;
     std::string m_documentTitle;
     std::string m_faviconUrl;
     wil::unique_hicon m_favicon;
