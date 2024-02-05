@@ -880,6 +880,9 @@ template <typename T> struct WebView : BaseWindow<T>
     };
     WebView2 m_webView;
 
+    std::string m_faviconUrl;
+    wil::unique_hicon m_favicon;
+
   private:
     T& derived() { return static_cast<T&>(*this); }
     T const& derived() const { return static_cast<T const&>(*this); }
