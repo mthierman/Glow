@@ -11,7 +11,7 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    // 
+    std::println("Glow Console Example");
 
     return 0;
 }
