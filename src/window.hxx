@@ -635,6 +635,8 @@ template <typename T> struct WebView : Window<T>
                         glow::hresult_check(favicon_changed());
                         glow::hresult_check(document_title_changed());
                         glow::hresult_check(zoom_factor_changed());
+                        glow::hresult_check(got_focus());
+                        glow::hresult_check(lost_focus());
 
                         initialized();
                     }
@@ -783,6 +785,31 @@ template <typename T> struct WebView : Window<T>
             &token);
     }
 
+    auto got_focus() -> ::HRESULT
+    {
+        // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2controller?view=webview2-1.0.2277.86#add_gotfocus
+        EventRegistrationToken token;
+
+        return m_webView.controller4->add_GotFocus(
+            Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
+                [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+                { return got_focus_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
+    auto lost_focus() -> ::HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.controller4->add_LostFocus(
+            Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
+                [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+                { return lost_focus_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
                                                 ICoreWebView2ContextMenuRequestedEventArgs* args)
         -> ::HRESULT
@@ -836,6 +863,16 @@ template <typename T> struct WebView : Window<T>
 
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> ::HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
     {
         return S_OK;
     }
@@ -895,6 +932,7 @@ template <typename T> struct WebView : Window<T>
     std::string m_documentTitle;
     std::string m_faviconUrl;
     wil::unique_hicon m_favicon;
+    bool m_focus{};
 
   private:
     T& derived() { return static_cast<T&>(*this); }
