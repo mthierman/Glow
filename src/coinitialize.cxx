@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace gui
-{
 CoInitialize::CoInitialize()
 {
     if (FAILED(m_result)) { throw std::runtime_error("CoInitialize failure"); }
@@ -23,5 +21,4 @@ CoInitialize::~CoInitialize()
 }
 
 CoInitialize::operator HRESULT() const { return m_result; }
-} // namespace gui
 } // namespace glow

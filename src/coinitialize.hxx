@@ -14,8 +14,6 @@
 
 namespace glow
 {
-namespace gui
-{
 struct CoInitialize
 {
     CoInitialize();
@@ -25,5 +23,4 @@ struct CoInitialize
 
     HRESULT m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)};
 };
-} // namespace gui
 } // namespace glow

@@ -15,8 +15,6 @@
 
 namespace glow
 {
-namespace console
-{
 struct Console
 {
     Console();
@@ -26,5 +24,4 @@ struct Console
 
     wil::unique_file m_file{};
 };
-} // namespace console
 } // namespace glow

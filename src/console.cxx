@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace console
-{
 Console::Console()
 {
     AllocConsole();
@@ -33,5 +31,4 @@ auto Console::disable_close() -> void
     EnableMenuItem(GetSystemMenu(GetConsoleWindow(), FALSE), SC_CLOSE,
                    MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
 }
-} // namespace console
 } // namespace glow

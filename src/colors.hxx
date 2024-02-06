@@ -17,8 +17,6 @@
 
 namespace glow
 {
-namespace gui
-{
 struct SystemColors
 {
     struct Color
@@ -76,5 +74,4 @@ struct SystemColors
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, systemColors)
 };
-} // namespace gui
 } // namespace glow

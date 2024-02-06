@@ -332,11 +332,11 @@ template <typename T> struct BaseWindow
 
     auto window_rect() -> void { GetWindowRect(hwnd(), &m_windowRect); }
 
-    auto client_position() -> glow::gui::Position
+    auto client_position() -> glow::Position
     {
         auto rect{client_rect()};
 
-        glow::gui::Position p;
+        glow::Position p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -346,11 +346,11 @@ template <typename T> struct BaseWindow
         return p;
     }
 
-    auto window_position() -> glow::gui::Position
+    auto window_position() -> glow::Position
     {
         auto rect{window_rect()};
 
-        glow::gui::Position p;
+        glow::Position p;
 
         p.x = rect.left;
         p.y = rect.top;
@@ -518,8 +518,8 @@ template <typename T> struct BaseWindow
     RECT m_windowRect{};
     int m_dpi{};
     float m_scale{};
-    glow::gui::Position m_position;
-    glow::gui::Notification m_notification;
+    glow::Position m_position;
+    glow::Notification m_notification;
     wil::unique_hwnd m_hwnd;
     intptr_t m_id{};
     wil::unique_hicon m_hicon{static_cast<HICON>(LoadImageA(

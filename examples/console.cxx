@@ -11,10 +11,9 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    std::println("Glow Console Example");
+    std::println("Glow");
 
-    glow::GUID guid;
-    std::println("{}", guid.string);
+    // glow::
 
     return 0;
 }

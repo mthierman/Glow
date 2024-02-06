@@ -12,11 +12,11 @@
 
 namespace glow
 {
-struct GUID
+struct UUID
 {
-    GUID();
+    UUID();
 
-    ::GUID guid;
+    GUID guid;
     std::string string;
 };
 } // namespace glow

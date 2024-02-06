@@ -14,8 +14,6 @@
 
 namespace glow
 {
-namespace gui
-{
 struct Notification
 {
     NMHDR nmhdr{};
@@ -23,5 +21,4 @@ struct Notification
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)
 };
-} // namespace gui
 } // namespace glow

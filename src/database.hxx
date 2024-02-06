@@ -20,8 +20,6 @@
 
 namespace glow
 {
-namespace database
-{
 struct Database
 {
     struct sqlite3_deleter
@@ -40,5 +38,4 @@ struct Database
     sqlite3_ptr m_db{};
     std::filesystem::path m_path{glow::filesystem::app_path() / "db.sqlite"};
 };
-} // namespace database
 } // namespace glow

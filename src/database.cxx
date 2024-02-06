@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace database
-{
 Database::Database() {}
 
 Database::~Database() {}
@@ -50,5 +48,4 @@ auto Database::write() -> void
         }
     }
 }
-} // namespace database
 } // namespace glow

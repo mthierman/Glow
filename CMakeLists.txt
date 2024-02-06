@@ -114,9 +114,9 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/filesystem.cxx
             ${PROJECT_SOURCE_DIR}/src/gdiplus.cxx
             ${PROJECT_SOURCE_DIR}/src/gui.cxx
-            ${PROJECT_SOURCE_DIR}/src/guid.cxx
             ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
+            ${PROJECT_SOURCE_DIR}/src/uuid.cxx
     PRIVATE FILE_SET
             HEADERS
             BASE_DIRS
@@ -131,11 +131,11 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
             ${PROJECT_SOURCE_DIR}/src/gdiplus.hxx
             ${PROJECT_SOURCE_DIR}/src/gui.hxx
-            ${PROJECT_SOURCE_DIR}/src/guid.hxx
             ${PROJECT_SOURCE_DIR}/src/notification.hxx
             ${PROJECT_SOURCE_DIR}/src/position.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
+            ${PROJECT_SOURCE_DIR}/src/uuid.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
             ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
             ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx

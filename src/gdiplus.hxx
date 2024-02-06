@@ -14,8 +14,6 @@
 
 namespace glow
 {
-namespace gui
-{
 struct GdiPlus
 {
     GdiPlus();
@@ -25,5 +23,4 @@ struct GdiPlus
     Gdiplus::GdiplusStartupInput input{};
     Gdiplus::Status status{Gdiplus::GdiplusStartup(&token, &input, nullptr)};
 };
-} // namespace gui
 } // namespace glow

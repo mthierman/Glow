@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace gui
-{
 SystemColors::SystemColors() { update(); }
 
 auto SystemColors::update() -> void
@@ -77,5 +75,4 @@ auto SystemColors::to_colorref(winrt::Windows::UI::Color uiColor) -> COLORREF
                std::ranges::clamp(static_cast<int>(uiColor.G), 0, 255),
                std::ranges::clamp(static_cast<int>(uiColor.B), 0, 255));
 }
-} // namespace gui
 } // namespace glow

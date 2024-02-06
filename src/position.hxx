@@ -12,8 +12,6 @@
 
 namespace glow
 {
-namespace gui
-{
 struct Position
 {
     int x{};
@@ -29,5 +27,4 @@ struct Position
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Position, x, y, width, height, maximize, fullscreen, topmost,
                                    dpi, scale)
 };
-} // namespace gui
 } // namespace glow
