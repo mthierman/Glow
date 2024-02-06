@@ -27,17 +27,14 @@
 
 #include "console.hxx"
 #include "gui.hxx"
+#include "random.hxx"
 #include "text.hxx"
 
 namespace glow
 {
-namespace window
+template <typename T> struct App
 {
-template <typename T> struct MessageWindow
-{
-    MessageWindow(std::string name = "MessageWindow",
-                  uintptr_t id = glow::text::make_random<uintptr_t>())
-        : m_id{id}
+    App(std::string name = "App", uintptr_t id = glow::random<uintptr_t>()) : m_id{id}
     {
         ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
 
@@ -67,7 +64,7 @@ template <typename T> struct MessageWindow
             throw std::runtime_error("Window creation failure");
     }
 
-    virtual ~MessageWindow() {}
+    virtual ~App() {}
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
@@ -131,12 +128,12 @@ template <typename T> struct MessageWindow
     wil::unique_hwnd m_hwnd;
 };
 
-template <typename T> struct BaseWindow
+template <typename T> struct Window
 {
-    BaseWindow(std::string name = "BaseWindow", uintptr_t id = glow::text::make_random<uintptr_t>(),
-               ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
-               int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
-               int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr)
+    Window(std::string name = "Window", uintptr_t id = glow::random<uintptr_t>(),
+           ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
+           int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
+           int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr)
         : m_id{id}
     {
         ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
@@ -179,7 +176,7 @@ template <typename T> struct BaseWindow
         scale();
     }
 
-    virtual ~BaseWindow() {}
+    virtual ~Window() {}
 
     auto hwnd() const -> ::HWND { return m_hwnd.get(); }
 
@@ -367,7 +364,7 @@ template <typename T> struct BaseWindow
 
     auto theme() -> void
     {
-        if (glow::gui::check_theme()) { dwm_dark_mode(true); }
+        if (glow::check_theme()) { dwm_dark_mode(true); }
 
         else { dwm_dark_mode(false); }
     }
@@ -539,14 +536,13 @@ template <typename T> struct BaseWindow
         ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
-template <typename T> struct WebView : BaseWindow<T>
+template <typename T> struct WebView : Window<T>
 {
-    WebView(HWND parent, uintptr_t id = glow::text::make_random<uintptr_t>())
-        : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent,
-                        reinterpret_cast<::HMENU>(id))
+    WebView(HWND parent, uintptr_t id = glow::random<uintptr_t>())
+        : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
     {
         m_parent = parent;
-        glow::console::hresult_check(create());
+        glow::hresult_check(create());
     }
 
     virtual ~WebView() {}
@@ -583,7 +579,7 @@ template <typename T> struct WebView : BaseWindow<T>
                 {
                     if (createdEnvironment)
                     {
-                        glow::console::hresult_check(create_controller(createdEnvironment));
+                        glow::hresult_check(create_controller(createdEnvironment));
                     }
 
                     return errorCode;
@@ -608,19 +604,19 @@ template <typename T> struct WebView : BaseWindow<T>
                         if (!m_webView.controller4) return E_POINTER;
 
                         COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                        glow::console::hresult_check(
+                        glow::hresult_check(
                             m_webView.controller4->put_DefaultBackgroundColor(bgColor));
 
                         ::SendMessageA(m_parent, WM_SIZE, 0, 0);
                         ::SendMessageA(derived().hwnd(), WM_SIZE, 0, 0);
 
-                        glow::console::hresult_check(
+                        glow::hresult_check(
                             m_webView.controller->get_CoreWebView2(m_webView.core.put()));
                         m_webView.core20 = m_webView.core.try_query<ICoreWebView2_20>();
 
                         if (!m_webView.core20) return E_POINTER;
 
-                        glow::console::hresult_check(
+                        glow::hresult_check(
                             m_webView.core20->get_Settings(m_webView.settings.put()));
 
                         m_webView.settings8 =
@@ -628,17 +624,17 @@ template <typename T> struct WebView : BaseWindow<T>
 
                         if (!m_webView.settings8) return E_POINTER;
 
-                        glow::console::hresult_check(settings());
+                        glow::hresult_check(settings());
 
-                        glow::console::hresult_check(context_menu_requested());
-                        glow::console::hresult_check(source_changed());
-                        glow::console::hresult_check(navigation_starting());
-                        glow::console::hresult_check(navigation_completed());
-                        glow::console::hresult_check(web_message_received());
-                        glow::console::hresult_check(accelerator_key_pressed());
-                        glow::console::hresult_check(favicon_changed());
-                        glow::console::hresult_check(document_title_changed());
-                        glow::console::hresult_check(zoom_factor_changed());
+                        glow::hresult_check(context_menu_requested());
+                        glow::hresult_check(source_changed());
+                        glow::hresult_check(navigation_starting());
+                        glow::hresult_check(navigation_completed());
+                        glow::hresult_check(web_message_received());
+                        glow::hresult_check(accelerator_key_pressed());
+                        glow::hresult_check(favicon_changed());
+                        glow::hresult_check(document_title_changed());
+                        glow::hresult_check(zoom_factor_changed());
 
                         initialized();
                     }
@@ -650,24 +646,23 @@ template <typename T> struct WebView : BaseWindow<T>
 
     virtual auto settings() -> ::HRESULT
     {
-        glow::console::hresult_check(
-            m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_AreDefaultContextMenusEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_AreDefaultScriptDialogsEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_AreDevToolsEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_AreHostObjectsAllowed(true));
-        glow::console::hresult_check(m_webView.settings8->put_HiddenPdfToolbarItems(
+        glow::hresult_check(m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_AreDefaultContextMenusEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_AreDefaultScriptDialogsEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_AreDevToolsEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_AreHostObjectsAllowed(true));
+        glow::hresult_check(m_webView.settings8->put_HiddenPdfToolbarItems(
             COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE));
-        glow::console::hresult_check(m_webView.settings8->put_IsBuiltInErrorPageEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsGeneralAutofillEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsPasswordAutosaveEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsPinchZoomEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsReputationCheckingRequired(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsScriptEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsStatusBarEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsSwipeNavigationEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsWebMessageEnabled(true));
-        glow::console::hresult_check(m_webView.settings8->put_IsZoomControlEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsBuiltInErrorPageEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsGeneralAutofillEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsPasswordAutosaveEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsPinchZoomEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsReputationCheckingRequired(true));
+        glow::hresult_check(m_webView.settings8->put_IsScriptEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsStatusBarEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsSwipeNavigationEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsWebMessageEnabled(true));
+        glow::hresult_check(m_webView.settings8->put_IsZoomControlEnabled(true));
 
         return S_OK;
     }
@@ -849,9 +844,9 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.core20)
         {
-            auto wideUrl{glow::text::to_utf16(url)};
+            auto wideUrl{glow::wstring(url)};
             if (wideUrl.empty()) return S_OK;
-            else return glow::console::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
+            else return glow::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
         }
 
         else return S_OK;
@@ -861,10 +856,10 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.core20)
         {
-            auto wideJson{glow::text::to_utf16(message.dump())};
+            auto wideJson{glow::wstring(message.dump())};
             if (wideJson.empty()) return S_OK;
             else
-                return glow::console::hresult_check(
+                return glow::hresult_check(
                     m_webView.core20->PostWebMessageAsJson(wideJson.c_str()));
         }
 
@@ -875,7 +870,7 @@ template <typename T> struct WebView : BaseWindow<T>
     {
         if (m_webView.controller4)
         {
-            return glow::console::hresult_check(m_webView.controller4->MoveFocus(
+            return glow::hresult_check(m_webView.controller4->MoveFocus(
                 COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC));
         }
 
@@ -905,5 +900,4 @@ template <typename T> struct WebView : BaseWindow<T>
     T& derived() { return static_cast<T&>(*this); }
     T const& derived() const { return static_cast<T const&>(*this); }
 };
-} // namespace window
 } // namespace glow

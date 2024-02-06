@@ -32,8 +32,6 @@
 
 namespace glow
 {
-namespace gui
-{
 auto message_loop() -> int;
 auto webview_version() -> std::string;
 auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool;
@@ -69,5 +67,4 @@ template <typename T> T* instance_from_window_long_ptr(::HWND hwnd)
 
     return self;
 }
-} // namespace gui
 } // namespace glow

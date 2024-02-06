@@ -13,7 +13,5 @@ auto main(int argc, char* argv[]) -> int
 {
     std::println("Glow");
 
-    // glow::
-
     return 0;
 }

@@ -13,10 +13,8 @@
 
 #include <cctype>
 #include <cwctype>
-#include <random>
 #include <ranges>
 #include <string>
-#include <type_traits>
 
 #include <wil/win32_helpers.h>
 
@@ -26,11 +24,8 @@
 
 namespace glow
 {
-namespace text
-{
-auto to_utf8(std::wstring utf16) -> std::string;
-auto to_utf16(std::string utf8) -> std::wstring;
-auto append_random(std::string string) -> std::string;
+auto string(std::wstring utf16) -> std::string;
+auto wstring(std::string utf8) -> std::wstring;
 
 template <typename T, typename U> auto safe_size(T value) -> int
 {
@@ -40,7 +35,7 @@ template <typename T, typename U> auto safe_size(T value) -> int
     return static_cast<U>(value);
 }
 
-template <typename T> auto to_lower(const T& string)
+template <typename T> auto lowercase(const T& string)
 {
     if constexpr (std::is_same_v<T, std::string>)
     {
@@ -59,7 +54,7 @@ template <typename T> auto to_lower(const T& string)
     }
 }
 
-template <typename T> auto to_upper(const T& string)
+template <typename T> auto uppercase(const T& string)
 {
     if constexpr (std::is_same_v<T, std::string>)
     {
@@ -77,25 +72,4 @@ template <typename T> auto to_upper(const T& string)
                std::ranges::to<std::wstring>();
     }
 }
-
-template <typename T, typename R = std::mt19937_64> auto make_random()
-{
-    constexpr T max{std::numeric_limits<T>::max()};
-    R rng{std::random_device{}()};
-
-    if constexpr (std::is_integral_v<T>)
-    {
-        std::uniform_int_distribution<T> dist(0, max);
-
-        return dist(rng);
-    }
-
-    else if constexpr (std::is_floating_point_v<T>)
-    {
-        std::uniform_real_distribution<T> dist(0, max);
-
-        return dist(rng);
-    }
-}
-} // namespace text
 } // namespace glow

@@ -19,11 +19,8 @@
 
 namespace glow
 {
-namespace filesystem
-{
 auto known_folder(::KNOWNFOLDERID folderId = ::FOLDERID_LocalAppData) -> std::filesystem::path;
 auto app_name() -> std::string;
 auto app_path() -> std::filesystem::path;
 auto app_path_wide() -> std::filesystem::path;
-} // namespace filesystem
 } // namespace glow

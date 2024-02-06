@@ -10,7 +10,7 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    auto args{glow::console::cmd_to_argv()};
+    auto args{glow::cmd_to_argv()};
 
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     {

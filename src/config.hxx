@@ -12,14 +12,14 @@
 
 namespace glow
 {
-namespace config
+struct Config
 {
-inline const std::string version{"@PROJECT_VERSION@"};
-inline const std::string webview2{"@WEBVIEW2@"};
-inline const std::string webview2_version{"@WEBVIEW2_VERSION@"};
-inline const std::string cppwinrt{"@CPPWINRT@"};
-inline const std::string cppwinrt_version{"@CPPWINRT_VERSION@"};
-inline const std::string wil{"@WIL@"};
-inline const std::string wil_version{"@WIL_VERSION@"};
-} // namespace config
+    static inline const std::string version{"@PROJECT_VERSION@"};
+    static inline const std::string webview2{"@WEBVIEW2@"};
+    static inline const std::string webview2_version{"@WEBVIEW2_VERSION@"};
+    static inline const std::string cppwinrt{"@CPPWINRT@"};
+    static inline const std::string cppwinrt_version{"@CPPWINRT_VERSION@"};
+    static inline const std::string wil{"@WIL@"};
+    static inline const std::string wil_version{"@WIL_VERSION@"};
+};
 } // namespace glow

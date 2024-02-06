@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace gui
-{
 auto message_loop() -> int
 {
     ::MSG msg{};
@@ -19,7 +17,7 @@ auto message_loop() -> int
 
     while ((r = ::GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) { glow::console::hresult_check(glow::console::last_error()); }
+        if (r == -1) { glow::hresult_check(glow::last_error()); }
 
         else
         {
@@ -34,9 +32,9 @@ auto message_loop() -> int
 auto webview_version() -> std::string
 {
     wil::unique_cotaskmem_string buffer;
-    glow::console::hresult_check(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer));
+    glow::hresult_check(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer));
 
-    return glow::text::to_utf8(buffer.get());
+    return glow::string(buffer.get());
 }
 
 auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool
@@ -144,5 +142,4 @@ auto allow_dark_mode(::HWND hWnd, bool enable) -> void
 
     ::FreeLibrary(uxtheme);
 }
-} // namespace gui
 } // namespace glow

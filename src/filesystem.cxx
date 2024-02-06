@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace filesystem
-{
 auto known_folder(::KNOWNFOLDERID folderId) -> std::filesystem::path
 {
     wil::unique_cotaskmem_string buffer{};
@@ -46,5 +44,4 @@ auto app_path_wide() -> std::filesystem::path
 
     return std::filesystem::canonical(exe.remove_filename());
 }
-} // namespace filesystem
 } // namespace glow

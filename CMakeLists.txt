@@ -133,6 +133,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/gui.hxx
             ${PROJECT_SOURCE_DIR}/src/notification.hxx
             ${PROJECT_SOURCE_DIR}/src/position.hxx
+            ${PROJECT_SOURCE_DIR}/src/random.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
             ${PROJECT_SOURCE_DIR}/src/uuid.hxx

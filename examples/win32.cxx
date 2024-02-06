@@ -9,9 +9,9 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
-struct Window : public glow::window::BaseWindow<Window>
+struct Window : public glow::Window<Window>
 {
-    using glow::window::BaseWindow<Window>::BaseWindow;
+    using glow::Window<Window>::Window;
 };
 
 auto main(int argc, char* argv[]) -> int
@@ -19,5 +19,5 @@ auto main(int argc, char* argv[]) -> int
     Window win;
     win.reveal();
 
-    return glow::gui::message_loop();
+    return glow::message_loop();
 }

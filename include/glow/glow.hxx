@@ -17,6 +17,7 @@
 #include "../../src/gui.hxx"
 #include "../../src/notification.hxx"
 #include "../../src/position.hxx"
+#include "../../src/random.hxx"
 #include "../../src/system.hxx"
 #include "../../src/text.hxx"
 #include "../../src/uuid.hxx"

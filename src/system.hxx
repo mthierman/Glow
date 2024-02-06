@@ -26,8 +26,6 @@
 
 namespace glow
 {
-namespace console
-{
 auto argv(int argc, char* argv[]) -> std::vector<std::string>;
 auto cmd_to_argv() -> std::vector<std::string>;
 auto format_message(::HRESULT errorCode) -> std::string;
@@ -48,5 +46,4 @@ auto message_box(std::string message, unsigned int type = MB_OK | MB_ICONINFORMA
 auto message_box_shell(std::string message, unsigned int type = MB_OK | MB_ICONINFORMATION) -> int;
 auto message_box_stock(std::string message, ::SHSTOCKICONID icon = ::SIID_INFO) -> void;
 auto create_process(std::filesystem::path path) -> int;
-} // namespace console
 } // namespace glow

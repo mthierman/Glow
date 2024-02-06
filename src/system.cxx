@@ -10,8 +10,6 @@
 
 namespace glow
 {
-namespace console
-{
 auto argv(int argc, char* argv[]) -> std::vector<std::string>
 {
     std::vector<std::string> vector{};
@@ -34,7 +32,7 @@ auto cmd_to_argv() -> std::vector<std::string>
 
     for (int i = 0; i < argc; i++)
     {
-        argv.push_back(glow::text::to_utf8(buffer[i]));
+        argv.push_back(glow::string(buffer[i]));
     }
 
     return argv;
@@ -119,13 +117,13 @@ auto source_print(std::string message, std::source_location location) -> void
 
 auto message_box(std::string message, unsigned int type) -> int
 {
-    return ::MessageBoxA(nullptr, message.c_str(), glow::filesystem::app_name().c_str(), type);
+    return ::MessageBoxA(nullptr, message.c_str(), glow::app_name().c_str(), type);
 }
 
 auto message_box_shell(std::string message, unsigned int type) -> int
 {
     return ::ShellMessageBoxA(::GetModuleHandleA(nullptr), nullptr, message.c_str(),
-                              glow::filesystem::app_name().c_str(), type);
+                              glow::app_name().c_str(), type);
 }
 
 auto message_box_stock(std::string message, ::SHSTOCKICONID icon) -> void
@@ -137,7 +135,7 @@ auto message_box_stock(std::string message, ::SHSTOCKICONID icon) -> void
     {
         auto hModule{::LoadLibraryExW(sii.szPath, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
-        auto program{glow::filesystem::app_name()};
+        auto program{glow::app_name()};
 
         ::MSGBOXPARAMS params{sizeof(::MSGBOXPARAMS)};
         params.hInstance = hModule;
@@ -167,5 +165,4 @@ auto create_process(std::filesystem::path path) -> int
 
     return 0;
 }
-} // namespace console
 } // namespace glow
