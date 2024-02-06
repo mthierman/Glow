@@ -10,8 +10,10 @@
 
 #include <Windows.h>
 #include <shellapi.h>
-#include <wil/resource.h>
+
 #include <iostream>
+
+#include <wil/resource.h>
 
 namespace glow
 {

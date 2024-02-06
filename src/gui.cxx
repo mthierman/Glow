@@ -14,17 +14,17 @@ namespace gui
 {
 auto message_loop() -> int
 {
-    MSG msg{};
+    ::MSG msg{};
     int r{};
 
-    while ((r = GetMessageA(&msg, nullptr, 0, 0)) != 0)
+    while ((r = ::GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
         if (r == -1) { glow::console::hresult_check(glow::console::last_error()); }
 
         else
         {
-            TranslateMessage(&msg);
-            DispatchMessageA(&msg);
+            ::TranslateMessage(&msg);
+            ::DispatchMessageA(&msg);
         }
     }
 
@@ -39,14 +39,14 @@ auto webview_version() -> std::string
     return glow::text::to_utf8(buffer.get());
 }
 
-auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool
+auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool
 {
-    if (GetClassInfoExA(GetModuleHandleA(nullptr), MAKEINTATOM(atom), &wndClass)) return true;
+    if (::GetClassInfoExA(::GetModuleHandleA(nullptr), MAKEINTATOM(atom), &wndClass)) return true;
 
     else return false;
 }
 
-auto rect_to_position(const RECT& rect) -> Position
+auto rect_to_position(const ::RECT& rect) -> Position
 {
     Position position;
 
@@ -58,9 +58,9 @@ auto rect_to_position(const RECT& rect) -> Position
     return position;
 }
 
-auto position_to_rect(const Position& position) -> RECT
+auto position_to_rect(const Position& position) -> ::RECT
 {
-    RECT rect{};
+    ::RECT rect{};
 
     rect.left = position.x;
     rect.top = position.y;
@@ -72,9 +72,15 @@ auto position_to_rect(const Position& position) -> RECT
 
 auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
 
-auto make_colorref(int r, int g, int b) -> COLORREF
+auto make_colorref(int r, int g, int b) -> ::COLORREF
 {
     return RGB(clamp_color(r), clamp_color(g), clamp_color(b));
+}
+
+auto load_icon(::LPSTR name) -> ::HICON
+{
+    return static_cast<::HICON>(
+        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
 auto check_theme() -> bool
@@ -99,11 +105,11 @@ auto set_preferred_app_mode() -> void
     };
     using fnSetPreferredAppMode = PreferredAppMode(WINAPI*)(PreferredAppMode appMode);
 
-    auto uxtheme{LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+    auto uxtheme{::LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
     if (uxtheme)
     {
-        auto ord135{GetProcAddress(uxtheme, MAKEINTRESOURCEA(135))};
+        auto ord135{::GetProcAddress(uxtheme, MAKEINTRESOURCEA(135))};
 
         if (ord135)
         {
@@ -115,19 +121,19 @@ auto set_preferred_app_mode() -> void
     }
 }
 
-auto allow_dark_mode(HWND hWnd, bool enable) -> void
+auto allow_dark_mode(::HWND hWnd, bool enable) -> void
 {
-    using fnAllowDarkModeForWindow = bool(WINAPI*)(HWND hWnd, bool allow);
+    using fnAllowDarkModeForWindow = bool(WINAPI*)(::HWND hWnd, bool allow);
     using fnFlushMenuThemes = void(WINAPI*)();
-    auto uxtheme{LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
+    auto uxtheme{::LoadLibraryExA("uxtheme.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
 
     if (uxtheme)
     {
         // fnAllowDarkModeForWindow AllowDarkModeForWindow;
         // fnFlushMenuThemes FlushMenuThemes;
 
-        auto ord133{GetProcAddress(uxtheme, MAKEINTRESOURCEA(133))};
-        auto ord136{GetProcAddress(uxtheme, MAKEINTRESOURCEA(136))};
+        auto ord133{::GetProcAddress(uxtheme, MAKEINTRESOURCEA(133))};
+        auto ord136{::GetProcAddress(uxtheme, MAKEINTRESOURCEA(136))};
 
         auto AllowDarkModeForWindow{reinterpret_cast<fnAllowDarkModeForWindow>(ord133)};
         auto FlushMenuThemes{reinterpret_cast<fnFlushMenuThemes>(ord136)};
@@ -136,49 +142,7 @@ auto allow_dark_mode(HWND hWnd, bool enable) -> void
         FlushMenuThemes();
     }
 
-    FreeLibrary(uxtheme);
-}
-
-auto icon_application() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_error() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_ERROR, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_question() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_warning() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_WARNING, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_information() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_INFORMATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_winlogo() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_WINLOGO, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto icon_shield() -> HICON
-{
-    return static_cast<HICON>(
-        LoadImageA(nullptr, IDI_SHIELD, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+    ::FreeLibrary(uxtheme);
 }
 } // namespace gui
 } // namespace glow

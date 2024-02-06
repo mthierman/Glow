@@ -16,7 +16,7 @@ struct UUID
 {
     UUID();
 
-    GUID guid;
+    ::GUID guid;
     std::string string;
 };
 } // namespace glow

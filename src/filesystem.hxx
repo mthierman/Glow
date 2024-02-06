@@ -10,16 +10,18 @@
 
 #include <Windows.h>
 #include <ShlObj.h>
-#include <wil/resource.h>
+
 #include <filesystem>
 #include <memory>
 #include <string>
+
+#include <wil/resource.h>
 
 namespace glow
 {
 namespace filesystem
 {
-auto known_folder(KNOWNFOLDERID folderId = FOLDERID_LocalAppData) -> std::filesystem::path;
+auto known_folder(::KNOWNFOLDERID folderId = ::FOLDERID_LocalAppData) -> std::filesystem::path;
 auto app_name() -> std::string;
 auto app_path() -> std::filesystem::path;
 auto app_path_wide() -> std::filesystem::path;

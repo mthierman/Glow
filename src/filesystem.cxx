@@ -12,10 +12,10 @@ namespace glow
 {
 namespace filesystem
 {
-auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
+auto known_folder(::KNOWNFOLDERID folderId) -> std::filesystem::path
 {
     wil::unique_cotaskmem_string buffer{};
-    SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
+    ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
     return std::filesystem::path(buffer.get());
 }
@@ -23,7 +23,7 @@ auto known_folder(KNOWNFOLDERID folderId) -> std::filesystem::path
 auto app_name() -> std::string
 {
     std::string buffer{};
-    _get_pgmptr(std::out_ptr(buffer));
+    ::_get_pgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
     return exe.filename().replace_extension("").string();
@@ -32,7 +32,7 @@ auto app_name() -> std::string
 auto app_path() -> std::filesystem::path
 {
     std::string buffer{};
-    _get_pgmptr(std::out_ptr(buffer));
+    ::_get_pgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());
@@ -41,7 +41,7 @@ auto app_path() -> std::filesystem::path
 auto app_path_wide() -> std::filesystem::path
 {
     std::wstring buffer{};
-    _get_wpgmptr(std::out_ptr(buffer));
+    ::_get_wpgmptr(std::out_ptr(buffer));
     std::filesystem::path exe{buffer};
 
     return std::filesystem::canonical(exe.remove_filename());

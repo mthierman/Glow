@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <gdiplus.h>
+
 #include <stdexcept>
 
 namespace glow

@@ -69,7 +69,7 @@ auto SystemColors::to_string(winrt::Windows::UI::Color uiColor) -> std::string
     return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", uiColor.R, uiColor.G, uiColor.B, uiColor.A);
 }
 
-auto SystemColors::to_colorref(winrt::Windows::UI::Color uiColor) -> COLORREF
+auto SystemColors::to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF
 {
     return RGB(std::ranges::clamp(static_cast<int>(uiColor.R), 0, 255),
                std::ranges::clamp(static_cast<int>(uiColor.G), 0, 255),

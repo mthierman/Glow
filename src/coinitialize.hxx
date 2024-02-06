@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <objbase.h>
+
 #include <stdexcept>
 
 namespace glow
@@ -19,8 +20,8 @@ struct CoInitialize
     CoInitialize();
     ~CoInitialize();
 
-    operator HRESULT() const;
+    operator ::HRESULT() const;
 
-    HRESULT m_result{CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)};
+    ::HRESULT m_result{::CoInitializeEx(nullptr, ::COINIT_APARTMENTTHREADED)};
 };
 } // namespace glow

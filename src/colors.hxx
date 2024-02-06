@@ -9,10 +9,13 @@
 #pragma once
 
 #include <Windows.h>
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.UI.ViewManagement.h>
+
 #include <map>
 #include <string>
+
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.ViewManagement.h>
+
 #include <nlohmann/json.hpp>
 
 namespace glow
@@ -47,22 +50,22 @@ struct SystemColors
 
     struct ColorRef
     {
-        COLORREF accent{};
-        COLORREF accentDark1{};
-        COLORREF accentDark2{};
-        COLORREF accentDark3{};
-        COLORREF accentLight1{};
-        COLORREF accentLight2{};
-        COLORREF accentLight3{};
-        COLORREF background{};
-        COLORREF foreground{};
+        ::COLORREF accent{};
+        ::COLORREF accentDark1{};
+        ::COLORREF accentDark2{};
+        ::COLORREF accentDark3{};
+        ::COLORREF accentLight1{};
+        ::COLORREF accentLight2{};
+        ::COLORREF accentLight3{};
+        ::COLORREF background{};
+        ::COLORREF foreground{};
     };
 
     SystemColors();
 
     auto update() -> void;
     auto to_string(winrt::Windows::UI::Color uiColor) -> std::string;
-    auto to_colorref(winrt::Windows::UI::Color uiColor) -> COLORREF;
+    auto to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF;
 
     winrt::Windows::UI::ViewManagement::UISettings settings{
         winrt::Windows::UI::ViewManagement::UISettings()};

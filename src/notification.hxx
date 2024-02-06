@@ -16,7 +16,7 @@ namespace glow
 {
 struct Notification
 {
-    NMHDR nmhdr{};
+    ::NMHDR nmhdr{};
     std::string message{};
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)

@@ -36,42 +36,36 @@ namespace gui
 {
 auto message_loop() -> int;
 auto webview_version() -> std::string;
-auto get_class_info(ATOM& atom, WNDCLASSEXA& wndClass) -> bool;
-auto rect_to_position(const RECT& rect) -> Position;
-auto position_to_rect(const Position& position) -> RECT;
+auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool;
+auto rect_to_position(const ::RECT& rect) -> Position;
+auto position_to_rect(const Position& position) -> ::RECT;
 auto clamp_color(int value) -> int;
-auto make_colorref(int r, int g, int b) -> COLORREF;
+auto make_colorref(int r, int g, int b) -> ::COLORREF;
+auto load_icon(::LPSTR name) -> ::HICON;
 auto check_theme() -> bool;
 auto set_preferred_app_mode() -> void;
-auto allow_dark_mode(HWND hWnd, bool enable) -> void;
-auto icon_application() -> HICON;
-auto icon_error() -> HICON;
-auto icon_question() -> HICON;
-auto icon_warning() -> HICON;
-auto icon_information() -> HICON;
-auto icon_winlogo() -> HICON;
-auto icon_shield() -> HICON;
+auto allow_dark_mode(::HWND hWnd, bool enable) -> void;
 
-template <typename T> T* instance_from_wnd_proc(HWND hwnd, UINT uMsg, LPARAM lParam)
+template <typename T> T* instance_from_wnd_proc(::HWND hwnd, ::UINT uMsg, ::LPARAM lParam)
 {
     T* self{nullptr};
 
     if (uMsg == WM_NCCREATE)
     {
-        auto lpCreateStruct{reinterpret_cast<LPCREATESTRUCT>(lParam)};
+        auto lpCreateStruct{reinterpret_cast<::LPCREATESTRUCT>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
         self->m_hwnd.reset(hwnd);
-        SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
+        ::SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
     }
 
-    else self = reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0));
+    else self = reinterpret_cast<T*>(::GetWindowLongPtrA(hwnd, 0));
 
     return self;
 }
 
-template <typename T> T* instance_from_window_long_ptr(HWND hwnd)
+template <typename T> T* instance_from_window_long_ptr(::HWND hwnd)
 {
-    T* self{reinterpret_cast<T*>(GetWindowLongPtrA(hwnd, 0))};
+    T* self{reinterpret_cast<T*>(::GetWindowLongPtrA(hwnd, 0))};
 
     return self;
 }
