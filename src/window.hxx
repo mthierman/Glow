@@ -36,7 +36,7 @@ namespace window
 template <typename T> struct MessageWindow
 {
     MessageWindow(std::string name = "MessageWindow",
-                  intptr_t id = glow::text::make_random<intptr_t>())
+                  uintptr_t id = glow::text::make_random<uintptr_t>())
         : m_id{id}
     {
         ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
@@ -71,7 +71,7 @@ template <typename T> struct MessageWindow
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
-    auto id() const -> intptr_t { return m_id; }
+    auto id() const -> uintptr_t { return m_id; }
 
     auto close() -> int
     {
@@ -127,13 +127,13 @@ template <typename T> struct MessageWindow
     }
 
   public:
-    intptr_t m_id;
+    uintptr_t m_id;
     wil::unique_hwnd m_hwnd;
 };
 
 template <typename T> struct BaseWindow
 {
-    BaseWindow(std::string name = "BaseWindow", intptr_t id = glow::text::make_random<intptr_t>(),
+    BaseWindow(std::string name = "BaseWindow", uintptr_t id = glow::text::make_random<uintptr_t>(),
                ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
                int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
                int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr)
@@ -185,7 +185,7 @@ template <typename T> struct BaseWindow
 
     auto hicon() const -> ::HICON { return m_hicon.get(); }
 
-    auto id() const -> intptr_t { return m_id; }
+    auto id() const -> uintptr_t { return m_id; }
 
     auto close() -> int
     {
@@ -534,14 +534,14 @@ template <typename T> struct BaseWindow
     glow::Position m_position;
     glow::Notification m_notification;
     wil::unique_hwnd m_hwnd;
-    intptr_t m_id{};
+    uintptr_t m_id{};
     wil::unique_hicon m_hicon{static_cast<HICON>(::LoadImageA(
         ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
 
 template <typename T> struct WebView : BaseWindow<T>
 {
-    WebView(HWND parent, intptr_t id = glow::text::make_random<intptr_t>())
+    WebView(HWND parent, uintptr_t id = glow::text::make_random<uintptr_t>())
         : BaseWindow<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent,
                         reinterpret_cast<::HMENU>(id))
     {
