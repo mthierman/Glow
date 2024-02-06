@@ -83,5 +83,17 @@
             "configurePreset": "Default",
             "configuration": "Debug"
         }
+    ],
+    "testPresets": [
+        {
+            "name": "Release",
+            "configurePreset": "Default",
+            "configuration": "Release"
+        },
+        {
+            "name": "Debug",
+            "configurePreset": "Default",
+            "configuration": "Debug"
+        }
     ]
 }
