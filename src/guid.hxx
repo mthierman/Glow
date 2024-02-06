@@ -6,15 +6,17 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/config.hxx>
-#include <glow/glow.hxx>
+#pragma once
 
-auto main(int argc, char* argv[]) -> int
+#include "text.hxx"
+
+namespace glow
 {
-    std::println("Glow Console Example");
+struct GUID
+{
+    GUID();
 
-    glow::GUID guid;
-    std::println("{}", guid.string);
-
-    return 0;
-}
+    ::GUID guid;
+    std::string string;
+};
+} // namespace glow

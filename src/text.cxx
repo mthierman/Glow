@@ -12,19 +12,11 @@ namespace glow
 {
 namespace text
 {
-auto safe_size(size_t value) -> int
-{
-    constexpr int max{std::numeric_limits<int>::max()};
-    if (value > static_cast<size_t>(max)) throw std::overflow_error("Unsafe size");
-
-    return static_cast<int>(value);
-}
-
 auto to_utf8(std::wstring utf16) -> std::string
 {
     if (utf16.empty()) return {};
 
-    auto safeSize{safe_size(utf16.length())};
+    auto safeSize{safe_size<size_t, int>(utf16.length())};
 
     auto length{WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
                                     utf16.data(), safeSize, nullptr, 0, nullptr, nullptr)};
@@ -42,7 +34,7 @@ auto to_utf16(std::string utf8) -> std::wstring
 {
     if (utf8.empty()) return {};
 
-    auto safeSize{safe_size(utf8.length())};
+    auto safeSize{safe_size<size_t, int>(utf8.length())};
 
     auto length{
         MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, nullptr, 0)};
@@ -54,29 +46,6 @@ auto to_utf16(std::string utf8) -> std::wstring
         return utf16;
 
     else throw std::runtime_error(glow::console::last_error_string());
-}
-
-auto make_guid() -> std::pair<GUID, std::string>
-{
-    GUID guid;
-
-    if (FAILED(CoCreateGuid(&guid))) throw std::runtime_error("GUID creation failure");
-
-    std::wstring buffer(wil::guid_string_buffer_length, 0);
-
-    if (StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0)
-    {
-        throw std::runtime_error("String from GUID failure");
-    }
-
-    return std::make_pair(guid, to_utf8(buffer));
-}
-
-auto make_winrt_guid() -> std::pair<winrt::guid, std::string>
-{
-    auto guid{winrt::Windows::Foundation::GuidHelper::CreateNewGuid()};
-
-    return std::make_pair(guid, winrt::to_string(winrt::to_hstring(guid)));
 }
 
 auto append_random(std::string string) -> std::string

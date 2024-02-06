@@ -6,15 +6,17 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/config.hxx>
-#include <glow/glow.hxx>
+#include "guid.hxx"
 
-auto main(int argc, char* argv[]) -> int
+namespace glow
 {
-    std::println("Glow Console Example");
+GUID::GUID()
+{
+    ::CoCreateGuid(&guid);
 
-    glow::GUID guid;
-    std::println("{}", guid.string);
+    std::wstring buffer(wil::guid_string_buffer_length, 0);
+    ::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
 
-    return 0;
+    string.assign(glow::text::to_lower(glow::text::to_utf8(buffer)));
 }
+} // namespace glow

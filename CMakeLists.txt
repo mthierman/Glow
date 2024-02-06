@@ -114,6 +114,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/filesystem.cxx
             ${PROJECT_SOURCE_DIR}/src/gdiplus.cxx
             ${PROJECT_SOURCE_DIR}/src/gui.cxx
+            ${PROJECT_SOURCE_DIR}/src/guid.cxx
             ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
     PRIVATE FILE_SET
@@ -130,6 +131,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
             ${PROJECT_SOURCE_DIR}/src/gdiplus.hxx
             ${PROJECT_SOURCE_DIR}/src/gui.hxx
+            ${PROJECT_SOURCE_DIR}/src/guid.hxx
             ${PROJECT_SOURCE_DIR}/src/notification.hxx
             ${PROJECT_SOURCE_DIR}/src/position.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
