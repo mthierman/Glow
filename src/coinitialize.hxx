@@ -22,6 +22,6 @@ struct CoInitialize
 
     operator ::HRESULT() const;
 
-    ::HRESULT m_result{::CoInitializeEx(nullptr, ::COINIT_APARTMENTTHREADED)};
+    ::HRESULT result{};
 };
 } // namespace glow

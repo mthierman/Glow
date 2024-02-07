@@ -10,7 +10,10 @@
 
 namespace glow
 {
-SystemColors::SystemColors() { update(); }
+SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISettings()}
+{
+    update();
+}
 
 auto SystemColors::update() -> void
 {

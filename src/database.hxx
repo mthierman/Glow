@@ -38,7 +38,7 @@ struct Database
 
   private:
     using sqlite3_ptr = std::unique_ptr<sqlite3, sqlite3_deleter>;
-    sqlite3_ptr m_db{};
-    std::filesystem::path m_path{glow::app_path() / "db.sqlite"};
+    sqlite3_ptr db{};
+    std::filesystem::path path{};
 };
 } // namespace glow

@@ -12,28 +12,14 @@
 #include <Unknwn.h>
 #include <dwmapi.h>
 
-#include <map>
-#include <string>
-
-#include <wil/com.h>
-#include <wil/resource.h>
-
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <WebView2.h>
-#include <WebView2EnvironmentOptions.h>
-
-#include <nlohmann/json.hpp>
-
-#include "console.hxx"
 #include "position.hxx"
-#include "text.hxx"
 
 namespace glow
 {
 auto message_loop() -> int;
-auto webview_version() -> std::string;
 auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool;
 auto rect_to_position(const ::RECT& rect) -> Position;
 auto position_to_rect(const Position& position) -> ::RECT;

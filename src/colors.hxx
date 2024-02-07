@@ -67,9 +67,7 @@ struct SystemColors
     auto to_string(winrt::Windows::UI::Color uiColor) -> std::string;
     auto to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF;
 
-    winrt::Windows::UI::ViewManagement::UISettings settings{
-        winrt::Windows::UI::ViewManagement::UISettings()};
-
+    winrt::Windows::UI::ViewManagement::UISettings settings{};
     Color color{};
     String string{};
     ColorRef colorref{};

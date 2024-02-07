@@ -17,7 +17,7 @@ auto message_loop() -> int
 
     while ((r = ::GetMessageA(&msg, nullptr, 0, 0)) != 0)
     {
-        if (r == -1) { glow::hresult_check(glow::last_error()); }
+        if (r == -1) { return -1; }
 
         else
         {
@@ -27,14 +27,6 @@ auto message_loop() -> int
     }
 
     return 0;
-}
-
-auto webview_version() -> std::string
-{
-    wil::unique_cotaskmem_string buffer;
-    glow::hresult_check(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer));
-
-    return glow::string(buffer.get());
 }
 
 auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool

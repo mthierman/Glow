@@ -10,7 +10,7 @@
 
 namespace glow
 {
-GdiPlus::GdiPlus()
+GdiPlus::GdiPlus() : status{Gdiplus::GdiplusStartup(&token, &input, nullptr)}
 {
     if (status != Gdiplus::Status::Ok) { throw std::runtime_error("GDI+ startup failure"); }
 }

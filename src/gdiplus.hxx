@@ -22,6 +22,6 @@ struct GdiPlus
 
     uintptr_t token{};
     Gdiplus::GdiplusStartupInput input{};
-    Gdiplus::Status status{Gdiplus::GdiplusStartup(&token, &input, nullptr)};
+    Gdiplus::Status status{};
 };
 } // namespace glow

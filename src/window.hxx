@@ -936,6 +936,14 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
+    auto version() -> std::string
+    {
+        wil::unique_cotaskmem_string buffer;
+        GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer);
+
+        return glow::string(buffer.get());
+    }
+
     ::HWND m_parent{nullptr};
 
     struct WebView2

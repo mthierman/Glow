@@ -8,6 +8,10 @@
 
 #pragma once
 
+#include <objbase.h>
+
+#include <wil/win32_helpers.h>
+
 #include "text.hxx"
 
 namespace glow

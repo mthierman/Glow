@@ -10,13 +10,13 @@
 
 namespace glow
 {
-Database::Database() {}
+Database::Database() : path{glow::app_path() / "db.sqlite"} {}
 
 Database::~Database() {}
 
 auto Database::open() -> void
 {
-    if (sqlite3_open(m_path.string().c_str(), std::out_ptr(m_db)) != SQLITE_OK)
+    if (sqlite3_open(path.string().c_str(), std::out_ptr(db)) != SQLITE_OK)
         throw std::runtime_error("Failed to open SQLite");
 }
 
@@ -35,11 +35,11 @@ auto Database::write() -> void
                     "MAIN TEXT NOT NULL,"
                     "SIDE TEXT NOT NULL);"};
 
-    if (std::filesystem::exists(m_path))
+    if (std::filesystem::exists(path))
     {
         std::string error{};
 
-        auto dbExec{sqlite3_exec(m_db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
+        auto dbExec{sqlite3_exec(db.get(), sql.c_str(), nullptr, 0, std::out_ptr(error))};
 
         if (dbExec != SQLITE_OK)
         {

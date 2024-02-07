@@ -9,14 +9,11 @@
 #pragma once
 
 #include <Windows.h>
-#include <objbase.h>
 
 #include <cctype>
 #include <cwctype>
 #include <ranges>
 #include <string>
-
-#include <wil/win32_helpers.h>
 
 #include <winrt/Windows.Foundation.h>
 
