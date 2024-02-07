@@ -903,8 +903,8 @@ template <typename T> struct WebView : Window<T>
         if (m_webView.core20)
         {
             auto wideUrl{glow::wstring(url)};
-            if (wideUrl.empty()) return S_OK;
-            else return glow::hresult_check(m_webView.core20->Navigate(wideUrl.c_str()));
+            if (wideUrl.empty()) { return S_OK; }
+            else return m_webView.core20->Navigate(wideUrl.c_str());
         }
 
         else return S_OK;
@@ -915,10 +915,8 @@ template <typename T> struct WebView : Window<T>
         if (m_webView.core20)
         {
             auto wideJson{glow::wstring(message.dump())};
-            if (wideJson.empty()) return S_OK;
-            else
-                return glow::hresult_check(
-                    m_webView.core20->PostWebMessageAsJson(wideJson.c_str()));
+            if (wideJson.empty()) { return S_OK; }
+            else return m_webView.core20->PostWebMessageAsJson(wideJson.c_str());
         }
 
         else return S_OK;
