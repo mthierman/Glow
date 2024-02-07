@@ -924,13 +924,16 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
-    auto focus() -> ::HRESULT
+    auto focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
     {
-        if (m_webView.controller4)
-        {
-            return glow::hresult_check(m_webView.controller4->MoveFocus(
-                COREWEBVIEW2_MOVE_FOCUS_REASON::COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC));
-        }
+        if (m_webView.controller4) { return m_webView.controller4->MoveFocus(reason); }
+
+        else return S_OK;
+    }
+
+    auto zoom(double zoomFactor) -> ::HRESULT
+    {
+        if (m_webView.controller4) { return m_webView.controller4->put_ZoomFactor(zoomFactor); }
 
         else return S_OK;
     }
