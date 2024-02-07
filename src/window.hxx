@@ -11,10 +11,8 @@
 #include <Windows.h>
 #include <Unknwn.h>
 #include <dwmapi.h>
-#include <gdiplus.h>
 #include <wrl.h>
 
-#include <cstdint>
 #include <stdexcept>
 #include <string>
 
@@ -25,8 +23,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include "console.hxx"
 #include "gui.hxx"
+#include "position.hxx"
 #include "random.hxx"
 #include "text.hxx"
 
