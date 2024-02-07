@@ -637,6 +637,7 @@ template <typename T> struct WebView : Window<T>
                         glow::hresult_check(zoom_factor_changed());
                         glow::hresult_check(got_focus());
                         glow::hresult_check(lost_focus());
+                        glow::hresult_check(move_focus_requested());
 
                         initialized();
                     }
@@ -810,6 +811,19 @@ template <typename T> struct WebView : Window<T>
             &token);
     }
 
+    auto move_focus_requested() -> ::HRESULT
+    {
+        EventRegistrationToken token;
+
+        return m_webView.controller4->add_MoveFocusRequested(
+            Microsoft::WRL::Callback<ICoreWebView2MoveFocusRequestedEventHandler>(
+                [=, this](ICoreWebView2Controller* sender,
+                          ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
+                { return move_focus_requested_handler(sender, args); })
+                .Get(),
+            &token);
+    }
+
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
                                                 ICoreWebView2ContextMenuRequestedEventArgs* args)
         -> ::HRESULT
@@ -873,6 +887,13 @@ template <typename T> struct WebView : Window<T>
     }
 
     virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
+    }
+
+    virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
+                                              ICoreWebView2MoveFocusRequestedEventArgs* args)
+        -> ::HRESULT
     {
         return S_OK;
     }
