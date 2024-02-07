@@ -17,6 +17,7 @@
 #include <print>
 #include <source_location>
 #include <system_error>
+#include <utility>
 #include <vector>
 
 #include <wil/resource.h>

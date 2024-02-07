@@ -16,7 +16,7 @@ auto argv(int argc, char* argv[]) -> std::vector<std::string>
 
     for (int i = 0; i < argc; i++)
     {
-        vector.push_back(argv[i]);
+        vector.emplace_back(argv[i]);
     }
 
     return vector;
@@ -32,7 +32,7 @@ auto cmd_to_argv() -> std::vector<std::string>
 
     for (int i = 0; i < argc; i++)
     {
-        argv.push_back(glow::string(buffer[i]));
+        argv.push_back(std::move(glow::string(buffer[i])));
     }
 
     return argv;
