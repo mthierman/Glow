@@ -10,12 +10,9 @@
 
 namespace glow
 {
-SystemColors::SystemColors() : settings{winrt::Windows::UI::ViewManagement::UISettings()}
-{
-    update();
-}
+Colors::Colors() : settings{winrt::Windows::UI::ViewManagement::UISettings()} { update(); }
 
-auto SystemColors::update() -> void
+auto Colors::update() -> void
 {
     color.accent = settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Accent);
     color.accentDark1 =
@@ -45,34 +42,34 @@ auto SystemColors::update() -> void
     string.background = to_string(color.background);
     string.foreground = to_string(color.foreground);
 
-    colorref.accent = to_colorref(color.accent);
-    colorref.accentDark1 = to_colorref(color.accentDark1);
-    colorref.accentDark2 = to_colorref(color.accentDark2);
-    colorref.accentDark3 = to_colorref(color.accentDark3);
-    colorref.accentLight1 = to_colorref(color.accentLight1);
-    colorref.accentLight2 = to_colorref(color.accentLight2);
-    colorref.accentLight3 = to_colorref(color.accentLight3);
-    colorref.background = to_colorref(color.background);
-    colorref.foreground = to_colorref(color.foreground);
+    ref.accent = to_colorref(color.accent);
+    ref.accentDark1 = to_colorref(color.accentDark1);
+    ref.accentDark2 = to_colorref(color.accentDark2);
+    ref.accentDark3 = to_colorref(color.accentDark3);
+    ref.accentLight1 = to_colorref(color.accentLight1);
+    ref.accentLight2 = to_colorref(color.accentLight2);
+    ref.accentLight3 = to_colorref(color.accentLight3);
+    ref.background = to_colorref(color.background);
+    ref.foreground = to_colorref(color.foreground);
 
-    systemColors.clear();
-    systemColors.emplace("accent", string.accent);
-    systemColors.emplace("accentDark1", string.accentDark1);
-    systemColors.emplace("accentDark2", string.accentDark2);
-    systemColors.emplace("accentDark3", string.accentDark3);
-    systemColors.emplace("accentLight1", string.accentLight1);
-    systemColors.emplace("accentLight2", string.accentLight2);
-    systemColors.emplace("accentLight3", string.accentLight3);
-    systemColors.emplace("background", string.background);
-    systemColors.emplace("foreground", string.foreground);
+    colors.clear();
+    colors.emplace("accent", string.accent);
+    colors.emplace("accentDark1", string.accentDark1);
+    colors.emplace("accentDark2", string.accentDark2);
+    colors.emplace("accentDark3", string.accentDark3);
+    colors.emplace("accentLight1", string.accentLight1);
+    colors.emplace("accentLight2", string.accentLight2);
+    colors.emplace("accentLight3", string.accentLight3);
+    colors.emplace("background", string.background);
+    colors.emplace("foreground", string.foreground);
 }
 
-auto SystemColors::to_string(winrt::Windows::UI::Color uiColor) -> std::string
+auto Colors::to_string(winrt::Windows::UI::Color uiColor) -> std::string
 {
     return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", uiColor.R, uiColor.G, uiColor.B, uiColor.A);
 }
 
-auto SystemColors::to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF
+auto Colors::to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF
 {
     return RGB(std::ranges::clamp(static_cast<int>(uiColor.R), 0, 255),
                std::ranges::clamp(static_cast<int>(uiColor.G), 0, 255),

@@ -20,7 +20,7 @@
 
 namespace glow
 {
-struct SystemColors
+struct Colors
 {
     struct Color
     {
@@ -48,7 +48,7 @@ struct SystemColors
         std::string foreground{};
     };
 
-    struct ColorRef
+    struct Ref
     {
         ::COLORREF accent{};
         ::COLORREF accentDark1{};
@@ -61,7 +61,7 @@ struct SystemColors
         ::COLORREF foreground{};
     };
 
-    SystemColors();
+    Colors();
 
     auto update() -> void;
     auto to_string(winrt::Windows::UI::Color uiColor) -> std::string;
@@ -70,9 +70,9 @@ struct SystemColors
     winrt::Windows::UI::ViewManagement::UISettings settings{};
     Color color{};
     String string{};
-    ColorRef colorref{};
-    std::map<std::string, std::string> systemColors{};
+    Ref ref{};
+    std::map<std::string, std::string> colors{};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(SystemColors, systemColors)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Colors, colors)
 };
 } // namespace glow
