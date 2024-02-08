@@ -17,7 +17,7 @@ Database::~Database() {}
 auto Database::open() -> void
 {
     if (sqlite3_open(path.string().c_str(), std::out_ptr(db)) != SQLITE_OK)
-        throw std::runtime_error("Failed to open SQLite");
+        throw std::runtime_error("SQLite open failure");
 }
 
 auto Database::write() -> void
