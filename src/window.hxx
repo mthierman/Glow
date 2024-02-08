@@ -540,7 +540,7 @@ template <typename T> struct WebView : Window<T>
         : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
     {
         m_parent = parent;
-        glow::hresult_check(create());
+        if (FAILED(create())) { throw std::runtime_error("WebView creation failure"); }
     }
 
     virtual ~WebView() {}
@@ -575,12 +575,9 @@ template <typename T> struct WebView : Window<T>
                 [=, this](::HRESULT errorCode,
                           ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
                 {
-                    if (createdEnvironment)
-                    {
-                        glow::hresult_check(create_controller(createdEnvironment));
-                    }
+                    if (createdEnvironment) { return create_controller(createdEnvironment); }
 
-                    return errorCode;
+                    else { return errorCode; }
                 })
                 .Get());
     }
@@ -602,68 +599,67 @@ template <typename T> struct WebView : Window<T>
                         if (!m_webView.controller4) return E_POINTER;
 
                         COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                        glow::hresult_check(
-                            m_webView.controller4->put_DefaultBackgroundColor(bgColor));
+                        m_webView.controller4->put_DefaultBackgroundColor(bgColor);
 
-                        ::SendMessageA(m_parent, WM_SIZE, 0, 0);
-                        ::SendMessageA(derived().hwnd(), WM_SIZE, 0, 0);
+                        ::PostMessageA(m_parent, WM_SIZE, 0, 0);
+                        ::PostMessageA(derived().hwnd(), WM_SIZE, 0, 0);
 
-                        glow::hresult_check(
-                            m_webView.controller->get_CoreWebView2(m_webView.core.put()));
+                        m_webView.controller->get_CoreWebView2(m_webView.core.put());
                         m_webView.core20 = m_webView.core.try_query<ICoreWebView2_20>();
 
                         if (!m_webView.core20) return E_POINTER;
 
-                        glow::hresult_check(
-                            m_webView.core20->get_Settings(m_webView.settings.put()));
+                        m_webView.core20->get_Settings(m_webView.settings.put());
 
                         m_webView.settings8 =
                             m_webView.settings.try_query<ICoreWebView2Settings8>();
 
                         if (!m_webView.settings8) return E_POINTER;
 
-                        glow::hresult_check(settings());
+                        settings();
 
-                        glow::hresult_check(context_menu_requested());
-                        glow::hresult_check(source_changed());
-                        glow::hresult_check(navigation_starting());
-                        glow::hresult_check(navigation_completed());
-                        glow::hresult_check(web_message_received());
-                        glow::hresult_check(accelerator_key_pressed());
-                        glow::hresult_check(favicon_changed());
-                        glow::hresult_check(document_title_changed());
-                        glow::hresult_check(zoom_factor_changed());
-                        glow::hresult_check(got_focus());
-                        glow::hresult_check(lost_focus());
-                        glow::hresult_check(move_focus_requested());
+                        context_menu_requested();
+                        source_changed();
+                        navigation_starting();
+                        navigation_completed();
+                        web_message_received();
+                        accelerator_key_pressed();
+                        favicon_changed();
+                        document_title_changed();
+                        zoom_factor_changed();
+                        got_focus();
+                        lost_focus();
+                        move_focus_requested();
 
                         initialized();
+
+                        return S_OK;
                     }
 
-                    return errorCode;
+                    else { return errorCode; }
                 })
                 .Get());
     }
 
     virtual auto settings() -> ::HRESULT
     {
-        glow::hresult_check(m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_AreDefaultContextMenusEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_AreDefaultScriptDialogsEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_AreDevToolsEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_AreHostObjectsAllowed(true));
-        glow::hresult_check(m_webView.settings8->put_HiddenPdfToolbarItems(
-            COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE));
-        glow::hresult_check(m_webView.settings8->put_IsBuiltInErrorPageEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsGeneralAutofillEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsPasswordAutosaveEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsPinchZoomEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsReputationCheckingRequired(true));
-        glow::hresult_check(m_webView.settings8->put_IsScriptEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsStatusBarEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsSwipeNavigationEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsWebMessageEnabled(true));
-        glow::hresult_check(m_webView.settings8->put_IsZoomControlEnabled(true));
+        m_webView.settings8->put_AreBrowserAcceleratorKeysEnabled(true);
+        m_webView.settings8->put_AreDefaultContextMenusEnabled(true);
+        m_webView.settings8->put_AreDefaultScriptDialogsEnabled(true);
+        m_webView.settings8->put_AreDevToolsEnabled(true);
+        m_webView.settings8->put_AreHostObjectsAllowed(true);
+        m_webView.settings8->put_HiddenPdfToolbarItems(
+            COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
+        m_webView.settings8->put_IsBuiltInErrorPageEnabled(true);
+        m_webView.settings8->put_IsGeneralAutofillEnabled(true);
+        m_webView.settings8->put_IsPasswordAutosaveEnabled(true);
+        m_webView.settings8->put_IsPinchZoomEnabled(true);
+        m_webView.settings8->put_IsReputationCheckingRequired(true);
+        m_webView.settings8->put_IsScriptEnabled(true);
+        m_webView.settings8->put_IsStatusBarEnabled(true);
+        m_webView.settings8->put_IsSwipeNavigationEnabled(true);
+        m_webView.settings8->put_IsWebMessageEnabled(true);
+        m_webView.settings8->put_IsZoomControlEnabled(true);
 
         return S_OK;
     }
@@ -786,7 +782,6 @@ template <typename T> struct WebView : Window<T>
 
     auto got_focus() -> ::HRESULT
     {
-        // https://learn.microsoft.com/en-us/microsoft-edge/webview2/reference/win32/icorewebview2controller?view=webview2-1.0.2277.86#add_gotfocus
         EventRegistrationToken token;
 
         return m_webView.controller4->add_GotFocus(
@@ -901,7 +896,9 @@ template <typename T> struct WebView : Window<T>
         if (m_webView.core20)
         {
             auto wideUrl{glow::wstring(url)};
+
             if (wideUrl.empty()) { return S_OK; }
+
             else return m_webView.core20->Navigate(wideUrl.c_str());
         }
 
@@ -913,7 +910,9 @@ template <typename T> struct WebView : Window<T>
         if (m_webView.core20)
         {
             auto wideJson{glow::wstring(message.dump())};
+
             if (wideJson.empty()) { return S_OK; }
+
             else return m_webView.core20->PostWebMessageAsJson(wideJson.c_str());
         }
 
