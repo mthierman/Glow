@@ -14,11 +14,17 @@
 
 #include <nlohmann/json.hpp>
 
+enum class CODE : unsigned int;
+
 namespace glow
 {
 struct Notification
 {
     ::NMHDR nmhdr{};
+
+    ::HWND hwnd{};
+    uintptr_t id{};
+    CODE code{};
     std::string message{};
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)

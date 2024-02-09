@@ -28,8 +28,6 @@
 #include "random.hxx"
 #include "text.hxx"
 
-enum class CODE : unsigned int;
-
 namespace glow
 {
 template <typename T> struct App
@@ -199,10 +197,13 @@ template <typename T> struct Window
         notification.nmhdr.idFrom = id();
         notification.nmhdr.code = std::to_underlying(code);
 
+        notification.hwnd = hwnd();
+        notification.id = id();
+        notification.code = code;
         notification.message = message;
 
-        ::SendMessageA(receiver, WM_NOTIFY, notification.nmhdr.idFrom,
-                       reinterpret_cast<uintptr_t>(&notification));
+        ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<uintptr_t>(&notification.id),
+                       reinterpret_cast<intptr_t>(&notification));
     }
 
     auto dpi() -> void { m_dpi = ::GetDpiForWindow(hwnd()); };
