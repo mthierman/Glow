@@ -28,7 +28,7 @@
 #include "random.hxx"
 #include "text.hxx"
 
-enum class msg : unsigned int;
+enum class CODE : unsigned int;
 
 namespace glow
 {
@@ -191,7 +191,7 @@ template <typename T> struct Window
         return 0;
     }
 
-    auto notify(::HWND receiver, msg code, std::string message = "") -> void
+    auto notify(::HWND receiver, CODE code, std::string message = "") -> void
     {
         glow::Notification notification;
 
