@@ -19,7 +19,6 @@
 
 namespace glow
 {
-auto message_loop() -> int;
 auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool;
 auto rect_to_position(const ::RECT& rect) -> Position;
 auto position_to_rect(const Position& position) -> ::RECT;

@@ -9,6 +9,11 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
+struct App : public glow::App<App>
+{
+    using glow::App<App>::App;
+};
+
 struct Window : public glow::Window<Window>
 {
     using glow::Window<Window>::Window;
@@ -16,8 +21,10 @@ struct Window : public glow::Window<Window>
 
 auto main(int argc, char* argv[]) -> int
 {
+    App app;
+
     Window win;
     win.reveal();
 
-    return glow::message_loop();
+    return app();
 }

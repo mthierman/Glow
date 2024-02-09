@@ -65,6 +65,25 @@ template <typename T> struct App
 
     virtual ~App() {}
 
+    auto operator()() -> int
+    {
+        ::MSG msg{};
+        int r{};
+
+        while ((r = ::GetMessageA(&msg, nullptr, 0, 0)) != 0)
+        {
+            if (r == -1) { return -1; }
+
+            else
+            {
+                ::TranslateMessage(&msg);
+                ::DispatchMessageA(&msg);
+            }
+        }
+
+        return 0;
+    }
+
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
     auto id() const -> uintptr_t { return m_id; }
