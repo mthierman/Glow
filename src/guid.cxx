@@ -6,11 +6,11 @@
 // ╚──────────────╝
 // clang-format on
 
-#include "uuid.hxx"
+#include "guid.hxx"
 
 namespace glow
 {
-UUID::UUID()
+GUID::GUID()
 {
     ::CoCreateGuid(&guid);
 

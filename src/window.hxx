@@ -24,6 +24,7 @@
 #include <nlohmann/json.hpp>
 
 #include "gui.hxx"
+#include "guid.hxx"
 #include "position.hxx"
 #include "random.hxx"
 #include "text.hxx"

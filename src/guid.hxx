@@ -16,9 +16,9 @@
 
 namespace glow
 {
-struct UUID
+struct GUID
 {
-    UUID();
+    GUID();
 
     ::GUID guid;
     std::string string;
