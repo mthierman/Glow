@@ -7,7 +7,7 @@ set(FETCHCONTENT_SOURCE_DIR_JSON
 )
 
 set(FETCHCONTENT_SOURCE_DIR_SQLITE
-    "$ENV{LIBRARIES}/sqlite-amalgamation-3450000"
+    "$ENV{LIBRARIES}/sqlite-amalgamation-3450100"
 )
 
 set(FETCHCONTENT_SOURCE_DIR_TOML
@@ -21,7 +21,7 @@ set(GLOW_RESTORE_NUGET
 cmake_path(
     SET
     webview2_SOURCE_DIR
-    "$ENV{NUGET_PACKAGES}/microsoft.web.webview2/1.0.2210.55"
+    "$ENV{NUGET_PACKAGES}/microsoft.web.webview2/1.0.2277.86"
 )
 
 cmake_path(

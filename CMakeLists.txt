@@ -31,7 +31,7 @@ FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
     sqlite
-    URL https://www.sqlite.org/2024/sqlite-amalgamation-3450000.zip
+    URL https://www.sqlite.org/2024/sqlite-amalgamation-3450100.zip
 )
 FetchContent_MakeAvailable(sqlite)
 
@@ -44,7 +44,7 @@ if(GLOW_RESTORE_NUGET)
     cmake_path(
         SET
         webview2_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2210.55"
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2277.86"
     )
 
     cmake_path(
