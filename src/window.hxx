@@ -191,16 +191,18 @@ template <typename T> struct Window
         return 0;
     }
 
-    auto notify(::HWND receiver, msg code = WM_APP, std::string message = "") -> void
+    auto notify(::HWND receiver, msg code, std::string message = "") -> void
     {
-        m_notification.nmhdr.hwndFrom = hwnd();
-        m_notification.nmhdr.idFrom = id();
-        m_notification.nmhdr.code = std::to_underlying(code);
+        glow::Notification notification;
 
-        m_notification.message = message;
+        notification.nmhdr.hwndFrom = hwnd();
+        notification.nmhdr.idFrom = id();
+        notification.nmhdr.code = std::to_underlying(code);
 
-        ::SendMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
-                       reinterpret_cast<uintptr_t>(&m_notification));
+        notification.message = message;
+
+        ::SendMessageA(receiver, WM_NOTIFY, notification.nmhdr.idFrom,
+                       reinterpret_cast<uintptr_t>(&notification));
     }
 
     auto dpi() -> void { m_dpi = ::GetDpiForWindow(hwnd()); };
@@ -530,7 +532,6 @@ template <typename T> struct Window
     int m_dpi{};
     float m_scale{};
     glow::Position m_position;
-    glow::Notification m_notification;
     wil::unique_hwnd m_hwnd;
     uintptr_t m_id{};
     wil::unique_hicon m_hicon{static_cast<HICON>(::LoadImageA(
