@@ -28,6 +28,8 @@
 #include "random.hxx"
 #include "text.hxx"
 
+enum class msg : unsigned int;
+
 namespace glow
 {
 template <typename T> struct App
@@ -189,12 +191,13 @@ template <typename T> struct Window
         return 0;
     }
 
-    auto notify(::HWND receiver, unsigned int code = WM_APP, std::string message = "") -> void
+    auto notify(::HWND receiver, msg code = WM_APP, std::string message = "") -> void
     {
-        m_notification.nmhdr.code = code;
-        m_notification.message = message;
-        m_notification.nmhdr.idFrom = id();
         m_notification.nmhdr.hwndFrom = hwnd();
+        m_notification.nmhdr.idFrom = id();
+        m_notification.nmhdr.code = std::to_underlying(code);
+
+        m_notification.message = message;
 
         ::SendMessageA(receiver, WM_NOTIFY, m_notification.nmhdr.idFrom,
                        reinterpret_cast<uintptr_t>(&m_notification));
