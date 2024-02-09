@@ -561,6 +561,17 @@ template <typename T> struct Window
 
 template <typename T> struct WebView : Window<T>
 {
+    struct WebView2
+    {
+        wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
+        wil::com_ptr<ICoreWebView2Controller> controller;
+        wil::com_ptr<ICoreWebView2Controller4> controller4;
+        wil::com_ptr<ICoreWebView2> core;
+        wil::com_ptr<ICoreWebView2_20> core20;
+        wil::com_ptr<ICoreWebView2Settings> settings;
+        wil::com_ptr<ICoreWebView2Settings8> settings8;
+    };
+
     WebView(HWND parent, uintptr_t id = glow::random<uintptr_t>())
         : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
     {
@@ -958,6 +969,13 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
+    auto devtools() -> ::HRESULT
+    {
+        if (m_webView.core20) { return m_webView.core20->OpenDevToolsWindow(); }
+
+        else return S_OK;
+    }
+
     auto version() -> std::string
     {
         wil::unique_cotaskmem_string buffer;
@@ -967,19 +985,7 @@ template <typename T> struct WebView : Window<T>
     }
 
     ::HWND m_parent{nullptr};
-
-    struct WebView2
-    {
-        wil::com_ptr<ICoreWebView2EnvironmentOptions6> evironmentOptions6;
-        wil::com_ptr<ICoreWebView2Controller> controller;
-        wil::com_ptr<ICoreWebView2Controller4> controller4;
-        wil::com_ptr<ICoreWebView2> core;
-        wil::com_ptr<ICoreWebView2_20> core20;
-        wil::com_ptr<ICoreWebView2Settings> settings;
-        wil::com_ptr<ICoreWebView2Settings8> settings8;
-    };
     WebView2 m_webView;
-
     std::string m_source;
     std::string m_documentTitle;
     std::string m_faviconUrl;
