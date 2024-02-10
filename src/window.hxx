@@ -969,6 +969,18 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
+    auto visibile(bool visible) -> ::HRESULT
+    {
+        if (m_webView.controller4)
+        {
+            if (visible) { return m_webView.controller4->put_IsVisible(true); }
+
+            else { return m_webView.controller4->put_IsVisible(false); }
+        }
+
+        else return S_OK;
+    }
+
     auto devtools() -> ::HRESULT
     {
         if (m_webView.core20) { return m_webView.core20->OpenDevToolsWindow(); }
