@@ -14,7 +14,7 @@
 
 #include <nlohmann/json.hpp>
 
-enum class CODE : unsigned int;
+enum struct CODE : unsigned int;
 
 namespace glow
 {
