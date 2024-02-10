@@ -23,7 +23,7 @@ struct Notification
     ::NMHDR nmhdr{};
 
     ::HWND hwnd{};
-    uintptr_t id{};
+    intptr_t id{};
     CODE code{};
     std::string message{};
 

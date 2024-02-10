@@ -33,7 +33,7 @@ namespace glow
 {
 template <typename T> struct App
 {
-    App(std::string name = "App", uintptr_t id = glow::random<uintptr_t>()) : m_id{id}
+    App(std::string name = "App", intptr_t id = glow::random<intptr_t>()) : m_id{id}
     {
         ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
 
@@ -86,7 +86,7 @@ template <typename T> struct App
 
     auto hwnd() const -> HWND { return m_hwnd.get(); }
 
-    auto id() const -> uintptr_t { return m_id; }
+    auto id() const -> intptr_t { return m_id; }
 
     auto close() -> int
     {
@@ -142,13 +142,13 @@ template <typename T> struct App
     }
 
   public:
-    uintptr_t m_id;
+    intptr_t m_id;
     wil::unique_hwnd m_hwnd;
 };
 
 template <typename T> struct Window
 {
-    Window(std::string name = "Window", uintptr_t id = glow::random<uintptr_t>(),
+    Window(std::string name = "Window", intptr_t id = glow::random<intptr_t>(),
            ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
            int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
            int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr)
@@ -200,7 +200,7 @@ template <typename T> struct Window
 
     auto hicon() const -> ::HICON { return m_hicon.get(); }
 
-    auto id() const -> uintptr_t { return m_id; }
+    auto id() const -> intptr_t { return m_id; }
 
     auto close() -> int
     {
@@ -222,7 +222,7 @@ template <typename T> struct Window
         notification.code = code;
         notification.message = message;
 
-        ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<uintptr_t>(&notification.id),
+        ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<intptr_t>(&notification.id),
                        reinterpret_cast<intptr_t>(&notification));
     }
 
@@ -554,7 +554,7 @@ template <typename T> struct Window
     float m_scale{};
     glow::Position m_position;
     wil::unique_hwnd m_hwnd;
-    uintptr_t m_id{};
+    intptr_t m_id{};
     wil::unique_hicon m_hicon{static_cast<HICON>(::LoadImageA(
         ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
 };
@@ -572,7 +572,7 @@ template <typename T> struct WebView : Window<T>
         wil::com_ptr<ICoreWebView2Settings8> settings8;
     };
 
-    WebView(HWND parent, uintptr_t id = glow::random<uintptr_t>())
+    WebView(HWND parent, intptr_t id = glow::random<intptr_t>())
         : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
     {
         m_parent = parent;
