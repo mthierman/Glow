@@ -211,19 +211,19 @@ template <typename T> struct Window
 
     auto notify(::HWND receiver, CODE code, std::string message = "") -> void
     {
-        glow::Notification notification;
+        m_notification.nmhdr.hwndFrom = hwnd();
+        m_notification.hwnd = hwnd();
 
-        notification.nmhdr.hwndFrom = hwnd();
-        notification.nmhdr.idFrom = id();
-        notification.nmhdr.code = std::to_underlying(code);
+        m_notification.nmhdr.idFrom = id();
+        m_notification.id = id();
 
-        notification.hwnd = hwnd();
-        notification.id = id();
-        notification.code = code;
-        notification.message = message;
+        m_notification.nmhdr.code = std::to_underlying(code);
+        m_notification.code = code;
 
-        ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<intptr_t>(&notification.id),
-                       reinterpret_cast<intptr_t>(&notification));
+        m_notification.message = message;
+
+        ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<intptr_t>(&m_notification.id),
+                       reinterpret_cast<intptr_t>(&m_notification));
     }
 
     auto dpi() -> void { m_dpi = ::GetDpiForWindow(hwnd()); };
@@ -569,6 +569,7 @@ template <typename T> struct Window
     }
 
   public:
+    glow::Notification m_notification;
     ::RECT m_clientRect{};
     ::RECT m_windowRect{};
     int m_dpi{};
