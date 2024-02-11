@@ -249,6 +249,10 @@ template <typename T> struct Window
 
     auto is_foreground() -> bool { return ::GetForegroundWindow() == hwnd(); }
 
+    auto active() -> void { ::SetActiveWindow(hwnd()); }
+
+    auto top() -> void { ::BringWindowToTop(hwnd()); }
+
     auto maximize() -> void
     {
         auto style{::GetWindowLongPtrA(hwnd(), GWL_STYLE)};
