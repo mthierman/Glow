@@ -397,6 +397,8 @@ template <typename T> struct Window
         return p;
     }
 
+    auto size() -> void { ::SendMessageA(hwnd(), WM_SIZE, 0, 0); }
+
     auto theme() -> void
     {
         if (glow::check_theme()) { dwm_dark_mode(true); }
@@ -649,8 +651,8 @@ template <typename T> struct WebView : Window<T>
                         COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
                         m_webView.controller4->put_DefaultBackgroundColor(bgColor);
 
-                        ::PostMessageA(m_parent, WM_SIZE, 0, 0);
-                        ::PostMessageA(derived().hwnd(), WM_SIZE, 0, 0);
+                        ::SendMessageA(m_parent, WM_SIZE, 0, 0);
+                        ::SendMessageA(derived().hwnd(), WM_SIZE, 0, 0);
 
                         m_webView.controller->get_CoreWebView2(m_webView.core.put());
                         m_webView.core20 = m_webView.core.try_query<ICoreWebView2_20>();

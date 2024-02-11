@@ -38,6 +38,12 @@ auto cmd_to_argv() -> std::vector<std::string>
     return argv;
 }
 
+auto log(std::string msg) -> void
+{
+    ::OutputDebugStringA(msg.c_str());
+    ::OutputDebugStringA("\n");
+}
+
 auto format_message(::HRESULT errorCode) -> std::string
 {
     wil::unique_hlocal_ptr<char> buffer;

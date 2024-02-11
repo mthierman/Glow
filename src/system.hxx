@@ -29,6 +29,7 @@ namespace glow
 {
 auto argv(int argc, char* argv[]) -> std::vector<std::string>;
 auto cmd_to_argv() -> std::vector<std::string>;
+auto log(std::string msg) -> void;
 auto format_message(::HRESULT errorCode) -> std::string;
 auto system_error_string(::HRESULT errorCode) -> std::string;
 auto hresult_string(::HRESULT errorCode) -> std::string;
