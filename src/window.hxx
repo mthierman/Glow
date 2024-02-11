@@ -310,10 +310,13 @@ template <typename T> struct Window
     {
         if (iconSmall)
         {
-            ::SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, static_cast<::LPARAM>(icon));
+            ::SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, reinterpret_cast<::LPARAM>(icon));
         }
 
-        if (iconBig) { ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, static_cast<::LPARAM>(icon)); }
+        if (iconBig)
+        {
+            ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<::LPARAM>(icon));
+        }
     }
 
     auto border(bool enabled) -> void
