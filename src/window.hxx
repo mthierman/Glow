@@ -239,7 +239,11 @@ template <typename T> struct Window
 
     auto hide() -> void { ::ShowWindow(hwnd(), SW_HIDE); }
 
-    auto visible() -> bool { return ::IsWindowVisible(hwnd()); }
+    auto foreground() -> void { ::SetForegroundWindow(hwnd()); }
+
+    auto is_visible() -> bool { return ::IsWindowVisible(hwnd()); }
+
+    auto is_foreground() -> bool { return ::GetForegroundWindow() == hwnd(); }
 
     auto maximize() -> void
     {
@@ -302,10 +306,14 @@ template <typename T> struct Window
 
     auto title(std::string title) -> void { ::SetWindowTextA(hwnd(), title.c_str()); }
 
-    auto icon(::HICON icon) -> void
+    auto icon(::HICON icon, bool iconSmall = true, bool iconBig = true) -> void
     {
-        ::SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, static_cast<::LPARAM>(icon));
-        ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, static_cast<::LPARAM>(icon));
+        if (iconSmall)
+        {
+            ::SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, static_cast<::LPARAM>(icon));
+        }
+
+        if (iconBig) { ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, static_cast<::LPARAM>(icon)); }
     }
 
     auto border(bool enabled) -> void
@@ -573,9 +581,10 @@ template <typename T> struct WebView : Window<T>
     };
 
     WebView(HWND parent, intptr_t id = glow::random<intptr_t>())
-        : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
+        : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
+          m_parent{parent}
     {
-        m_parent = parent;
+        // m_parent = parent;
         if (FAILED(create())) { throw std::runtime_error("WebView creation failure"); }
     }
 
