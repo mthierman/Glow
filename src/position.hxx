@@ -8,23 +8,20 @@
 
 #pragma once
 
+#include <Windows.h>
+
 #include <nlohmann/json.hpp>
 
 namespace glow
 {
 struct Position
 {
+    ::RECT rect{};
     int x{};
     int y{};
     int width{};
     int height{};
-    bool maximize{};
-    bool fullscreen{};
-    bool topmost{};
-    int dpi{};
-    float scale{};
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Position, x, y, width, height, maximize, fullscreen, topmost,
-                                   dpi, scale)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Position, x, y, width, height)
 };
 } // namespace glow

@@ -65,8 +65,8 @@ template <typename T> struct WebView : Window<T>
     {
         if (m_webView.controller4)
         {
-            derived().client_rect();
-            m_webView.controller4->put_Bounds(derived().m_clientRect);
+            derived().position();
+            m_webView.controller4->put_Bounds(derived().m_client.rect);
         }
 
         return 0;
@@ -468,7 +468,7 @@ template <typename T> struct WebView : Window<T>
     }
 
     ::HWND m_parent{nullptr};
-    WebView2 m_webView;
+    WebView2 m_webView{};
 
   private:
     T& derived() { return static_cast<T&>(*this); }

@@ -130,7 +130,7 @@ template <typename T> struct App
     }
 
   public:
-    intptr_t m_id;
-    wil::unique_hwnd m_hwnd;
+    intptr_t m_id{};
+    wil::unique_hwnd m_hwnd{};
 };
 } // namespace glow

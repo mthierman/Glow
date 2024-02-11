@@ -251,36 +251,21 @@ template <typename T> struct Window
         }
     }
 
-    auto client_rect() -> void { ::GetClientRect(hwnd(), &m_clientRect); }
-
-    auto window_rect() -> void { ::GetWindowRect(hwnd(), &m_windowRect); }
-
-    auto client_position() -> glow::Position
+    auto position() -> void
     {
-        auto rect{client_rect()};
+        ::GetClientRect(hwnd(), &m_client.rect);
 
-        glow::Position p;
+        m_client.x = m_client.rect.left;
+        m_client.y = m_client.rect.top;
+        m_client.width = m_client.rect.right - m_client.rect.left;
+        m_client.height = m_client.rect.bottom - m_client.rect.top;
 
-        p.x = rect.left;
-        p.y = rect.top;
-        p.width = rect.right - rect.left;
-        p.height = rect.bottom - rect.top;
+        ::GetWindowRect(hwnd(), &m_window.rect);
 
-        return p;
-    }
-
-    auto window_position() -> glow::Position
-    {
-        auto rect{window_rect()};
-
-        glow::Position p;
-
-        p.x = rect.left;
-        p.y = rect.top;
-        p.width = rect.right - rect.left;
-        p.height = rect.bottom - rect.top;
-
-        return p;
+        m_window.x = m_window.rect.left;
+        m_window.y = m_window.rect.top;
+        m_window.width = m_window.rect.right - m_window.rect.left;
+        m_window.height = m_window.rect.bottom - m_window.rect.top;
     }
 
     auto size() -> void { ::SendMessageA(hwnd(), WM_SIZE, 0, 0); }
@@ -447,15 +432,18 @@ template <typename T> struct Window
     }
 
   public:
-    glow::Notification m_notification;
-    ::RECT m_clientRect{};
-    ::RECT m_windowRect{};
-    int m_dpi{};
-    float m_scale{};
-    glow::Position m_position;
-    wil::unique_hwnd m_hwnd;
     intptr_t m_id{};
+    wil::unique_hwnd m_hwnd{};
     wil::unique_hicon m_hicon{static_cast<HICON>(::LoadImageA(
         ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+
+    glow::Notification m_notification{};
+    glow::Position m_client{};
+    glow::Position m_window{};
+    int m_dpi{};
+    float m_scale{};
+    bool m_maximize{};
+    bool m_fullscreen{};
+    bool m_topmost{};
 };
 } // namespace glow
