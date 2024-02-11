@@ -239,9 +239,13 @@ template <typename T> struct Window
 
     auto hide() -> void { ::ShowWindow(hwnd(), SW_HIDE); }
 
-    auto foreground() -> void { ::SetForegroundWindow(hwnd()); }
-
     auto is_visible() -> bool { return ::IsWindowVisible(hwnd()); }
+
+    auto focus() -> void { ::SetFocus(hwnd()); }
+
+    auto is_focus() -> bool { ::GetFocus() == hwnd(); }
+
+    auto foreground() -> void { ::SetForegroundWindow(hwnd()); }
 
     auto is_foreground() -> bool { return ::GetForegroundWindow() == hwnd(); }
 
@@ -969,7 +973,7 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
-    auto focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
+    auto move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
     {
         if (m_webView.controller4) { return m_webView.controller4->MoveFocus(reason); }
 
