@@ -998,11 +998,6 @@ template <typename T> struct WebView : Window<T>
 
     ::HWND m_parent{nullptr};
     WebView2 m_webView;
-    std::string m_source;
-    std::string m_documentTitle;
-    std::string m_faviconUrl;
-    wil::unique_hicon m_favicon;
-    bool m_focus{};
 
   private:
     T& derived() { return static_cast<T&>(*this); }
