@@ -977,7 +977,9 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
-    auto move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
+    auto
+    move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason = COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC)
+        -> ::HRESULT
     {
         if (m_webView.controller4) { return m_webView.controller4->MoveFocus(reason); }
 
