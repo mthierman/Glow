@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "../../src/app.hxx"
 #include "../../src/coinitialize.hxx"
 #include "../../src/colors.hxx"
 #include "../../src/console.hxx"
@@ -21,4 +22,5 @@
 #include "../../src/random.hxx"
 #include "../../src/system.hxx"
 #include "../../src/text.hxx"
+#include "../../src/webview.hxx"
 #include "../../src/window.hxx"

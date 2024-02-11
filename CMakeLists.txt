@@ -124,6 +124,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/include
             ${CMAKE_CURRENT_BINARY_DIR}/include
             FILES
+            ${PROJECT_SOURCE_DIR}/src/app.hxx
             ${PROJECT_SOURCE_DIR}/src/coinitialize.hxx
             ${PROJECT_SOURCE_DIR}/src/colors.hxx
             ${PROJECT_SOURCE_DIR}/src/console.hxx
@@ -137,6 +138,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/random.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
+            ${PROJECT_SOURCE_DIR}/src/webview.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
             ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
             ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx
