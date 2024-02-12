@@ -192,7 +192,7 @@ template <typename T> struct Window
 
     auto title(std::string title) -> void { ::SetWindowTextA(hwnd(), title.c_str()); }
 
-    auto icon(::HICON icon, bool iconSmall = true, bool iconBig = true) -> void
+    auto icon(::HICON icon, bool setSmall = true, bool setBig = true) -> void
     {
         if (iconSmall)
         {
