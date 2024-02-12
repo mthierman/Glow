@@ -88,7 +88,8 @@ target_sources(
 
 target_link_libraries(
     SQLite
-    PRIVATE glow::features
+    PRIVATE glow::definitions
+            glow::features
             glow::flags
 )
 
@@ -164,8 +165,8 @@ target_link_directories(
 target_link_libraries(
     Glow
     PRIVATE glow::flags
-    PUBLIC glow::features
-           glow::definitions
+    PUBLIC glow::definitions
+           glow::features
            nlohmann_json::nlohmann_json
            sqlite::sqlite
            dwmapi.lib

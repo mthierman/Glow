@@ -9,8 +9,11 @@
 #pragma once
 
 #include <Windows.h>
-#include <Unknwn.h>
 #include <dwmapi.h>
+
+#ifdef small
+#undef small
+#endif
 
 #include <stdexcept>
 #include <string>
@@ -21,10 +24,6 @@
 #include "notification.hxx"
 #include "position.hxx"
 #include "random.hxx"
-
-#ifdef small
-#undef small
-#endif
 
 namespace glow
 {

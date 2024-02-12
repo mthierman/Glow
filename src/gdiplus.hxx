@@ -9,7 +9,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <Unknwn.h>
+#include <objbase.h>
 #include <gdiplus.h>
 
 #include <stdexcept>

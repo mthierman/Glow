@@ -9,8 +9,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <Unknwn.h>
-#include <dwmapi.h>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
