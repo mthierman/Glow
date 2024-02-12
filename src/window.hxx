@@ -22,6 +22,10 @@
 #include "position.hxx"
 #include "random.hxx"
 
+#ifdef small
+#undef small
+#endif
+
 namespace glow
 {
 template <typename T> struct Window
@@ -192,17 +196,14 @@ template <typename T> struct Window
 
     auto title(std::string title) -> void { ::SetWindowTextA(hwnd(), title.c_str()); }
 
-    auto icon(::HICON icon, bool setSmall = true, bool setBig = true) -> void
+    auto icon(::HICON icon, bool small = true, bool big = true) -> void
     {
-        if (iconSmall)
+        if (small)
         {
             ::SendMessageA(hwnd(), WM_SETICON, ICON_SMALL, reinterpret_cast<::LPARAM>(icon));
         }
 
-        if (iconBig)
-        {
-            ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<::LPARAM>(icon));
-        }
+        if (big) { ::SendMessageA(hwnd(), WM_SETICON, ICON_BIG, reinterpret_cast<::LPARAM>(icon)); }
     }
 
     auto border(bool enabled) -> void
