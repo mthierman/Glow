@@ -37,7 +37,21 @@ template <typename T> struct WebView : Window<T>
         if (FAILED(create())) { throw std::runtime_error("WebView creation failure"); }
     }
 
-    virtual ~WebView() {}
+    virtual ~WebView()
+    {
+        m_core->remove_ContextMenuRequested(m_tokenContextMenuRequested);
+        m_core->remove_SourceChanged(m_tokenSourceChanged);
+        m_core->remove_NavigationStarting(m_tokenNavigationStarting);
+        m_core->remove_NavigationCompleted(m_tokenNavigationCompleted);
+        m_core->remove_WebMessageReceived(m_tokenWebMessageReceived);
+        m_core->remove_DocumentTitleChanged(m_tokenDocumentTitleChanged);
+        m_core->remove_FaviconChanged(m_tokenFaviconChanged);
+        m_controller->remove_AcceleratorKeyPressed(m_tokenAcceleratorKeyPressed);
+        m_controller->remove_ZoomFactorChanged(m_tokenZoomFactorChanged);
+        m_controller->remove_GotFocus(m_tokenGotFocus);
+        m_controller->remove_LostFocus(m_tokenLostFocus);
+        m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
+    }
 
     auto create() -> ::HRESULT
     {
@@ -147,6 +161,13 @@ template <typename T> struct WebView : Window<T>
             &m_tokenContextMenuRequested);
     }
 
+    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
+                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
+        -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto source_changed() -> ::HRESULT
     {
         return m_core->add_SourceChanged(
@@ -156,6 +177,12 @@ template <typename T> struct WebView : Window<T>
                 { return source_changed_handler(sender, args); })
                 .Get(),
             &m_tokenSourceChanged);
+    }
+
+    virtual auto source_changed_handler(ICoreWebView2* sender,
+                                        ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
+    {
+        return S_OK;
     }
 
     auto navigation_starting() -> ::HRESULT
@@ -169,6 +196,13 @@ template <typename T> struct WebView : Window<T>
             &m_tokenNavigationStarting);
     }
 
+    virtual auto navigation_starting_handler(ICoreWebView2* sender,
+                                             ICoreWebView2NavigationStartingEventArgs* args)
+        -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto navigation_completed() -> ::HRESULT
     {
         return m_core->add_NavigationCompleted(
@@ -178,6 +212,13 @@ template <typename T> struct WebView : Window<T>
                 { return navigation_completed_handler(sender, args); })
                 .Get(),
             &m_tokenNavigationCompleted);
+    }
+
+    virtual auto navigation_completed_handler(ICoreWebView2* sender,
+                                              ICoreWebView2NavigationCompletedEventArgs* args)
+        -> ::HRESULT
+    {
+        return S_OK;
     }
 
     auto web_message_received() -> ::HRESULT
@@ -191,6 +232,13 @@ template <typename T> struct WebView : Window<T>
             &m_tokenWebMessageReceived);
     }
 
+    virtual auto web_message_received_handler(ICoreWebView2* sender,
+                                              ICoreWebView2WebMessageReceivedEventArgs* args)
+        -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto document_title_changed() -> ::HRESULT
     {
         return m_core->add_DocumentTitleChanged(
@@ -201,6 +249,11 @@ template <typename T> struct WebView : Window<T>
             &m_tokenDocumentTitleChanged);
     }
 
+    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto favicon_changed() -> ::HRESULT
     {
         return m_core->add_FaviconChanged(
@@ -209,6 +262,11 @@ template <typename T> struct WebView : Window<T>
                 { return favicon_changed_handler(sender, args); })
                 .Get(),
             &m_tokenFaviconChanged);
+    }
+
+    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
     }
 
     auto accelerator_key_pressed() -> ::HRESULT
@@ -222,16 +280,27 @@ template <typename T> struct WebView : Window<T>
             &m_tokenAcceleratorKeyPressed);
     }
 
+    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
+                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
+        -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto zoom_factor_changed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_controller->add_ZoomFactorChanged(
             Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return zoom_factor_changed_handler(sender, args); })
                 .Get(),
             &m_tokenZoomFactorChanged);
+    }
+
+    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
+        -> ::HRESULT
+    {
+        return S_OK;
     }
 
     auto got_focus() -> ::HRESULT
@@ -244,10 +313,13 @@ template <typename T> struct WebView : Window<T>
             &m_tokenGotFocus);
     }
 
+    virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto lost_focus() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_controller->add_LostFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
@@ -256,10 +328,13 @@ template <typename T> struct WebView : Window<T>
             &m_tokenLostFocus);
     }
 
+    virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
+    {
+        return S_OK;
+    }
+
     auto move_focus_requested() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_controller->add_MoveFocusRequested(
             Microsoft::WRL::Callback<ICoreWebView2MoveFocusRequestedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender,
@@ -267,73 +342,6 @@ template <typename T> struct WebView : Window<T>
                 { return move_focus_requested_handler(sender, args); })
                 .Get(),
             &m_tokenMoveFocusRequested);
-    }
-
-    virtual auto context_menu_requested_handler(ICoreWebView2* sender,
-                                                ICoreWebView2ContextMenuRequestedEventArgs* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto source_changed_handler(ICoreWebView2* sender,
-                                        ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto navigation_starting_handler(ICoreWebView2* sender,
-                                             ICoreWebView2NavigationStartingEventArgs* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto navigation_completed_handler(ICoreWebView2* sender,
-                                              ICoreWebView2NavigationCompletedEventArgs* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto web_message_received_handler(ICoreWebView2* sender,
-                                              ICoreWebView2WebMessageReceivedEventArgs* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
-                                                 ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
-        -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-    {
-        return S_OK;
-    }
-
-    virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-    {
-        return S_OK;
     }
 
     virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
