@@ -100,22 +100,22 @@ template <typename T> struct WebView : Window<T>
 
                         if (!m_settings) return E_POINTER;
 
-                        settings();
+                        put_settings();
 
-                        context_menu_requested();
-                        source_changed();
-                        navigation_starting();
-                        navigation_completed();
-                        web_message_received();
-                        accelerator_key_pressed();
-                        favicon_changed();
-                        document_title_changed();
-                        zoom_factor_changed();
-                        got_focus();
-                        lost_focus();
-                        move_focus_requested();
+                        add_context_menu_requested();
+                        add_source_changed();
+                        add_navigation_starting();
+                        add_navigation_completed();
+                        add_web_message_received();
+                        add_accelerator_key_pressed();
+                        add_favicon_changed();
+                        add_document_title_changed();
+                        add_zoom_factor_changed();
+                        add_got_focus();
+                        add_lost_focus();
+                        add_move_focus_requested();
 
-                        initialized();
+                        created();
 
                         return S_OK;
                     }
@@ -125,7 +125,9 @@ template <typename T> struct WebView : Window<T>
                 .Get());
     }
 
-    virtual auto settings() -> ::HRESULT
+    virtual auto created() -> ::HRESULT { return S_OK; }
+
+    virtual auto put_settings() -> ::HRESULT
     {
         m_settings->put_AreBrowserAcceleratorKeysEnabled(true);
         m_settings->put_AreDefaultContextMenusEnabled(true);
@@ -148,9 +150,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    virtual auto initialized() -> void {}
-
-    auto context_menu_requested() -> ::HRESULT
+    auto add_context_menu_requested() -> ::HRESULT
     {
         return m_core->add_ContextMenuRequested(
             Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
@@ -168,7 +168,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto source_changed() -> ::HRESULT
+    auto add_source_changed() -> ::HRESULT
     {
         return m_core->add_SourceChanged(
             Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
@@ -185,7 +185,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto navigation_starting() -> ::HRESULT
+    auto add_navigation_starting() -> ::HRESULT
     {
         return m_core->add_NavigationStarting(
             Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
@@ -203,7 +203,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto navigation_completed() -> ::HRESULT
+    auto add_navigation_completed() -> ::HRESULT
     {
         return m_core->add_NavigationCompleted(
             Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
@@ -221,7 +221,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto web_message_received() -> ::HRESULT
+    auto add_web_message_received() -> ::HRESULT
     {
         return m_core->add_WebMessageReceived(
             Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
@@ -239,7 +239,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto document_title_changed() -> ::HRESULT
+    auto add_document_title_changed() -> ::HRESULT
     {
         return m_core->add_DocumentTitleChanged(
             Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
@@ -254,7 +254,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto favicon_changed() -> ::HRESULT
+    auto add_favicon_changed() -> ::HRESULT
     {
         return m_core->add_FaviconChanged(
             Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
@@ -269,7 +269,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto accelerator_key_pressed() -> ::HRESULT
+    auto add_accelerator_key_pressed() -> ::HRESULT
     {
         return m_controller->add_AcceleratorKeyPressed(
             Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
@@ -287,7 +287,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto zoom_factor_changed() -> ::HRESULT
+    auto add_zoom_factor_changed() -> ::HRESULT
     {
         return m_controller->add_ZoomFactorChanged(
             Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
@@ -303,7 +303,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto got_focus() -> ::HRESULT
+    auto add_got_focus() -> ::HRESULT
     {
         return m_controller->add_GotFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
@@ -318,7 +318,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto lost_focus() -> ::HRESULT
+    auto add_lost_focus() -> ::HRESULT
     {
         return m_controller->add_LostFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
@@ -333,7 +333,7 @@ template <typename T> struct WebView : Window<T>
         return S_OK;
     }
 
-    auto move_focus_requested() -> ::HRESULT
+    auto add_move_focus_requested() -> ::HRESULT
     {
         return m_controller->add_MoveFocusRequested(
             Microsoft::WRL::Callback<ICoreWebView2MoveFocusRequestedEventHandler>(
