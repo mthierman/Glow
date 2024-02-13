@@ -28,10 +28,10 @@
 
 namespace glow
 {
-template <typename T> struct WebView : Window<T>
+template <typename T> struct WebView : Window
 {
     WebView(HWND parent, intptr_t id = glow::random<intptr_t>())
-        : Window<T>("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
+        : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
           m_parent{parent}
     {
         if (FAILED(create())) { throw std::runtime_error("WebView creation failure"); }

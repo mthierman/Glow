@@ -9,16 +9,11 @@
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
 
-struct Window : public glow::Window<Window>
-{
-    using glow::Window<Window>::Window;
-};
-
 auto main(int argc, char* argv[]) -> int
 {
     glow::App app;
 
-    Window win;
+    glow::Window win;
     win.reveal();
 
     return app();

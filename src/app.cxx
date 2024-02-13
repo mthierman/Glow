@@ -39,6 +39,8 @@ App::App(std::string name, intptr_t id) : m_id{id}
         throw std::runtime_error("Window creation failure");
 }
 
+App::~App() {}
+
 auto App::operator()() -> int
 {
     ::MSG msg{};
