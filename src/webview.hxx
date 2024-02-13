@@ -389,18 +389,31 @@ template <typename T> struct WebView : Window<T>
         else return S_OK;
     }
 
-    // auto get_document_title() -> std::string
-    // {
-    //     if (m_core)
-    //     {
-    //         wil::unique_cotaskmem_string title;
-    //         m_core21->get_DocumentTitle(&title);
+    auto get_document_title() -> std::string
+    {
+        if (m_core)
+        {
+            wil::unique_cotaskmem_string buffer;
+            if (FAILED(m_core->get_DocumentTitle(&buffer))) { return {}; }
 
-    //         return glow::string(title.get());
-    //     }
+            return glow::string(buffer.get());
+        }
 
-    //     else return {};
-    // }
+        else return {};
+    }
+
+    auto get_favicon_url() -> std::string
+    {
+        if (m_core)
+        {
+            wil::unique_cotaskmem_string buffer;
+            if (FAILED(m_core->get_FaviconUri(&buffer))) { return {}; }
+
+            return glow::string(buffer.get());
+        }
+
+        else return {};
+    }
 
     auto devtools() -> ::HRESULT
     {
