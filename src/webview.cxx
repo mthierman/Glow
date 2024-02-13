@@ -14,7 +14,7 @@ WebView::WebView(HWND parent, intptr_t id)
     : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
       m_parent{parent}
 {
-    if (FAILED(create())) { throw std::runtime_error("WebView creation failure"); }
+    if (FAILED(create_environment())) { throw std::runtime_error("WebView creation failure"); }
 }
 
 WebView::~WebView()
@@ -33,7 +33,7 @@ WebView::~WebView()
     m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
 }
 
-auto WebView::create() -> ::HRESULT
+auto WebView::create_environment() -> ::HRESULT
 {
     return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,

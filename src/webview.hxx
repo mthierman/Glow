@@ -34,7 +34,7 @@ struct WebView : public Window
 
     virtual ~WebView();
 
-    virtual auto create() -> ::HRESULT;
+    virtual auto create_environment() -> ::HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment) -> ::HRESULT;
     virtual auto created() -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
