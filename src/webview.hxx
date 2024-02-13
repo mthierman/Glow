@@ -138,104 +138,88 @@ template <typename T> struct WebView : Window<T>
 
     auto context_menu_requested() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_ContextMenuRequested(
             Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2ContextMenuRequestedEventArgs* args) -> ::HRESULT
                 { return context_menu_requested_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenContextMenuRequested);
     }
 
     auto source_changed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_SourceChanged(
             Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
                 { return source_changed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenSourceChanged);
     }
 
     auto navigation_starting() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_NavigationStarting(
             Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2NavigationStartingEventArgs* args) -> ::HRESULT
                 { return navigation_starting_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenNavigationStarting);
     }
 
     auto navigation_completed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_NavigationCompleted(
             Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT
                 { return navigation_completed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenNavigationCompleted);
     }
 
     auto web_message_received() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_WebMessageReceived(
             Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2WebMessageReceivedEventArgs* args) -> ::HRESULT
                 { return web_message_received_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenWebMessageReceived);
     }
 
     auto document_title_changed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_DocumentTitleChanged(
             Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                 [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
                 { return document_title_changed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenDocumentTitleChanged);
     }
 
     auto favicon_changed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_core->add_FaviconChanged(
             Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
                 [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
                 { return favicon_changed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenFaviconChanged);
     }
 
     auto accelerator_key_pressed() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_controller->add_AcceleratorKeyPressed(
             Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender,
                           ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> ::HRESULT
                 { return accelerator_key_pressed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenAcceleratorKeyPressed);
     }
 
     auto zoom_factor_changed() -> ::HRESULT
@@ -247,19 +231,17 @@ template <typename T> struct WebView : Window<T>
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return zoom_factor_changed_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenZoomFactorChanged);
     }
 
     auto got_focus() -> ::HRESULT
     {
-        EventRegistrationToken token;
-
         return m_controller->add_GotFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return got_focus_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenGotFocus);
     }
 
     auto lost_focus() -> ::HRESULT
@@ -271,7 +253,7 @@ template <typename T> struct WebView : Window<T>
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return lost_focus_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenLostFocus);
     }
 
     auto move_focus_requested() -> ::HRESULT
@@ -284,7 +266,7 @@ template <typename T> struct WebView : Window<T>
                           ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
                 { return move_focus_requested_handler(sender, args); })
                 .Get(),
-            &token);
+            &m_tokenMoveFocusRequested);
     }
 
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
@@ -493,5 +475,18 @@ template <typename T> struct WebView : Window<T>
     wil::com_ptr<ICoreWebView2Controller> m_initController;
     wil::com_ptr<ICoreWebView2> m_initCore;
     wil::com_ptr<ICoreWebView2Settings> m_initSettings;
+
+    EventRegistrationToken m_tokenContextMenuRequested;
+    EventRegistrationToken m_tokenSourceChanged;
+    EventRegistrationToken m_tokenNavigationStarting;
+    EventRegistrationToken m_tokenNavigationCompleted;
+    EventRegistrationToken m_tokenWebMessageReceived;
+    EventRegistrationToken m_tokenDocumentTitleChanged;
+    EventRegistrationToken m_tokenFaviconChanged;
+    EventRegistrationToken m_tokenAcceleratorKeyPressed;
+    EventRegistrationToken m_tokenZoomFactorChanged;
+    EventRegistrationToken m_tokenGotFocus;
+    EventRegistrationToken m_tokenLostFocus;
+    EventRegistrationToken m_tokenMoveFocusRequested;
 };
 } // namespace glow
