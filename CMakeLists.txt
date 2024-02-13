@@ -108,7 +108,8 @@ configure_file(
 
 target_sources(
     Glow
-    PRIVATE ${PROJECT_SOURCE_DIR}/src/coinitialize.cxx
+    PRIVATE ${PROJECT_SOURCE_DIR}/src/app.cxx
+            ${PROJECT_SOURCE_DIR}/src/coinitialize.cxx
             ${PROJECT_SOURCE_DIR}/src/colors.cxx
             ${PROJECT_SOURCE_DIR}/src/console.cxx
             ${PROJECT_SOURCE_DIR}/src/database.cxx

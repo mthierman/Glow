@@ -27,19 +27,19 @@ auto check_theme() -> bool;
 auto set_preferred_app_mode() -> void;
 auto allow_dark_mode(::HWND hWnd, bool enable) -> void;
 
-template <typename T> T* instance_from_wnd_proc(::HWND hwnd, ::UINT uMsg, ::LPARAM lParam)
+template <typename T> T* instance_from_wnd_proc(HWND hWnd, UINT uMsg, LPARAM lParam)
 {
     T* self{nullptr};
 
     if (uMsg == WM_NCCREATE)
     {
-        auto lpCreateStruct{reinterpret_cast<::LPCREATESTRUCT>(lParam)};
+        auto lpCreateStruct{reinterpret_cast<::CREATESTRUCTA*>(lParam)};
         self = static_cast<T*>(lpCreateStruct->lpCreateParams);
-        self->m_hwnd.reset(hwnd);
-        ::SetWindowLongPtrA(hwnd, 0, reinterpret_cast<uintptr_t>(self));
+        ::SetWindowLongPtrA(hWnd, 0, reinterpret_cast<intptr_t>(self));
+        self->m_hwnd.reset(hWnd);
     }
 
-    else self = reinterpret_cast<T*>(::GetWindowLongPtrA(hwnd, 0));
+    else { self = reinterpret_cast<T*>(::GetWindowLongPtrA(hWnd, 0)); }
 
     return self;
 }
