@@ -119,6 +119,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/guid.cxx
             ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
+            ${PROJECT_SOURCE_DIR}/src/webview.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx
     PRIVATE FILE_SET
             HEADERS
