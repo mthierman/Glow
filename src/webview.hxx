@@ -64,27 +64,27 @@ template <typename T> struct WebView : Window<T>
                 {
                     if (createdController)
                     {
-                        m_controller = createdController;
-                        m_controller4 = m_controller.try_query<ICoreWebView2Controller4>();
+                        m_initController = createdController;
+                        m_controller = m_initController.try_query<ICoreWebView2Controller4>();
 
-                        if (!m_controller4) return E_POINTER;
+                        if (!m_controller) return E_POINTER;
 
                         COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                        m_controller4->put_DefaultBackgroundColor(bgColor);
+                        m_controller->put_DefaultBackgroundColor(bgColor);
 
                         ::SendMessageA(m_parent, WM_SIZE, 0, 0);
                         ::SendMessageA(derived().hwnd(), WM_SIZE, 0, 0);
 
-                        m_controller->get_CoreWebView2(m_core.put());
-                        m_core21 = m_core.try_query<ICoreWebView2_21>();
+                        m_controller->get_CoreWebView2(m_initCore.put());
+                        m_core = m_initCore.try_query<ICoreWebView2_21>();
 
-                        if (!m_core21) return E_POINTER;
+                        if (!m_core) return E_POINTER;
 
-                        m_core21->get_Settings(m_settings.put());
+                        m_core->get_Settings(m_initSettings.put());
 
-                        m_settings8 = m_settings.try_query<ICoreWebView2Settings8>();
+                        m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
 
-                        if (!m_settings8) return E_POINTER;
+                        if (!m_settings) return E_POINTER;
 
                         settings();
 
@@ -113,23 +113,23 @@ template <typename T> struct WebView : Window<T>
 
     virtual auto settings() -> ::HRESULT
     {
-        m_settings8->put_AreBrowserAcceleratorKeysEnabled(true);
-        m_settings8->put_AreDefaultContextMenusEnabled(true);
-        m_settings8->put_AreDefaultScriptDialogsEnabled(true);
-        m_settings8->put_AreDevToolsEnabled(true);
-        m_settings8->put_AreHostObjectsAllowed(true);
-        m_settings8->put_HiddenPdfToolbarItems(
+        m_settings->put_AreBrowserAcceleratorKeysEnabled(true);
+        m_settings->put_AreDefaultContextMenusEnabled(true);
+        m_settings->put_AreDefaultScriptDialogsEnabled(true);
+        m_settings->put_AreDevToolsEnabled(true);
+        m_settings->put_AreHostObjectsAllowed(true);
+        m_settings->put_HiddenPdfToolbarItems(
             COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-        m_settings8->put_IsBuiltInErrorPageEnabled(true);
-        m_settings8->put_IsGeneralAutofillEnabled(true);
-        m_settings8->put_IsPasswordAutosaveEnabled(true);
-        m_settings8->put_IsPinchZoomEnabled(true);
-        m_settings8->put_IsReputationCheckingRequired(true);
-        m_settings8->put_IsScriptEnabled(true);
-        m_settings8->put_IsStatusBarEnabled(true);
-        m_settings8->put_IsSwipeNavigationEnabled(true);
-        m_settings8->put_IsWebMessageEnabled(true);
-        m_settings8->put_IsZoomControlEnabled(true);
+        m_settings->put_IsBuiltInErrorPageEnabled(true);
+        m_settings->put_IsGeneralAutofillEnabled(true);
+        m_settings->put_IsPasswordAutosaveEnabled(true);
+        m_settings->put_IsPinchZoomEnabled(true);
+        m_settings->put_IsReputationCheckingRequired(true);
+        m_settings->put_IsScriptEnabled(true);
+        m_settings->put_IsStatusBarEnabled(true);
+        m_settings->put_IsSwipeNavigationEnabled(true);
+        m_settings->put_IsWebMessageEnabled(true);
+        m_settings->put_IsZoomControlEnabled(true);
 
         return S_OK;
     }
@@ -140,7 +140,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_ContextMenuRequested(
+        return m_core->add_ContextMenuRequested(
             Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2ContextMenuRequestedEventArgs* args) -> ::HRESULT
@@ -153,7 +153,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_SourceChanged(
+        return m_core->add_SourceChanged(
             Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
@@ -166,7 +166,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_NavigationStarting(
+        return m_core->add_NavigationStarting(
             Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2NavigationStartingEventArgs* args) -> ::HRESULT
@@ -179,7 +179,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_NavigationCompleted(
+        return m_core->add_NavigationCompleted(
             Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT
@@ -192,7 +192,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_WebMessageReceived(
+        return m_core->add_WebMessageReceived(
             Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
                 [=, this](ICoreWebView2* sender,
                           ICoreWebView2WebMessageReceivedEventArgs* args) -> ::HRESULT
@@ -205,7 +205,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_DocumentTitleChanged(
+        return m_core->add_DocumentTitleChanged(
             Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
                 [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
                 { return document_title_changed_handler(sender, args); })
@@ -217,7 +217,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_core21->add_FaviconChanged(
+        return m_core->add_FaviconChanged(
             Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
                 [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
                 { return favicon_changed_handler(sender, args); })
@@ -229,7 +229,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_controller4->add_AcceleratorKeyPressed(
+        return m_controller->add_AcceleratorKeyPressed(
             Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender,
                           ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> ::HRESULT
@@ -242,7 +242,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_controller4->add_ZoomFactorChanged(
+        return m_controller->add_ZoomFactorChanged(
             Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return zoom_factor_changed_handler(sender, args); })
@@ -254,7 +254,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_controller4->add_GotFocus(
+        return m_controller->add_GotFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return got_focus_handler(sender, args); })
@@ -266,7 +266,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_controller4->add_LostFocus(
+        return m_controller->add_LostFocus(
             Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
                 { return lost_focus_handler(sender, args); })
@@ -278,7 +278,7 @@ template <typename T> struct WebView : Window<T>
     {
         EventRegistrationToken token;
 
-        return m_controller4->add_MoveFocusRequested(
+        return m_controller->add_MoveFocusRequested(
             Microsoft::WRL::Callback<ICoreWebView2MoveFocusRequestedEventHandler>(
                 [=, this](ICoreWebView2Controller* sender,
                           ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
@@ -363,13 +363,13 @@ template <typename T> struct WebView : Window<T>
 
     auto navigate(std::string url) -> ::HRESULT
     {
-        if (m_core21)
+        if (m_core)
         {
             auto wideUrl{glow::wstring(url)};
 
             if (wideUrl.empty()) { return S_OK; }
 
-            else return m_core21->Navigate(wideUrl.c_str());
+            else return m_core->Navigate(wideUrl.c_str());
         }
 
         else return S_OK;
@@ -377,21 +377,34 @@ template <typename T> struct WebView : Window<T>
 
     auto post_json(nlohmann::json message) -> ::HRESULT
     {
-        if (m_core21)
+        if (m_core)
         {
             auto wideJson{glow::wstring(message.dump())};
 
             if (wideJson.empty()) { return S_OK; }
 
-            else return m_core21->PostWebMessageAsJson(wideJson.c_str());
+            else return m_core->PostWebMessageAsJson(wideJson.c_str());
         }
 
         else return S_OK;
     }
 
+    // auto get_document_title() -> std::string
+    // {
+    //     if (m_core)
+    //     {
+    //         wil::unique_cotaskmem_string title;
+    //         m_core21->get_DocumentTitle(&title);
+
+    //         return glow::string(title.get());
+    //     }
+
+    //     else return {};
+    // }
+
     auto devtools() -> ::HRESULT
     {
-        if (m_core21) { return m_core21->OpenDevToolsWindow(); }
+        if (m_core) { return m_core->OpenDevToolsWindow(); }
 
         else return S_OK;
     }
@@ -400,25 +413,25 @@ template <typename T> struct WebView : Window<T>
     move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason = COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC)
         -> ::HRESULT
     {
-        if (m_controller4) { return m_controller4->MoveFocus(reason); }
+        if (m_controller) { return m_controller->MoveFocus(reason); }
 
         else return S_OK;
     }
 
     auto zoom(double zoomFactor) -> ::HRESULT
     {
-        if (m_controller4) { return m_controller4->put_ZoomFactor(zoomFactor); }
+        if (m_controller) { return m_controller->put_ZoomFactor(zoomFactor); }
 
         else return S_OK;
     }
 
     auto visible(bool visible) -> ::HRESULT
     {
-        if (m_controller4)
+        if (m_controller)
         {
-            if (visible) { return m_controller4->put_IsVisible(true); }
+            if (visible) { return m_controller->put_IsVisible(true); }
 
-            else { return m_controller4->put_IsVisible(false); }
+            else { return m_controller->put_IsVisible(false); }
         }
 
         else return S_OK;
@@ -445,25 +458,27 @@ template <typename T> struct WebView : Window<T>
 
     auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int
     {
-        if (m_controller4)
+        if (m_controller)
         {
             derived().position();
-            m_controller4->put_Bounds(derived().m_client.rect);
+            m_controller->put_Bounds(derived().m_client.rect);
         }
 
         return 0;
     }
 
     ::HWND m_parent{nullptr};
-    wil::com_ptr<ICoreWebView2Controller> m_controller;
-    wil::com_ptr<ICoreWebView2Controller4> m_controller4;
-    wil::com_ptr<ICoreWebView2> m_core;
-    wil::com_ptr<ICoreWebView2_21> m_core21;
-    wil::com_ptr<ICoreWebView2Settings> m_settings;
-    wil::com_ptr<ICoreWebView2Settings8> m_settings8;
+
+    wil::com_ptr<ICoreWebView2Controller4> m_controller;
+    wil::com_ptr<ICoreWebView2_21> m_core;
+    wil::com_ptr<ICoreWebView2Settings8> m_settings;
 
   private:
     T& derived() { return static_cast<T&>(*this); }
     T const& derived() const { return static_cast<T const&>(*this); }
+
+    wil::com_ptr<ICoreWebView2Controller> m_initController;
+    wil::com_ptr<ICoreWebView2> m_initCore;
+    wil::com_ptr<ICoreWebView2Settings> m_initSettings;
 };
 } // namespace glow
