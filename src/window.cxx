@@ -10,8 +10,8 @@
 
 namespace glow
 {
-Window::Window(std::string name, intptr_t id, ::DWORD style, ::DWORD exStyle, int x, int y,
-               int width, int height, ::HWND parent, ::HMENU menu)
+Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int x, int y, int width,
+               int height, ::HWND parent, ::HMENU menu)
     : m_id{id}
 {
     m_appIcon.reset(static_cast<HICON>(
@@ -29,7 +29,7 @@ Window::Window(std::string name, intptr_t id, ::DWORD style, ::DWORD exStyle, in
         wcex.lpfnWndProc = WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(intptr_t);
+        wcex.cbWndExtra = sizeof(size_t);
         wcex.hInstance = ::GetModuleHandleA(nullptr);
         wcex.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
         wcex.hCursor = static_cast<HCURSOR>(
@@ -68,8 +68,8 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 
     m_notification.message = message;
 
-    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<intptr_t>(&m_notification.id),
-                   reinterpret_cast<intptr_t>(&m_notification));
+    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<size_t>(&m_notification.id),
+                   reinterpret_cast<size_t>(&m_notification));
 }
 
 auto Window::dpi() -> void { m_dpi = ::GetDpiForWindow(m_hwnd.get()); };

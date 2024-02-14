@@ -33,7 +33,7 @@ struct WebView : public Window
 {
     WebView(
         HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
-        intptr_t id = glow::random<intptr_t>());
+        size_t id = glow::random<size_t>());
     virtual ~WebView();
 
     virtual auto create_environment(std::function<HRESULT()> callback) -> ::HRESULT;

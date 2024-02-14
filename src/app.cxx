@@ -10,7 +10,7 @@
 
 namespace glow
 {
-App::App(std::string name, intptr_t id) : m_id{id}
+App::App(std::string name, size_t id) : m_id{id}
 {
     ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
 
@@ -21,7 +21,7 @@ App::App(std::string name, intptr_t id) : m_id{id}
         wcex.lpfnWndProc = WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(this);
+        wcex.cbWndExtra = sizeof(size_t);
         wcex.hInstance = ::GetModuleHandleA(nullptr);
         wcex.hbrBackground = nullptr;
         wcex.hCursor = nullptr;

@@ -29,7 +29,7 @@ namespace glow
 {
 struct Window
 {
-    Window(std::string name = "Window", intptr_t id = glow::random<intptr_t>(),
+    Window(std::string name = "Window", size_t id = glow::random<size_t>(),
            ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
            int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
            int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr);
@@ -72,7 +72,7 @@ struct Window
     virtual auto dwm_set_text_color(::COLORREF color) -> void;
     virtual auto dwm_reset_text_color() -> void;
 
-    intptr_t m_id{};
+    size_t m_id{};
     wil::unique_hwnd m_hwnd{};
     wil::unique_hicon m_appIcon{};
     wil::unique_hicon m_hicon{};
