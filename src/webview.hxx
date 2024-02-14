@@ -86,13 +86,13 @@ struct WebView : public Window
     virtual auto post_json(nlohmann::json message) -> ::HRESULT;
     virtual auto get_favicon(std::function<HRESULT()> callback = []() { return S_OK; })
         -> ::HRESULT;
-    virtual auto devtools() -> ::HRESULT;
+    virtual auto open_dev_tools_window() -> ::HRESULT;
     virtual auto
     move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason = COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC)
         -> ::HRESULT;
-    virtual auto zoom(double zoomFactor) -> ::HRESULT;
-    virtual auto visible(bool visible) -> ::HRESULT;
-    virtual auto version() -> std::expected<std::string, ::HRESULT>;
+    virtual auto put_zoom_factor(double zoomFactor) -> ::HRESULT;
+    virtual auto put_is_visible(bool visible) -> ::HRESULT;
+    virtual auto webview_version() -> std::expected<std::string, ::HRESULT>;
 
     std::string m_source{};
     std::optional<std::string> m_title{};

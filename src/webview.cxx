@@ -393,7 +393,7 @@ auto WebView::get_favicon(std::function<HRESULT()> callback) -> ::HRESULT
                                   .Get());
 }
 
-auto WebView::devtools() -> ::HRESULT
+auto WebView::open_dev_tools_window() -> ::HRESULT
 {
     if (!m_core) { return S_OK; }
 
@@ -407,14 +407,14 @@ auto WebView::move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
     return m_controller->MoveFocus(reason);
 }
 
-auto WebView::zoom(double zoomFactor) -> ::HRESULT
+auto WebView::put_zoom_factor(double zoomFactor) -> ::HRESULT
 {
     if (!m_controller) { return S_OK; }
 
     return m_controller->put_ZoomFactor(zoomFactor);
 }
 
-auto WebView::visible(bool visible) -> ::HRESULT
+auto WebView::put_is_visible(bool visible) -> ::HRESULT
 {
     if (!m_controller) { return S_OK; }
 
@@ -423,7 +423,7 @@ auto WebView::visible(bool visible) -> ::HRESULT
     else { return m_controller->put_IsVisible(false); }
 }
 
-auto WebView::version() -> std::expected<std::string, ::HRESULT>
+auto WebView::webview_version() -> std::expected<std::string, ::HRESULT>
 {
     wil::unique_cotaskmem_string buffer;
 
