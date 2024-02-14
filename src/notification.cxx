@@ -6,29 +6,19 @@
 // ╚──────────────╝
 // clang-format on
 
-#pragma once
-
-#include <Windows.h>
-
-#include <string>
-
-#include <nlohmann/json.hpp>
-
-enum struct CODE : unsigned int;
+#include "notification.hxx"
 
 namespace glow
 {
-struct Notification
+auto Notification::reset() -> void
 {
-    ::NMHDR nmhdr{};
+    nmhdr.hwndFrom = nullptr;
+    nmhdr.idFrom = 0;
+    nmhdr.code = 0;
 
-    ::HWND hwnd{};
-    size_t id{};
-    CODE code{};
-    std::string message{};
-
-    auto reset() -> void;
-
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(Notification, message)
-};
+    hwnd = nullptr;
+    id = 0;
+    code = static_cast<CODE>(0);
+    message.clear();
+}
 } // namespace glow

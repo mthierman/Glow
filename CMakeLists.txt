@@ -117,6 +117,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/gdiplus.cxx
             ${PROJECT_SOURCE_DIR}/src/gui.cxx
             ${PROJECT_SOURCE_DIR}/src/guid.cxx
+            ${PROJECT_SOURCE_DIR}/src/notification.cxx
             ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
             ${PROJECT_SOURCE_DIR}/src/webview.cxx

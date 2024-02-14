@@ -57,6 +57,8 @@ Window::~Window() {}
 
 auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 {
+    m_notification.reset();
+
     m_notification.nmhdr.hwndFrom = m_hwnd.get();
     m_notification.hwnd = m_hwnd.get();
 
