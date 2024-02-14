@@ -37,7 +37,7 @@ struct WebView : public Window
     WebView(
         HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
         size_t id = glow::random<size_t>());
-    virtual ~WebView();
+    ~WebView() override;
 
     virtual auto create_environment(std::function<HRESULT()> callback) -> ::HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment,
