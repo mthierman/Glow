@@ -10,11 +10,14 @@
 
 namespace glow
 {
-WebView::WebView(HWND parent, intptr_t id)
+WebView::WebView(HWND parent, std::function<HRESULT()> callback, intptr_t id)
     : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
       m_parent{parent}
 {
-    if (FAILED(create_environment())) { throw std::runtime_error("WebView creation failure"); }
+    if (FAILED(create_environment(callback)))
+    {
+        throw std::runtime_error("WebView creation failure");
+    }
 }
 
 WebView::~WebView()
@@ -33,7 +36,7 @@ WebView::~WebView()
     m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
 }
 
-auto WebView::create_environment() -> ::HRESULT
+auto WebView::create_environment(std::function<HRESULT()> callback) -> ::HRESULT
 {
     return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -41,14 +44,15 @@ auto WebView::create_environment() -> ::HRESULT
             [=, this](::HRESULT errorCode,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
             {
-                if (createdEnvironment) { return create_controller(createdEnvironment); }
+                if (createdEnvironment) { return create_controller(createdEnvironment, callback); }
 
                 else { return errorCode; }
             })
             .Get());
 }
 
-auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
+auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
+                                std::function<HRESULT()> callback) -> ::HRESULT
 {
     return createdEnvironment->CreateCoreWebView2Controller(
         hwnd(),
@@ -95,6 +99,8 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment) ->
                     add_move_focus_requested();
 
                     created();
+
+                    callback();
 
                     return S_OK;
                 }

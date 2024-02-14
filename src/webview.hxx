@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include <wrl.h>
 
+#include <functional>
 #include <stdexcept>
 #include <string>
 
@@ -30,12 +31,15 @@ namespace glow
 {
 struct WebView : public Window
 {
-    WebView(HWND parent, intptr_t id = glow::random<intptr_t>());
+    WebView(
+        HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
+        intptr_t id = glow::random<intptr_t>());
 
     virtual ~WebView();
 
-    virtual auto create_environment() -> ::HRESULT;
-    virtual auto create_controller(ICoreWebView2Environment* createdEnvironment) -> ::HRESULT;
+    virtual auto create_environment(std::function<HRESULT()> callback) -> ::HRESULT;
+    virtual auto create_controller(ICoreWebView2Environment* createdEnvironment,
+                                   std::function<HRESULT()> callback) -> ::HRESULT;
     virtual auto created() -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
 
