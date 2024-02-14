@@ -37,6 +37,7 @@ struct Window
     virtual ~Window();
 
     virtual auto hwnd() const -> ::HWND;
+    virtual auto hwnd(HWND hWnd) -> void;
     virtual auto hicon() const -> ::HICON;
     virtual auto id() const -> intptr_t;
     virtual auto close() -> int;

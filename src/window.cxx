@@ -51,6 +51,8 @@ Window::~Window() {}
 
 auto Window::hwnd() const -> ::HWND { return m_hwnd.get(); }
 
+auto Window::hwnd(HWND hWnd) -> void { m_hwnd.reset(hWnd); }
+
 auto Window::hicon() const -> ::HICON { return m_hicon.get(); }
 
 auto Window::id() const -> intptr_t { return m_id; }

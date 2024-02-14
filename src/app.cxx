@@ -17,19 +17,16 @@ App::App(std::string name, intptr_t id) : m_id{id}
     if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), name.c_str(), &wcex))
     {
         wcex.lpszClassName = name.c_str();
-        wcex.lpszMenuName = 0;
+        wcex.lpszMenuName = nullptr;
         wcex.lpfnWndProc = WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(intptr_t);
+        wcex.cbWndExtra = sizeof(this);
         wcex.hInstance = ::GetModuleHandleA(nullptr);
-        wcex.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-        wcex.hCursor = static_cast<HCURSOR>(
-            ::LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-        wcex.hIcon = static_cast<HICON>(
-            ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-        wcex.hIconSm = static_cast<HICON>(
-            ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+        wcex.hbrBackground = nullptr;
+        wcex.hCursor = nullptr;
+        wcex.hIcon = nullptr;
+        wcex.hIconSm = nullptr;
 
         if (::RegisterClassExA(&wcex) == 0) throw std::runtime_error("Class registration failure");
     }
@@ -60,24 +57,6 @@ auto App::operator()() -> int
     return 0;
 }
 
-auto App::hwnd() const -> HWND { return m_hwnd.get(); }
-
-auto App::id() const -> intptr_t { return m_id; }
-
-auto App::close() -> int
-{
-    m_hwnd.reset();
-
-    return 0;
-}
-
-auto App::quit() -> int
-{
-    ::PostQuitMessage(0);
-
-    return 0;
-}
-
 auto CALLBACK App::WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<App>(hWnd, uMsg, lParam)};
@@ -91,8 +70,8 @@ auto App::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM l
 {
     switch (uMsg)
     {
-    case WM_CLOSE: return close();
-    case WM_DESTROY: return quit();
+    case WM_CLOSE: m_hwnd.reset(); return 0;
+    case WM_DESTROY: ::PostQuitMessage(0); return 0;
     }
 
     return wnd_proc(hWnd, uMsg, wParam, lParam);
