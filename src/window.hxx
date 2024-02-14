@@ -36,11 +36,21 @@ struct Window
     virtual ~Window();
 
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
-    virtual auto dpi() -> unsigned int;
-    virtual auto scale() -> float;
+
+    virtual auto get_dpi() -> unsigned int;
+    virtual auto get_scale() -> float;
+    virtual auto get_style() -> intptr_t;
+    virtual auto get_ex_style() -> intptr_t;
+    virtual auto get_id() -> intptr_t;
+    virtual auto get_parent() -> intptr_t;
+    virtual auto get_placement() -> ::WINDOWPLACEMENT;
+
     virtual auto reveal() -> bool;
     virtual auto show() -> bool;
     virtual auto hide() -> bool;
+    virtual auto maximize() -> bool;
+    virtual auto restore() -> bool;
+
     virtual auto is_visible() -> bool;
     virtual auto focus() -> ::HWND;
     virtual auto is_focus() -> bool;
@@ -48,18 +58,18 @@ struct Window
     virtual auto is_foreground() -> bool;
     virtual auto active() -> bool;
     virtual auto top() -> bool;
-    virtual auto maximize() -> void;
-    virtual auto fullscreen() -> void;
-    virtual auto topmost() -> void;
-    virtual auto title(std::string title) -> bool;
-    virtual auto icon(::HICON icon, bool small = true, bool big = true) -> void;
+    virtual auto toggle_maximize() -> void;
+    virtual auto toggle_fullscreen() -> void;
+    virtual auto toggle_topmost() -> void;
+    virtual auto set_title(std::string title) -> bool;
+    virtual auto set_icon(::HICON icon, bool small = true, bool big = true) -> void;
     virtual auto border(bool enabled) -> void;
-    virtual auto overlapped() -> void;
-    virtual auto popup() -> void;
-    virtual auto child() -> void;
+    virtual auto set_overlapped() -> void;
+    virtual auto set_popup() -> void;
+    virtual auto set_child() -> void;
     virtual auto reparent(::HWND parent) -> void;
     virtual auto position() -> void;
-    virtual auto size() -> void;
+    virtual auto resize() -> void;
     virtual auto theme() -> void;
     virtual auto dwm_dark_mode(bool enabled) -> void;
     virtual auto dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;

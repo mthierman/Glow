@@ -17,8 +17,8 @@ Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int 
     m_appIcon.reset(static_cast<HICON>(
         ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE)));
 
-    m_hicon.reset(static_cast<HICON>(::LoadImageA(
-        ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE)));
+    m_hicon.reset(static_cast<HICON>(::LoadImageA(::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1),
+                                                  IMAGE_ICON, 0, 0, LR_DEFAULTSIZE)));
 
     ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
 
@@ -71,18 +71,38 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
                    reinterpret_cast<uintptr_t>(&m_notification));
 }
 
-auto Window::dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
+auto Window::get_dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
 
-auto Window::scale() -> float
+auto Window::get_scale() -> float
 {
     return static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 };
 
-auto Window::reveal() -> bool { return ::ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
+auto Window::get_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE); }
+
+auto Window::get_ex_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_EXSTYLE); }
+
+auto Window::get_id() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWLP_ID); }
+
+auto Window::get_parent() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWLP_HWNDPARENT); }
+
+auto Window::get_placement() -> ::WINDOWPLACEMENT
+{
+    ::WINDOWPLACEMENT wp{sizeof(::WINDOWPLACEMENT)};
+    ::GetWindowPlacement(m_hwnd.get(), &wp);
+
+    return wp;
+}
+
+auto Window::reveal() -> bool { return ::ShowWindow(m_hwnd.get(), SW_NORMAL); }
 
 auto Window::show() -> bool { return ::ShowWindow(m_hwnd.get(), SW_SHOW); }
 
 auto Window::hide() -> bool { return ::ShowWindow(m_hwnd.get(), SW_HIDE); }
+
+auto Window::maximize() -> bool { return ::ShowWindow(m_hwnd.get(), SW_MAXIMIZE); }
+
+auto Window::restore() -> bool { return ::ShowWindow(m_hwnd.get(), SW_RESTORE); }
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(m_hwnd.get()); }
 
@@ -98,34 +118,26 @@ auto Window::active() -> bool { return ::SetActiveWindow(m_hwnd.get()); }
 
 auto Window::top() -> bool { return ::BringWindowToTop(m_hwnd.get()); }
 
-auto Window::maximize() -> void
+auto Window::toggle_maximize() -> void
 {
-    auto style{::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
+    auto wp{get_placement()};
 
-    ::WINDOWPLACEMENT wp{sizeof(::WINDOWPLACEMENT)};
-    ::GetWindowPlacement(m_hwnd.get(), &wp);
+    if ((get_style() & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3) { restore(); }
 
-    if ((style & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3)
-    {
-        ::ShowWindow(m_hwnd.get(), SW_RESTORE);
-    }
-
-    else { ::ShowWindow(m_hwnd.get(), SW_MAXIMIZE); }
+    else { maximize(); }
 }
 
-auto Window::fullscreen() -> void
+auto Window::toggle_fullscreen() -> void
 {
     static RECT pos;
 
-    auto style{::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-
-    if (style & WS_OVERLAPPEDWINDOW)
+    if (get_style() & WS_OVERLAPPEDWINDOW)
     {
         ::MONITORINFO mi{sizeof(::MONITORINFO)};
         ::GetWindowRect(m_hwnd.get(), &pos);
         if (::GetMonitorInfoA(::MonitorFromWindow(m_hwnd.get(), MONITOR_DEFAULTTONEAREST), &mi))
         {
-            ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style & ~WS_OVERLAPPEDWINDOW);
+            ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, get_style() & ~WS_OVERLAPPEDWINDOW);
             ::SetWindowPos(m_hwnd.get(), HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
                            mi.rcMonitor.right - mi.rcMonitor.left,
                            mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
@@ -134,13 +146,13 @@ auto Window::fullscreen() -> void
 
     else
     {
-        ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, style | WS_OVERLAPPEDWINDOW);
+        ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, get_style() | WS_OVERLAPPEDWINDOW);
         ::SetWindowPos(m_hwnd.get(), nullptr, pos.left, pos.top, (pos.right - pos.left),
                        (pos.bottom - pos.top), SWP_FRAMECHANGED);
     }
 }
 
-auto Window::topmost() -> void
+auto Window::toggle_topmost() -> void
 {
     ::FLASHWINFO fwi{sizeof(::FLASHWINFO)};
     fwi.hwnd = m_hwnd.get();
@@ -148,9 +160,7 @@ auto Window::topmost() -> void
     fwi.uCount = 1;
     fwi.dwTimeout = 100;
 
-    auto style{::GetWindowLongPtrA(m_hwnd.get(), GWL_EXSTYLE)};
-
-    if (style & WS_EX_TOPMOST)
+    if (get_ex_style() & WS_EX_TOPMOST)
     {
         ::SetWindowPos(m_hwnd.get(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     }
@@ -160,12 +170,12 @@ auto Window::topmost() -> void
     ::FlashWindowEx(&fwi);
 }
 
-auto Window::title(std::string title) -> bool
+auto Window::set_title(std::string title) -> bool
 {
     return ::SetWindowTextA(m_hwnd.get(), title.c_str());
 }
 
-auto Window::icon(::HICON icon, bool small, bool big) -> void
+auto Window::set_icon(::HICON icon, bool small, bool big) -> void
 {
     if (small)
     {
@@ -180,29 +190,27 @@ auto Window::icon(::HICON icon, bool small, bool big) -> void
 
 auto Window::border(bool enabled) -> void
 {
-    auto style{::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE)};
-
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
-                        enabled ? (style | WS_BORDER) : (style & ~WS_BORDER));
+                        enabled ? (get_style() | WS_BORDER) : (get_style() & ~WS_BORDER));
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
-auto Window::overlapped() -> void
+auto Window::set_overlapped() -> void
 {
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
-auto Window::popup() -> void
+auto Window::set_popup() -> void
 {
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
-auto Window::child() -> void
+auto Window::set_child() -> void
 {
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_CHILD);
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
@@ -214,13 +222,13 @@ auto Window::reparent(::HWND parent) -> void
     if (parent)
     {
         ::SetParent(m_hwnd.get(), parent);
-        child();
+        set_child();
     }
 
     else
     {
         ::SetParent(m_hwnd.get(), nullptr);
-        popup();
+        set_popup();
     }
 }
 
@@ -241,7 +249,7 @@ auto Window::position() -> void
     m_window.height = m_window.rect.bottom - m_window.rect.top;
 }
 
-auto Window::size() -> void { ::SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0); }
+auto Window::resize() -> void { ::SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0); }
 
 auto Window::theme() -> void
 {
@@ -391,16 +399,16 @@ auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARA
 
         case WM_CREATE:
         {
-            m_dpi = dpi();
-            m_scale = scale();
+            m_dpi = get_dpi();
+            m_scale = get_scale();
 
             return 0;
         }
 
         case WM_DPICHANGED:
         {
-            m_dpi = dpi();
-            m_scale = scale();
+            m_dpi = get_dpi();
+            m_scale = get_scale();
 
             return 0;
         }
