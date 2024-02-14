@@ -104,17 +104,16 @@ struct WebView : public Window
     virtual auto visible(bool visible) -> ::HRESULT;
     virtual auto version() -> std::string;
 
-    virtual auto wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT override;
-    virtual auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
-
     ::HWND m_parent{nullptr};
-
     wil::com_ptr<ICoreWebView2Controller4> m_controller;
     wil::com_ptr<ICoreWebView2_21> m_core;
     wil::com_ptr<ICoreWebView2Settings8> m_settings;
 
   private:
+    virtual auto wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
+        -> ::LRESULT override;
+    virtual auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
+
     wil::com_ptr<ICoreWebView2Controller> m_initController;
     wil::com_ptr<ICoreWebView2> m_initCore;
     wil::com_ptr<ICoreWebView2Settings> m_initSettings;

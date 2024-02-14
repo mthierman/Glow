@@ -55,7 +55,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
                                 std::function<HRESULT()> callback) -> ::HRESULT
 {
     return createdEnvironment->CreateCoreWebView2Controller(
-        hwnd(),
+        m_hwnd.get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](::HRESULT errorCode, ICoreWebView2Controller* createdController) -> ::HRESULT
             {

@@ -36,11 +36,6 @@ struct Window
 
     virtual ~Window();
 
-    virtual auto hwnd() const -> ::HWND;
-    virtual auto hwnd(HWND hWnd) -> void;
-    virtual auto hicon() const -> ::HICON;
-    virtual auto id() const -> intptr_t;
-    virtual auto close() -> int;
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
     virtual auto dpi() -> void;
     virtual auto scale() -> void;
@@ -78,22 +73,10 @@ struct Window
     virtual auto dwm_set_text_color(::COLORREF color) -> void;
     virtual auto dwm_reset_text_color() -> void;
 
-  private:
-    static auto CALLBACK WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
-    virtual auto default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
-    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
-
-  public:
     intptr_t m_id{};
     wil::unique_hwnd m_hwnd{};
-    wil::unique_hicon m_appIcon{static_cast<HICON>(
-        ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    wil::unique_hicon m_hicon{static_cast<HICON>(::LoadImageA(
-        ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(101), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
-
-    glow::Notification m_notification{};
+    wil::unique_hicon m_appIcon{};
+    wil::unique_hicon m_hicon{};
     glow::Position m_client{};
     glow::Position m_window{};
     int m_dpi{};
@@ -101,5 +84,13 @@ struct Window
     bool m_maximize{};
     bool m_fullscreen{};
     bool m_topmost{};
+    glow::Notification m_notification{};
+
+  private:
+    static auto CALLBACK WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+        -> ::LRESULT;
+    virtual auto default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+        -> ::LRESULT;
+    virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
 };
 } // namespace glow
