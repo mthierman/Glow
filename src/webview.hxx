@@ -94,9 +94,6 @@ struct WebView : public Window
     virtual auto visible(bool visible) -> ::HRESULT;
     virtual auto version() -> std::expected<std::string, ::HRESULT>;
 
-    wil::com_ptr<ICoreWebView2Controller4> m_controller{};
-    wil::com_ptr<ICoreWebView2_21> m_core{};
-    wil::com_ptr<ICoreWebView2Settings8> m_settings{};
     std::string m_source{};
     std::optional<std::string> m_title{};
     std::pair<std::string, wil::unique_hicon> m_favicon{};
@@ -109,6 +106,10 @@ struct WebView : public Window
     wil::com_ptr<ICoreWebView2Controller> m_initController{};
     wil::com_ptr<ICoreWebView2> m_initCore{};
     wil::com_ptr<ICoreWebView2Settings> m_initSettings{};
+
+    wil::com_ptr<ICoreWebView2Controller4> m_controller{};
+    wil::com_ptr<ICoreWebView2_21> m_core{};
+    wil::com_ptr<ICoreWebView2Settings8> m_settings{};
 
     EventRegistrationToken m_tokenContextMenuRequested{};
     EventRegistrationToken m_tokenSourceChanged{};
