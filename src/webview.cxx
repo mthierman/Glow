@@ -98,8 +98,6 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
                     add_lost_focus();
                     add_move_focus_requested();
 
-                    created();
-
                     callback();
 
                     return S_OK;
@@ -109,8 +107,6 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
             })
             .Get());
 }
-
-auto WebView::created() -> ::HRESULT { return S_OK; }
 
 auto WebView::put_settings() -> ::HRESULT
 {
