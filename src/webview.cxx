@@ -11,8 +11,7 @@
 namespace glow
 {
 WebView::WebView(HWND parent, std::function<HRESULT()> callback, size_t id)
-    : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
-      m_parent{parent}
+    : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
 {
     if (FAILED(create_environment(callback)))
     {

@@ -84,7 +84,10 @@ auto Window::get_ex_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(
 
 auto Window::get_id() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWLP_ID); }
 
-auto Window::get_parent() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWLP_HWNDPARENT); }
+auto Window::get_parent() -> ::HWND
+{
+    return reinterpret_cast<::HWND>(::GetWindowLongPtrA(m_hwnd.get(), GWLP_HWNDPARENT));
+}
 
 auto Window::get_placement() -> ::WINDOWPLACEMENT
 {

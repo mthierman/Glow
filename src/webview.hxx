@@ -94,7 +94,6 @@ struct WebView : public Window
     virtual auto visible(bool visible) -> ::HRESULT;
     virtual auto version() -> std::expected<std::string, ::HRESULT>;
 
-    ::HWND m_parent{nullptr};
     wil::com_ptr<ICoreWebView2Controller4> m_controller{};
     wil::com_ptr<ICoreWebView2_21> m_core{};
     wil::com_ptr<ICoreWebView2Settings8> m_settings{};

@@ -42,7 +42,7 @@ struct Window
     virtual auto get_style() -> intptr_t;
     virtual auto get_ex_style() -> intptr_t;
     virtual auto get_id() -> intptr_t;
-    virtual auto get_parent() -> intptr_t;
+    virtual auto get_parent() -> ::HWND;
     virtual auto get_placement() -> ::WINDOWPLACEMENT;
 
     virtual auto reveal() -> bool;
