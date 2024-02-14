@@ -428,7 +428,7 @@ auto WebView::version() -> std::expected<std::string, ::HRESULT>
 {
     wil::unique_cotaskmem_string buffer;
 
-    if (auto hr{FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer))})
+    if (auto hr{GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)}; FAILED(hr))
     {
         return std::unexpected(hr);
     }
@@ -440,7 +440,7 @@ auto WebView::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lPara
 {
     switch (uMsg)
     {
-    case WM_SIZE: return on_size(wParam, lParam);
+        case WM_SIZE: return on_size(wParam, lParam);
     }
 
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
