@@ -69,9 +69,6 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
                     COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
                     m_controller->put_DefaultBackgroundColor(bgColor);
 
-                    ::SendMessageA(m_parent, WM_SIZE, 0, 0);
-                    ::SendMessageA(hwnd(), WM_SIZE, 0, 0);
-
                     m_controller->get_CoreWebView2(m_initCore.put());
                     m_core = m_initCore.try_query<ICoreWebView2_21>();
 
