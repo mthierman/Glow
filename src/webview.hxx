@@ -34,64 +34,50 @@ struct WebView : public Window
     WebView(
         HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
         intptr_t id = glow::random<intptr_t>());
-
     virtual ~WebView();
 
     virtual auto create_environment(std::function<HRESULT()> callback) -> ::HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment,
                                    std::function<HRESULT()> callback) -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
-
     virtual auto add_context_menu_requested() -> ::HRESULT;
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
                                                 ICoreWebView2ContextMenuRequestedEventArgs* args)
         -> ::HRESULT;
-
     virtual auto add_source_changed() -> ::HRESULT;
     virtual auto source_changed_handler(ICoreWebView2* sender,
                                         ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT;
-
     virtual auto add_navigation_starting() -> ::HRESULT;
     virtual auto navigation_starting_handler(ICoreWebView2* sender,
                                              ICoreWebView2NavigationStartingEventArgs* args)
         -> ::HRESULT;
-
     virtual auto add_navigation_completed() -> ::HRESULT;
     virtual auto navigation_completed_handler(ICoreWebView2* sender,
                                               ICoreWebView2NavigationCompletedEventArgs* args)
         -> ::HRESULT;
-
     virtual auto add_web_message_received() -> ::HRESULT;
     virtual auto web_message_received_handler(ICoreWebView2* sender,
                                               ICoreWebView2WebMessageReceivedEventArgs* args)
         -> ::HRESULT;
-
     virtual auto add_document_title_changed() -> ::HRESULT;
     virtual auto document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT;
-
     virtual auto add_favicon_changed() -> ::HRESULT;
     virtual auto favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT;
-
     virtual auto add_accelerator_key_pressed() -> ::HRESULT;
     virtual auto accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
                                                  ICoreWebView2AcceleratorKeyPressedEventArgs* args)
         -> ::HRESULT;
-
     virtual auto add_zoom_factor_changed() -> ::HRESULT;
     virtual auto zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
         -> ::HRESULT;
-
     virtual auto add_got_focus() -> ::HRESULT;
     virtual auto got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT;
-
     virtual auto add_lost_focus() -> ::HRESULT;
     virtual auto lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT;
-
     auto add_move_focus_requested() -> ::HRESULT;
     virtual auto move_focus_requested_handler(ICoreWebView2Controller* sender,
                                               ICoreWebView2MoveFocusRequestedEventArgs* args)
         -> ::HRESULT;
-
     virtual auto navigate(std::string url) -> ::HRESULT;
     virtual auto post_json(nlohmann::json message) -> ::HRESULT;
     virtual auto get_document_title() -> std::string;
@@ -105,30 +91,30 @@ struct WebView : public Window
     virtual auto version() -> std::string;
 
     ::HWND m_parent{nullptr};
-    wil::com_ptr<ICoreWebView2Controller4> m_controller;
-    wil::com_ptr<ICoreWebView2_21> m_core;
-    wil::com_ptr<ICoreWebView2Settings8> m_settings;
+    wil::com_ptr<ICoreWebView2Controller4> m_controller{};
+    wil::com_ptr<ICoreWebView2_21> m_core{};
+    wil::com_ptr<ICoreWebView2Settings8> m_settings{};
 
   private:
     virtual auto wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
         -> ::LRESULT override;
     virtual auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
 
-    wil::com_ptr<ICoreWebView2Controller> m_initController;
-    wil::com_ptr<ICoreWebView2> m_initCore;
-    wil::com_ptr<ICoreWebView2Settings> m_initSettings;
+    wil::com_ptr<ICoreWebView2Controller> m_initController{};
+    wil::com_ptr<ICoreWebView2> m_initCore{};
+    wil::com_ptr<ICoreWebView2Settings> m_initSettings{};
 
-    EventRegistrationToken m_tokenContextMenuRequested;
-    EventRegistrationToken m_tokenSourceChanged;
-    EventRegistrationToken m_tokenNavigationStarting;
-    EventRegistrationToken m_tokenNavigationCompleted;
-    EventRegistrationToken m_tokenWebMessageReceived;
-    EventRegistrationToken m_tokenDocumentTitleChanged;
-    EventRegistrationToken m_tokenFaviconChanged;
-    EventRegistrationToken m_tokenAcceleratorKeyPressed;
-    EventRegistrationToken m_tokenZoomFactorChanged;
-    EventRegistrationToken m_tokenGotFocus;
-    EventRegistrationToken m_tokenLostFocus;
-    EventRegistrationToken m_tokenMoveFocusRequested;
+    EventRegistrationToken m_tokenContextMenuRequested{};
+    EventRegistrationToken m_tokenSourceChanged{};
+    EventRegistrationToken m_tokenNavigationStarting{};
+    EventRegistrationToken m_tokenNavigationCompleted{};
+    EventRegistrationToken m_tokenWebMessageReceived{};
+    EventRegistrationToken m_tokenDocumentTitleChanged{};
+    EventRegistrationToken m_tokenFaviconChanged{};
+    EventRegistrationToken m_tokenAcceleratorKeyPressed{};
+    EventRegistrationToken m_tokenZoomFactorChanged{};
+    EventRegistrationToken m_tokenGotFocus{};
+    EventRegistrationToken m_tokenLostFocus{};
+    EventRegistrationToken m_tokenMoveFocusRequested{};
 };
 } // namespace glow

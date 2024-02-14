@@ -24,6 +24,7 @@ struct App
 {
     App(std::string name = "App", intptr_t id = glow::random<intptr_t>());
     virtual ~App();
+
     virtual auto operator()() -> int;
 
     intptr_t m_id{};
