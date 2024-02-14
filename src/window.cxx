@@ -247,6 +247,9 @@ auto Window::position() -> void
     m_window.y = m_window.rect.top;
     m_window.width = m_window.rect.right - m_window.rect.left;
     m_window.height = m_window.rect.bottom - m_window.rect.top;
+
+    m_dpi = get_dpi();
+    m_scale = get_scale();
 }
 
 auto Window::resize() -> void { ::SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0); }
@@ -390,28 +393,9 @@ auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARA
 {
     switch (uMsg)
     {
-        case WM_CLOSE:
-        {
-            m_hwnd.reset();
-
-            return 0;
-        }
-
-        case WM_CREATE:
-        {
-            m_dpi = get_dpi();
-            m_scale = get_scale();
-
-            return 0;
-        }
-
-        case WM_DPICHANGED:
-        {
-            m_dpi = get_dpi();
-            m_scale = get_scale();
-
-            return 0;
-        }
+        case WM_CLOSE: return on_close(wParam, lParam);
+        case WM_CREATE: return on_create(wParam, lParam);
+        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
     }
 
     return wnd_proc(hWnd, uMsg, wParam, lParam);
@@ -420,5 +404,26 @@ auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARA
 auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
 {
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
+{
+    m_hwnd.reset();
+
+    return 0;
+}
+
+auto Window::on_create(WPARAM wParam, LPARAM lParam) -> int
+{
+    position();
+
+    return 0;
+}
+
+auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
+{
+    position();
+
+    return 0;
 }
 } // namespace glow

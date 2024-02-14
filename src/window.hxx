@@ -101,5 +101,8 @@ struct Window
     virtual auto default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
         -> ::LRESULT;
     virtual auto wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT;
+    virtual auto on_close(WPARAM wParam, LPARAM lParam) -> int;
+    virtual auto on_create(WPARAM wParam, LPARAM lParam) -> int;
+    virtual auto on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int;
 };
 } // namespace glow
