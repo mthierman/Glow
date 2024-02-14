@@ -151,7 +151,15 @@ auto WebView::add_source_changed() -> ::HRESULT
     return m_core->add_SourceChanged(
         Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
             [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
-            { return source_changed_handler(sender, args); })
+            {
+                wil::unique_cotaskmem_string source;
+                if (SUCCEEDED(sender->get_Source(&source)))
+                {
+                    m_source.assign(glow::string(source.get()));
+                }
+
+                return source_changed_handler(sender, args);
+            })
             .Get(),
         &m_tokenSourceChanged);
 }
@@ -221,7 +229,16 @@ auto WebView::add_document_title_changed() -> ::HRESULT
     return m_core->add_DocumentTitleChanged(
         Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-            { return document_title_changed_handler(sender, args); })
+            {
+                wil::unique_cotaskmem_string buffer;
+
+                if (SUCCEEDED(m_core->get_DocumentTitle(&buffer)))
+                {
+                    m_title.assign(glow::string(buffer.get()));
+                }
+
+                return document_title_changed_handler(sender, args);
+            })
             .Get(),
         &m_tokenDocumentTitleChanged);
 }
@@ -236,7 +253,15 @@ auto WebView::add_favicon_changed() -> ::HRESULT
     return m_core->add_FaviconChanged(
         Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
             [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-            { return favicon_changed_handler(sender, args); })
+            {
+                wil::unique_cotaskmem_string buffer;
+                if (SUCCEEDED(m_core->get_FaviconUri(&buffer)))
+                {
+                    m_favicon.first.assign(glow::string(buffer.get()));
+                }
+
+                return favicon_changed_handler(sender, args);
+            })
             .Get(),
         &m_tokenFaviconChanged);
 }
@@ -356,30 +381,23 @@ auto WebView::post_json(nlohmann::json message) -> ::HRESULT
     else return S_OK;
 }
 
-auto WebView::get_document_title() -> std::string
+auto WebView::get_favicon(std::function<HRESULT()> callback) -> ::HRESULT
 {
-    if (m_core)
-    {
-        wil::unique_cotaskmem_string buffer;
-        if (FAILED(m_core->get_DocumentTitle(&buffer))) { return {}; }
+    return m_core->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
+                              Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
+                                  [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                                  {
+                                      if (FAILED(errorCode)) { return S_OK; }
 
-        return glow::string(buffer.get());
-    }
+                                      Gdiplus::Bitmap iconBitmap(iconStream);
 
-    else return {};
-}
+                                      iconBitmap.GetHICON(&m_favicon.second);
 
-auto WebView::get_favicon_url() -> std::string
-{
-    if (m_core)
-    {
-        wil::unique_cotaskmem_string buffer;
-        if (FAILED(m_core->get_FaviconUri(&buffer))) { return {}; }
+                                      callback();
 
-        return glow::string(buffer.get());
-    }
-
-    else return {};
+                                      return S_OK;
+                                  })
+                                  .Get());
 }
 
 auto WebView::devtools() -> ::HRESULT

@@ -10,8 +10,11 @@
 
 #include <Windows.h>
 #include <wrl.h>
+#include <objbase.h>
+#include <gdiplus.h>
 
 #include <functional>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -80,8 +83,8 @@ struct WebView : public Window
         -> ::HRESULT;
     virtual auto navigate(std::string url) -> ::HRESULT;
     virtual auto post_json(nlohmann::json message) -> ::HRESULT;
-    virtual auto get_document_title() -> std::string;
-    virtual auto get_favicon_url() -> std::string;
+    virtual auto get_favicon(std::function<HRESULT()> callback = []() { return S_OK; })
+        -> ::HRESULT;
     virtual auto devtools() -> ::HRESULT;
     virtual auto
     move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason = COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC)
@@ -94,6 +97,9 @@ struct WebView : public Window
     wil::com_ptr<ICoreWebView2Controller4> m_controller{};
     wil::com_ptr<ICoreWebView2_21> m_core{};
     wil::com_ptr<ICoreWebView2Settings8> m_settings{};
+    std::string m_source{};
+    std::string m_title{};
+    std::pair<std::string, wil::unique_hicon> m_favicon{};
 
   private:
     virtual auto wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
