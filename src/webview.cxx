@@ -355,30 +355,24 @@ auto WebView::move_focus_requested_handler(ICoreWebView2Controller* sender,
 
 auto WebView::navigate(std::string url) -> ::HRESULT
 {
-    if (m_core)
-    {
-        auto wideUrl{glow::wstring(url)};
+    if (!m_core) { return S_OK; }
 
-        if (wideUrl.empty()) { return S_OK; }
+    auto wideUrl{glow::wstring(url)};
 
-        else return m_core->Navigate(wideUrl.c_str());
-    }
+    if (wideUrl.empty()) { return S_OK; }
 
-    else return S_OK;
+    return m_core->Navigate(wideUrl.c_str());
 }
 
 auto WebView::post_json(nlohmann::json message) -> ::HRESULT
 {
-    if (m_core)
-    {
-        auto wideJson{glow::wstring(message.dump())};
+    if (!m_core) { return S_OK; }
 
-        if (wideJson.empty()) { return S_OK; }
+    auto wideJson{glow::wstring(message.dump())};
 
-        else return m_core->PostWebMessageAsJson(wideJson.c_str());
-    }
+    if (wideJson.empty()) { return S_OK; }
 
-    else return S_OK;
+    return m_core->PostWebMessageAsJson(wideJson.c_str());
 }
 
 auto WebView::get_favicon(std::function<HRESULT()> callback) -> ::HRESULT
@@ -402,41 +396,42 @@ auto WebView::get_favicon(std::function<HRESULT()> callback) -> ::HRESULT
 
 auto WebView::devtools() -> ::HRESULT
 {
-    if (m_core) { return m_core->OpenDevToolsWindow(); }
+    if (!m_core) { return S_OK; }
 
-    else return S_OK;
+    return m_core->OpenDevToolsWindow();
 }
 
 auto WebView::move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
 {
-    if (m_controller) { return m_controller->MoveFocus(reason); }
+    if (!m_controller) { return S_OK; }
 
-    else return S_OK;
+    return m_controller->MoveFocus(reason);
 }
 
 auto WebView::zoom(double zoomFactor) -> ::HRESULT
 {
-    if (m_controller) { return m_controller->put_ZoomFactor(zoomFactor); }
+    if (!m_controller) { return S_OK; }
 
-    else return S_OK;
+    return m_controller->put_ZoomFactor(zoomFactor);
 }
 
 auto WebView::visible(bool visible) -> ::HRESULT
 {
-    if (m_controller)
-    {
-        if (visible) { return m_controller->put_IsVisible(true); }
+    if (!m_controller) { return S_OK; }
 
-        else { return m_controller->put_IsVisible(false); }
-    }
+    if (visible) { return m_controller->put_IsVisible(true); }
 
-    else return S_OK;
+    else { return m_controller->put_IsVisible(false); }
 }
 
-auto WebView::version() -> std::string
+auto WebView::version() -> std::expected<std::string, ::HRESULT>
 {
     wil::unique_cotaskmem_string buffer;
-    GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer);
+
+    if (auto hr{FAILED(GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer))})
+    {
+        return std::unexpected(hr);
+    }
 
     return glow::string(buffer.get());
 }
@@ -453,11 +448,10 @@ auto WebView::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lPara
 
 auto WebView::on_size(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    if (m_controller)
-    {
-        position();
-        m_controller->put_Bounds(m_client.rect);
-    }
+    if (!m_controller) { return 0; }
+
+    position();
+    m_controller->put_Bounds(m_client.rect);
 
     return 0;
 }

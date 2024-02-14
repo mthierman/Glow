@@ -13,8 +13,9 @@
 #include <objbase.h>
 #include <gdiplus.h>
 
+#include <expected>
 #include <functional>
-#include <optional>
+// #include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -91,7 +92,7 @@ struct WebView : public Window
         -> ::HRESULT;
     virtual auto zoom(double zoomFactor) -> ::HRESULT;
     virtual auto visible(bool visible) -> ::HRESULT;
-    virtual auto version() -> std::string;
+    virtual auto version() -> std::expected<std::string, ::HRESULT>;
 
     ::HWND m_parent{nullptr};
     wil::com_ptr<ICoreWebView2Controller4> m_controller{};
