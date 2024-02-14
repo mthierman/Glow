@@ -70,8 +70,8 @@ auto App::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM l
 {
     switch (uMsg)
     {
-        case WM_CLOSE: m_hwnd.reset(); return 0;
-        case WM_DESTROY: ::PostQuitMessage(0); return 0;
+        case WM_CLOSE: return on_close(wParam, lParam);
+        case WM_DESTROY: return on_destroy(wParam, lParam);
     }
 
     return wnd_proc(hWnd, uMsg, wParam, lParam);
@@ -80,5 +80,19 @@ auto App::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM l
 auto App::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+}
+
+auto App::on_close(WPARAM wParam, LPARAM lParam) -> int
+{
+    m_hwnd.reset();
+
+    return 0;
+}
+
+auto App::on_destroy(WPARAM wParam, LPARAM lParam) -> int
+{
+    ::PostQuitMessage(0);
+
+    return 0;
 }
 } // namespace glow

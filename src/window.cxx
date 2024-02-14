@@ -401,26 +401,26 @@ auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARA
     return wnd_proc(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::wnd_proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT
+auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto Window::on_close(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     m_hwnd.reset();
 
     return 0;
 }
 
-auto Window::on_create(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     position();
 
     return 0;
 }
 
-auto Window::on_dpi_changed(WPARAM wParam, LPARAM lParam) -> int
+auto Window::on_dpi_changed(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     position();
 
