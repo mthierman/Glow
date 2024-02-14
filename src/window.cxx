@@ -29,7 +29,7 @@ Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int 
         wcex.lpfnWndProc = WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(size_t);
+        wcex.cbWndExtra = sizeof(intptr_t);
         wcex.hInstance = ::GetModuleHandleA(nullptr);
         wcex.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
         wcex.hCursor = static_cast<HCURSOR>(

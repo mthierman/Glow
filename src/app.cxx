@@ -21,7 +21,7 @@ App::App(std::string name, size_t id) : m_id{id}
         wcex.lpfnWndProc = WndProc;
         wcex.style = 0;
         wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(size_t);
+        wcex.cbWndExtra = sizeof(intptr_t);
         wcex.hInstance = ::GetModuleHandleA(nullptr);
         wcex.hbrBackground = nullptr;
         wcex.hCursor = nullptr;
