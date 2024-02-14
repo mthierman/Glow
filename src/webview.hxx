@@ -36,7 +36,7 @@ namespace glow
 struct WebView : public Window
 {
     WebView(
-        HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
+        ::HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
         size_t id = glow::random<size_t>());
     ~WebView() override;
 
@@ -111,17 +111,17 @@ struct WebView : public Window
     wil::com_ptr<ICoreWebView2_21> m_core{};
     wil::com_ptr<ICoreWebView2Settings8> m_settings{};
 
-    EventRegistrationToken m_tokenContextMenuRequested{};
-    EventRegistrationToken m_tokenSourceChanged{};
-    EventRegistrationToken m_tokenNavigationStarting{};
-    EventRegistrationToken m_tokenNavigationCompleted{};
-    EventRegistrationToken m_tokenWebMessageReceived{};
-    EventRegistrationToken m_tokenDocumentTitleChanged{};
-    EventRegistrationToken m_tokenFaviconChanged{};
-    EventRegistrationToken m_tokenAcceleratorKeyPressed{};
-    EventRegistrationToken m_tokenZoomFactorChanged{};
-    EventRegistrationToken m_tokenGotFocus{};
-    EventRegistrationToken m_tokenLostFocus{};
-    EventRegistrationToken m_tokenMoveFocusRequested{};
+    ::EventRegistrationToken m_tokenContextMenuRequested{};
+    ::EventRegistrationToken m_tokenSourceChanged{};
+    ::EventRegistrationToken m_tokenNavigationStarting{};
+    ::EventRegistrationToken m_tokenNavigationCompleted{};
+    ::EventRegistrationToken m_tokenWebMessageReceived{};
+    ::EventRegistrationToken m_tokenDocumentTitleChanged{};
+    ::EventRegistrationToken m_tokenFaviconChanged{};
+    ::EventRegistrationToken m_tokenAcceleratorKeyPressed{};
+    ::EventRegistrationToken m_tokenZoomFactorChanged{};
+    ::EventRegistrationToken m_tokenGotFocus{};
+    ::EventRegistrationToken m_tokenLostFocus{};
+    ::EventRegistrationToken m_tokenMoveFocusRequested{};
 };
 } // namespace glow
