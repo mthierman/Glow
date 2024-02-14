@@ -82,14 +82,14 @@ auto App::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -
     return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
-auto App::on_close(WPARAM wParam, LPARAM lParam) -> int
+auto App::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     m_hwnd.reset();
 
     return 0;
 }
 
-auto App::on_destroy(WPARAM wParam, LPARAM lParam) -> int
+auto App::on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     ::PostQuitMessage(0);
 
