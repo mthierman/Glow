@@ -68,8 +68,8 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 
     m_notification.message = message;
 
-    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<size_t>(&m_notification.id),
-                   reinterpret_cast<size_t>(&m_notification));
+    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<uintptr_t>(&m_notification.id),
+                   reinterpret_cast<uintptr_t>(&m_notification));
 }
 
 auto Window::dpi() -> void { m_dpi = ::GetDpiForWindow(m_hwnd.get()); };
