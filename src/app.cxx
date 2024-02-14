@@ -36,7 +36,7 @@ App::App(std::string name, size_t id) : m_id{id}
         throw std::runtime_error("Window creation failure");
 }
 
-App::~App() = default;
+App::~App() {}
 
 auto App::operator()() -> int
 {

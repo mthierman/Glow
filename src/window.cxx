@@ -50,7 +50,7 @@ Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int 
     }
 }
 
-Window::~Window() = default;
+Window::~Window() {}
 
 auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 {
