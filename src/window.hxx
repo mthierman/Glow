@@ -78,7 +78,7 @@ struct Window
     wil::unique_hicon m_hicon{};
     glow::Position m_client{};
     glow::Position m_window{};
-    int m_dpi{};
+    unsigned int m_dpi{};
     float m_scale{};
     bool m_maximize{};
     bool m_fullscreen{};
