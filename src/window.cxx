@@ -48,9 +48,6 @@ Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int 
     {
         throw std::runtime_error("Window creation failure");
     }
-
-    dpi();
-    scale();
 }
 
 Window::~Window() {}
@@ -74,32 +71,32 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
                    reinterpret_cast<uintptr_t>(&m_notification));
 }
 
-auto Window::dpi() -> void { m_dpi = ::GetDpiForWindow(m_hwnd.get()); };
+auto Window::dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
 
-auto Window::scale() -> void
+auto Window::scale() -> float
 {
-    m_scale = static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
+    return static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 };
 
-auto Window::reveal() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
+auto Window::reveal() -> bool { return ::ShowWindow(m_hwnd.get(), SW_SHOWNORMAL); }
 
-auto Window::show() -> void { ::ShowWindow(m_hwnd.get(), SW_SHOW); }
+auto Window::show() -> bool { return ::ShowWindow(m_hwnd.get(), SW_SHOW); }
 
-auto Window::hide() -> void { ::ShowWindow(m_hwnd.get(), SW_HIDE); }
+auto Window::hide() -> bool { return ::ShowWindow(m_hwnd.get(), SW_HIDE); }
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(m_hwnd.get()); }
 
-auto Window::focus() -> void { ::SetFocus(m_hwnd.get()); }
+auto Window::focus() -> ::HWND { return ::SetFocus(m_hwnd.get()); }
 
 auto Window::is_focus() -> bool { return ::GetFocus() == m_hwnd.get(); }
 
-auto Window::foreground() -> void { ::SetForegroundWindow(m_hwnd.get()); }
+auto Window::foreground() -> bool { return ::SetForegroundWindow(m_hwnd.get()); }
 
 auto Window::is_foreground() -> bool { return ::GetForegroundWindow() == m_hwnd.get(); }
 
-auto Window::active() -> void { ::SetActiveWindow(m_hwnd.get()); }
+auto Window::active() -> bool { return ::SetActiveWindow(m_hwnd.get()); }
 
-auto Window::top() -> void { ::BringWindowToTop(m_hwnd.get()); }
+auto Window::top() -> bool { return ::BringWindowToTop(m_hwnd.get()); }
 
 auto Window::maximize() -> void
 {
@@ -163,7 +160,10 @@ auto Window::topmost() -> void
     ::FlashWindowEx(&fwi);
 }
 
-auto Window::title(std::string title) -> void { ::SetWindowTextA(m_hwnd.get(), title.c_str()); }
+auto Window::title(std::string title) -> bool
+{
+    return ::SetWindowTextA(m_hwnd.get(), title.c_str());
+}
 
 auto Window::icon(::HICON icon, bool small, bool big) -> void
 {
@@ -382,7 +382,28 @@ auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARA
 {
     switch (uMsg)
     {
-    case WM_CLOSE: m_hwnd.reset(); return 0;
+        case WM_CLOSE:
+        {
+            m_hwnd.reset();
+
+            return 0;
+        }
+
+        case WM_CREATE:
+        {
+            m_dpi = dpi();
+            m_scale = scale();
+
+            return 0;
+        }
+
+        case WM_DPICHANGED:
+        {
+            m_dpi = dpi();
+            m_scale = scale();
+
+            return 0;
+        }
     }
 
     return wnd_proc(hWnd, uMsg, wParam, lParam);
