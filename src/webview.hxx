@@ -15,6 +15,7 @@
 
 #include <expected>
 #include <functional>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
@@ -98,7 +99,7 @@ struct WebView : public Window
     wil::com_ptr<ICoreWebView2_21> m_core{};
     wil::com_ptr<ICoreWebView2Settings8> m_settings{};
     std::string m_source{};
-    std::string m_title{};
+    std::optional<std::string> m_title{};
     std::pair<std::string, wil::unique_hicon> m_favicon{};
 
   private:

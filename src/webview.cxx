@@ -234,7 +234,7 @@ auto WebView::add_document_title_changed() -> ::HRESULT
 
                 if (SUCCEEDED(m_core->get_DocumentTitle(&buffer)))
                 {
-                    m_title.assign(glow::string(buffer.get()));
+                    m_title = glow::string(buffer.get());
                 }
 
                 return document_title_changed_handler(sender, args);
