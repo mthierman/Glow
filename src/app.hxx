@@ -23,7 +23,7 @@ namespace glow
 struct App
 {
     App(std::string name = "App", size_t id = glow::random<size_t>());
-    virtual ~App();
+    virtual ~App() = default;
 
     virtual auto operator()() -> int;
 

@@ -33,7 +33,7 @@ struct Window
            ::DWORD style = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, ::DWORD exStyle = 0,
            int x = CW_USEDEFAULT, int y = CW_USEDEFAULT, int width = CW_USEDEFAULT,
            int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr);
-    virtual ~Window();
+    virtual ~Window() = default;
 
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
     virtual auto dpi() -> unsigned int;

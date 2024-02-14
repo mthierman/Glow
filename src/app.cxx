@@ -36,8 +36,6 @@ App::App(std::string name, size_t id) : m_id{id}
         throw std::runtime_error("Window creation failure");
 }
 
-App::~App() {}
-
 auto App::operator()() -> int
 {
     ::MSG msg{};
@@ -70,8 +68,8 @@ auto App::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM l
 {
     switch (uMsg)
     {
-    case WM_CLOSE: m_hwnd.reset(); return 0;
-    case WM_DESTROY: ::PostQuitMessage(0); return 0;
+        case WM_CLOSE: m_hwnd.reset(); return 0;
+        case WM_DESTROY: ::PostQuitMessage(0); return 0;
     }
 
     return wnd_proc(hWnd, uMsg, wParam, lParam);
