@@ -8,15 +8,15 @@ project(
 )
 
 option(
-    GLOW_RESTORE_NUGET
+    NUGET
     "Restore Nuget packages"
     ON
 )
 
 option(
-    GLOW_EXTRAS
-    "Build Glow examples, tests & tools"
-    ON
+    EXTRAS
+    "Build examples, tests & tools"
+    OFF
 )
 
 include(cmake/Common.cmake)
@@ -35,16 +35,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqlite)
 
-if(GLOW_RESTORE_NUGET)
+if(NUGET)
     execute_process(
         COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
-
-    cmake_path(
-        SET
-        webview2_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2277.86"
     )
 
     cmake_path(
@@ -57,6 +51,12 @@ if(GLOW_RESTORE_NUGET)
         SET
         cppwinrt_SOURCE_DIR
         "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240111.5"
+    )
+
+    cmake_path(
+        SET
+        webview2_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2277.86"
     )
 endif()
 
@@ -183,7 +183,7 @@ target_link_libraries(
            WindowsApp.lib
 )
 
-if(GLOW_EXTRAS)
+if(EXTRAS)
     enable_testing()
     add_subdirectory(examples)
     add_subdirectory(tests)
