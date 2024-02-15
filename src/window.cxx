@@ -123,11 +123,30 @@ auto Window::active() -> bool { return ::SetActiveWindow(m_hwnd.get()); }
 
 auto Window::top() -> bool { return ::BringWindowToTop(m_hwnd.get()); }
 
+auto Window::topmost(bool topmost) -> bool
+{
+    return ::SetWindowPos(m_hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0,
+                          SWP_NOMOVE | SWP_NOSIZE);
+}
+
+auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
+
+auto Window::flash() -> void
+{
+    ::FLASHWINFO fwi{sizeof(::FLASHWINFO)};
+    fwi.hwnd = m_hwnd.get();
+    fwi.dwFlags = FLASHW_CAPTION;
+    fwi.uCount = 1;
+    fwi.dwTimeout = 100;
+
+    ::FlashWindowEx(&fwi);
+}
+
 auto Window::toggle_maximize() -> void
 {
     auto wp{get_placement()};
 
-    if ((get_style() & WS_OVERLAPPEDWINDOW) && wp.showCmd == 3) { restore(); }
+    if ((is_overlapped()) && wp.showCmd == 3) { restore(); }
 
     else { maximize(); }
 }
@@ -136,7 +155,7 @@ auto Window::toggle_fullscreen() -> void
 {
     static RECT pos;
 
-    if (get_style() & WS_OVERLAPPEDWINDOW)
+    if (is_overlapped())
     {
         ::MONITORINFO mi{sizeof(::MONITORINFO)};
         ::GetWindowRect(m_hwnd.get(), &pos);
@@ -159,20 +178,11 @@ auto Window::toggle_fullscreen() -> void
 
 auto Window::toggle_topmost() -> void
 {
-    ::FLASHWINFO fwi{sizeof(::FLASHWINFO)};
-    fwi.hwnd = m_hwnd.get();
-    fwi.dwFlags = FLASHW_CAPTION;
-    fwi.uCount = 1;
-    fwi.dwTimeout = 100;
+    if (is_topmost()) { topmost(false); }
 
-    if (get_ex_style() & WS_EX_TOPMOST)
-    {
-        ::SetWindowPos(m_hwnd.get(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    }
+    else { topmost(true); }
 
-    else { ::SetWindowPos(m_hwnd.get(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE); }
-
-    ::FlashWindowEx(&fwi);
+    flash();
 }
 
 auto Window::set_title(std::string title) -> bool
@@ -208,6 +218,8 @@ auto Window::set_overlapped() -> void
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
+auto Window::is_overlapped() -> bool { return get_style() & WS_OVERLAPPEDWINDOW; }
+
 auto Window::set_popup() -> void
 {
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
@@ -215,12 +227,16 @@ auto Window::set_popup() -> void
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
 
+auto Window::is_popup() -> bool { return get_style() & WS_POPUP; }
+
 auto Window::set_child() -> void
 {
     ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_CHILD);
     ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
 }
+
+auto Window::is_child() -> bool { return get_style() & WS_CHILD; }
 
 auto Window::reparent(::HWND parent) -> void
 {

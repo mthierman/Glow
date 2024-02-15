@@ -59,6 +59,9 @@ struct Window
     virtual auto is_foreground() -> bool;
     virtual auto active() -> bool;
     virtual auto top() -> bool;
+    virtual auto topmost(bool topmost) -> bool;
+    virtual auto is_topmost() -> bool;
+    virtual auto flash() -> void;
     virtual auto toggle_maximize() -> void;
     virtual auto toggle_fullscreen() -> void;
     virtual auto toggle_topmost() -> void;
@@ -66,8 +69,11 @@ struct Window
     virtual auto set_icon(::HICON icon, bool small = true, bool big = true) -> void;
     virtual auto border(bool enabled) -> void;
     virtual auto set_overlapped() -> void;
+    virtual auto is_overlapped() -> bool;
     virtual auto set_popup() -> void;
+    virtual auto is_popup() -> bool;
     virtual auto set_child() -> void;
+    virtual auto is_child() -> bool;
     virtual auto reparent(::HWND parent) -> void;
     virtual auto position() -> void;
     virtual auto resize() -> void;
