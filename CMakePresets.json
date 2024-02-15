@@ -57,16 +57,6 @@
             }
         },
         {
-            "name": "Extras",
-            "hidden": true,
-            "cacheVariables": {
-                "GLOW_EXTRAS": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
-            }
-        },
-        {
             "name": "Default",
             "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
             "binaryDir": "${sourceDir}/build"

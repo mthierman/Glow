@@ -10,13 +10,13 @@ project(
 option(
     GLOW_RESTORE_NUGET
     "Restore Nuget packages"
-    OFF
+    ON
 )
 
 option(
     GLOW_EXTRAS
     "Build Glow examples, tests & tools"
-    OFF
+    ON
 )
 
 include(cmake/Common.cmake)
