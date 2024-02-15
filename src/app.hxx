@@ -26,6 +26,7 @@ struct App
     virtual ~App();
 
     virtual auto operator()() -> int;
+    virtual auto close() -> void;
 
     size_t m_id{};
     wil::unique_hwnd m_hwnd{};

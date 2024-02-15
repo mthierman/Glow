@@ -50,6 +50,7 @@ struct Window
     virtual auto hide() -> bool;
     virtual auto maximize() -> bool;
     virtual auto restore() -> bool;
+    virtual auto close() -> void;
 
     virtual auto is_visible() -> bool;
     virtual auto focus() -> ::HWND;

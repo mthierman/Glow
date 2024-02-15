@@ -57,6 +57,8 @@ auto App::operator()() -> int
     return 0;
 }
 
+auto App::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
+
 auto CALLBACK App::WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<App>(hWnd, uMsg, lParam)};

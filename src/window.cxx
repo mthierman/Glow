@@ -107,6 +107,8 @@ auto Window::maximize() -> bool { return ::ShowWindow(m_hwnd.get(), SW_MAXIMIZE)
 
 auto Window::restore() -> bool { return ::ShowWindow(m_hwnd.get(), SW_RESTORE); }
 
+auto Window::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
+
 auto Window::is_visible() -> bool { return ::IsWindowVisible(m_hwnd.get()); }
 
 auto Window::focus() -> ::HWND { return ::SetFocus(m_hwnd.get()); }
