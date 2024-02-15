@@ -36,13 +36,13 @@ namespace glow
 struct WebView : public Window
 {
     WebView(
-        ::HWND parent, std::function<HRESULT()> callback = []() { return S_OK; },
+        ::HWND parent, std::function<::HRESULT()> callback = []() { return S_OK; },
         size_t id = glow::random<size_t>());
     ~WebView() override;
 
-    virtual auto create_environment(std::function<HRESULT()> callback) -> ::HRESULT;
+    virtual auto create_environment(std::function<::HRESULT()> callback) -> ::HRESULT;
     virtual auto create_controller(ICoreWebView2Environment* createdEnvironment,
-                                   std::function<HRESULT()> callback) -> ::HRESULT;
+                                   std::function<::HRESULT()> callback) -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
     virtual auto add_context_menu_requested() -> ::HRESULT;
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
@@ -84,7 +84,7 @@ struct WebView : public Window
         -> ::HRESULT;
     virtual auto navigate(std::string url) -> ::HRESULT;
     virtual auto post_json(nlohmann::json message) -> ::HRESULT;
-    virtual auto get_favicon(std::function<HRESULT()> callback = []() { return S_OK; })
+    virtual auto get_favicon(std::function<::HRESULT()> callback = []() { return S_OK; })
         -> ::HRESULT;
     virtual auto open_dev_tools_window() -> ::HRESULT;
     virtual auto

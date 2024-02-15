@@ -10,7 +10,7 @@
 
 namespace glow
 {
-WebView::WebView(::HWND parent, std::function<HRESULT()> callback, size_t id)
+WebView::WebView(::HWND parent, std::function<::HRESULT()> callback, size_t id)
     : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
 {
     if (FAILED(create_environment(callback)))
@@ -35,7 +35,7 @@ WebView::~WebView()
     m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
 }
 
-auto WebView::create_environment(std::function<HRESULT()> callback) -> ::HRESULT
+auto WebView::create_environment(std::function<::HRESULT()> callback) -> ::HRESULT
 {
     return CreateCoreWebView2EnvironmentWithOptions(
         nullptr, nullptr, nullptr,
@@ -51,7 +51,7 @@ auto WebView::create_environment(std::function<HRESULT()> callback) -> ::HRESULT
 }
 
 auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
-                                std::function<HRESULT()> callback) -> ::HRESULT
+                                std::function<::HRESULT()> callback) -> ::HRESULT
 {
     return createdEnvironment->CreateCoreWebView2Controller(
         m_hwnd.get(),
@@ -374,11 +374,11 @@ auto WebView::post_json(nlohmann::json message) -> ::HRESULT
     return m_core->PostWebMessageAsJson(wideJson.c_str());
 }
 
-auto WebView::get_favicon(std::function<HRESULT()> callback) -> ::HRESULT
+auto WebView::get_favicon(std::function<::HRESULT()> callback) -> ::HRESULT
 {
     return m_core->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
                               Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                  [=, this](HRESULT errorCode, IStream* iconStream) -> HRESULT
+                                  [=, this](::HRESULT errorCode, ::IStream* iconStream) -> ::HRESULT
                                   {
                                       if (FAILED(errorCode)) { return S_OK; }
 
