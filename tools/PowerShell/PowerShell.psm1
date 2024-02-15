@@ -16,11 +16,12 @@ function Invoke-CMake
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$Preset = 'Default'
+        [string]$ConfigurePreset = 'Default',
+        [string]$BuildPreset = 'Release'
     )
 
-    cmake --preset $Preset
-    cmake --build --preset $Preset
+    cmake --preset $ConfigurePreset
+    cmake --build --preset $BuildPreset
 }
 
 function Compress-Repo
