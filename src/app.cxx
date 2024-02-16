@@ -10,36 +10,41 @@
 
 namespace glow
 {
-App::App(std::string name, size_t id) : m_id{id}
-{
-    ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
-
-    if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), name.c_str(), &wcex))
-    {
-        wcex.lpszClassName = name.c_str();
-        wcex.lpszMenuName = nullptr;
-        wcex.lpfnWndProc = WndProc;
-        wcex.style = 0;
-        wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(intptr_t);
-        wcex.hInstance = ::GetModuleHandleA(nullptr);
-        wcex.hbrBackground = nullptr;
-        wcex.hCursor = nullptr;
-        wcex.hIcon = nullptr;
-        wcex.hIconSm = nullptr;
-
-        if (::RegisterClassExA(&wcex) == 0) throw std::runtime_error("Class registration failure");
-    }
-
-    if (::CreateWindowExA(0, wcex.lpszClassName, wcex.lpszClassName, 0, 0, 0, 0, 0, HWND_MESSAGE,
-                          nullptr, ::GetModuleHandleA(nullptr), this) == nullptr)
-        throw std::runtime_error("Window creation failure");
-}
+App::App(std::string name, size_t id) : m_name{name}, m_id{id} { register_class(); }
 
 App::~App() {}
 
+auto App::register_class() -> void
+{
+    if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), m_name.c_str(), &m_wcex))
+    {
+        m_wcex.lpszClassName = m_name.c_str();
+        m_wcex.lpszMenuName = nullptr;
+        m_wcex.lpfnWndProc = StaticWndProc;
+        m_wcex.style = 0;
+        m_wcex.cbClsExtra = 0;
+        m_wcex.cbWndExtra = sizeof(intptr_t);
+        m_wcex.hInstance = ::GetModuleHandleA(nullptr);
+        m_wcex.hbrBackground = nullptr;
+        m_wcex.hCursor = nullptr;
+        m_wcex.hIcon = nullptr;
+        m_wcex.hIconSm = nullptr;
+
+        if (::RegisterClassExA(&m_wcex) == 0)
+        {
+            throw std::runtime_error("App class registration failure");
+        }
+    }
+}
+
 auto App::operator()() -> int
 {
+    if (::CreateWindowExA(0, m_wcex.lpszClassName, m_wcex.lpszClassName, 0, 0, 0, 0, 0,
+                          HWND_MESSAGE, nullptr, ::GetModuleHandleA(nullptr), this) == nullptr)
+    {
+        throw std::runtime_error("App creation failure");
+    }
+
     ::MSG msg{};
     int r{};
 
@@ -57,31 +62,48 @@ auto App::operator()() -> int
     return 0;
 }
 
+auto App::notify(::HWND receiver, CODE code, std::string message) -> void
+{
+    m_notification.reset();
+
+    m_notification.nmhdr.hwndFrom = m_hwnd.get();
+    m_notification.hwnd = m_hwnd.get();
+
+    m_notification.nmhdr.idFrom = m_id;
+    m_notification.id = m_id;
+
+    m_notification.nmhdr.code = std::to_underlying(code);
+    m_notification.code = code;
+
+    m_notification.message = message;
+
+    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<uintptr_t>(&m_notification.id),
+                   reinterpret_cast<uintptr_t>(&m_notification));
+}
+
 auto App::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
 
-auto CALLBACK App::WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto CALLBACK App::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+    -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<App>(hWnd, uMsg, lParam)};
 
-    if (self) { return self->default_wnd_proc(hWnd, uMsg, wParam, lParam); }
+    if (self)
+    {
+        switch (uMsg)
+        {
+            case WM_CLOSE: return self->on_close(wParam, lParam);
+            case WM_DESTROY: return self->on_destroy(wParam, lParam);
+            default: return self->WndProc(uMsg, wParam, lParam);
+        }
+    }
 
     else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }
 }
 
-auto App::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto App::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
-    switch (uMsg)
-    {
-        case WM_CLOSE: return on_close(wParam, lParam);
-        case WM_DESTROY: return on_destroy(wParam, lParam);
-    }
-
-    return wnd_proc(hWnd, uMsg, wParam, lParam);
-}
-
-auto App::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto App::on_close(::WPARAM wParam, ::LPARAM lParam) -> int

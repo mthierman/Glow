@@ -16,6 +16,7 @@
 #include <wil/resource.h>
 
 #include "gui.hxx"
+#include "notification.hxx"
 #include "random.hxx"
 
 namespace glow
@@ -25,18 +26,24 @@ struct App
     App(std::string name = "App", size_t id = glow::random<size_t>());
     virtual ~App();
 
+    virtual auto register_class() -> void;
     virtual auto operator()() -> int;
+    virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
     virtual auto close() -> void;
 
+    std::string m_name{};
     size_t m_id{};
+    ::HWND m_parent{};
+    ::HMENU m_menu{};
+
+    ::WNDCLASSEXA m_wcex{sizeof(::WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
+    glow::Notification m_notification{};
 
   private:
-    static auto CALLBACK WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
         -> ::LRESULT;
-    virtual auto default_wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
-    virtual auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
+    virtual auto WndProc(::UINT message, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
     virtual auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int;
     virtual auto on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int;
 };

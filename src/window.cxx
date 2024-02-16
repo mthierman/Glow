@@ -39,7 +39,7 @@ auto Window::register_class() -> void
 
         if (::RegisterClassExA(&m_wcex) == 0)
         {
-            throw std::runtime_error("Class registration failure");
+            throw std::runtime_error("Window class registration failure");
         }
     }
 }
