@@ -49,15 +49,35 @@ function Invoke-CTest
     &ctest @arguments
 }
 
-function Compress-Repo
+function Compress-Glow
 {
-    Push-Location
-    Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow/build/Glow.tar.xz Glow
-    Pop-Location
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [switch]$CI
+    )
+
+    if ($CI)
+    {
+        C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow/build/Release/Glow.tar.xz Glow
+    }
+
+    else { bsdtar --exclude-vcs --exclude=build --exclude=.vscode -cJf build/Release/Glow.tar.xz . }
 }
 
-function Get-Archive
+function Publish-Glow
 {
-    Get-Item "build/Glow.tar.xz"
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$Branch = 'main'
+    )
+
+    # $hash = Get-Content "build/notes/short_hash"
+    $version = Get-Content "build/notes/version"
+    $notes = Get-Item "build/notes/release_notes"
+    $archive = Get-Item "build/Release/Glow.tar.xz"
+
+    gh release delete $version -y
+    gh release create $version $archive --notes-file $notes -t $version
 }

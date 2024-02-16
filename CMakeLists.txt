@@ -35,6 +35,8 @@ enable_testing()
 
 include(FetchContent)
 
+include(cmake/ReleaseInfo.cmake)
+
 include(cmake/Common.cmake)
 
 FetchContent_Declare(
