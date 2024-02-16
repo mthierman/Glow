@@ -97,8 +97,9 @@ auto CALLBACK App::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LP
         {
             case WM_CLOSE: return self->on_close(wParam, lParam);
             case WM_DESTROY: return self->on_destroy(wParam, lParam);
-            default: return self->WndProc(uMsg, wParam, lParam);
         }
+
+        return self->WndProc(uMsg, wParam, lParam);
     }
 
     else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }

@@ -442,8 +442,9 @@ auto WebView::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESUL
     switch (uMsg)
     {
         case WM_SIZE: return on_size(wParam, lParam);
-        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
+
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto WebView::on_create(::WPARAM wParam, ::LPARAM lParam) -> int

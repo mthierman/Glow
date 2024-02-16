@@ -413,8 +413,9 @@ auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, :
             case WM_CLOSE: return self->on_close(wParam, lParam);
             case WM_CREATE: return self->on_create(wParam, lParam);
             case WM_DPICHANGED: return self->on_dpi_changed(wParam, lParam);
-            default: return self->WndProc(uMsg, wParam, lParam);
         }
+
+        return self->WndProc(uMsg, wParam, lParam);
     }
 
     else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }
