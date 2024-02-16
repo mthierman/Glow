@@ -57,7 +57,7 @@
             }
         },
         {
-            "name": "Testing",
+            "name": "Glow Testing",
             "hidden": true,
             "cacheVariables": {
                 "GLOW_BUILD_TESTING": {
@@ -67,7 +67,7 @@
             }
         },
         {
-            "name": "Examples",
+            "name": "Glow Examples",
             "hidden": true,
             "cacheVariables": {
                 "GLOW_BUILD_EXAMPLES": {
@@ -77,7 +77,7 @@
             }
         },
         {
-            "name": "Tools",
+            "name": "Glow Tools",
             "hidden": true,
             "cacheVariables": {
                 "GLOW_BUILD_TOOLS": {
@@ -93,7 +93,7 @@
         },
         {
             "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC", "Testing"],
+            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC", "Glow Testing"],
             "binaryDir": "${sourceDir}/build"
         }
     ],
