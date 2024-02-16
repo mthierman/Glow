@@ -29,10 +29,24 @@ function Invoke-CTest
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$TestPreset = 'CI'
+        [string]$TestPreset = 'CI',
+        [switch]$JSON,
+        [switch]$XML
     )
 
-    ctest --preset $TestPreset
+    $arguments = @("--preset", $TestPreset)
+
+    if ($JSON)
+    {
+        $arguments += "--show-only=json-v1"
+    }
+
+    if ($XML)
+    {
+        $arguments += "--output-junit", "tests/log.xml"
+    }
+
+    &ctest @arguments
 }
 
 function Compress-Repo
