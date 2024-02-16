@@ -11,28 +11,30 @@
 namespace glow
 {
 WebView::WebView(::HWND parent, std::function<::HRESULT()> callback, size_t id)
-    : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id))
-{
-    if (FAILED(create_environment(callback)))
-    {
-        throw std::runtime_error("WebView creation failure");
-    }
-}
+    : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
+      m_callback{callback}
+{}
 
 WebView::~WebView()
 {
-    m_core->remove_ContextMenuRequested(m_tokenContextMenuRequested);
-    m_core->remove_SourceChanged(m_tokenSourceChanged);
-    m_core->remove_NavigationStarting(m_tokenNavigationStarting);
-    m_core->remove_NavigationCompleted(m_tokenNavigationCompleted);
-    m_core->remove_WebMessageReceived(m_tokenWebMessageReceived);
-    m_core->remove_DocumentTitleChanged(m_tokenDocumentTitleChanged);
-    m_core->remove_FaviconChanged(m_tokenFaviconChanged);
-    m_controller->remove_AcceleratorKeyPressed(m_tokenAcceleratorKeyPressed);
-    m_controller->remove_ZoomFactorChanged(m_tokenZoomFactorChanged);
-    m_controller->remove_GotFocus(m_tokenGotFocus);
-    m_controller->remove_LostFocus(m_tokenLostFocus);
-    m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
+    if (m_core)
+    {
+        m_core->remove_ContextMenuRequested(m_tokenContextMenuRequested);
+        m_core->remove_SourceChanged(m_tokenSourceChanged);
+        m_core->remove_NavigationStarting(m_tokenNavigationStarting);
+        m_core->remove_NavigationCompleted(m_tokenNavigationCompleted);
+        m_core->remove_WebMessageReceived(m_tokenWebMessageReceived);
+        m_core->remove_DocumentTitleChanged(m_tokenDocumentTitleChanged);
+        m_core->remove_FaviconChanged(m_tokenFaviconChanged);
+    }
+    if (m_controller)
+    {
+        m_controller->remove_AcceleratorKeyPressed(m_tokenAcceleratorKeyPressed);
+        m_controller->remove_ZoomFactorChanged(m_tokenZoomFactorChanged);
+        m_controller->remove_GotFocus(m_tokenGotFocus);
+        m_controller->remove_LostFocus(m_tokenLostFocus);
+        m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
+    }
 }
 
 auto WebView::create_environment(std::function<::HRESULT()> callback) -> ::HRESULT
@@ -440,9 +442,20 @@ auto WebView::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESUL
     switch (uMsg)
     {
         case WM_SIZE: return on_size(wParam, lParam);
+        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    }
+}
+
+auto WebView::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
+{
+    position();
+
+    if (FAILED(create_environment(m_callback)))
+    {
+        throw std::runtime_error("WebView creation failure");
     }
 
-    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    return 0;
 }
 
 auto WebView::on_size(::WPARAM wParam, ::LPARAM lParam) -> int
