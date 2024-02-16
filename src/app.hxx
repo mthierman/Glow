@@ -10,12 +10,10 @@
 
 #include <Windows.h>
 
-#include <stdexcept>
 #include <string>
 
 #include <wil/resource.h>
 
-#include "gui.hxx"
 #include "notification.hxx"
 #include "random.hxx"
 
@@ -33,8 +31,6 @@ struct App
 
     std::string m_name{};
     size_t m_id{};
-    ::HWND m_parent{};
-    ::HMENU m_menu{};
 
     ::WNDCLASSEXA m_wcex{sizeof(::WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};

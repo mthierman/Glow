@@ -7,6 +7,9 @@
 // clang-format on
 
 #include "app.hxx"
+#include "gui.hxx"
+
+#include <stdexcept>
 
 namespace glow
 {
