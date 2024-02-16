@@ -406,37 +406,34 @@ auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, :
 {
     auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};
 
-    if (self) { return self->WndProc(uMsg, wParam, lParam); }
+    if (self)
+    {
+        switch (uMsg)
+        {
+            case WM_CLOSE: return self->on_close(wParam, lParam);
+            case WM_CREATE: return self->on_create(wParam, lParam);
+            case WM_DPICHANGED: return self->on_dpi_changed(wParam, lParam);
+            default: return self->WndProc(uMsg, wParam, lParam);
+        }
+    }
 
     else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }
 }
 
 auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
-    glow::log("wnd_proc [base]\n");
-    glow::log(std::to_string(uMsg));
-
-    switch (uMsg)
-    {
-        case WM_CLOSE: return on_close(wParam, lParam);
-        case WM_CREATE: return on_create(wParam, lParam);
-        case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
-        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
-    }
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto Window::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    glow::log("WM_CLOSE [base]\n");
     m_hwnd.reset();
-    // PostQuitMessage(0);
 
     return 0;
 }
 
 auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    glow::log("WM_CREATE [base]\n");
     position();
 
     return 0;
