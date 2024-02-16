@@ -8,20 +8,34 @@ project(
 )
 
 option(
-    NUGET
+    GLOW_RESTORE_NUGET
     "Restore Nuget packages"
     ON
 )
 
 option(
-    EXTRAS
-    "Build examples, tests & tools"
+    GLOW_BUILD_TESTING
+    "Build testing"
     OFF
 )
 
-include(cmake/Common.cmake)
+option(
+    GLOW_BUILD_EXAMPLES
+    "Build examples"
+    OFF
+)
+
+option(
+    GLOW_BUILD_TOOLS
+    "Build tools"
+    OFF
+)
+
+enable_testing()
 
 include(FetchContent)
+
+include(cmake/Common.cmake)
 
 FetchContent_Declare(
     json
@@ -35,7 +49,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(sqlite)
 
-if(NUGET)
+if(GLOW_RESTORE_NUGET)
     execute_process(
         COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -183,9 +197,14 @@ target_link_libraries(
            WindowsApp.lib
 )
 
-if(EXTRAS)
-    enable_testing()
-    add_subdirectory(examples)
+if(GLOW_BUILD_TESTING)
     add_subdirectory(tests)
+endif()
+
+if(GLOW_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+if(GLOW_BUILD_TOOLS)
     add_subdirectory(tools)
 endif()

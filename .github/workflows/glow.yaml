@@ -33,3 +33,4 @@ jobs:
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
+          Invoke-CTest

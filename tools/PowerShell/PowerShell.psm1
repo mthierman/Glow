@@ -16,12 +16,23 @@ function Invoke-CMake
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$ConfigurePreset = 'Default',
-        [string]$BuildPreset = 'Release'
+        [string]$ConfigurePreset = 'CI',
+        [string]$BuildPreset = 'CI'
     )
 
     cmake --preset $ConfigurePreset
     cmake --build --preset $BuildPreset
+}
+
+function Invoke-CTest
+{
+    [CmdletBinding()]
+    param (
+        [ValidateNotNullOrEmpty()]
+        [string]$TestPreset = 'CI'
+    )
+
+    ctest --preset $TestPreset
 }
 
 function Compress-Repo

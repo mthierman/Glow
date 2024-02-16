@@ -57,8 +57,43 @@
             }
         },
         {
+            "name": "Testing",
+            "hidden": true,
+            "cacheVariables": {
+                "GLOW_BUILD_TESTING": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "Examples",
+            "hidden": true,
+            "cacheVariables": {
+                "GLOW_BUILD_TESTING": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "Tools",
+            "hidden": true,
+            "cacheVariables": {
+                "GLOW_BUILD_TESTING": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
             "name": "Default",
             "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "CI",
+            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC", "Testing"],
             "binaryDir": "${sourceDir}/build"
         }
     ],
@@ -72,6 +107,11 @@
             "name": "Debug",
             "configurePreset": "Default",
             "configuration": "Debug"
+        },
+        {
+            "name": "CI",
+            "configurePreset": "CI",
+            "configuration": "Release"
         }
     ],
     "testPresets": [
@@ -84,6 +124,11 @@
             "name": "Debug",
             "configurePreset": "Default",
             "configuration": "Debug"
+        },
+        {
+            "name": "CI",
+            "configurePreset": "CI",
+            "configuration": "Release"
         }
     ]
 }
