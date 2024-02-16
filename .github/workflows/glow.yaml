@@ -36,4 +36,5 @@ jobs:
 
       - name: CTest
         run: |
+          Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-CTest
