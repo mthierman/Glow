@@ -11,34 +11,48 @@
 
 struct Window final : public glow::Window
 {
-    Window();
-
-    auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
-    auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int;
+    auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
+    auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int override;
+    auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int override;
+    auto on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int;
 };
 
-Window::Window() : glow::Window("Test")
+auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
-    dwm_caption_color(false);
-    dwm_system_backdrop(DWMSBT_MAINWINDOW);
-    theme();
+    // glow::log("wnd_proc [derived]\n");
+    // glow::log(std::to_string(uMsg));
+
+    // switch (uMsg)
+    // {
+    //     case WM_ACTIVATE: return 0;
+    //     // case WM_CREATE: return on_create(wParam, lParam);
+    //     // case WM_CLOSE: return on_close(wParam, lParam);
+    //     // case WM_DESTROY: return on_destroy(wParam, lParam);
+    //     default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+    // }
+
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto Window::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    switch (uMsg)
-    {
-        case WM_CREATE: return on_create(wParam, lParam);
-        case WM_CLOSE: m_hwnd.reset(); return 0;
-        case WM_DESTROY: ::PostQuitMessage(0); return 0;
-    }
+    glow::log("WM_CLOSE [derived]\n");
+    // m_hwnd.reset();
 
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return 0;
 }
 
 auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
-    glow::log("WM_CREATE");
+    glow::log("WM_CREATE [derived]\n");
+
+    return 0;
+}
+
+auto Window::on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int
+{
+    glow::log("WM_DESTROY [derived]\n");
+    ::PostQuitMessage(0);
 
     return 0;
 }
@@ -48,6 +62,12 @@ auto main(int argc, char* argv[]) -> int
     glow::App app;
 
     Window win;
+    win.create_window();
+
+    win.dwm_caption_color(false);
+    win.dwm_system_backdrop(DWMSBT_MAINWINDOW);
+    win.theme();
+
     win.reveal();
 
     return app();

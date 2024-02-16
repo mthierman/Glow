@@ -12,45 +12,47 @@ namespace glow
 {
 Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int x, int y, int width,
                int height, ::HWND parent, ::HMENU menu)
-    : m_id{id}
+    : m_name{name}, m_id{id}, m_style{style}, m_exStyle{exStyle}, m_x{x}, m_y{y}, m_width{width},
+      m_height{height}, m_parent{parent}, m_menu{menu}
 {
-    m_appIcon.reset(static_cast<HICON>(
-        ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE)));
+    register_class();
+}
 
-    m_hicon.reset(static_cast<HICON>(::LoadImageA(::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1),
-                                                  IMAGE_ICON, 0, 0, LR_DEFAULTSIZE)));
+Window::~Window() {}
 
-    ::WNDCLASSEXA wcex{sizeof(::WNDCLASSEXA)};
-
-    if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), name.c_str(), &wcex))
+auto Window::register_class() -> void
+{
+    if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), m_name.c_str(), &m_wcex))
     {
-        wcex.lpszClassName = name.c_str();
-        wcex.lpszMenuName = 0;
-        wcex.lpfnWndProc = WndProc;
-        wcex.style = 0;
-        wcex.cbClsExtra = 0;
-        wcex.cbWndExtra = sizeof(intptr_t);
-        wcex.hInstance = ::GetModuleHandleA(nullptr);
-        wcex.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
-        wcex.hCursor = static_cast<HCURSOR>(
+        m_wcex.lpszClassName = m_name.c_str();
+        m_wcex.lpszMenuName = 0;
+        m_wcex.lpfnWndProc = StaticWndProc;
+        m_wcex.style = 0;
+        m_wcex.cbClsExtra = 0;
+        m_wcex.cbWndExtra = sizeof(intptr_t);
+        m_wcex.hInstance = ::GetModuleHandleA(nullptr);
+        m_wcex.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
+        m_wcex.hCursor = static_cast<HCURSOR>(
             ::LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-        wcex.hIcon = m_hicon.get() ? m_hicon.get() : m_appIcon.get();
-        wcex.hIconSm = m_hicon.get() ? m_hicon.get() : m_appIcon.get();
+        m_wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon.get();
+        m_wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon.get();
 
-        if (::RegisterClassExA(&wcex) == 0)
+        if (::RegisterClassExA(&m_wcex) == 0)
         {
             throw std::runtime_error("Class registration failure");
         }
     }
+}
 
-    if (::CreateWindowExA(exStyle, wcex.lpszClassName, wcex.lpszClassName, style, x, y, width,
-                          height, parent, menu, ::GetModuleHandleA(nullptr), this) == nullptr)
+auto Window::create_window() -> void
+{
+    if (::CreateWindowExA(m_exStyle, m_wcex.lpszClassName, m_wcex.lpszClassName, m_style, m_x, m_y,
+                          m_width, m_height, m_parent, m_menu, ::GetModuleHandleA(nullptr),
+                          this) == nullptr)
     {
         throw std::runtime_error("Window creation failure");
     }
 }
-
-Window::~Window() {}
 
 auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 {
@@ -399,43 +401,42 @@ auto Window::dwm_reset_text_color() -> void
     ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-auto CALLBACK Window::WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
     -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};
 
-    if (self) { return self->default_wnd_proc(hWnd, uMsg, wParam, lParam); }
+    if (self) { return self->WndProc(uMsg, wParam, lParam); }
 
     else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }
 }
 
-auto Window::default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-    -> ::LRESULT
+auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
+    glow::log("wnd_proc [base]\n");
+    glow::log(std::to_string(uMsg));
+
     switch (uMsg)
     {
         case WM_CLOSE: return on_close(wParam, lParam);
         case WM_CREATE: return on_create(wParam, lParam);
         case WM_DPICHANGED: return on_dpi_changed(wParam, lParam);
+        default: return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
     }
-
-    return wnd_proc(hWnd, uMsg, wParam, lParam);
-}
-
-auto Window::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 auto Window::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
 {
+    glow::log("WM_CLOSE [base]\n");
     m_hwnd.reset();
+    // PostQuitMessage(0);
 
     return 0;
 }
 
 auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
+    glow::log("WM_CREATE [base]\n");
     position();
 
     return 0;

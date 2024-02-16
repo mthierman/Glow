@@ -99,8 +99,7 @@ struct WebView : public Window
     std::pair<std::string, wil::unique_hicon> m_favicon{};
 
   private:
-    virtual auto wnd_proc(::HWND hwnd, ::UINT message, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT override;
+    virtual auto WndProc(::UINT message, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT override;
     virtual auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
 
     wil::com_ptr<ICoreWebView2Controller> m_initController{};

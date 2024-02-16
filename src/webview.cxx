@@ -435,14 +435,14 @@ auto WebView::webview_version() -> std::expected<std::string, ::HRESULT>
     return glow::string(buffer.get());
 }
 
-auto WebView::wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
+auto WebView::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
         case WM_SIZE: return on_size(wParam, lParam);
     }
 
-    return ::DefWindowProcA(hWnd, uMsg, wParam, lParam);
+    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
 auto WebView::on_size(::WPARAM wParam, ::LPARAM lParam) -> int

@@ -24,6 +24,7 @@
 #include "notification.hxx"
 #include "position.hxx"
 #include "random.hxx"
+#include "text.hxx"
 
 namespace glow
 {
@@ -35,6 +36,8 @@ struct Window
            int height = CW_USEDEFAULT, ::HWND parent = nullptr, ::HMENU menu = nullptr);
     virtual ~Window();
 
+    virtual auto register_class() -> void;
+    virtual auto create_window() -> void;
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
 
     virtual auto get_dpi() -> unsigned int;
@@ -89,10 +92,23 @@ struct Window
     virtual auto dwm_set_text_color(::COLORREF color) -> void;
     virtual auto dwm_reset_text_color() -> void;
 
+    std::string m_name{};
     size_t m_id{};
+    ::DWORD m_style{};
+    ::DWORD m_exStyle{};
+    int m_x{};
+    int m_y{};
+    int m_width{};
+    int m_height{};
+    ::HWND m_parent{};
+    ::HMENU m_menu{};
+
+    ::WNDCLASSEXA m_wcex{sizeof(::WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
-    wil::unique_hicon m_appIcon{};
-    wil::unique_hicon m_hicon{};
+    wil::unique_hicon m_defaultIcon{static_cast<HICON>(
+        ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
+    wil::unique_hicon m_icon{static_cast<HICON>(::LoadImageA(
+        ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
     glow::Position m_client{};
     glow::Position m_window{};
     unsigned int m_dpi{};
@@ -103,11 +119,9 @@ struct Window
     glow::Notification m_notification{};
 
   private:
-    static auto CALLBACK WndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
+    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
         -> ::LRESULT;
-    virtual auto default_wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
-    virtual auto wnd_proc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
+    virtual auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
     virtual auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int;
     virtual auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int;
     virtual auto on_dpi_changed(::WPARAM wParam, ::LPARAM lParam) -> int;
