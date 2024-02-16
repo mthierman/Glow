@@ -53,11 +53,11 @@ function Compress-Repo
 {
     Push-Location
     Set-Location ..\
-    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow.tar.xz Glow
+    C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude Glow/build --exclude Glow/.vscode -cJf Glow/build/Glow.tar.xz Glow
     Pop-Location
 }
 
 function Get-Archive
 {
-    Get-Item "..\Glow.tar.xz"
+    Get-Item "build/Glow.tar.xz"
 }
