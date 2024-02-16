@@ -33,6 +33,8 @@ jobs:
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
+          Compress-Glow
+          Publish-Glow
 
       - name: CTest
         run: |
