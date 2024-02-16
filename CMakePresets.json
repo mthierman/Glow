@@ -70,7 +70,7 @@
             "name": "Examples",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_BUILD_TESTING": {
+                "GLOW_BUILD_EXAMPLES": {
                     "type": "BOOL",
                     "value": "ON"
                 }
@@ -80,7 +80,7 @@
             "name": "Tools",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_BUILD_TESTING": {
+                "GLOW_BUILD_TOOLS": {
                     "type": "BOOL",
                     "value": "ON"
                 }
