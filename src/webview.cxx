@@ -61,47 +61,44 @@ auto WebView::create_webview(ICoreWebView2Environment* createdEnvironment,
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](::HRESULT errorCode, ICoreWebView2Controller* createdController) -> ::HRESULT
             {
-                if (createdController)
-                {
-                    m_initController = createdController;
-                    m_controller = m_initController.try_query<ICoreWebView2Controller4>();
+                if (!createdController) { return errorCode; }
 
-                    if (!m_controller) return E_POINTER;
+                m_initController = createdController;
+                m_controller = m_initController.try_query<ICoreWebView2Controller4>();
 
-                    m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR{0, 0, 0, 0});
+                if (!m_controller) return E_POINTER;
 
-                    m_controller->get_CoreWebView2(m_initCore.put());
-                    m_core = m_initCore.try_query<ICoreWebView2_21>();
+                m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR{0, 0, 0, 0});
 
-                    if (!m_core) return E_POINTER;
+                m_controller->get_CoreWebView2(m_initCore.put());
+                m_core = m_initCore.try_query<ICoreWebView2_21>();
 
-                    m_core->get_Settings(m_initSettings.put());
+                if (!m_core) return E_POINTER;
 
-                    m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
+                m_core->get_Settings(m_initSettings.put());
 
-                    if (!m_settings) return E_POINTER;
+                m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
 
-                    put_settings();
+                if (!m_settings) return E_POINTER;
 
-                    add_context_menu_requested();
-                    add_source_changed();
-                    add_navigation_starting();
-                    add_navigation_completed();
-                    add_web_message_received();
-                    add_accelerator_key_pressed();
-                    add_favicon_changed();
-                    add_document_title_changed();
-                    add_zoom_factor_changed();
-                    add_got_focus();
-                    add_lost_focus();
-                    add_move_focus_requested();
+                put_settings();
 
-                    callback();
+                add_context_menu_requested();
+                add_source_changed();
+                add_navigation_starting();
+                add_navigation_completed();
+                add_web_message_received();
+                add_accelerator_key_pressed();
+                add_favicon_changed();
+                add_document_title_changed();
+                add_zoom_factor_changed();
+                add_got_focus();
+                add_lost_focus();
+                add_move_focus_requested();
 
-                    return S_OK;
-                }
+                callback();
 
-                else { return errorCode; }
+                return S_OK;
             })
             .Get());
 }
