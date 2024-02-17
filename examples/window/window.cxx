@@ -48,10 +48,15 @@ auto Window::on_window_pos_changed(::WPARAM wParam, ::LPARAM lParam) -> int
     ::WINDOWPLACEMENT placement{sizeof(::WINDOWPLACEMENT)};
     GetWindowPlacement(m_hwnd.get(), &placement);
 
-    glow::log(std::to_string(pos->cx));
-    glow::log(std::to_string(client.right - client.left));
-    glow::log(std::to_string(window.right - window.left));
-    glow::log(std::to_string(placement.rcNormalPosition.right - placement.rcNormalPosition.left));
+    // glow::log(std::to_string(pos->cx));
+    // glow::log(std::to_string(pos->x));
+    // glow::log(std::to_string(pos->y));
+    // glow::log(std::to_string(pos->flags));
+    // glow::log(std::to_string(client.right - client.left));
+    // glow::log(std::to_string(window.right - window.left));
+    // glow::log(std::to_string(placement.rcNormalPosition.right -
+    // placement.rcNormalPosition.left));
+    glow::log(std::to_string(placement.showCmd));
     return 0;
 }
 
@@ -67,6 +72,8 @@ auto main(int argc, char* argv[]) -> int
     win.theme();
 
     win.reveal();
+
+    // win.toggle_fullscreen();
 
     return app();
 }
