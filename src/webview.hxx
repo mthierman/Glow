@@ -103,12 +103,13 @@ struct WebView : public Window
 
     std::function<::HRESULT()> m_callback;
 
-    Microsoft::WRL::ComPtr<CoreWebView2EnvironmentOptions> m_options;
+
 
     wil::com_ptr<ICoreWebView2Controller> m_initController{};
     wil::com_ptr<ICoreWebView2> m_initCore{};
     wil::com_ptr<ICoreWebView2Settings> m_initSettings{};
 
+    Microsoft::WRL::ComPtr<CoreWebView2EnvironmentOptions> m_environmentOptions;
     wil::com_ptr<ICoreWebView2Controller4> m_controller{};
     wil::com_ptr<ICoreWebView2_21> m_core{};
     wil::com_ptr<ICoreWebView2Settings8> m_settings{};

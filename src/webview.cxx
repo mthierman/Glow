@@ -40,12 +40,15 @@ WebView::~WebView()
 
 auto WebView::create_webview(std::function<::HRESULT()> callback) -> ::HRESULT
 {
-    m_options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
-    m_options->put_AreBrowserExtensionsEnabled(TRUE);
-    m_options->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
+    m_environmentOptions = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+
+    if (!m_environmentOptions) return E_POINTER;
+
+    m_environmentOptions->put_AreBrowserExtensionsEnabled(TRUE);
+    m_environmentOptions->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
 
     return CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, m_options.Get(),
+        nullptr, nullptr, m_environmentOptions.Get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](::HRESULT errorCode,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
