@@ -38,67 +38,68 @@ WebView::~WebView()
     }
 }
 
-auto WebView::create_environment(std::function<::HRESULT()> callback) -> ::HRESULT
+auto WebView::create_webview(std::function<::HRESULT()> callback) -> ::HRESULT
 {
+    m_options = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+    m_options->put_AreBrowserExtensionsEnabled(TRUE);
+    m_options->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
+
     return CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, nullptr,
+        nullptr, nullptr, m_options.Get(),
         Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](::HRESULT errorCode,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
             {
                 if (!createdEnvironment) { return errorCode; }
 
-                return create_webview(createdEnvironment, callback);
-            })
-            .Get());
-}
+                return createdEnvironment->CreateCoreWebView2Controller(
+                    m_hwnd.get(),
+                    Microsoft::WRL::Callback<
+                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                        [=, this](::HRESULT errorCode,
+                                  ICoreWebView2Controller* createdController) -> ::HRESULT
+                        {
+                            if (!createdController) { return errorCode; }
 
-auto WebView::create_webview(ICoreWebView2Environment* createdEnvironment,
-                             std::function<::HRESULT()> callback) -> ::HRESULT
-{
-    return createdEnvironment->CreateCoreWebView2Controller(
-        m_hwnd.get(),
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [=, this](::HRESULT errorCode, ICoreWebView2Controller* createdController) -> ::HRESULT
-            {
-                if (!createdController) { return errorCode; }
+                            m_initController = createdController;
+                            m_controller = m_initController.try_query<ICoreWebView2Controller4>();
 
-                m_initController = createdController;
-                m_controller = m_initController.try_query<ICoreWebView2Controller4>();
+                            if (!m_controller) return E_POINTER;
 
-                if (!m_controller) return E_POINTER;
+                            m_controller->put_DefaultBackgroundColor(
+                                COREWEBVIEW2_COLOR{0, 0, 0, 0});
 
-                m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR{0, 0, 0, 0});
+                            m_controller->get_CoreWebView2(m_initCore.put());
+                            m_core = m_initCore.try_query<ICoreWebView2_21>();
 
-                m_controller->get_CoreWebView2(m_initCore.put());
-                m_core = m_initCore.try_query<ICoreWebView2_21>();
+                            if (!m_core) return E_POINTER;
 
-                if (!m_core) return E_POINTER;
+                            m_core->get_Settings(m_initSettings.put());
 
-                m_core->get_Settings(m_initSettings.put());
+                            m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
 
-                m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
+                            if (!m_settings) return E_POINTER;
 
-                if (!m_settings) return E_POINTER;
+                            put_settings();
 
-                put_settings();
+                            add_context_menu_requested();
+                            add_source_changed();
+                            add_navigation_starting();
+                            add_navigation_completed();
+                            add_web_message_received();
+                            add_accelerator_key_pressed();
+                            add_favicon_changed();
+                            add_document_title_changed();
+                            add_zoom_factor_changed();
+                            add_got_focus();
+                            add_lost_focus();
+                            add_move_focus_requested();
 
-                add_context_menu_requested();
-                add_source_changed();
-                add_navigation_starting();
-                add_navigation_completed();
-                add_web_message_received();
-                add_accelerator_key_pressed();
-                add_favicon_changed();
-                add_document_title_changed();
-                add_zoom_factor_changed();
-                add_got_focus();
-                add_lost_focus();
-                add_move_focus_requested();
+                            callback();
 
-                callback();
-
-                return S_OK;
+                            return S_OK;
+                        })
+                        .Get());
             })
             .Get());
 }
@@ -448,7 +449,7 @@ auto WebView::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
 {
     position();
 
-    if (FAILED(create_environment(m_callback)))
+    if (FAILED(create_webview(m_callback)))
     {
         throw std::runtime_error("WebView creation failure");
     }

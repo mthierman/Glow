@@ -40,9 +40,7 @@ struct WebView : public Window
         size_t id = glow::random<size_t>());
     ~WebView() override;
 
-    virtual auto create_environment(std::function<::HRESULT()> callback) -> ::HRESULT;
-    virtual auto create_webview(ICoreWebView2Environment* createdEnvironment,
-                                std::function<::HRESULT()> callback) -> ::HRESULT;
+    virtual auto create_webview(std::function<::HRESULT()> callback) -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
     virtual auto add_context_menu_requested() -> ::HRESULT;
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
@@ -104,6 +102,8 @@ struct WebView : public Window
     virtual auto on_size(::WPARAM wParam, ::LPARAM lParam) -> int;
 
     std::function<::HRESULT()> m_callback;
+
+    Microsoft::WRL::ComPtr<CoreWebView2EnvironmentOptions> m_options;
 
     wil::com_ptr<ICoreWebView2Controller> m_initController{};
     wil::com_ptr<ICoreWebView2> m_initCore{};
