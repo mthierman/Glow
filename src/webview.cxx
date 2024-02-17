@@ -48,13 +48,13 @@ auto WebView::create_environment(std::function<::HRESULT()> callback) -> ::HRESU
             {
                 if (!createdEnvironment) { return errorCode; }
 
-                return create_controller(createdEnvironment, callback);
+                return create_webview(createdEnvironment, callback);
             })
             .Get());
 }
 
-auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
-                                std::function<::HRESULT()> callback) -> ::HRESULT
+auto WebView::create_webview(ICoreWebView2Environment* createdEnvironment,
+                             std::function<::HRESULT()> callback) -> ::HRESULT
 {
     return createdEnvironment->CreateCoreWebView2Controller(
         m_hwnd.get(),

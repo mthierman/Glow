@@ -41,8 +41,8 @@ struct WebView : public Window
     ~WebView() override;
 
     virtual auto create_environment(std::function<::HRESULT()> callback) -> ::HRESULT;
-    virtual auto create_controller(ICoreWebView2Environment* createdEnvironment,
-                                   std::function<::HRESULT()> callback) -> ::HRESULT;
+    virtual auto create_webview(ICoreWebView2Environment* createdEnvironment,
+                                std::function<::HRESULT()> callback) -> ::HRESULT;
     virtual auto put_settings() -> ::HRESULT;
     virtual auto add_context_menu_requested() -> ::HRESULT;
     virtual auto context_menu_requested_handler(ICoreWebView2* sender,
