@@ -27,6 +27,7 @@ WebView::~WebView()
         m_core->remove_DocumentTitleChanged(m_tokenDocumentTitleChanged);
         m_core->remove_FaviconChanged(m_tokenFaviconChanged);
     }
+
     if (m_controller)
     {
         m_controller->remove_AcceleratorKeyPressed(m_tokenAcceleratorKeyPressed);
@@ -45,9 +46,9 @@ auto WebView::create_environment(std::function<::HRESULT()> callback) -> ::HRESU
             [=, this](::HRESULT errorCode,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
             {
-                if (createdEnvironment) { return create_controller(createdEnvironment, callback); }
+                if (!createdEnvironment) { return errorCode; }
 
-                else { return errorCode; }
+                return create_controller(createdEnvironment, callback);
             })
             .Get());
 }
@@ -67,8 +68,7 @@ auto WebView::create_controller(ICoreWebView2Environment* createdEnvironment,
 
                     if (!m_controller) return E_POINTER;
 
-                    COREWEBVIEW2_COLOR bgColor{0, 0, 0, 0};
-                    m_controller->put_DefaultBackgroundColor(bgColor);
+                    m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR{0, 0, 0, 0});
 
                     m_controller->get_CoreWebView2(m_initCore.put());
                     m_core = m_initCore.try_query<ICoreWebView2_21>();
