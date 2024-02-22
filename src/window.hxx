@@ -42,22 +42,23 @@ struct Window
 
     virtual auto get_dpi() -> unsigned int;
     virtual auto get_scale() -> float;
+    virtual auto get_placement() -> ::WINDOWPLACEMENT;
     virtual auto get_style() -> intptr_t;
     virtual auto get_ex_style() -> intptr_t;
     virtual auto get_id() -> intptr_t;
     virtual auto get_parent() -> ::HWND;
-    virtual auto get_placement() -> ::WINDOWPLACEMENT;
 
+    virtual auto close() -> void;
     virtual auto reveal() -> bool;
     virtual auto show() -> bool;
     virtual auto hide() -> bool;
     virtual auto maximize() -> bool;
     virtual auto restore() -> bool;
-    virtual auto close() -> void;
+    virtual auto is_maximized() -> bool;
 
     virtual auto is_visible() -> bool;
     virtual auto focus() -> ::HWND;
-    virtual auto is_focus() -> bool;
+    virtual auto is_focused() -> bool;
     virtual auto foreground() -> bool;
     virtual auto is_foreground() -> bool;
     virtual auto active() -> bool;

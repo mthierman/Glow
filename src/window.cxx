@@ -80,6 +80,14 @@ auto Window::get_scale() -> float
     return static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
 };
 
+auto Window::get_placement() -> ::WINDOWPLACEMENT
+{
+    ::WINDOWPLACEMENT wp{sizeof(::WINDOWPLACEMENT)};
+    ::GetWindowPlacement(m_hwnd.get(), &wp);
+
+    return wp;
+}
+
 auto Window::get_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE); }
 
 auto Window::get_ex_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_EXSTYLE); }
@@ -91,13 +99,7 @@ auto Window::get_parent() -> ::HWND
     return reinterpret_cast<::HWND>(::GetWindowLongPtrA(m_hwnd.get(), GWLP_HWNDPARENT));
 }
 
-auto Window::get_placement() -> ::WINDOWPLACEMENT
-{
-    ::WINDOWPLACEMENT wp{sizeof(::WINDOWPLACEMENT)};
-    ::GetWindowPlacement(m_hwnd.get(), &wp);
-
-    return wp;
-}
+auto Window::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
 
 auto Window::reveal() -> bool { return ::ShowWindow(m_hwnd.get(), SW_NORMAL); }
 
@@ -109,13 +111,20 @@ auto Window::maximize() -> bool { return ::ShowWindow(m_hwnd.get(), SW_MAXIMIZE)
 
 auto Window::restore() -> bool { return ::ShowWindow(m_hwnd.get(), SW_RESTORE); }
 
-auto Window::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
+auto Window::is_maximized() -> bool
+{
+    auto wp{get_placement()};
+
+    if (wp.showCmd == 3) return true;
+
+    else { return false; }
+}
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(m_hwnd.get()); }
 
 auto Window::focus() -> ::HWND { return ::SetFocus(m_hwnd.get()); }
 
-auto Window::is_focus() -> bool { return ::GetFocus() == m_hwnd.get(); }
+auto Window::is_focused() -> bool { return ::GetFocus() == m_hwnd.get(); }
 
 auto Window::foreground() -> bool { return ::SetForegroundWindow(m_hwnd.get()); }
 
