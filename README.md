@@ -1,4 +1,4 @@
-<img src="./data/banner.svg" width="200">
+<img src="./data/banner.svg" height="200">
 
 # C++ Library for Windows
 
@@ -62,4 +62,15 @@ target_link_libraries(
 )
 ```
 
-To use a recommended set of MSVC flags, optionally link to `glow::flags`
+### Compiler flags
+
+To use a recommended set of MSVC/Clang flags, optionally link to `glow::flags`
+
+```cmake
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE
+    glow::glow
+    glow::flags
+)
+```
