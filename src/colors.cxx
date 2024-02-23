@@ -75,4 +75,11 @@ auto Colors::to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF
                std::ranges::clamp(static_cast<int>(uiColor.G), 0, 255),
                std::ranges::clamp(static_cast<int>(uiColor.B), 0, 255));
 }
+
+auto Colors::clamp(int value) -> int { return std::ranges::clamp(value, 0, 255); }
+
+auto Colors::rgb_to_colorref(int r, int g, int b) -> ::COLORREF
+{
+    return RGB(clamp(r), clamp(g), clamp(b));
+}
 } // namespace glow

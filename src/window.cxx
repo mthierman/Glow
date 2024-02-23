@@ -73,6 +73,15 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
                    reinterpret_cast<uintptr_t>(&m_notification));
 }
 
+auto Window::load_icon(::LPSTR name, bool shared) -> ::HICON
+{
+    auto loadShared{LR_DEFAULTSIZE | LR_SHARED};
+    auto loadRes{LR_DEFAULTSIZE};
+
+    return static_cast<::HICON>(
+        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, shared ? loadShared : loadRes));
+}
+
 auto Window::get_dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
 
 auto Window::get_scale() -> float
@@ -264,6 +273,30 @@ auto Window::reparent(::HWND parent) -> void
     }
 }
 
+auto Window::rect_to_position(const ::RECT& rect) -> Position
+{
+    Position position;
+
+    position.x = rect.left;
+    position.y = rect.top;
+    position.width = rect.right - rect.left;
+    position.height = rect.bottom - rect.top;
+
+    return position;
+}
+
+auto Window::position_to_rect(const Position& position) -> ::RECT
+{
+    ::RECT rect{};
+
+    rect.left = position.x;
+    rect.top = position.y;
+    rect.right = position.width;
+    rect.bottom = position.height;
+
+    return rect;
+}
+
 auto Window::position() -> void
 {
     ::GetClientRect(m_hwnd.get(), &m_client.rect);
@@ -286,9 +319,19 @@ auto Window::position() -> void
 
 auto Window::resize() -> void { ::SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0); }
 
+auto Window::is_dark() -> bool
+{
+    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
+    auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
+
+    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) return true;
+
+    return false;
+}
+
 auto Window::theme() -> void
 {
-    if (glow::check_theme()) { dwm_dark_mode(true); }
+    if (is_dark()) { dwm_dark_mode(true); }
 
     else { dwm_dark_mode(false); }
 }

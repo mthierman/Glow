@@ -11,11 +11,7 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    glow::App app;
+    //
 
-    glow::Window win;
-    win.create_window();
-    win.reveal();
-
-    return app();
+    return 0;
 }

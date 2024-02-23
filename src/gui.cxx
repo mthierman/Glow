@@ -10,60 +10,6 @@
 
 namespace glow
 {
-auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool
-{
-    if (::GetClassInfoExA(::GetModuleHandleA(nullptr), MAKEINTATOM(atom), &wndClass)) return true;
-
-    else return false;
-}
-
-auto rect_to_position(const ::RECT& rect) -> Position
-{
-    Position position;
-
-    position.x = rect.left;
-    position.y = rect.top;
-    position.width = rect.right - rect.left;
-    position.height = rect.bottom - rect.top;
-
-    return position;
-}
-
-auto position_to_rect(const Position& position) -> ::RECT
-{
-    ::RECT rect{};
-
-    rect.left = position.x;
-    rect.top = position.y;
-    rect.right = position.width;
-    rect.bottom = position.height;
-
-    return rect;
-}
-
-auto clamp_color(int value) -> int { return std::ranges::clamp(value, 0, 255); }
-
-auto make_colorref(int r, int g, int b) -> ::COLORREF
-{
-    return RGB(clamp_color(r), clamp_color(g), clamp_color(b));
-}
-
-auto load_icon(::LPSTR name) -> ::HICON
-{
-    return static_cast<::HICON>(
-        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto check_theme() -> bool
-{
-    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
-    auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
-
-    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) return true;
-
-    return false;
-}
-
 auto set_preferred_app_mode() -> void
 {
     enum class PreferredAppMode

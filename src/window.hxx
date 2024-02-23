@@ -20,6 +20,9 @@
 
 #include <wil/resource.h>
 
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.ViewManagement.h>
+
 #include "gui.hxx"
 #include "notification.hxx"
 #include "position.hxx"
@@ -39,6 +42,8 @@ struct Window
     virtual auto register_class() -> void;
     virtual auto create_window() -> void;
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
+
+    virtual auto load_icon(::LPSTR name, bool shared) -> ::HICON;
 
     virtual auto get_dpi() -> unsigned int;
     virtual auto get_scale() -> float;
@@ -79,8 +84,13 @@ struct Window
     virtual auto set_child() -> void;
     virtual auto is_child() -> bool;
     virtual auto reparent(::HWND parent) -> void;
+
+    virtual auto rect_to_position(const ::RECT& rect) -> Position;
+    virtual auto position_to_rect(const Position& position) -> ::RECT;
     virtual auto position() -> void;
     virtual auto resize() -> void;
+
+    virtual auto is_dark() -> bool;
     virtual auto theme() -> void;
     virtual auto dwm_dark_mode(bool enabled) -> void;
     virtual auto dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
@@ -106,10 +116,8 @@ struct Window
 
     ::WNDCLASSEXA m_wcex{sizeof(::WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
-    wil::unique_hicon m_defaultIcon{static_cast<HICON>(
-        ::LoadImageA(nullptr, IDI_APPLICATION, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE))};
-    wil::unique_hicon m_icon{static_cast<HICON>(::LoadImageA(
-        ::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE))};
+    wil::unique_hicon m_defaultIcon{load_icon(IDI_APPLICATION, true)};
+    wil::unique_hicon m_icon{load_icon(MAKEINTRESOURCEA(1), false)};
     glow::Position m_client{};
     glow::Position m_window{};
     unsigned int m_dpi{};

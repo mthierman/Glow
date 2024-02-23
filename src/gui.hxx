@@ -10,20 +10,8 @@
 
 #include <Windows.h>
 
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.UI.ViewManagement.h>
-
-#include "position.hxx"
-
 namespace glow
 {
-auto get_class_info(::ATOM& atom, ::WNDCLASSEXA& wndClass) -> bool;
-auto rect_to_position(const ::RECT& rect) -> Position;
-auto position_to_rect(const Position& position) -> ::RECT;
-auto clamp_color(int value) -> int;
-auto make_colorref(int r, int g, int b) -> ::COLORREF;
-auto load_icon(::LPSTR name) -> ::HICON;
-auto check_theme() -> bool;
 auto set_preferred_app_mode() -> void;
 auto allow_dark_mode(::HWND hWnd, bool enable) -> void;
 

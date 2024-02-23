@@ -46,6 +46,20 @@ target_link_libraries(
             glow::flags
 )
 
+add_executable(Glow_ExampleErrors)
+
+target_sources(
+    Glow_ExampleErrors
+    PRIVATE errors/errors.cxx
+            ${PROJECT_SOURCE_DIR}/data/glow.manifest
+)
+
+target_link_libraries(
+    Glow_ExampleErrors
+    PRIVATE glow::glow
+            glow::flags
+)
+
 add_custom_command(
     TARGET Glow_ExampleWin32
     COMMAND

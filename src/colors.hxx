@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 
+#include <algorithm>
 #include <map>
 #include <string>
 
@@ -66,6 +67,8 @@ struct Colors
     auto update() -> void;
     auto to_string(winrt::Windows::UI::Color uiColor) -> std::string;
     auto to_colorref(winrt::Windows::UI::Color uiColor) -> ::COLORREF;
+    auto clamp(int value) -> int;
+    auto rgb_to_colorref(int r, int g, int b) -> ::COLORREF;
 
     winrt::Windows::UI::ViewManagement::UISettings settings{};
     Color color{};
