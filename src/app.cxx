@@ -86,6 +86,34 @@ auto App::notify(::HWND receiver, CODE code, std::string message) -> void
 
 auto App::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
 
+auto App::argv(int argc, char* argv[]) -> std::vector<std::string>
+{
+    std::vector<std::string> vector{};
+
+    for (int i = 0; i < argc; i++)
+    {
+        vector.emplace_back(argv[i]);
+    }
+
+    return vector;
+}
+
+auto App::cmd_to_argv() -> std::vector<std::string>
+{
+    int argc{};
+    wil::unique_hlocal_ptr<wchar_t*[]> buffer{};
+    buffer.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
+
+    std::vector<std::string> argv{};
+
+    for (int i = 0; i < argc; i++)
+    {
+        argv.push_back(std::move(glow::string(buffer[i])));
+    }
+
+    return argv;
+}
+
 auto CALLBACK App::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
     -> ::LRESULT
 {

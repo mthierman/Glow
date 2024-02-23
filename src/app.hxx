@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <shellapi.h>
 
 #include <string>
 
@@ -16,6 +17,7 @@
 
 #include "notification.hxx"
 #include "random.hxx"
+#include "text.hxx"
 
 namespace glow
 {
@@ -28,6 +30,9 @@ struct App
     virtual auto operator()() -> int;
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
     virtual auto close() -> void;
+
+    virtual auto argv(int argc, char* argv[]) -> std::vector<std::string>;
+    virtual auto cmd_to_argv() -> std::vector<std::string>;
 
     std::string m_name{};
     size_t m_id{};

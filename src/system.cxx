@@ -10,34 +10,6 @@
 
 namespace glow
 {
-auto argv(int argc, char* argv[]) -> std::vector<std::string>
-{
-    std::vector<std::string> vector{};
-
-    for (int i = 0; i < argc; i++)
-    {
-        vector.emplace_back(argv[i]);
-    }
-
-    return vector;
-}
-
-auto cmd_to_argv() -> std::vector<std::string>
-{
-    int argc{};
-    wil::unique_hlocal_ptr<wchar_t*[]> buffer{};
-    buffer.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
-
-    std::vector<std::string> argv{};
-
-    for (int i = 0; i < argc; i++)
-    {
-        argv.push_back(std::move(glow::string(buffer[i])));
-    }
-
-    return argv;
-}
-
 auto log(std::string msg) -> void
 {
     ::OutputDebugStringA(msg.c_str());
