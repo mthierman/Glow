@@ -10,7 +10,12 @@
 
 auto main(int argc, char* argv[]) -> int
 {
-    auto args{glow::cmd_to_argv()};
+    std::vector<std::string> args;
+
+    for (int i = 0; i < argc; i++)
+    {
+        args.emplace_back(argv[i]);
+    }
 
     CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
     {

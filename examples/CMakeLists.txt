@@ -46,7 +46,10 @@ target_link_libraries(
             glow::flags
 )
 
-add_executable(Glow_ExampleErrors)
+add_executable(
+    Glow_ExampleErrors
+    WIN32
+)
 
 target_sources(
     Glow_ExampleErrors
