@@ -1,13 +1,18 @@
 {
-    // "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
-    "version": 7,
+    "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
+    "version": 8,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 27,
+        "minor": 28,
         "patch": 0
     },
     "include": [],
     "configurePresets": [
+        {
+            "name": "Visual Studio Generator",
+            "hidden": true,
+            "generator": "Visual Studio 17 2022"
+        },
         {
             "name": "Ninja Generator",
             "hidden": true,
@@ -17,11 +22,6 @@
             "name": "Ninja Multi-Config Generator",
             "hidden": true,
             "generator": "Ninja Multi-Config"
-        },
-        {
-            "name": "Visual Studio Generator",
-            "hidden": true,
-            "generator": "Visual Studio 17 2022"
         },
         {
             "name": "Architecture",
@@ -96,41 +96,31 @@
             }
         },
         {
-            "name": "Default",
+            "name": "Visual Studio",
+            "hidden": true,
             "inherits": ["Visual Studio Generator", "Architecture", "Toolset", "MSVC"],
             "binaryDir": "${sourceDir}/build"
         },
         {
+            "name": "Ninja Multi-Config",
+            "hidden": true,
+            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "MSVC"],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
             "name": "CI",
-            "inherits": [
-                "Visual Studio Generator",
-                "Architecture",
-                "Toolset",
-                "MSVC",
-                "Glow Testing"
-            ],
+            "inherits": ["Visual Studio", "Glow Testing"],
             "binaryDir": "${sourceDir}/build"
         }
     ],
     "buildPresets": [
         {
             "name": "MSBuild",
+            "hidden": true,
             "nativeToolOptions": [
                 "/p:UseMultiToolTask=true",
                 "/p:EnforceProcessCountAcrossBuilds=true"
             ]
-        },
-        {
-            "name": "Release",
-            "inherits": ["MSBuild"],
-            "configurePreset": "Default",
-            "configuration": "Release"
-        },
-        {
-            "name": "Debug",
-            "inherits": ["MSBuild"],
-            "configurePreset": "Default",
-            "configuration": "Debug"
         },
         {
             "name": "CI",
@@ -140,16 +130,6 @@
         }
     ],
     "testPresets": [
-        {
-            "name": "Release",
-            "configurePreset": "Default",
-            "configuration": "Release"
-        },
-        {
-            "name": "Debug",
-            "configurePreset": "Default",
-            "configuration": "Debug"
-        },
         {
             "name": "CI",
             "configurePreset": "CI",
