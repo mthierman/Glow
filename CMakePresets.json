@@ -111,6 +111,11 @@
             "name": "CI",
             "inherits": ["Visual Studio", "Glow Testing"],
             "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Debug",
+            "inherits": ["Visual Studio", "Glow Testing", "Glow Examples", "Glow Tools"],
+            "binaryDir": "${sourceDir}/build"
         }
     ],
     "buildPresets": [
@@ -127,6 +132,12 @@
             "inherits": ["MSBuild"],
             "configurePreset": "CI",
             "configuration": "Release"
+        },
+        {
+            "name": "Debug",
+            "inherits": ["MSBuild"],
+            "configurePreset": "Debug",
+            "configuration": "Debug"
         }
     ],
     "testPresets": [
@@ -134,6 +145,11 @@
             "name": "CI",
             "configurePreset": "CI",
             "configuration": "Release"
+        },
+        {
+            "name": "Debug",
+            "configurePreset": "Debug",
+            "configuration": "Debug"
         }
     ]
 }
