@@ -97,45 +97,45 @@
         },
         {
             "name": "Default",
-            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "MSVC"],
+            "inherits": ["Visual Studio Generator", "Architecture", "Toolset", "MSVC"],
             "binaryDir": "${sourceDir}/build"
         },
         {
             "name": "CI",
             "inherits": [
-                "Ninja Multi-Config Generator",
+                "Visual Studio Generator",
                 "Architecture",
                 "Toolset",
                 "MSVC",
                 "Glow Testing"
             ],
             "binaryDir": "${sourceDir}/build"
-        },
-        {
-            "name": "Clang",
-            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "LLVM"],
-            "binaryDir": "${sourceDir}/build"
         }
     ],
     "buildPresets": [
         {
+            "name": "MSBuild",
+            "nativeToolOptions": [
+                "/p:UseMultiToolTask=true",
+                "/p:EnforceProcessCountAcrossBuilds=true"
+            ]
+        },
+        {
             "name": "Release",
+            "inherits": ["MSBuild"],
             "configurePreset": "Default",
             "configuration": "Release"
         },
         {
             "name": "Debug",
+            "inherits": ["MSBuild"],
             "configurePreset": "Default",
             "configuration": "Debug"
         },
         {
             "name": "CI",
+            "inherits": ["MSBuild"],
             "configurePreset": "CI",
-            "configuration": "Release"
-        },
-        {
-            "name": "Clang",
-            "configurePreset": "Clang",
             "configuration": "Release"
         }
     ],
@@ -153,11 +153,6 @@
         {
             "name": "CI",
             "configurePreset": "CI",
-            "configuration": "Release"
-        },
-        {
-            "name": "Clang",
-            "configurePreset": "Clang",
             "configuration": "Release"
         }
     ]
