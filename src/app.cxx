@@ -108,7 +108,7 @@ auto App::cmd_to_argv() -> std::vector<std::string>
 
     for (int i = 0; i < argc; i++)
     {
-        argv.push_back(std::move(glow::string(buffer[i])));
+        argv.push_back(glow::string(buffer[i]));
     }
 
     return argv;

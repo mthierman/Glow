@@ -9,22 +9,31 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "Ninja",
+            "name": "Ninja Generator",
             "hidden": true,
             "generator": "Ninja"
         },
         {
-            "name": "Ninja Multi-Config",
+            "name": "Ninja Multi-Config Generator",
             "hidden": true,
             "generator": "Ninja Multi-Config"
         },
         {
-            "name": "Visual Studio",
+            "name": "Visual Studio Generator",
+            "hidden": true,
+            "generator": "Visual Studio 17 2022"
+        },
+        {
+            "name": "Architecture",
             "hidden": true,
             "architecture": {
                 "strategy": "external",
                 "value": "x64"
-            },
+            }
+        },
+        {
+            "name": "Toolset",
+            "hidden": true,
             "toolset": {
                 "strategy": "external",
                 "value": "v143,host=x64"
@@ -47,7 +56,7 @@
             }
         },
         {
-            "name": "Unity",
+            "name": "Unity Build",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_UNITY_BUILD": {
@@ -88,12 +97,23 @@
         },
         {
             "name": "Default",
-            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC"],
+            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "MSVC"],
             "binaryDir": "${sourceDir}/build"
         },
         {
             "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Visual Studio", "MSVC", "Glow Testing"],
+            "inherits": [
+                "Ninja Multi-Config Generator",
+                "Architecture",
+                "Toolset",
+                "MSVC",
+                "Glow Testing"
+            ],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Clang",
+            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "LLVM"],
             "binaryDir": "${sourceDir}/build"
         }
     ],
@@ -112,6 +132,11 @@
             "name": "CI",
             "configurePreset": "CI",
             "configuration": "Release"
+        },
+        {
+            "name": "Clang",
+            "configurePreset": "Clang",
+            "configuration": "Release"
         }
     ],
     "testPresets": [
@@ -128,6 +153,11 @@
         {
             "name": "CI",
             "configurePreset": "CI",
+            "configuration": "Release"
+        },
+        {
+            "name": "Clang",
+            "configurePreset": "Clang",
             "configuration": "Release"
         }
     ]
