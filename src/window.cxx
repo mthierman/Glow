@@ -73,11 +73,16 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
                    reinterpret_cast<uintptr_t>(&m_notification));
 }
 
-auto Window::load_icon(::LPSTR name, bool shared) -> ::HICON
+auto Window::load_icon(::LPSTR name) -> ::HICON
 {
     return static_cast<::HICON>(
-        ::LoadImageA(shared ? nullptr : ::GetModuleHandleA(nullptr), name, IMAGE_ICON, 0, 0,
-                     shared ? (LR_DEFAULTSIZE | LR_SHARED) : LR_DEFAULTSIZE));
+        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED));
+}
+
+auto Window::load_icon_rc() -> ::HICON
+{
+    return static_cast<::HICON>(::LoadImageA(::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1),
+                                             IMAGE_ICON, 0, 0, LR_DEFAULTSIZE));
 }
 
 auto Window::get_dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };

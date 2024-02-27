@@ -43,7 +43,8 @@ struct Window
     virtual auto create_window() -> void;
     virtual auto notify(::HWND receiver, CODE code, std::string message = "") -> void;
 
-    virtual auto load_icon(::LPSTR name, bool shared) -> ::HICON;
+    virtual auto load_icon(::LPSTR name = IDI_APPLICATION) -> ::HICON;
+    virtual auto load_icon_rc() -> ::HICON;
 
     virtual auto get_dpi() -> unsigned int;
     virtual auto get_scale() -> float;
@@ -116,8 +117,8 @@ struct Window
 
     ::WNDCLASSEXA m_wcex{sizeof(::WNDCLASSEXA)};
     wil::unique_hwnd m_hwnd{};
-    wil::unique_hicon m_defaultIcon{load_icon(IDI_APPLICATION, true)};
-    wil::unique_hicon m_icon{load_icon(MAKEINTRESOURCEA(1), false)};
+    wil::unique_hicon m_defaultIcon{load_icon()};
+    wil::unique_hicon m_icon{load_icon_rc()};
     glow::Position m_client{};
     glow::Position m_window{};
     unsigned int m_dpi{};
