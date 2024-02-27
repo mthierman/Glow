@@ -136,7 +136,7 @@
         {
             "name": "Dev",
             // "inherits": ["MSBuild"],
-            "configurePreset": "Debug",
+            "configurePreset": "Dev",
             "configuration": "Debug"
         }
     ],
