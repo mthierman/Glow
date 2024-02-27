@@ -109,12 +109,12 @@
         },
         {
             "name": "CI",
-            "inherits": ["Visual Studio", "Glow Testing"],
+            "inherits": ["Ninja Multi-Config", "Glow Testing"],
             "binaryDir": "${sourceDir}/build"
         },
         {
-            "name": "Debug",
-            "inherits": ["Visual Studio", "Glow Testing", "Glow Examples", "Glow Tools"],
+            "name": "Dev",
+            "inherits": ["Ninja Multi-Config", "Glow Testing", "Glow Examples", "Glow Tools"],
             "binaryDir": "${sourceDir}/build"
         }
     ],
@@ -129,13 +129,13 @@
         },
         {
             "name": "CI",
-            "inherits": ["MSBuild"],
+            // "inherits": ["MSBuild"],
             "configurePreset": "CI",
             "configuration": "Release"
         },
         {
-            "name": "Debug",
-            "inherits": ["MSBuild"],
+            "name": "Dev",
+            // "inherits": ["MSBuild"],
             "configurePreset": "Debug",
             "configuration": "Debug"
         }
@@ -147,8 +147,8 @@
             "configuration": "Release"
         },
         {
-            "name": "Debug",
-            "configurePreset": "Debug",
+            "name": "Dev",
+            "configurePreset": "Dev",
             "configuration": "Debug"
         }
     ]
