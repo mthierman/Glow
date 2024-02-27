@@ -75,11 +75,9 @@ auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
 
 auto Window::load_icon(::LPSTR name, bool shared) -> ::HICON
 {
-    auto loadShared{LR_DEFAULTSIZE | LR_SHARED};
-    auto loadRes{LR_DEFAULTSIZE};
-
     return static_cast<::HICON>(
-        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, shared ? loadShared : loadRes));
+        ::LoadImageA(shared ? nullptr : ::GetModuleHandleA(nullptr), name, IMAGE_ICON, 0, 0,
+                     shared ? (LR_DEFAULTSIZE | LR_SHARED) : LR_DEFAULTSIZE));
 }
 
 auto Window::get_dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
