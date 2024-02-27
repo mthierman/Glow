@@ -109,13 +109,18 @@
         },
         {
             "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Glow Testing"],
-            "binaryDir": "${sourceDir}/build"
+            "inherits": ["Ninja Multi-Config", "Glow Testing"]
         },
         {
             "name": "Dev",
             "inherits": ["Ninja Multi-Config", "Glow Testing", "Glow Examples", "Glow Tools"],
-            "binaryDir": "${sourceDir}/build"
+            "cacheVariables": {
+                "CMAKE_PROJECT_Glow_INCLUDE_BEFORE": "${sourceDir}/cmake/Packages.cmake",
+                "GLOW_RESTORE_NUGET": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                }
+            }
         }
     ],
     "buildPresets": [
@@ -129,13 +134,11 @@
         },
         {
             "name": "CI",
-            // "inherits": ["MSBuild"],
             "configurePreset": "CI",
             "configuration": "Release"
         },
         {
             "name": "Dev",
-            // "inherits": ["MSBuild"],
             "configurePreset": "Dev",
             "configuration": "Debug"
         }
