@@ -108,6 +108,10 @@
             "binaryDir": "${sourceDir}/build"
         },
         {
+            "name": "Default",
+            "inherits": ["Ninja Multi-Config"]
+        },
+        {
             "name": "CI",
             "inherits": ["Ninja Multi-Config", "Glow Testing"]
         }
@@ -122,12 +126,22 @@
             ]
         },
         {
+            "name": "Default",
+            "configurePreset": "Default",
+            "configuration": "Release"
+        },
+        {
             "name": "CI",
             "configurePreset": "CI",
             "configuration": "Release"
         }
     ],
     "testPresets": [
+        {
+            "name": "Default",
+            "configurePreset": "Default",
+            "configuration": "Release"
+        },
         {
             "name": "CI",
             "configurePreset": "CI",
