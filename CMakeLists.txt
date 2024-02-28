@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(
     Glow
-    VERSION 0.0.3
+    VERSION 0.0.4
     LANGUAGES C
               CXX
 )
@@ -59,8 +59,8 @@ if(GLOW_RESTORE_NUGET)
 
     cmake_path(
         SET
-        wil_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
+        webview2_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2365.46"
     )
 
     cmake_path(
@@ -71,8 +71,8 @@ if(GLOW_RESTORE_NUGET)
 
     cmake_path(
         SET
-        webview2_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2277.86"
+        wil_SOURCE_DIR
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
     )
 endif()
 

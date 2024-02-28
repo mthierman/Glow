@@ -8,8 +8,8 @@ set(FETCHCONTENT_SOURCE_DIR_SQLITE
 
 cmake_path(
     SET
-    wil_SOURCE_DIR
-    "$ENV{NUGET}/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
+    webview2_SOURCE_DIR
+    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2365.46"
 )
 
 cmake_path(
@@ -20,6 +20,6 @@ cmake_path(
 
 cmake_path(
     SET
-    webview2_SOURCE_DIR
-    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2277.86"
+    wil_SOURCE_DIR
+    "$ENV{NUGET}/Microsoft.Windows.ImplementationLibrary.1.0.240122.1"
 )
