@@ -42,6 +42,6 @@ auto parse_url(std::string url) -> std::optional<std::string>
         return std::string{parsed->get_href()};
     }
 
-    else { return std::nullopt; }
+    return std::nullopt;
 }
 } // namespace glow
