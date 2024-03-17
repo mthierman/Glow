@@ -8,9 +8,10 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 
 namespace glow
 {
-auto parse_url(std::string url) -> std::string;
+auto parse_url(std::string url) -> std::optional<std::string>;
 } // namespace glow

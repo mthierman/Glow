@@ -17,34 +17,31 @@
 
 namespace glow
 {
-auto parse_url(std::string url) -> std::string
+auto parse_url(std::string url) -> std::optional<std::string>
 {
     url = glow::trim(url);
 
-    if (url.length() == 0) { return url; }
+    if (url.length() == 0) { return std::nullopt; }
 
     else if (url.starts_with("http"))
     {
-        if (auto parsed{ada::parse(url)}; parsed)
-        {
-            return {parsed->get_href().begin(), parsed->get_href().end()};
-        }
+        if (auto parsed{ada::parse(url)}; parsed) { return std::string{parsed->get_href()}; }
     }
 
     else if (url.contains("."))
     {
         if (auto parsed{ada::parse("https://" + url)}; parsed)
         {
-            return {parsed->get_href().begin(), parsed->get_href().end()};
+            return std::string{parsed->get_href()};
         }
     }
 
     else if (auto parsed{ada::parse("https://www.google.com")}; parsed)
     {
         parsed->set_search(url);
-        return {parsed->get_href().begin(), parsed->get_href().end()};
+        return std::string{parsed->get_href()};
     }
 
-    return {};
+    else { return std::nullopt; }
 }
 } // namespace glow
