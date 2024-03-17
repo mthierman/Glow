@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(
     Glow
-    VERSION 0.0.4
+    VERSION 0.0.5
     LANGUAGES C
               CXX
 )
@@ -89,16 +89,16 @@ execute_process(
     WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
 )
 
-add_library(ada)
+add_library(Ada)
 
 add_library(
     ada::ada
     ALIAS
-    ada
+    Ada
 )
 
 target_sources(
-    ada
+    Ada
     PRIVATE ${ada_SOURCE_DIR}/ada.cpp
     PUBLIC FILE_SET
            HEADERS
@@ -109,7 +109,7 @@ target_sources(
 )
 
 target_link_libraries(
-    ada
+    Ada
     PRIVATE glow::definitions
             glow::features
             glow::flags_deps
