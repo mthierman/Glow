@@ -24,7 +24,7 @@ auto parse_url(std::string url) -> std::string
 
     if (url.length() == 0) { return url; }
 
-    if (url.starts_with("http"))
+    else if (url.starts_with("http"))
     {
         if (auto parsed{ada::parse(url)}; parsed)
         {
@@ -40,15 +40,12 @@ auto parse_url(std::string url) -> std::string
         }
     }
 
-    else
+    else if (auto parsed{ada::parse("https://www.google.com")}; parsed)
     {
-        if (auto parsed{ada::parse("https://www.google.com")}; parsed)
-        {
-            parsed->set_search(url);
-            return {parsed->get_href().begin(), parsed->get_href().end()};
-        }
-
-        return "https://www.google.com/search?q=" + url;
+        parsed->set_search(url);
+        return {parsed->get_href().begin(), parsed->get_href().end()};
     }
+
+    return {};
 }
 } // namespace glow
