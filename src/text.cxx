@@ -6,7 +6,9 @@
 // ╚──────────────╝
 // clang-format on
 
+#include "system.hxx"
 #include "text.hxx"
+#include <Windows.h>
 
 namespace glow
 {

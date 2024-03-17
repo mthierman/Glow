@@ -12,8 +12,6 @@
 #include <objbase.h>
 #include <gdiplus.h>
 
-#include <stdexcept>
-
 namespace glow
 {
 struct GdiPlus

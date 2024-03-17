@@ -10,20 +10,9 @@
 
 #include <Windows.h>
 #include <shellapi.h>
-#include <comdef.h>
-
 #include <filesystem>
-#include <print>
 #include <source_location>
-#include <stdexcept>
-#include <system_error>
-#include <utility>
-#include <vector>
-
-#include <wil/resource.h>
-
-#include "text.hxx"
-#include "filesystem.hxx"
+#include <string>
 
 namespace glow
 {

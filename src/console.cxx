@@ -7,6 +7,9 @@
 // clang-format on
 
 #include "console.hxx"
+#include <Windows.h>
+#include <shellapi.h>
+#include <iostream>
 
 namespace glow
 {

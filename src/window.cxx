@@ -7,6 +7,9 @@
 // clang-format on
 
 #include "window.hxx"
+#include <stdexcept>
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.UI.ViewManagement.h>
 
 namespace glow
 {
@@ -456,8 +459,8 @@ auto Window::dwm_reset_text_color() -> void
     ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
 }
 
-auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-    -> ::LRESULT
+auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam,
+                                    ::LPARAM lParam) -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};
 

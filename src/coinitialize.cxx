@@ -7,6 +7,8 @@
 // clang-format on
 
 #include "coinitialize.hxx"
+#include <objbase.h>
+#include <stdexcept>
 
 namespace glow
 {

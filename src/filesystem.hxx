@@ -10,12 +10,7 @@
 
 #include <Windows.h>
 #include <ShlObj.h>
-
 #include <filesystem>
-#include <memory>
-#include <string>
-
-#include <wil/resource.h>
 
 namespace glow
 {

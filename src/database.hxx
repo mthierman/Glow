@@ -8,18 +8,9 @@
 
 #pragma once
 
-#include <Windows.h>
-
 #include <filesystem>
 #include <memory>
-#include <print>
-#include <string>
-
-#include <wil/resource.h>
-
 #include <sqlite3.h>
-
-#include "filesystem.hxx"
 
 namespace glow
 {

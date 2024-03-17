@@ -8,26 +8,17 @@
 
 #pragma once
 
-#include <Windows.h>
-#include <dwmapi.h>
-
-#ifdef small
-#undef small
-#endif
-
-#include <stdexcept>
-#include <string>
-
-#include <wil/resource.h>
-
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Windows.UI.ViewManagement.h>
-
 #include "gui.hxx"
 #include "notification.hxx"
 #include "position.hxx"
 #include "random.hxx"
-#include "text.hxx"
+#include <Windows.h>
+#include <dwmapi.h>
+#ifdef small
+#undef small
+#endif
+#include <string>
+#include <wil/resource.h>
 
 namespace glow
 {
@@ -129,8 +120,8 @@ struct Window
     glow::Notification m_notification{};
 
   private:
-    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
+    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam,
+                                       ::LPARAM lParam) -> ::LRESULT;
     virtual auto WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
     virtual auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int;
     virtual auto on_create(::WPARAM wParam, ::LPARAM lParam) -> int;

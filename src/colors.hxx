@@ -9,14 +9,10 @@
 #pragma once
 
 #include <Windows.h>
-
-#include <algorithm>
 #include <map>
 #include <string>
-
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
-
 #include <nlohmann/json.hpp>
 
 namespace glow

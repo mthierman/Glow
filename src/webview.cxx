@@ -6,7 +6,10 @@
 // ╚──────────────╝
 // clang-format on
 
+#include "text.hxx"
 #include "webview.hxx"
+#include <gdiplus.h>
+#include <stdexcept>
 
 namespace glow
 {
@@ -141,9 +144,8 @@ auto WebView::add_context_menu_requested() -> ::HRESULT
         &m_tokenContextMenuRequested);
 }
 
-auto WebView::context_menu_requested_handler(ICoreWebView2* sender,
-                                             ICoreWebView2ContextMenuRequestedEventArgs* args)
-    -> ::HRESULT
+auto WebView::context_menu_requested_handler(
+    ICoreWebView2* sender, ICoreWebView2ContextMenuRequestedEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -183,9 +185,8 @@ auto WebView::add_navigation_starting() -> ::HRESULT
         &m_tokenNavigationStarting);
 }
 
-auto WebView::navigation_starting_handler(ICoreWebView2* sender,
-                                          ICoreWebView2NavigationStartingEventArgs* args)
-    -> ::HRESULT
+auto WebView::navigation_starting_handler(
+    ICoreWebView2* sender, ICoreWebView2NavigationStartingEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -201,9 +202,8 @@ auto WebView::add_navigation_completed() -> ::HRESULT
         &m_tokenNavigationCompleted);
 }
 
-auto WebView::navigation_completed_handler(ICoreWebView2* sender,
-                                           ICoreWebView2NavigationCompletedEventArgs* args)
-    -> ::HRESULT
+auto WebView::navigation_completed_handler(
+    ICoreWebView2* sender, ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -219,9 +219,8 @@ auto WebView::add_web_message_received() -> ::HRESULT
         &m_tokenWebMessageReceived);
 }
 
-auto WebView::web_message_received_handler(ICoreWebView2* sender,
-                                           ICoreWebView2WebMessageReceivedEventArgs* args)
-    -> ::HRESULT
+auto WebView::web_message_received_handler(
+    ICoreWebView2* sender, ICoreWebView2WebMessageReceivedEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -284,9 +283,8 @@ auto WebView::add_accelerator_key_pressed() -> ::HRESULT
         &m_tokenAcceleratorKeyPressed);
 }
 
-auto WebView::accelerator_key_pressed_handler(ICoreWebView2Controller* sender,
-                                              ICoreWebView2AcceleratorKeyPressedEventArgs* args)
-    -> ::HRESULT
+auto WebView::accelerator_key_pressed_handler(
+    ICoreWebView2Controller* sender, ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -301,8 +299,8 @@ auto WebView::add_zoom_factor_changed() -> ::HRESULT
         &m_tokenZoomFactorChanged);
 }
 
-auto WebView::zoom_factor_changed_handler(ICoreWebView2Controller* sender, IUnknown* args)
-    -> ::HRESULT
+auto WebView::zoom_factor_changed_handler(ICoreWebView2Controller* sender,
+                                          IUnknown* args) -> ::HRESULT
 {
     return S_OK;
 }
@@ -348,9 +346,8 @@ auto WebView::add_move_focus_requested() -> ::HRESULT
         &m_tokenMoveFocusRequested);
 }
 
-auto WebView::move_focus_requested_handler(ICoreWebView2Controller* sender,
-                                           ICoreWebView2MoveFocusRequestedEventArgs* args)
-    -> ::HRESULT
+auto WebView::move_focus_requested_handler(
+    ICoreWebView2Controller* sender, ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
 {
     return S_OK;
 }

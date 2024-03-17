@@ -6,7 +6,13 @@
 // ╚──────────────╝
 // clang-format on
 
+#include "filesystem.hxx"
 #include "system.hxx"
+#include <comdef.h>
+#include <print>
+#include <stdexcept>
+#include <system_error>
+#include <wil/resource.h>
 
 namespace glow
 {

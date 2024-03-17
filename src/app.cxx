@@ -8,7 +8,8 @@
 
 #include "app.hxx"
 #include "gui.hxx"
-
+#include "text.hxx"
+#include <shellapi.h>
 #include <stdexcept>
 
 namespace glow
@@ -114,8 +115,8 @@ auto App::cmd_to_argv() -> std::vector<std::string>
     return argv;
 }
 
-auto CALLBACK App::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-    -> ::LRESULT
+auto CALLBACK App::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam,
+                                 ::LPARAM lParam) -> ::LRESULT
 {
     auto self{instance_from_wnd_proc<App>(hWnd, uMsg, lParam)};
 

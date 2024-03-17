@@ -7,6 +7,7 @@
 // clang-format on
 
 #include "gdiplus.hxx"
+#include <stdexcept>
 
 namespace glow
 {

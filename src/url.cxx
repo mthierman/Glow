@@ -8,7 +8,6 @@
 
 #include "url.hxx"
 #include "text.hxx"
-
 #include <ada.h>
 
 // https://github.com/chromium/chromium/tree/main/url

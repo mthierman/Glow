@@ -7,6 +7,7 @@
 // clang-format on
 
 #include "colors.hxx"
+#include <algorithm>
 
 namespace glow
 {

@@ -7,6 +7,8 @@
 // clang-format on
 
 #include "guid.hxx"
+#include "text.hxx"
+#include <wil/win32_helpers.h>
 
 namespace glow
 {

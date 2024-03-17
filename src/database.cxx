@@ -7,6 +7,10 @@
 // clang-format on
 
 #include "database.hxx"
+#include "filesystem.hxx"
+#include <Windows.h>
+#include <print>
+#include <string>
 
 namespace glow
 {

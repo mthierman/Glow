@@ -8,16 +8,11 @@
 
 #pragma once
 
-#include <Windows.h>
-#include <shellapi.h>
-
-#include <string>
-
-#include <wil/resource.h>
-
 #include "notification.hxx"
 #include "random.hxx"
-#include "text.hxx"
+#include <Windows.h>
+#include <string>
+#include <wil/resource.h>
 
 namespace glow
 {
@@ -42,8 +37,8 @@ struct App
     glow::Notification m_notification{};
 
   private:
-    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam)
-        -> ::LRESULT;
+    static auto CALLBACK StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam,
+                                       ::LPARAM lParam) -> ::LRESULT;
     virtual auto WndProc(::UINT message, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT;
     virtual auto on_close(::WPARAM wParam, ::LPARAM lParam) -> int;
     virtual auto on_destroy(::WPARAM wParam, ::LPARAM lParam) -> int;

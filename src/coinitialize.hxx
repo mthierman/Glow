@@ -9,9 +9,6 @@
 #pragma once
 
 #include <Windows.h>
-#include <objbase.h>
-
-#include <stdexcept>
 
 namespace glow
 {

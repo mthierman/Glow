@@ -7,6 +7,8 @@
 // clang-format on
 
 #include "filesystem.hxx"
+#include <string>
+#include <wil/resource.h>
 
 namespace glow
 {

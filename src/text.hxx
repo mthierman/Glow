@@ -8,16 +8,11 @@
 
 #pragma once
 
-#include <Windows.h>
-
 #include <cctype>
 #include <cwctype>
 #include <ranges>
+#include <stdexcept>
 #include <string>
-
-#include <winrt/Windows.Foundation.h>
-
-#include "system.hxx"
 
 namespace glow
 {
