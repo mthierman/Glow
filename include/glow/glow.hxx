@@ -22,5 +22,6 @@
 #include "../../src/random.hxx"
 #include "../../src/system.hxx"
 #include "../../src/text.hxx"
+#include "../../src/url.hxx"
 #include "../../src/webview.hxx"
 #include "../../src/window.hxx"

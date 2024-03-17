@@ -45,4 +45,14 @@ auto wstring(std::string string) -> std::wstring
 
     else throw std::runtime_error(glow::last_error_string());
 }
+
+auto trim(std::string string) -> std::string
+{
+    auto is_space{[](unsigned char c) { return std::isspace(c); }};
+
+    auto trimmed{string | std::views::drop_while(is_space) | std::views::reverse |
+                 std::views::drop_while(is_space) | std::views::reverse};
+
+    return {trimmed.begin(), trimmed.end()};
+}
 } // namespace glow

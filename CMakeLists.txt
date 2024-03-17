@@ -40,6 +40,12 @@ include(cmake/ReleaseInfo.cmake)
 include(cmake/Common.cmake)
 
 FetchContent_Declare(
+    ada
+    URL https://github.com/ada-url/ada/releases/download/v2.7.7/singleheader.zip
+)
+FetchContent_MakeAvailable(ada)
+
+FetchContent_Declare(
     json
     URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
 )
@@ -47,7 +53,7 @@ FetchContent_MakeAvailable(json)
 
 FetchContent_Declare(
     sqlite
-    URL https://www.sqlite.org/2024/sqlite-amalgamation-3450100.zip
+    URL https://sqlite.org/2024/sqlite-amalgamation-3450200.zip
 )
 FetchContent_MakeAvailable(sqlite)
 
@@ -83,6 +89,32 @@ execute_process(
     WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
 )
 
+add_library(ada)
+
+add_library(
+    ada::ada
+    ALIAS
+    ada
+)
+
+target_sources(
+    ada
+    PRIVATE ${ada_SOURCE_DIR}/ada.cpp
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           ${ada_SOURCE_DIR}
+           FILES
+           ${ada_SOURCE_DIR}/ada.h
+)
+
+target_link_libraries(
+    ada
+    PRIVATE glow::definitions
+            glow::features
+            glow::flags_deps
+)
+
 add_library(SQLite)
 
 add_library(
@@ -106,7 +138,7 @@ target_link_libraries(
     SQLite
     PRIVATE glow::definitions
             glow::features
-            glow::flags
+            glow::flags_deps
 )
 
 add_library(Glow)
@@ -136,6 +168,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/notification.cxx
             ${PROJECT_SOURCE_DIR}/src/system.cxx
             ${PROJECT_SOURCE_DIR}/src/text.cxx
+            ${PROJECT_SOURCE_DIR}/src/url.cxx
             ${PROJECT_SOURCE_DIR}/src/webview.cxx
             ${PROJECT_SOURCE_DIR}/src/window.cxx
     PRIVATE FILE_SET
@@ -159,6 +192,7 @@ target_sources(
             ${PROJECT_SOURCE_DIR}/src/random.hxx
             ${PROJECT_SOURCE_DIR}/src/system.hxx
             ${PROJECT_SOURCE_DIR}/src/text.hxx
+            ${PROJECT_SOURCE_DIR}/src/url.hxx
             ${PROJECT_SOURCE_DIR}/src/webview.hxx
             ${PROJECT_SOURCE_DIR}/src/window.hxx
             ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
@@ -187,6 +221,7 @@ target_link_libraries(
     PRIVATE glow::flags
     PUBLIC glow::definitions
            glow::features
+           ada::ada
            nlohmann_json::nlohmann_json
            sqlite::sqlite
            dwmapi.lib

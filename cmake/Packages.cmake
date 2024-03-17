@@ -1,9 +1,13 @@
+set(FETCHCONTENT_SOURCE_DIR_ADA
+    "$ENV{LIBRARIES}/singleheader"
+)
+
 set(FETCHCONTENT_SOURCE_DIR_JSON
     "$ENV{LIBRARIES}/json"
 )
 
 set(FETCHCONTENT_SOURCE_DIR_SQLITE
-    "$ENV{LIBRARIES}/sqlite-amalgamation-3450100"
+    "$ENV{LIBRARIES}/sqlite-amalgamation-3450200"
 )
 
 cmake_path(

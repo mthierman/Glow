@@ -23,6 +23,7 @@ namespace glow
 {
 auto string(std::wstring utf16) -> std::string;
 auto wstring(std::string utf8) -> std::wstring;
+auto trim(std::string string) -> std::string;
 
 template <typename T, typename U> auto safe_size(T value) -> int
 {

@@ -6,15 +6,11 @@
 // ╚──────────────╝
 // clang-format on
 
-#include <glow/config.hxx>
-#include <glow/glow.hxx>
+#pragma once
 
-auto main(int argc, char* argv[]) -> int
+#include <string>
+
+namespace glow
 {
-    std::println("Glow");
-    std::print("{}", glow::trim("  google.ca     "));
-    std::print("{}", "  google.ca     ");
-    std::print("{}", "google.ca");
-
-    return 0;
-}
+auto parse_url(std::string url) -> std::string;
+} // namespace glow

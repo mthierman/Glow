@@ -86,3 +86,25 @@ target_link_options(
     -Wl,/entry:mainCRTStartup,/WX
     >
 )
+
+add_library(
+    glow_flags_deps
+    INTERFACE
+)
+
+add_library(
+    glow::flags_deps
+    ALIAS
+    glow_flags_deps
+)
+
+target_compile_options(
+    glow_flags_deps
+    INTERFACE $<$<CXX_COMPILER_ID:MSVC>:
+              /bigobj
+              /diagnostics:caret
+              /Zc:__cplusplus
+              >
+              $<$<CXX_COMPILER_ID:Clang>:
+              >
+)
