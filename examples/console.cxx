@@ -10,12 +10,4 @@
 #include <glow/glow.hxx>
 #include <print>
 
-auto main(int argc, char* argv[]) -> int
-{
-    std::println("Glow");
-    std::print("{}", glow::trim("  google.ca     "));
-    std::print("{}", "  google.ca     ");
-    std::print("{}", "google.ca");
-
-    return 0;
-}
+auto main(int argc, char* argv[]) -> int { std::println("Glow"); }
