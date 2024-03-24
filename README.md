@@ -1,8 +1,10 @@
-<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./data/banner_horizontal.svg">
-    <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.svg">
-    <img src="./data/banner_horizontal.svg">
-</picture>
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="./data/banner_horizontal.svg">
+        <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.svg">
+        <img src="./data/banner_horizontal.svg" height="150">
+    </picture>
+</p>
 
 # C++ Library for Windows
 
