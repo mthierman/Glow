@@ -98,22 +98,22 @@
         {
             "name": "Visual Studio",
             "hidden": true,
-            "inherits": ["Visual Studio Generator", "Architecture", "Toolset", "MSVC"],
+            "inherits": ["Visual Studio Generator", "Architecture", "Toolset"],
             "binaryDir": "${sourceDir}/build"
         },
         {
             "name": "Ninja Multi-Config",
             "hidden": true,
-            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset", "MSVC"],
+            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset"],
             "binaryDir": "${sourceDir}/build"
         },
         {
             "name": "Default",
-            "inherits": ["Ninja Multi-Config"]
+            "inherits": ["Ninja Multi-Config", "MSVC"]
         },
         {
             "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Glow Testing"]
+            "inherits": ["Ninja Multi-Config", "MSVC", "Glow Testing"]
         }
     ],
     "buildPresets": [

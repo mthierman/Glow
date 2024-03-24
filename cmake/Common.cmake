@@ -72,6 +72,7 @@ target_compile_options(
               -Wno-unused-function
               -Wno-gnu-zero-variadic-macro-arguments
               -Wno-extra-semi
+              -Wno-microsoft-enum-value
               >
 )
 
