@@ -10,11 +10,6 @@
 #include "text.hxx"
 #include <ada.h>
 
-// https://github.com/chromium/chromium/tree/main/url
-// https://stackoverflow.com/questions/736513/how-do-i-parse-a-url-into-hostname-and-path-in-javascript
-// https://www.ada-url.com/docs/clients/cpp
-// https://stackoverflow.com/questions/74592166/parse-url-without-protocol-in-node-using-constructor
-
 namespace glow
 {
 auto parse_url(std::string url) -> std::optional<std::string>
