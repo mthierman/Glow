@@ -1,4 +1,8 @@
-<img src="./data/banner.svg" height="200">
+<picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./data/banner_horizontal.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./data/banner_horizontal.svg">
+    <img src="./data/banner_horizontal.svg">
+</picture>
 
 # C++ Library for Windows
 
@@ -16,7 +20,7 @@
     -   winget CLI (part of App Installer) (https://apps.microsoft.com/detail/9NBLGGH4NNS1)
         -   `winget install Microsoft.NuGet`
 
-## Example usage
+## Usage
 
 ### Git submodule:
 
