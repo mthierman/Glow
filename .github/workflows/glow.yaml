@@ -21,12 +21,6 @@ jobs:
           submodules: true
           path: main
 
-      - name: Checkout mthierman.pages.dev
-        uses: actions/checkout@v4
-        with:
-          repository: mthierman/mthierman.com
-          path: website
-
       - name: Cache
         uses: actions/cache@v4
         id: deps
@@ -47,7 +41,3 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-CTest
-
-      - name: Update version on mthierman.pages.dev
-        run: |
-          get-childitem ${{ github.workspace }}\mthierman.com
