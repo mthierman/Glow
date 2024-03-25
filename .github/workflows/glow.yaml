@@ -51,7 +51,10 @@ jobs:
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
           Invoke-CTest
 
-      - name: Test website
+      - name: Update website
         run: |
           Set-Location ${{ github.workspace }}\mthierman.com
-          Get-ChildItem
+          Copy-Item "${{ github.workspace }}\glow\build\notes\version" -Destination "${{ github.workspace }}\mthierman.com\src\includes\glow\version"
+          git add -A
+          git commit -m 'Update Glow version'
+          git push
