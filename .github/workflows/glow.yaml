@@ -19,17 +19,26 @@ jobs:
         with:
           fetch-depth: 5
           submodules: true
+          path: glow
+
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          repository: mthierman/mthierman.com
+          token: ${{ secrets.WEBSITE }}
+          path: mthierman.com
 
       - name: Cache
         uses: actions/cache@v4
         id: deps
         with:
           path: |
-            build/_deps
+            ${{ github.workspace }}/build/_deps
           key: deps-${{ hashFiles('CMakeLists.txt') }}
 
       - name: CMake
         run: |
+          Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
@@ -40,3 +49,8 @@ jobs:
         run: |
           Import-Module ${{ github.workspace }}\tools\PowerShell
           Invoke-CTest
+
+      - name: Test website
+        run: |
+          Set-Location ${{ github.workspace }}\mthierman.com
+          Get-ChildItem
