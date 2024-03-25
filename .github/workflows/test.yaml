@@ -1,0 +1,33 @@
+name: Glow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  Build:
+    runs-on: windows-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+          submodules: true
+          path: glow
+
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          repository: mthierman/mthierman.com
+          token: ${{ secrets.WEBSITE }}
+          path: mthierman.com
+
+      - name: Test
+        run: |
+          Get-ChildItem
