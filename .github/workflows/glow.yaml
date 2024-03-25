@@ -47,6 +47,7 @@ jobs:
 
       - name: CTest
         run: |
+          Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
           Invoke-CTest
 
