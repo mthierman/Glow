@@ -33,13 +33,13 @@ jobs:
         id: deps
         with:
           path: |
-            ${{ github.workspace }}/build/_deps
+            ${{ github.workspace }}/glow/build/_deps
           key: deps-${{ hashFiles('CMakeLists.txt') }}
 
       - name: CMake
         run: |
           Set-Location ${{ github.workspace }}\glow
-          Import-Module ${{ github.workspace }}\tools\PowerShell
+          Import-Module ${{ github.workspace }}\glow\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
           Compress-Glow -CI
@@ -47,7 +47,7 @@ jobs:
 
       - name: CTest
         run: |
-          Import-Module ${{ github.workspace }}\tools\PowerShell
+          Import-Module ${{ github.workspace }}\glow\tools\PowerShell
           Invoke-CTest
 
       - name: Test website
