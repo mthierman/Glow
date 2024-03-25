@@ -19,7 +19,6 @@ jobs:
         with:
           fetch-depth: 5
           submodules: true
-          path: main
 
       - name: Cache
         uses: actions/cache@v4
