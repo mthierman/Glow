@@ -34,7 +34,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/glow/build/_deps
-          key: deps-${{ hashFiles('CMakeLists.txt') }}
+          key: deps-${{ hashFiles('glow/CMakeLists.txt') }}
 
       - name: CMake
         run: |
