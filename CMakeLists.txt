@@ -66,7 +66,7 @@ if(GLOW_RESTORE_NUGET)
     cmake_path(
         SET
         webview2_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2365.46"
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Web.WebView2.1.0.2420.47"
     )
 
     cmake_path(

@@ -1,19 +1,19 @@
 set(FETCHCONTENT_SOURCE_DIR_ADA
-    "$ENV{LIBRARIES}/singleheader"
+    "$ENV{LIBRARIES}/FetchContent/ada-url/ada/singleheader"
 )
 
 set(FETCHCONTENT_SOURCE_DIR_JSON
-    "$ENV{LIBRARIES}/json"
+    "$ENV{LIBRARIES}/FetchContent/nlohmann/json/json"
 )
 
 set(FETCHCONTENT_SOURCE_DIR_SQLITE
-    "$ENV{LIBRARIES}/sqlite-amalgamation-3450200"
+    "$ENV{LIBRARIES}/FetchContent/sqlite/sqlite-amalgamation-3450200"
 )
 
 cmake_path(
     SET
     webview2_SOURCE_DIR
-    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2365.46"
+    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2420.47"
 )
 
 cmake_path(
