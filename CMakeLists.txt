@@ -127,13 +127,13 @@ add_library(
 
 target_sources(
     SQLite
-    PRIVATE "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/sqlite3.c"
+    PRIVATE "${PROJECT_SOURCE_DIR}/libs/sqlite/sqlite3.c"
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/"
+           "${PROJECT_SOURCE_DIR}/libs/sqlite/"
            FILES
-           "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/sqlite3.h"
+           "${PROJECT_SOURCE_DIR}/libs/sqlite/sqlite3.h"
 )
 
 target_link_libraries(
