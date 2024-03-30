@@ -10,7 +10,7 @@
 
 #include <Windows.h>
 #include <string>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 enum struct CODE : unsigned int;
 

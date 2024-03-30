@@ -9,7 +9,7 @@
 #pragma once
 
 #include <Windows.h>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 namespace glow
 {

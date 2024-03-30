@@ -13,7 +13,7 @@
 #include <string>
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.UI.ViewManagement.h>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 namespace glow
 {

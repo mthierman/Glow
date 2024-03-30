@@ -22,7 +22,7 @@
 #include <wil/resource.h>
 #include <WebView2.h>
 #include <WebView2EnvironmentOptions.h>
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 namespace glow
 {

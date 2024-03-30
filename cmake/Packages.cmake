@@ -3,7 +3,7 @@ set(FETCHCONTENT_SOURCE_DIR_ADA
 )
 
 set(FETCHCONTENT_SOURCE_DIR_JSON
-    "$ENV{LIBRARIES}/FetchContent/nlohmann/json/json"
+    "$ENV{LIBRARIES}/FetchContent/nlohmann/json/include"
 )
 
 set(FETCHCONTENT_SOURCE_DIR_SQLITE

@@ -47,7 +47,7 @@ FetchContent_MakeAvailable(ada)
 
 FetchContent_Declare(
     json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip
 )
 FetchContent_MakeAvailable(json)
 
@@ -113,6 +113,28 @@ target_link_libraries(
     PRIVATE glow::definitions
             glow::features
             glow::flags_deps
+)
+
+add_library(
+    JSON
+    INTERFACE
+)
+
+add_library(
+    nlohmann_json::nlohmann_json
+    ALIAS
+    JSON
+)
+
+target_sources(
+    JSON
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           ${json_SOURCE_DIR}/single_include/nlohmann
+           FILES
+           ${json_SOURCE_DIR}/single_include/nlohmann/json.hpp
+           ${json_SOURCE_DIR}/single_include/nlohmann/json_fwd.hpp
 )
 
 add_library(SQLite)
@@ -206,8 +228,6 @@ target_include_directories(
            ${webview2_SOURCE_DIR}/build/native/include-winrt
            ${webview2_SOURCE_DIR}/build/native/include
            ${wil_SOURCE_DIR}/include
-           ${sqlite_SOURCE_DIR}
-           ${json_SOURCE_DIR}/single_include
 )
 
 target_link_directories(
