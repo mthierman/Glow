@@ -42,7 +42,7 @@ jobs:
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
           Invoke-DevShell
           Invoke-CMake
-          Compress-Glow -CI
+          Compress-Glow
           Publish-Glow
 
       - name: CTest

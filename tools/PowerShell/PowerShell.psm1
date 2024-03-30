@@ -96,7 +96,7 @@ function Publish-Glow
     # $hash = Get-Content "build/notes/short_hash"
     $version = Get-Content "build/notes/version"
     $notes = Get-Item "build/notes/release_notes"
-    $archive = Get-Item "build/Release/Glow.tar.xz"
+    $archive = Get-Item "build/Release/Glow.zip"
 
     gh release delete $version -y
     gh release create $version $archive --notes-file $notes -t $version
