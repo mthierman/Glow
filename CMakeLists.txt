@@ -33,29 +33,9 @@ option(
 
 enable_testing()
 
-include(FetchContent)
-
 include(cmake/ReleaseInfo.cmake)
 
 include(cmake/Common.cmake)
-
-FetchContent_Declare(
-    ada
-    URL https://github.com/ada-url/ada/releases/download/v2.7.7/singleheader.zip
-)
-FetchContent_MakeAvailable(ada)
-
-FetchContent_Declare(
-    json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.3/include.zip
-)
-FetchContent_MakeAvailable(json)
-
-FetchContent_Declare(
-    sqlite
-    URL https://sqlite.org/2024/sqlite-amalgamation-3450200.zip
-)
-FetchContent_MakeAvailable(sqlite)
 
 if(GLOW_RESTORE_NUGET)
     execute_process(
