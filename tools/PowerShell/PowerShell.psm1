@@ -54,12 +54,7 @@ function Compress-Glow
     [CmdletBinding()]
     param ()
 
-    if ($env:CI)
-    {
-        tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
-    }
-
-    else { tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz . }
+    tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
 }
 
 function Publish-Glow
