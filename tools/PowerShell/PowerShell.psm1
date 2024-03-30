@@ -59,10 +59,10 @@ function Compress-Glow
 
     if ($CI)
     {
-        C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude=build --exclude=.vscode -cJf build/Release/Glow.tar.xz .
+        C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
     }
 
-    else { bsdtar --exclude-vcs --exclude=build --exclude=.vscode -cJf build/Release/Glow.tar.xz . }
+    else { bsdtar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz . }
 }
 
 function Publish-Glow
