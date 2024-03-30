@@ -18,7 +18,9 @@ function Update-Dependencies
     $outdir = $sqliteZip.TrimEnd(".zip")
     Invoke-WebRequest "https://www.sqlite.org/2024/$sqliteZip" -OutFile "$sqliteZip"
     [System.IO.Compression.ZipFile]::ExtractToDirectory("$sqliteZip", "sqlite-temp")
-    Move-Item -Path "sqlite-temp/$outdir" -Destination "libs/sqlite"
+    if (Test-Path "libs/sqlite") { Remove-Item "libs/sqlite" -Force -Recurse }
+    Move-Item -Path "sqlite-temp/$outdir" -Destination "libs"
+    Rename-Item -Path "libs/$outdir" -NewName "sqlite"
     if (Test-Path "sqlite-temp") { Remove-Item "sqlite-temp" -Force -Recurse }
     if (Test-Path "$sqliteZip") { Remove-Item "$sqliteZip" -Force -Recurse }
 }
@@ -79,6 +81,7 @@ function Compress-Glow
     [CmdletBinding()]
     param ()
 
+    if (Test-Path "build/Release/Glow.zip") { Remove-Item "build/Release/Glow.zip" -Force }
     7z a build/Release/Glow.zip * -xr'!build' -xr'!node_modules' -xr'!.git' -xr'!.vscode' -xr'!CMakeUserPresets.json'
 }
 
