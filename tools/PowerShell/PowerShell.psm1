@@ -16,8 +16,8 @@ function Invoke-CMake
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$ConfigurePreset = 'CI',
-        [string]$BuildPreset = 'CI'
+        [string]$ConfigurePreset = ($env:CI) ? 'CI' : 'Default',
+        [string]$BuildPreset = ($env:CI) ? 'CI' : 'Default'
     )
 
     cmake --preset $ConfigurePreset
@@ -29,7 +29,7 @@ function Invoke-CTest
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$TestPreset = 'CI',
+        [string]$TestPreset = ($env:CI) ? 'CI' : 'Default',
         [switch]$JSON,
         [switch]$XML
     )
@@ -54,7 +54,7 @@ function Compress-Glow
     [CmdletBinding()]
     param ()
 
-    tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
+    7z a build/Release/Glow.zip * -xr'!build' -xr'!node_modules' -xr'!.git' -xr'!.vscode' -xr'!CMakeUserPresets.json'
 }
 
 function Publish-Glow
