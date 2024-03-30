@@ -15,9 +15,9 @@ if (Test-Path "$libs/include.zip") { Remove-Item -Path "$libs/include.zip" -Recu
 $sqliteZip = ((Invoke-WebRequest "https://sqlite.org/download.html").ToString() | Select-String -Pattern 'sqlite-amalgamation-[0-9]+.zip' | Select-Object -First 1).Matches.Value
 $outdir = $sqliteZip.TrimEnd(".zip")
 Invoke-WebRequest "https://www.sqlite.org/2024/$sqliteZip" -OutFile "$libs/$sqliteZip"
-[System.IO.Compression.ZipFile]::ExtractToDirectory("$libs/$sqliteZip", "$libs/sqlite-amalgamation")
-Move-Item -Path "$libs/sqlite-amalgamation/$outdir" -Destination "$libs/$outdir"
-if (Test-Path "$libs/sqlite-amalgamation") { Remove-Item "$libs/sqlite-amalgamation" -Force -Recurse }
+[System.IO.Compression.ZipFile]::ExtractToDirectory("$libs/$sqliteZip", "$libs/sqlite-amalgamation-temp")
+Move-Item -Path "$libs/sqlite-amalgamation-temp/$outdir" -Destination "$libs/sqlite-amalgamation"
+if (Test-Path "$libs/sqlite-amalgamation-temp") { Remove-Item "$libs/sqlite-amalgamation-temp" -Force -Recurse }
 if (Test-Path "$libs/$sqliteZip") { Remove-Item "$libs/$sqliteZip" -Force -Recurse }
 
 Pop-Location
