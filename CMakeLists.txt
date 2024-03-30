@@ -79,13 +79,13 @@ add_library(
 
 target_sources(
     Ada
-    PRIVATE "libs/ada-url/ada/ada.cpp"
+    PRIVATE "${PROJECT_SOURCE_DIR}/libs/ada-url/ada/ada.cpp"
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           "libs/ada-url/ada"
+           "${PROJECT_SOURCE_DIR}/libs/ada-url/ada"
            FILES
-           "libs/ada-url/ada/ada.h"
+           "${PROJECT_SOURCE_DIR}/libs/ada-url/ada/ada.h"
 )
 
 target_link_libraries(
@@ -111,10 +111,10 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           "libs/nlohmann/json/single_include/nlohmann"
+           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann"
            FILES
-           "libs/nlohmann/json/single_include/nlohmann/json.hpp"
-           "libs/nlohmann/json/single_include/nlohmann/json_fwd.hpp"
+           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json.hpp"
+           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json_fwd.hpp"
 )
 
 add_library(SQLite)
@@ -127,13 +127,13 @@ add_library(
 
 target_sources(
     SQLite
-    PRIVATE "libs/sqlite-amalgamation/sqlite3.c"
+    PRIVATE "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/sqlite3.c"
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           "libs/sqlite-amalgamation/"
+           "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/"
            FILES
-           "libs/sqlite-amalgamation/sqlite3.h"
+           "${PROJECT_SOURCE_DIR}/libs/sqlite-amalgamation/sqlite3.h"
 )
 
 target_link_libraries(
