@@ -39,7 +39,7 @@ include(cmake/Common.cmake)
 
 if(GLOW_RESTORE_NUGET)
     execute_process(
-        COMMAND nuget restore -PackagesDirectory ${CMAKE_BINARY_DIR}/_deps/Nuget
+        COMMAND nuget restore -PackagesDirectory "${CMAKE_BINARY_DIR}/_deps/Nuget"
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     )
 
@@ -64,9 +64,9 @@ endif()
 
 execute_process(
     COMMAND
-        cppwinrt -input ${webview2_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd sdk -output
-        ${webview2_SOURCE_DIR}/build/native/include-winrt
-    WORKING_DIRECTORY ${cppwinrt_SOURCE_DIR}/bin
+        cppwinrt -input "${webview2_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd" sdk -output
+        "${webview2_SOURCE_DIR}/build/native/include-winrt"
+    WORKING_DIRECTORY "${cppwinrt_SOURCE_DIR}/bin"
 )
 
 add_library(Ada)
@@ -79,13 +79,13 @@ add_library(
 
 target_sources(
     Ada
-    PRIVATE ${ada_SOURCE_DIR}/ada.cpp
+    PRIVATE "libs/ada-url/ada/ada.cpp"
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${ada_SOURCE_DIR}
+           "libs/ada-url/ada"
            FILES
-           ${ada_SOURCE_DIR}/ada.h
+           "libs/ada-url/ada/ada.h"
 )
 
 target_link_libraries(
@@ -111,10 +111,10 @@ target_sources(
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${json_SOURCE_DIR}/single_include/nlohmann
+           "libs/nlohmann/json/single_include/nlohmann"
            FILES
-           ${json_SOURCE_DIR}/single_include/nlohmann/json.hpp
-           ${json_SOURCE_DIR}/single_include/nlohmann/json_fwd.hpp
+           "libs/nlohmann/json/single_include/nlohmann/json.hpp"
+           "libs/nlohmann/json/single_include/nlohmann/json_fwd.hpp"
 )
 
 add_library(SQLite)
@@ -127,13 +127,13 @@ add_library(
 
 target_sources(
     SQLite
-    PRIVATE ${sqlite_SOURCE_DIR}/sqlite3.c
+    PRIVATE "libs/sqlite-amalgamation/sqlite3.c"
     PUBLIC FILE_SET
            HEADERS
            BASE_DIRS
-           ${sqlite_SOURCE_DIR}
+           "libs/sqlite-amalgamation/"
            FILES
-           ${sqlite_SOURCE_DIR}/sqlite3.h
+           "libs/sqlite-amalgamation/sqlite3.h"
 )
 
 target_link_libraries(
@@ -152,68 +152,68 @@ add_library(
 )
 
 configure_file(
-    ${PROJECT_SOURCE_DIR}/src/config.hxx
-    ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx
+    "${PROJECT_SOURCE_DIR}/src/config.hxx"
+    "${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx"
 )
 
 target_sources(
     Glow
-    PRIVATE ${PROJECT_SOURCE_DIR}/src/app.cxx
-            ${PROJECT_SOURCE_DIR}/src/coinitialize.cxx
-            ${PROJECT_SOURCE_DIR}/src/colors.cxx
-            ${PROJECT_SOURCE_DIR}/src/console.cxx
-            ${PROJECT_SOURCE_DIR}/src/database.cxx
-            ${PROJECT_SOURCE_DIR}/src/filesystem.cxx
-            ${PROJECT_SOURCE_DIR}/src/gdiplus.cxx
-            ${PROJECT_SOURCE_DIR}/src/gui.cxx
-            ${PROJECT_SOURCE_DIR}/src/guid.cxx
-            ${PROJECT_SOURCE_DIR}/src/notification.cxx
-            ${PROJECT_SOURCE_DIR}/src/system.cxx
-            ${PROJECT_SOURCE_DIR}/src/text.cxx
-            ${PROJECT_SOURCE_DIR}/src/url.cxx
-            ${PROJECT_SOURCE_DIR}/src/webview.cxx
-            ${PROJECT_SOURCE_DIR}/src/window.cxx
+    PRIVATE "${PROJECT_SOURCE_DIR}/src/app.cxx"
+            "${PROJECT_SOURCE_DIR}/src/coinitialize.cxx"
+            "${PROJECT_SOURCE_DIR}/src/colors.cxx"
+            "${PROJECT_SOURCE_DIR}/src/console.cxx"
+            "${PROJECT_SOURCE_DIR}/src/database.cxx"
+            "${PROJECT_SOURCE_DIR}/src/filesystem.cxx"
+            "${PROJECT_SOURCE_DIR}/src/gdiplus.cxx"
+            "${PROJECT_SOURCE_DIR}/src/gui.cxx"
+            "${PROJECT_SOURCE_DIR}/src/guid.cxx"
+            "${PROJECT_SOURCE_DIR}/src/notification.cxx"
+            "${PROJECT_SOURCE_DIR}/src/system.cxx"
+            "${PROJECT_SOURCE_DIR}/src/text.cxx"
+            "${PROJECT_SOURCE_DIR}/src/url.cxx"
+            "${PROJECT_SOURCE_DIR}/src/webview.cxx"
+            "${PROJECT_SOURCE_DIR}/src/window.cxx"
     PRIVATE FILE_SET
             HEADERS
             BASE_DIRS
-            ${PROJECT_SOURCE_DIR}/src
-            ${PROJECT_SOURCE_DIR}/include
-            ${CMAKE_CURRENT_BINARY_DIR}/include
+            "${PROJECT_SOURCE_DIR}/src"
+            "${PROJECT_SOURCE_DIR}/include"
+            "${CMAKE_CURRENT_BINARY_DIR}/include"
             FILES
-            ${PROJECT_SOURCE_DIR}/src/app.hxx
-            ${PROJECT_SOURCE_DIR}/src/coinitialize.hxx
-            ${PROJECT_SOURCE_DIR}/src/colors.hxx
-            ${PROJECT_SOURCE_DIR}/src/console.hxx
-            ${PROJECT_SOURCE_DIR}/src/database.hxx
-            ${PROJECT_SOURCE_DIR}/src/filesystem.hxx
-            ${PROJECT_SOURCE_DIR}/src/gdiplus.hxx
-            ${PROJECT_SOURCE_DIR}/src/gui.hxx
-            ${PROJECT_SOURCE_DIR}/src/guid.hxx
-            ${PROJECT_SOURCE_DIR}/src/notification.hxx
-            ${PROJECT_SOURCE_DIR}/src/position.hxx
-            ${PROJECT_SOURCE_DIR}/src/random.hxx
-            ${PROJECT_SOURCE_DIR}/src/system.hxx
-            ${PROJECT_SOURCE_DIR}/src/text.hxx
-            ${PROJECT_SOURCE_DIR}/src/url.hxx
-            ${PROJECT_SOURCE_DIR}/src/webview.hxx
-            ${PROJECT_SOURCE_DIR}/src/window.hxx
-            ${PROJECT_SOURCE_DIR}/include/glow/glow.hxx
-            ${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx
+            "${PROJECT_SOURCE_DIR}/src/app.hxx"
+            "${PROJECT_SOURCE_DIR}/src/coinitialize.hxx"
+            "${PROJECT_SOURCE_DIR}/src/colors.hxx"
+            "${PROJECT_SOURCE_DIR}/src/console.hxx"
+            "${PROJECT_SOURCE_DIR}/src/database.hxx"
+            "${PROJECT_SOURCE_DIR}/src/filesystem.hxx"
+            "${PROJECT_SOURCE_DIR}/src/gdiplus.hxx"
+            "${PROJECT_SOURCE_DIR}/src/gui.hxx"
+            "${PROJECT_SOURCE_DIR}/src/guid.hxx"
+            "${PROJECT_SOURCE_DIR}/src/notification.hxx"
+            "${PROJECT_SOURCE_DIR}/src/position.hxx"
+            "${PROJECT_SOURCE_DIR}/src/random.hxx"
+            "${PROJECT_SOURCE_DIR}/src/system.hxx"
+            "${PROJECT_SOURCE_DIR}/src/text.hxx"
+            "${PROJECT_SOURCE_DIR}/src/url.hxx"
+            "${PROJECT_SOURCE_DIR}/src/webview.hxx"
+            "${PROJECT_SOURCE_DIR}/src/window.hxx"
+            "${PROJECT_SOURCE_DIR}/include/glow/glow.hxx"
+            "${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx"
 )
 
 target_include_directories(
     Glow
-    PUBLIC ${PROJECT_SOURCE_DIR}/include
-           ${CMAKE_CURRENT_BINARY_DIR}/include
-           ${webview2_SOURCE_DIR}/build/native/include-winrt
-           ${webview2_SOURCE_DIR}/build/native/include
-           ${wil_SOURCE_DIR}/include
+    PUBLIC "${PROJECT_SOURCE_DIR}/include"
+           "${CMAKE_CURRENT_BINARY_DIR}/include"
+           "${webview2_SOURCE_DIR}/build/native/include-winrt"
+           "${webview2_SOURCE_DIR}/build/native/include"
+           "${wil_SOURCE_DIR}/include"
 )
 
 target_link_directories(
     Glow
     PUBLIC
-    ${webview2_SOURCE_DIR}/build/native/x64
+    "${webview2_SOURCE_DIR}/build/native/x64"
 )
 
 target_link_libraries(

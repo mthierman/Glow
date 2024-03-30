@@ -1,15 +1,3 @@
-set(FETCHCONTENT_SOURCE_DIR_ADA
-    "$ENV{LIBRARIES}/FetchContent/ada-url/ada/singleheader"
-)
-
-set(FETCHCONTENT_SOURCE_DIR_JSON
-    "$ENV{LIBRARIES}/FetchContent/nlohmann/json/include"
-)
-
-set(FETCHCONTENT_SOURCE_DIR_SQLITE
-    "$ENV{LIBRARIES}/FetchContent/sqlite/sqlite-amalgamation-3450200"
-)
-
 cmake_path(
     SET
     webview2_SOURCE_DIR
