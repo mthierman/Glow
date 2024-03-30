@@ -15,8 +15,6 @@ if (Test-Path "$libs/nlohmann/json") { Remove-Item -Path "$libs/nlohmann/json" -
 [System.IO.Compression.ZipFile]::ExtractToDirectory("$libs/include.zip", "$libs/nlohmann/json")
 if (Test-Path "$libs/include.zip") { Remove-Item -Path "$libs/include.zip" -Recurse -Force }
 
-Invoke-WebRequest "https://raw.githubusercontent.com/nlohmann/json/develop/LICENSE.MIT" -OutFile "$libs/nlohmann/json/LICENSE.MIT"
-
 $sqliteZip = ((Invoke-WebRequest "https://sqlite.org/download.html").ToString() | Select-String -Pattern 'sqlite-amalgamation-[0-9]+.zip' | Select-Object -First 1).Matches.Value
 $outdir = $sqliteZip.TrimEnd(".zip")
 Invoke-WebRequest "https://www.sqlite.org/2024/$sqliteZip" -OutFile "$libs/$sqliteZip"
