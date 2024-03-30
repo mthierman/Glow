@@ -52,17 +52,14 @@ function Invoke-CTest
 function Compress-Glow
 {
     [CmdletBinding()]
-    param (
-        [ValidateNotNullOrEmpty()]
-        [switch]$CI
-    )
+    param ()
 
-    if ($CI)
+    if ($env:CI)
     {
-        C:\msys64\usr\bin\bsdtar.exe --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
+        tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz .
     }
 
-    else { bsdtar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz . }
+    else { tar --exclude-vcs --exclude=.vscode --exclude=build --exclude=node_modules --exclude=CMakeUserPresets.json -cJf build/Release/Glow.tar.xz . }
 }
 
 function Publish-Glow
