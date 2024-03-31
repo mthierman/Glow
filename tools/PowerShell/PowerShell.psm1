@@ -97,7 +97,7 @@ function Publish-Glow
     # $version = Get-Content "build/notes/version"
     # $notes = Get-Item "build/notes/release_notes"
 
-    $version = "v$(Get-Content "build/manifest.json" | ConvertFrom-Json).version"
+    $version = "v$((Get-Content "build/manifest.json" | ConvertFrom-Json).version)"
     $notes = Get-Item "build/notes/release_notes"
     $archive = Get-Item "build/Glow.zip"
 
