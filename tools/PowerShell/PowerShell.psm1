@@ -81,8 +81,8 @@ function Compress-Glow
     [CmdletBinding()]
     param ()
 
-    if (Test-Path "build/Release/Glow.zip") { Remove-Item "build/Release/Glow.zip" -Force }
-    7z a build/Release/Glow.zip * -xr'!build' -xr'!node_modules' -xr'!.git' -xr'!.vscode' -xr'!CMakeUserPresets.json'
+    if (Test-Path "build/Glow.zip") { Remove-Item "build/Glow.zip" -Force }
+    7z a build/Glow.zip * -xr'!build' -xr'!node_modules' -xr'!.git' -xr'!.vscode' -xr'!CMakeUserPresets.json'
 }
 
 function Publish-Glow
@@ -99,7 +99,7 @@ function Publish-Glow
 
     $version = "v$(Get-Content "build/manifest.json" | ConvertFrom-Json).version"
     $notes = Get-Item "build/notes/release_notes"
-    $archive = Get-Item "build/Release/Glow.zip"
+    $archive = Get-Item "build/Glow.zip"
 
     gh release delete $version -y
     gh release create $version $archive --notes-file $notes -t $version
