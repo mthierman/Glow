@@ -143,6 +143,13 @@ target_link_libraries(
             glow::flags_deps
 )
 
+add_custom_target(
+    Manifest
+    ALL
+    COMMAND pnpm manifest
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
 add_library(Glow)
 
 add_library(
@@ -232,6 +239,11 @@ target_link_libraries(
            ShLwApi.Lib
            WebView2LoaderStatic.lib
            WindowsApp.lib
+)
+
+add_dependencies(
+    Glow
+    Manifest
 )
 
 if(GLOW_BUILD_TESTING)
