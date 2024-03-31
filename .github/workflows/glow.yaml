@@ -39,7 +39,7 @@ jobs:
           node-version: "*"
           check-latest: true
           cache: "pnpm"
-          cache-dependency-path: pnpm-lock.yaml
+          cache-dependency-path: glow/pnpm-lock.yaml
 
       - name: Install node_modules
         run: |
