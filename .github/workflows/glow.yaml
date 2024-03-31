@@ -28,6 +28,24 @@ jobs:
           token: ${{ secrets.WEBSITE }}
           path: mthierman.com
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: latest
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "*"
+          check-latest: true
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install node_modules
+        run: |
+          Set-Location ${{ github.workspace }}\glow
+          pnpm install
+
       - name: Cache
         uses: actions/cache@v4
         id: deps
