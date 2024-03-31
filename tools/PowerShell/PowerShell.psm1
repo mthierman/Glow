@@ -94,7 +94,10 @@ function Publish-Glow
     )
 
     # $hash = Get-Content "build/notes/short_hash"
-    $version = Get-Content "build/notes/version"
+    # $version = Get-Content "build/notes/version"
+    # $notes = Get-Item "build/notes/release_notes"
+
+    $version = "v$(Get-Content "build/manifest.json" | ConvertFrom-Json).version"
     $notes = Get-Item "build/notes/release_notes"
     $archive = Get-Item "build/Release/Glow.zip"
 
