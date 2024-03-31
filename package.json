@@ -1,9 +1,18 @@
 {
     "name": "glow",
+    "fullname": "Glow",
+    "description": "C++ library for Windows",
     "version": "0.0.5",
     "private": true,
     "type": "module",
+    "scripts": {
+        "manifest": "esbuild tools/scripts/manifest.ts --bundle --outdir=build/tools --platform=node --format=esm --packages=external && node build/tools/manifest.js"
+    },
     "devDependencies": {
-        "prettier": "^3.2.5"
+        "@types/node": "^20.12.2",
+        "esbuild": "^0.20.2",
+        "prettier": "^3.2.5",
+        "tsx": "^4.7.1",
+        "typescript": "^5.4.3"
     }
 }
