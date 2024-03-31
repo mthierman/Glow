@@ -144,7 +144,7 @@ target_link_libraries(
 )
 
 add_custom_target(
-    Manifest
+    GlowManifest
     ALL
     COMMAND pnpm manifest
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -243,7 +243,7 @@ target_link_libraries(
 
 add_dependencies(
     Glow
-    Manifest
+    GlowManifest
 )
 
 if(GLOW_BUILD_TESTING)
