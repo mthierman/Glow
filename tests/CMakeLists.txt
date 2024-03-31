@@ -2,7 +2,7 @@ add_executable(Glow_Tests)
 
 target_sources(
     Glow_Tests
-    PRIVATE tests.cxx
+    PRIVATE "tests.cxx"
 )
 
 target_link_libraries(
