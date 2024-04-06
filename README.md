@@ -89,3 +89,4 @@ target_link_libraries(
 -   [JSON for Modern C++](https://github.com/nlohmann/json) - [license](https://github.com/nlohmann/json?tab=MIT-1-ov-file#readme)
 -   [Ada URL Parser](https://github.com/ada-url/ada) - [license](https://github.com/ada-url/ada?tab=MIT-2-ov-file)
 -   [SQLite](https://www.sqlite.org/) - [license](https://www.sqlite.org/copyright.html)
+-   [WiX Toolset](https://github.com/wixtoolset/wix?tab=License-1-ov-file#readme)
