@@ -7,7 +7,7 @@ cmake_path(
 cmake_path(
     SET
     cppwinrt_SOURCE_DIR
-    "$ENV{NUGET}/Microsoft.Windows.CppWinRT.2.0.240111.5"
+    "$ENV{NUGET}/Microsoft.Windows.CppWinRT.2.0.240405.15"
 )
 
 cmake_path(

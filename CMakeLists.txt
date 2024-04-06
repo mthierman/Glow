@@ -52,7 +52,7 @@ if(GLOW_RESTORE_NUGET)
     cmake_path(
         SET
         cppwinrt_SOURCE_DIR
-        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240111.5"
+        "${CMAKE_BINARY_DIR}/_deps/Nuget/Microsoft.Windows.CppWinRT.2.0.240405.15"
     )
 
     cmake_path(
