@@ -2,8 +2,9 @@ function Update-Dependencies
 {
     if (!(Test-Path "libs")) { New-Item -ItemType Directory "libs" }
     
-    if (Test-Path "libs/ada-url/ada") { Remove-Item -Path "libs/ada-url/ada" -Recurse -Force }
-    if (Test-Path "libs/nlohmann/json") { Remove-Item -Path "libs/nlohmann/json" -Recurse -Force }
+    if (Test-Path "libs/ada-url/ada") { Remove-Item -Path "libs/ada-url/ada" -Force -Recurse }
+    if (Test-Path "libs/nlohmann/json") { Remove-Item -Path "libs/nlohmann/json" -Force -Recurse }
+    if (Test-Path "libs/sqlite") { Remove-Item -Path "libs/sqlite" -Force -Recurse }
 
     gh release download -p "singleheader.zip" -R ada-url/ada --clobber
     [System.IO.Compression.ZipFile]::ExtractToDirectory("singleheader.zip", "libs/ada-url/ada")
@@ -18,7 +19,6 @@ function Update-Dependencies
     $outdir = $sqliteZip.TrimEnd(".zip")
     Invoke-WebRequest "https://www.sqlite.org/2024/$sqliteZip" -OutFile "$sqliteZip"
     [System.IO.Compression.ZipFile]::ExtractToDirectory("$sqliteZip", "sqlite-temp")
-    if (Test-Path "libs/sqlite") { Remove-Item "libs/sqlite" -Force -Recurse }
     Move-Item -Path "sqlite-temp/$outdir" -Destination "libs"
     Rename-Item -Path "libs/$outdir" -NewName "sqlite"
     if (Test-Path "sqlite-temp") { Remove-Item "sqlite-temp" -Force -Recurse }
