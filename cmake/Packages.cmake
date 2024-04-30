@@ -1,7 +1,7 @@
 cmake_path(
     SET
     webview2_SOURCE_DIR
-    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2420.47"
+    "$ENV{NUGET}/Microsoft.Web.WebView2.1.0.2478.35"
 )
 
 cmake_path(
