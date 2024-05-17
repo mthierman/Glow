@@ -46,79 +46,11 @@ execute_process(
     WORKING_DIRECTORY "${cppwinrt_SOURCE_DIR}/bin"
 )
 
-add_library(Ada)
+include(cmake/Ada.cmake)
 
-add_library(
-    ada::ada
-    ALIAS
-    Ada
-)
+include(cmake/JSON.cmake)
 
-target_sources(
-    Ada
-    PRIVATE "${PROJECT_SOURCE_DIR}/libs/ada-url/ada/ada.cpp"
-    PUBLIC FILE_SET
-           HEADERS
-           BASE_DIRS
-           "${PROJECT_SOURCE_DIR}/libs/ada-url/ada"
-           FILES
-           "${PROJECT_SOURCE_DIR}/libs/ada-url/ada/ada.h"
-)
-
-target_link_libraries(
-    Ada
-    PRIVATE glow::definitions
-            glow::features
-            glow::flags_deps
-)
-
-add_library(
-    JSON
-    INTERFACE
-)
-
-add_library(
-    nlohmann_json::nlohmann_json
-    ALIAS
-    JSON
-)
-
-target_sources(
-    JSON
-    PUBLIC FILE_SET
-           HEADERS
-           BASE_DIRS
-           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann"
-           FILES
-           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json.hpp"
-           "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json_fwd.hpp"
-)
-
-add_library(SQLite)
-
-add_library(
-    sqlite::sqlite
-    ALIAS
-    SQLite
-)
-
-target_sources(
-    SQLite
-    PRIVATE "${PROJECT_SOURCE_DIR}/libs/sqlite/sqlite3.c"
-    PUBLIC FILE_SET
-           HEADERS
-           BASE_DIRS
-           "${PROJECT_SOURCE_DIR}/libs/sqlite/"
-           FILES
-           "${PROJECT_SOURCE_DIR}/libs/sqlite/sqlite3.h"
-)
-
-target_link_libraries(
-    SQLite
-    PRIVATE glow::definitions
-            glow::features
-            glow::flags_deps
-)
+include(cmake/SQLite.cmake)
 
 add_library(Glow)
 
