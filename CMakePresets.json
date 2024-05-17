@@ -66,10 +66,10 @@
             }
         },
         {
-            "name": "Glow Testing",
+            "name": "Glow Tests",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_BUILD_TESTING": {
+                "GLOW_TESTS": {
                     "type": "BOOL",
                     "value": "ON"
                 }
@@ -79,7 +79,7 @@
             "name": "Glow Examples",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_BUILD_EXAMPLES": {
+                "GLOW_EXAMPLES": {
                     "type": "BOOL",
                     "value": "ON"
                 }
@@ -89,7 +89,7 @@
             "name": "Glow Tools",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_BUILD_TOOLS": {
+                "GLOW_TOOLS": {
                     "type": "BOOL",
                     "value": "ON"
                 }

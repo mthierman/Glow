@@ -6,50 +6,28 @@ project(
 )
 
 option(
-    GLOW_RESTORE_NUGET
-    "Restore Nuget packages"
-    ON
-)
-
-option(
-    GLOW_BUILD_TESTING
-    "Build testing"
+    GLOW_TESTS
+    "Build tests"
     OFF
 )
 
 option(
-    GLOW_BUILD_EXAMPLES
+    GLOW_EXAMPLES
     "Build examples"
     OFF
 )
 
 option(
-    GLOW_BUILD_TOOLS
+    GLOW_TOOLS
     "Build tools"
     OFF
 )
 
-enable_testing()
-
-include(cmake/ReleaseInfo.cmake)
-
 include(cmake/Common.cmake)
-
-if(GLOW_RESTORE_NUGET)
-    include(cmake/Nuget.cmake)
-endif()
-
-execute_process(
-    COMMAND
-        cppwinrt -input "${webview2_SOURCE_DIR}/lib/Microsoft.Web.WebView2.Core.winmd" sdk -output
-        "${webview2_SOURCE_DIR}/build/native/include-winrt"
-    WORKING_DIRECTORY "${cppwinrt_SOURCE_DIR}/bin"
-)
-
+include(cmake/ReleaseInfo.cmake)
+include(cmake/Nuget.cmake)
 include(cmake/Ada.cmake)
-
 include(cmake/JSON.cmake)
-
 include(cmake/SQLite.cmake)
 
 add_library(Glow)
@@ -143,14 +121,15 @@ target_link_libraries(
            WindowsApp.lib
 )
 
-if(GLOW_BUILD_TESTING)
+if(GLOW_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 
-if(GLOW_BUILD_EXAMPLES)
+if(GLOW_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(GLOW_BUILD_TOOLS)
+if(GLOW_TOOLS)
     add_subdirectory(tools)
 endif()
