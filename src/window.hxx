@@ -66,6 +66,7 @@ struct Window
     virtual auto toggle_maximize() -> void;
     virtual auto toggle_fullscreen() -> void;
     virtual auto toggle_topmost() -> void;
+    virtual auto center() -> void;
     virtual auto set_title(std::string title) -> bool;
     virtual auto set_icon(::HICON icon, bool small = true, bool big = true) -> void;
     virtual auto border(bool enabled) -> void;

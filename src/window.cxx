@@ -211,6 +211,23 @@ auto Window::toggle_topmost() -> void
     flash();
 }
 
+auto Window::center() -> void
+{
+    ::MONITORINFO mi{sizeof(::MONITORINFO)};
+    ::GetMonitorInfoA(::MonitorFromWindow(m_hwnd.get(), MONITOR_DEFAULTTONEAREST), &mi);
+
+    RECT rect{0, 0, 0, 0};
+    ::GetWindowRect(m_hwnd.get(), &rect);
+
+    auto width{static_cast<int>(rect.right - rect.left)};
+    auto height{static_cast<int>(rect.bottom - rect.top)};
+
+    auto x{(static_cast<int>(mi.rcWork.right - mi.rcWork.left) - width) / 2};
+    auto y{(static_cast<int>(mi.rcWork.bottom - mi.rcWork.top) - height) / 2};
+
+    ::SetWindowPos(m_hwnd.get(), nullptr, x, y, width, height, 0);
+}
+
 auto Window::set_title(std::string title) -> bool
 {
     return ::SetWindowTextA(m_hwnd.get(), title.c_str());
