@@ -1,27 +1,24 @@
 cmake_minimum_required(VERSION 3.28)
 
-project(
-    Glow
-    VERSION 0.0.6
-)
+project(Glow VERSION 0.0.6)
 
 option(
     GLOW_TESTS
     "Build tests"
     OFF
-)
+    )
 
 option(
     GLOW_EXAMPLES
     "Build examples"
     OFF
-)
+    )
 
 option(
     GLOW_TOOLS
     "Build tools"
     OFF
-)
+    )
 
 include(cmake/Common.cmake)
 include(cmake/ReleaseInfo.cmake)
@@ -36,12 +33,12 @@ add_library(
     glow::glow
     ALIAS
     Glow
-)
+    )
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/src/config.hxx"
     "${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx"
-)
+    )
 
 target_sources(
     Glow
@@ -86,7 +83,7 @@ target_sources(
             "${PROJECT_SOURCE_DIR}/src/window.hxx"
             "${PROJECT_SOURCE_DIR}/include/glow/glow.hxx"
             "${CMAKE_CURRENT_BINARY_DIR}/include/glow/config.hxx"
-)
+    )
 
 target_include_directories(
     Glow
@@ -95,13 +92,13 @@ target_include_directories(
            "${webview2_SOURCE_DIR}/build/native/include-winrt"
            "${webview2_SOURCE_DIR}/build/native/include"
            "${wil_SOURCE_DIR}/include"
-)
+    )
 
 target_link_directories(
     Glow
     PUBLIC
     "${webview2_SOURCE_DIR}/build/native/x64"
-)
+    )
 
 target_link_libraries(
     Glow
@@ -119,7 +116,7 @@ target_link_libraries(
            ShLwApi.Lib
            WebView2LoaderStatic.lib
            WindowsApp.lib
-)
+    )
 
 if(GLOW_TESTS)
     enable_testing()
