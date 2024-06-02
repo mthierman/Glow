@@ -20,8 +20,10 @@ auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
 {
     switch (uMsg)
     {
-        case WM_DESTROY: return on_destroy(wParam, lParam);
-        case WM_WINDOWPOSCHANGED: return on_window_pos_changed(wParam, lParam);
+        case WM_DESTROY:
+            return on_destroy(wParam, lParam);
+        case WM_WINDOWPOSCHANGED:
+            return on_window_pos_changed(wParam, lParam);
     }
 
     return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);

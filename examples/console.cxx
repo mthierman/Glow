@@ -10,4 +10,7 @@
 #include <glow/glow.hxx>
 #include <print>
 
-auto main(int argc, char* argv[]) -> int { std::println("Glow"); }
+auto main(int argc, char* argv[]) -> int
+{
+    std::println("Glow");
+}
