@@ -1,13 +1,13 @@
 add_library(
     JSON
     INTERFACE
-)
+    )
 
 add_library(
     nlohmann_json::nlohmann_json
     ALIAS
     JSON
-)
+    )
 
 target_sources(
     JSON
@@ -18,4 +18,4 @@ target_sources(
            FILES
            "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json.hpp"
            "${PROJECT_SOURCE_DIR}/libs/nlohmann/json/single_include/nlohmann/json_fwd.hpp"
-)
+    )

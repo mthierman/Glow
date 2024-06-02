@@ -4,7 +4,7 @@ add_library(
     sqlite::sqlite
     ALIAS
     SQLite
-)
+    )
 
 target_sources(
     SQLite
@@ -15,11 +15,11 @@ target_sources(
            "${PROJECT_SOURCE_DIR}/libs/sqlite/"
            FILES
            "${PROJECT_SOURCE_DIR}/libs/sqlite/sqlite3.h"
-)
+    )
 
 target_link_libraries(
     SQLite
     PRIVATE glow::definitions
             glow::features
             glow::flags_deps
-)
+    )

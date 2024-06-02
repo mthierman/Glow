@@ -4,7 +4,7 @@ add_library(
     ada::ada
     ALIAS
     Ada
-)
+    )
 
 target_sources(
     Ada
@@ -15,11 +15,11 @@ target_sources(
            "${PROJECT_SOURCE_DIR}/libs/ada-url/ada"
            FILES
            "${PROJECT_SOURCE_DIR}/libs/ada-url/ada/ada.h"
-)
+    )
 
 target_link_libraries(
     Ada
     PRIVATE glow::definitions
             glow::features
             glow::flags_deps
-)
+    )
