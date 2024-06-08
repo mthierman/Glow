@@ -86,16 +86,6 @@
             }
         },
         {
-            "name": "Glow Tools",
-            "hidden": true,
-            "cacheVariables": {
-                "GLOW_TOOLS": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
-            }
-        },
-        {
             "name": "Visual Studio",
             "hidden": true,
             "inherits": ["Visual Studio Generator", "Architecture", "Toolset"],

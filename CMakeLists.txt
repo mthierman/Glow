@@ -14,12 +14,6 @@ option(
     OFF
     )
 
-option(
-    GLOW_TOOLS
-    "Build tools"
-    OFF
-    )
-
 include(cmake/Common.cmake)
 include(cmake/ReleaseInfo.cmake)
 include(cmake/Nuget.cmake)
@@ -120,10 +114,6 @@ target_link_libraries(
 
 if(GLOW_EXAMPLES)
     add_subdirectory(examples)
-endif()
-
-if(GLOW_TOOLS)
-    add_subdirectory(tools)
 endif()
 
 if(GLOW_TESTS)
