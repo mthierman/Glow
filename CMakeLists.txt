@@ -118,15 +118,15 @@ target_link_libraries(
            WindowsApp.lib
     )
 
-if(GLOW_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
-
 if(GLOW_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
 if(GLOW_TOOLS)
     add_subdirectory(tools)
+endif()
+
+if(GLOW_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()

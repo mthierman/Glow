@@ -8,6 +8,7 @@
 
 #include <glow/config.hxx>
 #include <glow/glow.hxx>
+
 #include <print>
 
 auto main(int argc, char* argv[]) -> int
