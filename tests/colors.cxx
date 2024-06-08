@@ -11,7 +11,7 @@
 
 #include <print>
 
-auto main(int argc, char* argv[]) -> int
+auto main() -> int
 {
     glow::Colors colors;
 
