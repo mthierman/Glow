@@ -9,10 +9,10 @@
         "manifest": "esbuild tools/scripts/manifest.ts --bundle --outdir=build/tools --platform=node --format=esm --packages=external && node build/tools/manifest.js"
     },
     "devDependencies": {
-        "@types/node": "^20.14.0",
+        "@types/node": "^20.14.2",
         "esbuild": "^0.21.4",
-        "prettier": "^3.3.0",
-        "tsx": "^4.11.0",
+        "prettier": "^3.3.1",
+        "tsx": "^4.13.3",
         "typescript": "^5.4.5"
     }
 }
