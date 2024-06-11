@@ -14,12 +14,22 @@ option(
     OFF
     )
 
-include(cmake/Common.cmake)
-include(cmake/ReleaseInfo.cmake)
-include(cmake/Nuget.cmake)
-include(cmake/Ada.cmake)
-include(cmake/JSON.cmake)
-include(cmake/SQLite.cmake)
+list(
+    APPEND
+    CMAKE_MODULE_PATH
+    "${CMAKE_SOURCE_DIR}/libs/cmake-modules/"
+    )
+
+include(common)
+include(nuget)
+include(packages/wil)
+include(packages/cppwinrt)
+include(packages/webview2)
+include(packages/ada)
+include(packages/json)
+include(packages/sqlite)
+
+include(release_info)
 
 add_library(Glow)
 
@@ -96,11 +106,14 @@ target_link_directories(
 
 target_link_libraries(
     Glow
-    PRIVATE glow::flags
-    PUBLIC glow::definitions
-           glow::features
+    PRIVATE common::flags
+    PUBLIC common::features
+           common::definitions
+           wil::wil
+           cppwinrt::cppwinrt
+           webview2::webview2
            ada::ada
-           nlohmann_json::nlohmann_json
+           json::json
            sqlite::sqlite
            dwmapi.lib
            Uxtheme.lib

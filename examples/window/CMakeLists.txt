@@ -12,5 +12,5 @@ target_sources(
 target_link_libraries(
     Glow_ExampleWindow
     PRIVATE glow::glow
-            glow::flags
+            common::flags
     )

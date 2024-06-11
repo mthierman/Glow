@@ -9,5 +9,5 @@ target_sources(
 target_link_libraries(
     Glow_ExampleConsole
     PRIVATE glow::glow
-            glow::flags
+            common::flags
     )

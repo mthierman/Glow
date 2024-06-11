@@ -12,7 +12,7 @@ target_sources(
 target_link_libraries(
     Glow_ExampleGui
     PRIVATE glow::glow
-            glow::flags
+            common::flags
     )
 
 add_custom_command(
