@@ -9,17 +9,17 @@
     "include": [],
     "configurePresets": [
         {
-            "name": "Visual Studio Generator",
+            "name": "Generator: Visual Studio",
             "hidden": true,
             "generator": "Visual Studio 17 2022"
         },
         {
-            "name": "Ninja Generator",
+            "name": "Generator: Ninja",
             "hidden": true,
             "generator": "Ninja"
         },
         {
-            "name": "Ninja Multi-Config Generator",
+            "name": "Generator: Ninja Multi-Config",
             "hidden": true,
             "generator": "Ninja Multi-Config"
         },
@@ -88,18 +88,24 @@
         {
             "name": "Visual Studio",
             "hidden": true,
-            "inherits": ["Visual Studio Generator", "Architecture", "Toolset"],
+            "inherits": ["Generator: Visual Studio", "Architecture", "Toolset"],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Ninja",
+            "hidden": true,
+            "inherits": ["Generator: Ninja", "Architecture", "Toolset"],
             "binaryDir": "${sourceDir}/build"
         },
         {
             "name": "Ninja Multi-Config",
             "hidden": true,
-            "inherits": ["Ninja Multi-Config Generator", "Architecture", "Toolset"],
+            "inherits": ["Generator: Ninja Multi-Config", "Architecture", "Toolset"],
             "binaryDir": "${sourceDir}/build"
         },
         {
-            "name": "Default",
-            "inherits": ["Ninja Multi-Config", "MSVC"]
+            "name": "Development",
+            "inherits": ["Ninja Multi-Config", "MSVC", "Glow Tests", "Glow Examples"]
         },
         {
             "name": "CI",
@@ -116,8 +122,13 @@
             ]
         },
         {
-            "name": "Default",
-            "configurePreset": "Default",
+            "name": "Debug",
+            "configurePreset": "Development",
+            "configuration": "Debug"
+        },
+        {
+            "name": "Release",
+            "configurePreset": "Development",
             "configuration": "Release"
         },
         {
@@ -128,8 +139,13 @@
     ],
     "testPresets": [
         {
-            "name": "Default",
-            "configurePreset": "Default",
+            "name": "Debug",
+            "configurePreset": "Development",
+            "configuration": "Debug"
+        },
+        {
+            "name": "Release",
+            "configurePreset": "Development",
             "configuration": "Release"
         },
         {
