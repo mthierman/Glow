@@ -1,30 +1,3 @@
-function Update-Dependencies
-{
-    if (!(Test-Path "libs")) { New-Item -ItemType Directory "libs" }
-    
-    if (Test-Path "libs/ada-url/ada") { Remove-Item -Path "libs/ada-url/ada" -Force -Recurse }
-    if (Test-Path "libs/nlohmann/json") { Remove-Item -Path "libs/nlohmann/json" -Force -Recurse }
-    if (Test-Path "libs/sqlite") { Remove-Item -Path "libs/sqlite" -Force -Recurse }
-
-    gh release download -p "singleheader.zip" -R ada-url/ada --clobber
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("singleheader.zip", "libs/ada-url/ada")
-    if (Test-Path "singleheader.zip") { Remove-Item -Path "singleheader.zip" -Force }
-    Invoke-WebRequest "https://raw.githubusercontent.com/ada-url/ada/main/LICENSE-MIT" -OutFile "libs/ada-url/ada/LICENSE-MIT"
-
-    gh release download -p "include.zip" -R nlohmann/json --clobber
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("include.zip", "libs/nlohmann/json")
-    if (Test-Path "include.zip") { Remove-Item -Path "include.zip" -Force }
-
-    $sqliteZip = ((Invoke-WebRequest "https://sqlite.org/download.html").ToString() | Select-String -Pattern 'sqlite-amalgamation-[0-9]+.zip' | Select-Object -First 1).Matches.Value
-    $outdir = $sqliteZip.TrimEnd(".zip")
-    Invoke-WebRequest "https://www.sqlite.org/2024/$sqliteZip" -OutFile "$sqliteZip"
-    [System.IO.Compression.ZipFile]::ExtractToDirectory("$sqliteZip", "sqlite-temp")
-    Move-Item -Path "sqlite-temp/$outdir" -Destination "libs"
-    Rename-Item -Path "libs/$outdir" -NewName "sqlite"
-    if (Test-Path "sqlite-temp") { Remove-Item "sqlite-temp" -Force -Recurse }
-    if (Test-Path "$sqliteZip") { Remove-Item "$sqliteZip" -Force }
-}
-
 function Invoke-DevShell
 {
     [CmdletBinding()]
