@@ -18,8 +18,9 @@ target_link_libraries(
 add_custom_command(
     TARGET Glow_ExampleGui
     COMMAND
-        ${CMAKE_COMMAND} -E copy "${webview2_SOURCE_DIR}/runtimes/win-x64/native/WebView2Loader.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}$<$<CONFIG:DEBUG>:/Debug>$<$<CONFIG:RELEASE>:/Release>"
+        ${CMAKE_COMMAND} -E copy
+        "${CMAKE_BINARY_DIR}/_deps/Microsoft.Web.WebView2/runtimes/win-x64/native/WebView2Loader.dll"
+        "$<TARGET_FILE_DIR:Glow_ExampleGui>/WebView2Loader.dll"
     COMMENT "Copying WebView2Loader.dll..."
     )
 
@@ -27,7 +28,7 @@ add_custom_command(
     TARGET Glow_ExampleGui
     COMMAND
         ${CMAKE_COMMAND} -E copy
-        "${webview2_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll"
-        "${CMAKE_CURRENT_BINARY_DIR}$<$<CONFIG:DEBUG>:/Debug>$<$<CONFIG:RELEASE>:/Release>"
+        "${CMAKE_BINARY_DIR}/_deps/Microsoft.Web.WebView2/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll"
+        "$<TARGET_FILE_DIR:Glow_ExampleGui>/Microsoft.Web.WebView2.Core.dll"
     COMMENT "Copying Microsoft.Web.WebView2.Core.dll..."
     )

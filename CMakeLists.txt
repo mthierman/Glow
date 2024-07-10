@@ -20,16 +20,28 @@ list(
     "${PROJECT_SOURCE_DIR}/libs/cmake-modules/"
     )
 
-include(common)
-include(nuget)
-include(packages/wil)
-include(packages/cppwinrt)
-include(packages/webview2)
-include(packages/ada)
-include(packages/json)
-include(packages/sqlite)
+# include(common)
+# include(nuget)
+# include(packages/wil)
+# include(packages/cppwinrt)
+# include(packages/webview2)
+# include(packages/ada)
+# include(packages/json)
+# include(packages/sqlite)
 
-include(release_info)
+# include(release_info)
+
+include(cmake-modules)
+
+install_common()
+install_wil(1.0.240122.1)
+install_cppwinrt(2.0.240405.15)
+install_webview2(1.0.2592.51)
+install_ada(2.8.0)
+install_json(3.11.3)
+install_sqlite(3460000)
+generate_cppwinrt()
+release_info()
 
 add_library(Glow)
 
@@ -109,11 +121,11 @@ target_link_libraries(
     PRIVATE common::flags
     PUBLIC common::features
            common::definitions
-           wil::wil
-           cppwinrt::cppwinrt
-           webview2::webview2
-           ada::ada
-           json::json
+           ms::wil
+           ms::cppwinrt
+           ms::webview2
+           ada-url::ada
+           nlohmann::json
            sqlite::sqlite
            dwmapi.lib
            Uxtheme.lib
