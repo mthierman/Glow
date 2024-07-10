@@ -9,16 +9,6 @@
     "include": ["libs/cmake-modules/CMakePresets.json"],
     "configurePresets": [
         {
-            "name": "Glow Tests",
-            "hidden": true,
-            "cacheVariables": {
-                "GLOW_TESTS": {
-                    "type": "BOOL",
-                    "value": "ON"
-                }
-            }
-        },
-        {
             "name": "Glow Examples",
             "hidden": true,
             "cacheVariables": {

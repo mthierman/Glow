@@ -3,12 +3,6 @@ cmake_minimum_required(VERSION 3.29)
 project(Glow VERSION 0.0.8)
 
 option(
-    GLOW_TESTS
-    "Build tests"
-    OFF
-    )
-
-option(
     GLOW_EXAMPLES
     "Build examples"
     OFF
@@ -71,9 +65,4 @@ target_link_libraries(
 
 if(GLOW_EXAMPLES)
     add_subdirectory(examples)
-endif()
-
-if(GLOW_TESTS)
-    enable_testing()
-    add_subdirectory(tests)
 endif()
