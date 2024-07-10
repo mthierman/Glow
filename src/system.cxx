@@ -1,146 +1,60 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// Glow - https://github.com/mthierman/Glow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
-#include "filesystem.hxx"
-#include "system.hxx"
-#include <comdef.h>
-#include <print>
+#include <glow/system.hxx>
+
+#include <objbase.h>
+
 #include <stdexcept>
-#include <system_error>
-#include <wil/resource.h>
 
-namespace glow
-{
-auto log(std::string msg) -> void
-{
-    ::OutputDebugStringA(msg.c_str());
-    ::OutputDebugStringA("\n");
+namespace glow::system {
+auto co_initialize(::DWORD coInit) -> wil::unique_couninitialize_call {
+    return wil::CoInitializeEx(coInit);
 }
 
-auto format_message(::HRESULT errorCode) -> std::string
-{
-    wil::unique_hlocal_ptr<char> buffer;
+auto gdi_plus_startup() -> ::ULONG_PTR& {
+    thread_local ::ULONG_PTR token;
+    thread_local Gdiplus::GdiplusStartupInput input;
 
-    if (::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
-                             FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
-                         nullptr, errorCode, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                         reinterpret_cast<char*>(&buffer), 0, nullptr) == 0)
-    {
-        throw std::runtime_error("Format message failure");
+    if (auto status { Gdiplus::GdiplusStartup(&token, &input, nullptr) };
+        status != Gdiplus::Status::Ok) {
+        throw std::runtime_error("GDI+ startup failure");
     }
 
-    return std::string(buffer.get());
+    return token;
 }
 
-auto system_error_string(::HRESULT errorCode) -> std::string
-{
-    return std::string(std::system_category().message(errorCode));
-}
+auto gdi_plus_shutdown(::ULONG_PTR& token) -> void { Gdiplus::GdiplusShutdown(token); }
 
-auto hresult_string(::HRESULT errorCode) -> std::string
-{
-    return std::string(::_com_error(errorCode).ErrorMessage());
-}
+auto create_process(std::filesystem::path path) -> int {
+    ::STARTUPINFOA si { .cb { sizeof(::STARTUPINFOA) },
+                        .lpReserved { nullptr },
+                        .lpDesktop { nullptr },
+                        .lpTitle { nullptr },
+                        .dwX { 0 },
+                        .dwY { 0 },
+                        .dwXSize { 0 },
+                        .dwYSize { 0 },
+                        .dwXCountChars { 0 },
+                        .dwYCountChars { 0 },
+                        .dwFillAttribute { 0 },
+                        .dwFlags { 0 },
+                        .wShowWindow { 0 },
+                        .cbReserved2 { 0 },
+                        .lpReserved2 { 0 },
+                        .hStdInput { nullptr },
+                        .hStdOutput { nullptr },
+                        .hStdError { nullptr } };
 
-auto last_error() -> ::HRESULT { return HRESULT_FROM_WIN32(::GetLastError()); }
+    ::PROCESS_INFORMATION pi {
+        .hProcess { nullptr }, .hThread { nullptr }, .dwProcessId { 0 }, .dwThreadId { 0 }
+    };
 
-auto last_error_string() -> std::string { return hresult_string(last_error()); }
-
-auto hresult_check(::HRESULT errorCode) -> ::HRESULT
-{
-    auto errorMessage{hresult_string(errorCode)};
-
-    // #if _DEBUG
-    //     OutputDebugStringA(errorMessage.c_str());
-    // #endif
-
-    if (SUCCEEDED(errorCode)) return S_OK;
-
-    else throw std::runtime_error(errorMessage);
-}
-
-auto hresult_debug(::HRESULT errorCode, std::source_location location) -> void
-{
-    auto errorMessage{hresult_string(errorCode)};
-    source_debug(errorMessage, location);
-}
-
-auto hresult_print(::HRESULT errorCode, std::source_location location) -> void
-{
-    auto errorMessage{hresult_string(errorCode)};
-    source_print(errorMessage, location);
-}
-
-auto source_debug(std::string message, std::source_location location) -> void
-{
-    ::OutputDebugStringA("Message: ");
-    ::OutputDebugStringA(message.c_str());
-    ::OutputDebugStringA("\n");
-    ::OutputDebugStringA(("File: " + std::string(location.file_name())).c_str());
-    ::OutputDebugStringA("\n");
-    ::OutputDebugStringA(("Function: " + std::string(location.function_name())).c_str());
-    ::OutputDebugStringA("\n");
-    ::OutputDebugStringA(("Line: " + std::to_string(location.line())).c_str());
-    ::OutputDebugStringA(" | ");
-    ::OutputDebugStringA(("Column: " + std::to_string(location.column())).c_str());
-    ::OutputDebugStringA("\n");
-}
-
-auto source_print(std::string message, std::source_location location) -> void
-{
-    std::println("Message: {}", message);
-    std::println("File: {}", location.file_name());
-    std::println("Function: {}", location.function_name());
-    std::println("Line: {} | Column: {}", location.line(), location.column());
-}
-
-auto message_box(std::string message, unsigned int type) -> int
-{
-    return ::MessageBoxA(nullptr, message.c_str(), glow::app_name().c_str(), type);
-}
-
-auto message_box_shell(std::string message, unsigned int type) -> int
-{
-    return ::ShellMessageBoxA(::GetModuleHandleA(nullptr), nullptr, message.c_str(),
-                              glow::app_name().c_str(), type);
-}
-
-auto message_box_stock(std::string message, ::SHSTOCKICONID icon) -> void
-{
-    // https://learn.microsoft.com/en-us/windows/win32/api/shellapi/ne-shellapi-shstockiconid
-    ::SHSTOCKICONINFO sii{sizeof(::SHSTOCKICONINFO)};
-
-    if (SUCCEEDED(::SHGetStockIconInfo(icon, SHGSI_ICONLOCATION, &sii)))
-    {
-        auto hModule{::LoadLibraryExW(sii.szPath, nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32)};
-
-        auto program{glow::app_name()};
-
-        ::MSGBOXPARAMS params{sizeof(::MSGBOXPARAMS)};
-        params.hInstance = hModule;
-        params.lpszText = message.c_str();
-        params.lpszCaption = program.c_str();
-        params.dwStyle = MB_USERICON;
-        params.lpszIcon = MAKEINTRESOURCE(-sii.iIcon);
-        params.lpfnMsgBoxCallback = nullptr;
-        ::MessageBoxIndirectA(&params);
-
-        ::FreeLibrary(hModule);
-    }
-}
-
-auto create_process(std::filesystem::path path) -> int
-{
-    ::STARTUPINFOA si{sizeof(::STARTUPINFOA)};
-    ::PROCESS_INFORMATION pi{};
-
-    auto process{path.string()};
-    auto pProcess{process.data()};
+    auto process { path.string() };
+    auto pProcess { process.data() };
 
     ::CreateProcessA(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
     ::WaitForSingleObject(pi.hProcess, INFINITE);
@@ -149,4 +63,86 @@ auto create_process(std::filesystem::path path) -> int
 
     return 0;
 }
-} // namespace glow
+
+auto get_instance() -> ::HMODULE {
+    ::HMODULE module;
+    ::GetModuleHandleExW(0, nullptr, &module);
+    return module;
+}
+
+auto abort(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
+
+auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
+
+auto load_system_brush(int name) -> ::HBRUSH {
+    return static_cast<::HBRUSH>(::GetStockObject(name));
+}
+
+auto load_system_cursor(LPSTR name) -> ::HCURSOR {
+    return static_cast<::HCURSOR>(
+        ::LoadImageA(nullptr, name, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto load_system_icon(LPSTR name) -> ::HICON {
+    return static_cast<::HICON>(
+        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto load_resource_icon() -> ::HICON {
+    auto instance { get_instance() };
+    return static_cast<::HICON>(
+        ::LoadImageW(instance, MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+}
+
+auto make_guid() -> ::GUID {
+    ::GUID guid;
+    THROW_IF_FAILED(::CoCreateGuid(&guid));
+
+    return guid;
+}
+
+auto format_message(::HRESULT errorCode) -> std::string {
+    wil::unique_hlocal_ansistring buffer;
+
+    if (::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
+                             | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                         nullptr,
+                         errorCode,
+                         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                         wil::out_param_ptr<::LPSTR>(buffer),
+                         0,
+                         nullptr)
+        == 0) {
+        throw std::runtime_error(glow::system::get_last_error());
+    }
+
+    return buffer.get();
+}
+
+auto get_last_error() -> std::string { return format_message(::GetLastError()); }
+
+auto dbg(const std::string& message) -> void {
+    ::OutputDebugStringA(message.c_str());
+    ::OutputDebugStringA("\n");
+}
+
+auto dbg(const std::wstring& message) -> void {
+    ::OutputDebugStringW(message.c_str());
+    ::OutputDebugStringW(L"\n");
+}
+
+auto Event::create(const std::string& eventName, std::function<void()> callback) -> bool {
+    m_callback = std::move(callback);
+    watcher.create(event.get(), [this]() { m_callback(); });
+
+    bool exists;
+    event.try_create(
+        wil::EventOptions::None, glow::text::utf8_to_utf16(eventName).c_str(), nullptr, &exists);
+
+    if (exists) {
+        event.SetEvent();
+    }
+
+    return exists;
+}
+}; // namespace glow::system

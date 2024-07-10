@@ -1,6 +1,9 @@
-project(examples_console)
+project(examples_app)
 
-add_executable(${PROJECT_NAME})
+add_executable(
+    ${PROJECT_NAME}
+    WIN32
+    )
 
 target_sources(
     ${PROJECT_NAME}

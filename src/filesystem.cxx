@@ -1,49 +1,47 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// Glow - https://github.com/mthierman/Glow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
-#include "filesystem.hxx"
-#include <string>
-#include <wil/resource.h>
+#include <glow/filesystem.hxx>
+#include <glow/system.hxx>
+#include <glow/text.hxx>
 
-namespace glow
-{
-auto known_folder(::KNOWNFOLDERID folderId) -> std::filesystem::path
-{
-    wil::unique_cotaskmem_string buffer{};
+#include <wil/win32_helpers.h>
+
+namespace glow::filesystem {
+auto known_folder(::KNOWNFOLDERID folderId,
+                  std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
+    wil::unique_cotaskmem_string buffer;
     ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
-    return std::filesystem::path(buffer.get());
+    auto knownFolder { std::filesystem::path(glow::text::utf16_to_utf8(buffer.get())) };
+
+    for (const auto& subfolder : subfolders) {
+        knownFolder /= subfolder;
+    }
+
+    return knownFolder;
 }
 
-auto app_name() -> std::string
-{
-    std::string buffer{};
-    ::_get_pgmptr(std::out_ptr(buffer));
-    std::filesystem::path exe{buffer};
+auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
+    std::string buffer;
+    auto length { ::GetTempPathA(0, buffer.data()) };
+    buffer.resize(length);
 
-    return exe.filename().replace_extension("").string();
+    if (::GetTempPathA(length, buffer.data()) == 0) {
+        throw std::overflow_error(glow::system::get_last_error());
+    }
+
+    buffer.resize(length - 2);
+
+    auto tempFolder { std::filesystem::path(buffer) };
+
+    for (const auto& subfolder : subfolders) {
+        tempFolder /= subfolder;
+    }
+
+    return tempFolder;
 }
-
-auto app_path() -> std::filesystem::path
-{
-    std::string buffer{};
-    ::_get_pgmptr(std::out_ptr(buffer));
-    std::filesystem::path exe{buffer};
-
-    return std::filesystem::canonical(exe.remove_filename());
-}
-
-auto app_path_wide() -> std::filesystem::path
-{
-    std::wstring buffer{};
-    ::_get_wpgmptr(std::out_ptr(buffer));
-    std::filesystem::path exe{buffer};
-
-    return std::filesystem::canonical(exe.remove_filename());
-}
-} // namespace glow
+}; // namespace glow::filesystem

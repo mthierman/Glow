@@ -1,524 +1,503 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// Glow - https://github.com/mthierman/Glow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
-#include "window.hxx"
+#include <glow/math.hxx>
+#include <glow/system.hxx>
+#include <glow/window.hxx>
+
 #include <stdexcept>
+
 #include <winrt/Windows.Foundation.h>
+
 #include <winrt/Windows.UI.ViewManagement.h>
 
-namespace glow
-{
-Window::Window(std::string name, size_t id, ::DWORD style, ::DWORD exStyle, int x, int y, int width,
-               int height, ::HWND parent, ::HMENU menu)
-    : m_name{name}, m_id{id}, m_style{style}, m_exStyle{exStyle}, m_x{x}, m_y{y}, m_width{width},
-      m_height{height}, m_parent{parent}, m_menu{menu}
-{
-    register_class();
-}
-
-Window::~Window() {}
-
-auto Window::register_class() -> void
-{
-    if (!::GetClassInfoExA(::GetModuleHandleA(nullptr), m_name.c_str(), &m_wcex))
-    {
-        m_wcex.lpszClassName = m_name.c_str();
-        m_wcex.lpszMenuName = 0;
-        m_wcex.lpfnWndProc = StaticWndProc;
-        m_wcex.style = 0;
-        m_wcex.cbClsExtra = 0;
-        m_wcex.cbWndExtra = sizeof(intptr_t);
-        m_wcex.hInstance = ::GetModuleHandleA(nullptr);
-        m_wcex.hbrBackground = static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
-        m_wcex.hCursor = static_cast<HCURSOR>(
-            ::LoadImageA(nullptr, IDC_ARROW, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-        m_wcex.hIcon = m_icon.get() ? m_icon.get() : m_defaultIcon.get();
-        m_wcex.hIconSm = m_icon.get() ? m_icon.get() : m_defaultIcon.get();
-
-        if (::RegisterClassExA(&m_wcex) == 0)
-        {
-            throw std::runtime_error("Window class registration failure");
-        }
+namespace glow::window {
+auto register_class(::WNDCLASSEXA* windowClass) -> void {
+    if (::GetClassInfoExA(glow::system::get_instance(), windowClass->lpszClassName, windowClass)
+        == 0) {
+        ::RegisterClassExA(windowClass);
     }
 }
 
-auto Window::create_window() -> void
-{
-    if (::CreateWindowExA(m_exStyle, m_wcex.lpszClassName, m_wcex.lpszClassName, m_style, m_x, m_y,
-                          m_width, m_height, m_parent, m_menu, ::GetModuleHandleA(nullptr),
-                          this) == nullptr)
-    {
-        throw std::runtime_error("Window creation failure");
+auto get_class_name(::HWND hwnd) -> std::string {
+    std::string buffer(256, 0);
+    ::GetClassNameA(hwnd, buffer.data(), glow::math::check_safe_size<int>(buffer.size()));
+    return buffer;
+}
+
+auto find_message_only(const std::string& name) -> ::HWND {
+    return ::FindWindowExA(HWND_MESSAGE, nullptr, name.c_str(), nullptr);
+}
+
+auto set_title(::HWND hwnd, std::string title) -> bool {
+    return ::SetWindowTextA(hwnd, title.c_str());
+}
+
+auto activate(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_NORMAL); }
+
+auto show(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_SHOW); }
+
+auto hide(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_HIDE); }
+
+auto maximize(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_MAXIMIZE); }
+
+auto minimize(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_MINIMIZE); }
+
+auto restore(::HWND hwnd) -> bool { return ::ShowWindow(hwnd, SW_RESTORE); }
+
+auto check_visibility(::HWND hwnd) -> bool { return ::IsWindowVisible(hwnd); }
+
+auto check_maximize(::HWND hwnd) -> bool { return ::IsZoomed(hwnd); }
+
+auto toggle_maximize(::HWND hwnd) -> bool {
+    if (check_maximize(hwnd)) {
+        return restore(hwnd);
+    } else {
+        return maximize(hwnd);
     }
 }
 
-auto Window::notify(::HWND receiver, CODE code, std::string message) -> void
-{
-    m_notification.reset();
+auto toggle_fullscreen(::HWND hwnd) -> void {
+    thread_local ::RECT pos { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
 
-    m_notification.nmhdr.hwndFrom = m_hwnd.get();
-    m_notification.hwnd = m_hwnd.get();
-
-    m_notification.nmhdr.idFrom = m_id;
-    m_notification.id = m_id;
-
-    m_notification.nmhdr.code = std::to_underlying(code);
-    m_notification.code = code;
-
-    m_notification.message = message;
-
-    ::SendMessageA(receiver, WM_NOTIFY, reinterpret_cast<uintptr_t>(&m_notification.id),
-                   reinterpret_cast<uintptr_t>(&m_notification));
-}
-
-auto Window::load_icon(::LPSTR name) -> ::HICON
-{
-    return static_cast<::HICON>(
-        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE | LR_SHARED));
-}
-
-auto Window::load_icon_rc() -> ::HICON
-{
-    return static_cast<::HICON>(::LoadImageA(::GetModuleHandleA(nullptr), MAKEINTRESOURCEA(1),
-                                             IMAGE_ICON, 0, 0, LR_DEFAULTSIZE));
-}
-
-auto Window::get_dpi() -> unsigned int { return ::GetDpiForWindow(m_hwnd.get()); };
-
-auto Window::get_scale() -> float
-{
-    return static_cast<float>(m_dpi) / static_cast<float>(USER_DEFAULT_SCREEN_DPI);
-};
-
-auto Window::get_placement() -> ::WINDOWPLACEMENT
-{
-    ::WINDOWPLACEMENT wp{sizeof(::WINDOWPLACEMENT)};
-    ::GetWindowPlacement(m_hwnd.get(), &wp);
-
-    return wp;
-}
-
-auto Window::get_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_STYLE); }
-
-auto Window::get_ex_style() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWL_EXSTYLE); }
-
-auto Window::get_id() -> intptr_t { return ::GetWindowLongPtrA(m_hwnd.get(), GWLP_ID); }
-
-auto Window::get_parent() -> ::HWND
-{
-    return reinterpret_cast<::HWND>(::GetWindowLongPtrA(m_hwnd.get(), GWLP_HWNDPARENT));
-}
-
-auto Window::close() -> void { ::SendMessageA(m_hwnd.get(), WM_CLOSE, 0, 0); }
-
-auto Window::reveal() -> bool { return ::ShowWindow(m_hwnd.get(), SW_NORMAL); }
-
-auto Window::show() -> bool { return ::ShowWindow(m_hwnd.get(), SW_SHOW); }
-
-auto Window::hide() -> bool { return ::ShowWindow(m_hwnd.get(), SW_HIDE); }
-
-auto Window::maximize() -> bool { return ::ShowWindow(m_hwnd.get(), SW_MAXIMIZE); }
-
-auto Window::restore() -> bool { return ::ShowWindow(m_hwnd.get(), SW_RESTORE); }
-
-auto Window::is_maximized() -> bool
-{
-    auto wp{get_placement()};
-
-    if (wp.showCmd == 3) return true;
-
-    else { return false; }
-}
-
-auto Window::is_visible() -> bool { return ::IsWindowVisible(m_hwnd.get()); }
-
-auto Window::focus() -> ::HWND { return ::SetFocus(m_hwnd.get()); }
-
-auto Window::is_focused() -> bool { return ::GetFocus() == m_hwnd.get(); }
-
-auto Window::foreground() -> bool { return ::SetForegroundWindow(m_hwnd.get()); }
-
-auto Window::is_foreground() -> bool { return ::GetForegroundWindow() == m_hwnd.get(); }
-
-auto Window::active() -> bool { return ::SetActiveWindow(m_hwnd.get()); }
-
-auto Window::top() -> bool { return ::BringWindowToTop(m_hwnd.get()); }
-
-auto Window::topmost(bool topmost) -> bool
-{
-    return ::SetWindowPos(m_hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0,
-                          SWP_NOMOVE | SWP_NOSIZE);
-}
-
-auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
-
-auto Window::flash() -> void
-{
-    ::FLASHWINFO fwi{sizeof(::FLASHWINFO)};
-    fwi.hwnd = m_hwnd.get();
-    fwi.dwFlags = FLASHW_CAPTION;
-    fwi.uCount = 1;
-    fwi.dwTimeout = 100;
-
-    ::FlashWindowEx(&fwi);
-}
-
-auto Window::toggle_maximize() -> void
-{
-    auto wp{get_placement()};
-
-    if ((is_overlapped()) && wp.showCmd == 3) { restore(); }
-
-    else { maximize(); }
-}
-
-auto Window::toggle_fullscreen() -> void
-{
-    static RECT pos;
-
-    if (is_overlapped())
-    {
-        ::MONITORINFO mi{sizeof(::MONITORINFO)};
-        ::GetWindowRect(m_hwnd.get(), &pos);
-        if (::GetMonitorInfoA(::MonitorFromWindow(m_hwnd.get(), MONITOR_DEFAULTTONEAREST), &mi))
-        {
-            ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, get_style() & ~WS_OVERLAPPEDWINDOW);
-            ::SetWindowPos(m_hwnd.get(), HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top,
+    if (check_overlapped(hwnd)) {
+        ::MONITORINFO mi {
+            .cbSize { sizeof(::MONITORINFO) },
+            .rcMonitor { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+            .rcWork { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+            .dwFlags { 0 }
+        };
+        ::GetWindowRect(hwnd, &pos);
+        if (::GetMonitorInfoA(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi)) {
+            ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) & ~WS_OVERLAPPEDWINDOW);
+            ::SetWindowPos(hwnd,
+                           HWND_TOP,
+                           mi.rcMonitor.left,
+                           mi.rcMonitor.top,
                            mi.rcMonitor.right - mi.rcMonitor.left,
-                           mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_FRAMECHANGED);
+                           mi.rcMonitor.bottom - mi.rcMonitor.top,
+                           SWP_FRAMECHANGED);
         }
-    }
-
-    else
-    {
-        ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, get_style() | WS_OVERLAPPEDWINDOW);
-        ::SetWindowPos(m_hwnd.get(), nullptr, pos.left, pos.top, (pos.right - pos.left),
-                       (pos.bottom - pos.top), SWP_FRAMECHANGED);
-    }
-}
-
-auto Window::toggle_topmost() -> void
-{
-    if (is_topmost()) { topmost(false); }
-
-    else { topmost(true); }
-
-    flash();
-}
-
-auto Window::center() -> void
-{
-    ::MONITORINFO mi{sizeof(::MONITORINFO)};
-    ::GetMonitorInfoA(::MonitorFromWindow(m_hwnd.get(), MONITOR_DEFAULTTONEAREST), &mi);
-
-    RECT rect{0, 0, 0, 0};
-    ::GetWindowRect(m_hwnd.get(), &rect);
-
-    auto width{static_cast<int>(rect.right - rect.left)};
-    auto height{static_cast<int>(rect.bottom - rect.top)};
-
-    auto x{(static_cast<int>(mi.rcWork.right - mi.rcWork.left) - width) / 2};
-    auto y{(static_cast<int>(mi.rcWork.bottom - mi.rcWork.top) - height) / 2};
-
-    ::SetWindowPos(m_hwnd.get(), nullptr, x, y, width, height, 0);
-}
-
-auto Window::set_title(std::string title) -> bool
-{
-    return ::SetWindowTextA(m_hwnd.get(), title.c_str());
-}
-
-auto Window::set_icon(::HICON icon, bool small, bool big) -> void
-{
-    if (small)
-    {
-        ::SendMessageA(m_hwnd.get(), WM_SETICON, ICON_SMALL, reinterpret_cast<::LPARAM>(icon));
-    }
-
-    if (big)
-    {
-        ::SendMessageA(m_hwnd.get(), WM_SETICON, ICON_BIG, reinterpret_cast<::LPARAM>(icon));
+    } else {
+        ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) | WS_OVERLAPPEDWINDOW);
+        ::SetWindowPos(hwnd,
+                       nullptr,
+                       pos.left,
+                       pos.top,
+                       (pos.right - pos.left),
+                       (pos.bottom - pos.top),
+                       SWP_FRAMECHANGED);
     }
 }
 
-auto Window::border(bool enabled) -> void
-{
-    ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE,
-                        enabled ? (get_style() | WS_BORDER) : (get_style() & ~WS_BORDER));
-    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+auto top(::HWND hwnd) -> bool {
+    return ::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::set_overlapped() -> void
-{
-    ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
-    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+auto bottom(::HWND hwnd) -> bool {
+    return ::SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::is_overlapped() -> bool { return get_style() & WS_OVERLAPPEDWINDOW; }
-
-auto Window::set_popup() -> void
-{
-    ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
-    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+auto topmost(::HWND hwnd) -> bool {
+    return ::SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::is_popup() -> bool { return get_style() & WS_POPUP; }
-
-auto Window::set_child() -> void
-{
-    ::SetWindowLongPtrA(m_hwnd.get(), GWL_STYLE, WS_CHILD);
-    ::SetWindowPos(m_hwnd.get(), nullptr, 0, 0, 0, 0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+auto no_topmost(::HWND hwnd) -> bool {
+    return ::SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::is_child() -> bool { return get_style() & WS_CHILD; }
+auto check_topmost(::HWND hwnd) -> bool { return get_ex_style(hwnd) & WS_EX_TOPMOST; }
 
-auto Window::reparent(::HWND parent) -> void
-{
-    if (parent)
-    {
-        ::SetParent(m_hwnd.get(), parent);
-        set_child();
-    }
+auto toggle_topmost(::HWND hwnd) -> bool {
+    flash(hwnd);
 
-    else
-    {
-        ::SetParent(m_hwnd.get(), nullptr);
-        set_popup();
+    if (check_topmost(hwnd)) {
+        return no_topmost(hwnd);
+    } else {
+        return topmost(hwnd);
     }
 }
 
-auto Window::rect_to_position(const ::RECT& rect) -> Position
-{
-    Position position;
-
-    position.x = rect.left;
-    position.y = rect.top;
-    position.width = rect.right - rect.left;
-    position.height = rect.bottom - rect.top;
-
-    return position;
+auto flash(::HWND hwnd) -> bool {
+    ::FLASHWINFO fwi { .cbSize { sizeof(::FLASHWINFO) },
+                       .hwnd { hwnd },
+                       .dwFlags { FLASHW_CAPTION },
+                       .uCount { 1 },
+                       .dwTimeout { 100 } };
+    return ::FlashWindowEx(&fwi);
 }
 
-auto Window::position_to_rect(const Position& position) -> ::RECT
-{
-    ::RECT rect{};
-
-    rect.left = position.x;
-    rect.top = position.y;
-    rect.right = position.width;
-    rect.bottom = position.height;
-
-    return rect;
+auto cloak(::HWND hwnd) -> void {
+    auto cloak { TRUE };
+    ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
 }
 
-auto Window::position() -> void
-{
-    ::GetClientRect(m_hwnd.get(), &m_client.rect);
-
-    m_client.x = m_client.rect.left;
-    m_client.y = m_client.rect.top;
-    m_client.width = m_client.rect.right - m_client.rect.left;
-    m_client.height = m_client.rect.bottom - m_client.rect.top;
-
-    ::GetWindowRect(m_hwnd.get(), &m_window.rect);
-
-    m_window.x = m_window.rect.left;
-    m_window.y = m_window.rect.top;
-    m_window.width = m_window.rect.right - m_window.rect.left;
-    m_window.height = m_window.rect.bottom - m_window.rect.top;
-
-    m_dpi = get_dpi();
-    m_scale = get_scale();
+auto uncloak(::HWND hwnd) -> void {
+    auto cloak { FALSE };
+    ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
 }
 
-auto Window::resize() -> void { ::SendMessageA(m_hwnd.get(), WM_SIZE, 0, 0); }
+auto check_cloak(::HWND hwnd) -> bool {
+    auto cloaked { DWM_CLOAKED_APP };
+    ::DwmGetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
 
-auto Window::is_dark() -> bool
-{
-    auto settings{winrt::Windows::UI::ViewManagement::UISettings()};
-    auto fg{settings.GetColorValue(winrt::Windows::UI::ViewManagement::UIColorType::Foreground)};
-
-    if (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) return true;
+    switch (cloaked) {
+        case DWM_CLOAKED_APP:
+            return true;
+        case DWM_CLOAKED_INHERITED:
+            return true;
+        case DWM_CLOAKED_SHELL:
+            return true;
+    }
 
     return false;
 }
 
-auto Window::theme() -> void
-{
-    if (is_dark()) { dwm_dark_mode(true); }
-
-    else { dwm_dark_mode(false); }
+auto enable_dark_mode(::HWND hwnd) -> void {
+    auto attribute { TRUE };
+    ::DwmSetWindowAttribute(
+        hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE, &attribute, sizeof(attribute));
 }
 
-auto Window::dwm_dark_mode(bool enabled) -> void
-{
-    if (enabled)
-    {
-        auto useImmersiveDarkMode{TRUE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_USE_IMMERSIVE_DARK_MODE,
-                                &useImmersiveDarkMode, sizeof(useImmersiveDarkMode));
-    }
-
-    else
-    {
-        auto useImmersiveDarkMode{FALSE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_USE_IMMERSIVE_DARK_MODE,
-                                &useImmersiveDarkMode, sizeof(useImmersiveDarkMode));
-    }
+auto disable_dark_mode(::HWND hwnd) -> void {
+    auto attribute { FALSE };
+    ::DwmSetWindowAttribute(
+        hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE, &attribute, sizeof(attribute));
 }
 
-auto Window::dwm_system_backdrop(DWM_SYSTEMBACKDROP_TYPE backdrop) -> void
-{
-    // MARGINS m{-1};
-    ::MARGINS m{0, 0, 0, ::GetSystemMetrics(SM_CYVIRTUALSCREEN)};
-    if (FAILED(::DwmExtendFrameIntoClientArea(m_hwnd.get(), &m))) { return; }
+auto set_backdrop(::HWND hwnd, ::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void {
+    ::MARGINS margins { .cxLeftWidth { 0 },
+                        .cxRightWidth { 0 },
+                        .cyTopHeight { 0 },
+                        .cyBottomHeight { ::GetSystemMetrics(SM_CYVIRTUALSCREEN) } };
 
-    if (FAILED(::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_SYSTEMBACKDROP_TYPE, &backdrop,
-                                       sizeof(&backdrop))))
-    {
-        return;
-    }
+    ::DwmExtendFrameIntoClientArea(hwnd, &margins);
+    ::DwmSetWindowAttribute(
+        hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
 }
 
-auto Window::dwm_rounded_corners(bool enable) -> void
-{
-    if (enable)
-    {
-        auto corner{::DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_ROUND};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_WINDOW_CORNER_PREFERENCE, &corner,
-                                sizeof(corner));
-    }
-
-    else
-    {
-        auto corner{::DWM_WINDOW_CORNER_PREFERENCE::DWMWCP_DONOTROUND};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_WINDOW_CORNER_PREFERENCE, &corner,
-                                sizeof(corner));
-    }
+auto set_round_corners(::HWND hwnd, ::DWM_WINDOW_CORNER_PREFERENCE corner) -> void {
+    ::DwmSetWindowAttribute(
+        hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
 }
 
-auto Window::dwm_cloak(bool enable) -> void
-{
-    if (enable)
-    {
-        auto cloak{TRUE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_CLOAK, &cloak, sizeof(cloak));
-    }
-
-    else
-    {
-        auto cloak{FALSE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_CLOAK, &cloak, sizeof(cloak));
-    }
+auto set_caption_color(::HWND hwnd, ::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &color, sizeof(color));
 }
 
-auto Window::dwm_caption_color(bool enable) -> void
-{
-    if (enable)
-    {
-        auto captionColor{DWMWA_COLOR_DEFAULT};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_CAPTION_COLOR, &captionColor,
-                                sizeof(captionColor));
-    }
-
-    else
-    {
-        auto captionColor{DWMWA_COLOR_NONE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_CAPTION_COLOR, &captionColor,
-                                sizeof(captionColor));
-    }
+auto set_border_color(::HWND hwnd, ::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &color, sizeof(color));
 }
 
-auto Window::dwm_set_caption_color(::COLORREF color) -> void
-{
-    ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_CAPTION_COLOR, &color, sizeof(color));
+auto set_text_color(::HWND hwnd, ::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &color, sizeof(color));
 }
 
-auto Window::dwm_border_color(bool enable) -> void
-{
-    if (enable)
-    {
-        auto borderColor{DWMWA_COLOR_DEFAULT};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_BORDER_COLOR, &borderColor,
-                                sizeof(borderColor));
-    }
+auto set_focus(::HWND hwnd) -> ::HWND { return ::SetFocus(hwnd); }
 
-    else
-    {
-        auto borderColor{DWMWA_COLOR_NONE};
-        ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_BORDER_COLOR, &borderColor,
-                                sizeof(borderColor));
+auto get_focus(::HWND hwnd) -> ::HWND { return ::GetFocus(); }
+
+auto set_foreground(::HWND hwnd) -> bool { return ::SetForegroundWindow(hwnd); }
+
+auto get_foreground(::HWND hwnd) -> ::HWND { return ::GetForegroundWindow(); }
+
+auto set_active(::HWND hwnd) -> ::HWND { return ::SetActiveWindow(hwnd); }
+
+auto get_active(::HWND hwnd) -> ::HWND { return ::GetActiveWindow(); }
+
+auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND { return ::SetParent(hwnd, parent); }
+
+auto get_parent(::HWND hwnd) -> ::HWND { return ::GetParent(hwnd); }
+
+auto bring_to_top(::HWND hwnd) -> bool { return ::BringWindowToTop(hwnd); }
+
+auto close(::HWND hwnd) -> ::LRESULT { return ::SendMessageA(hwnd, WM_CLOSE, 0, 0); }
+
+auto destroy(::HWND hwnd) -> bool { return ::DestroyWindow(hwnd); }
+
+auto get_current_dpi(::HWND hwnd) -> ::UINT { return ::GetDpiForWindow(hwnd); }
+
+auto get_current_scale(::HWND hwnd) -> double {
+    return static_cast<double>(::GetDpiForWindow(hwnd))
+        / static_cast<double>(USER_DEFAULT_SCREEN_DPI);
+}
+
+auto center(::HWND hwnd) -> void {
+    ::MONITORINFO mi { .cbSize { sizeof(::MONITORINFO) },
+                       .rcMonitor {
+                           ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+                       .rcWork { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+                       .dwFlags { 0 } };
+
+    if (::GetMonitorInfoA(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi)) {
+        ::RECT windowRect { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
+        ::GetWindowRect(hwnd, &windowRect);
+
+        auto width { static_cast<int>(windowRect.right - windowRect.left) };
+        auto height { static_cast<int>(windowRect.bottom - windowRect.top) };
+
+        auto x { (static_cast<int>(mi.rcWork.right - mi.rcWork.left) - width) / 2 };
+        auto y { (static_cast<int>(mi.rcWork.bottom - mi.rcWork.top) - height) / 2 };
+
+        ::SetWindowPos(hwnd, nullptr, x, y, width, height, 0);
     }
 }
 
-auto Window::dwm_set_border_color(::COLORREF color) -> void
-{
-    ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_BORDER_COLOR, &color, sizeof(color));
+auto set_placement(::HWND hwnd, const ::WINDOWPLACEMENT* windowPlacement) -> bool {
+    return ::SetWindowPlacement(hwnd, windowPlacement);
 }
 
-auto Window::dwm_set_text_color(::COLORREF color) -> void
-{
-    ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_TEXT_COLOR, &color, sizeof(color));
+auto get_placement(::HWND hwnd, ::WINDOWPLACEMENT* windowPlacement) -> bool {
+    return ::GetWindowPlacement(hwnd, windowPlacement);
 }
 
-auto Window::dwm_reset_text_color() -> void
-{
-    auto textColor{DWMWA_COLOR_DEFAULT};
-    ::DwmSetWindowAttribute(m_hwnd.get(), ::DWMWA_TEXT_COLOR, &textColor, sizeof(textColor));
+auto get_client_rect(::HWND hwnd) -> ::RECT {
+    ::RECT clientRect { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
+    ::GetClientRect(hwnd, &clientRect);
+    return clientRect;
 }
 
-auto CALLBACK Window::StaticWndProc(::HWND hWnd, ::UINT uMsg, ::WPARAM wParam,
-                                    ::LPARAM lParam) -> ::LRESULT
-{
-    auto self{instance_from_wnd_proc<Window>(hWnd, uMsg, lParam)};
+auto get_window_rect(::HWND hwnd) -> ::RECT {
+    ::RECT windowRect { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
+    ::GetWindowRect(hwnd, &windowRect);
+    return windowRect;
+}
 
-    if (self)
-    {
-        switch (uMsg)
-        {
-            case WM_CLOSE: return self->on_close(wParam, lParam);
-            case WM_CREATE: return self->on_create(wParam, lParam);
-            case WM_DPICHANGED: return self->on_dpi_changed(wParam, lParam);
+auto get_style(::HWND hwnd) -> ::DWORD {
+    return static_cast<::DWORD>(::GetWindowLongPtrA(hwnd, GWL_STYLE));
+}
+
+auto get_ex_style(::HWND hwnd) -> ::DWORD {
+    return static_cast<::DWORD>(::GetWindowLongPtrA(hwnd, GWL_EXSTYLE));
+}
+
+auto get_id(::HWND hwnd) -> uintptr_t { return ::GetWindowLongPtrA(hwnd, GWLP_ID); }
+
+auto set_overlapped(::HWND hwnd) -> void {
+    ::SetWindowLongPtrA(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
+    ::SetWindowPos(hwnd,
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto check_overlapped(::HWND hwnd) -> bool { return get_style(hwnd) & WS_OVERLAPPEDWINDOW; }
+
+auto set_child(::HWND hwnd) -> void {
+    ::SetWindowLongPtrA(hwnd, GWL_STYLE, WS_CHILDWINDOW | WS_CLIPSIBLINGS);
+    ::SetWindowPos(hwnd,
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto check_child(::HWND hwnd) -> bool { return get_style(hwnd) & WS_CHILDWINDOW; }
+
+auto set_small_icon(::HWND hwnd, ::HICON hicon) -> void {
+    ::SendMessageA(hwnd, WM_SETICON, ICON_SMALL, reinterpret_cast<::LPARAM>(hicon));
+}
+
+auto set_big_icon(::HWND hwnd, ::HICON hicon) -> void {
+    ::SendMessageA(hwnd, WM_SETICON, ICON_BIG, reinterpret_cast<::LPARAM>(hicon));
+}
+
+auto add_border(::HWND hwnd) -> void {
+    ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) | WS_BORDER);
+    ::SetWindowPos(hwnd,
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto remove_border(::HWND hwnd) -> void {
+    ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) & ~WS_BORDER);
+    ::SetWindowPos(hwnd,
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto check_dark() -> bool {
+    auto uiSettings { winrt::Windows::UI::ViewManagement::UISettings() };
+    auto foregroundColor { uiSettings.GetColorValue(
+        winrt::Windows::UI::ViewManagement::UIColorType::Foreground) };
+
+    if (((5 * foregroundColor.G) + (2 * foregroundColor.R) + foregroundColor.B) > (8 * 128)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+auto def_window_proc(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
+    return ::DefWindowProcA(hwnd, msg, wparam, lparam);
+}
+
+auto CALLBACK window_proc(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
+    switch (msg) {
+        case WM_NCCREATE: {
+            auto create { reinterpret_cast<::CREATESTRUCTA*>(lparam) };
+
+            if (auto self { static_cast<Window*>(create->lpCreateParams) }; self) {
+                ::SetWindowLongPtrA(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
+                self->m_hwnd.reset(hwnd);
+                glow::window::get_placement(hwnd, &self->m_windowPlacement);
+            }
+        } break;
+        case WM_NCDESTROY: {
+            if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrA(hwnd, 0)) }; self) {
+                ::SetWindowLongPtrA(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
+            }
+        } break;
+    }
+
+    if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrA(hwnd, 0)) }; self) {
+        if (self->message(msg)) {
+            return self->message({ hwnd, msg, wparam, lparam });
+        } else {
+            switch (msg) {
+                case WM_CLOSE: {
+                    self->m_hwnd.reset();
+                    return 0;
+                } break;
+            }
         }
-
-        return self->WndProc(uMsg, wParam, lParam);
     }
 
-    else { return ::DefWindowProcA(hWnd, uMsg, wParam, lParam); }
+    return def_window_proc(hwnd, msg, wparam, lparam);
 }
 
-auto Window::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
+auto Window::create(const std::string& title, bool visible) -> void {
+    m_windowClass.lpszClassName = "OverlappedWindow";
+
+    register_class(&m_windowClass);
+
+    if (::CreateWindowExA(0,
+                          m_windowClass.lpszClassName,
+                          title.empty() ? m_windowClass.lpszClassName : title.c_str(),
+                          WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          nullptr,
+                          nullptr,
+                          glow::system::get_instance(),
+                          this)
+        == 0) {
+        throw std::runtime_error(glow::system::get_last_error());
+    }
+
+    if (visible) {
+        glow::window::activate(m_hwnd.get());
+    }
 }
 
-auto Window::on_close(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    m_hwnd.reset();
+auto Window::create(::HWND parent, const std::string& title, bool visible) -> void {
+    m_windowClass.lpszClassName = "ChildWindow";
 
-    return 0;
+    register_class(&m_windowClass);
+
+    if (::CreateWindowExA(0,
+                          m_windowClass.lpszClassName,
+                          title.empty() ? m_windowClass.lpszClassName : title.c_str(),
+                          WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          parent,
+                          reinterpret_cast<::HMENU>(m_id),
+                          glow::system::get_instance(),
+                          this)
+        == 0) {
+        throw std::runtime_error(glow::system::get_last_error());
+    }
+
+    if (visible) {
+        glow::window::activate(m_hwnd.get());
+    }
 }
 
-auto Window::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    position();
+auto Window::create_message_only() -> void {
+    m_windowClass.lpszClassName = "MessageWindow";
 
-    return 0;
+    register_class(&m_windowClass);
+
+    if (::CreateWindowExA(0,
+                          m_windowClass.lpszClassName,
+                          m_windowClass.lpszClassName,
+                          0,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          CW_USEDEFAULT,
+                          HWND_MESSAGE,
+                          nullptr,
+                          glow::system::get_instance(),
+                          this)
+        == 0) {
+        throw std::runtime_error(glow::system::get_last_error());
+    }
 }
 
-auto Window::on_dpi_changed(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    position();
-
-    return 0;
+auto Window::message(::UINT msg,
+                     std::function<::LRESULT(glow::messages::wm message)> callback) -> bool {
+    auto emplace { m_map.try_emplace(msg, callback) };
+    return emplace.second;
 }
-} // namespace glow
+
+auto Window::message(::UINT msg) -> bool { return m_map.contains(msg); }
+
+auto Window::message(glow::messages::wm message) -> ::LRESULT {
+    return m_map.find(message.msg)
+        ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
+}
+
+auto Window::notify(glow::messages::notice notice,
+                    const std::string& message,
+                    const std::string& receiver) -> void {
+    glow::messages::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
+                                                         .idFrom { m_id },
+                                                         .code { std::to_underlying(notice) } },
+                                                .hwndFrom { m_hwnd.get() },
+                                                .idFrom { m_id },
+                                                .notice { notice },
+                                                .message { message } };
+
+    glow::messages::send_message(glow::window::find_message_only(receiver),
+                                 WM_NOTIFY,
+                                 notification.nmhdr.idFrom,
+                                 reinterpret_cast<::LPARAM>(&notification));
+}
+
+auto Window::notify(::HWND receiver,
+                    glow::messages::notice notice,
+                    const std::string& message) -> void {
+    glow::messages::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
+                                                         .idFrom { m_id },
+                                                         .code { std::to_underlying(notice) } },
+                                                .hwndFrom { m_hwnd.get() },
+                                                .idFrom { m_id },
+                                                .notice { notice },
+                                                .message { message } };
+
+    glow::messages::send_message(
+        receiver, WM_NOTIFY, notification.nmhdr.idFrom, reinterpret_cast<::LPARAM>(&notification));
+}
+}; // namespace glow::window

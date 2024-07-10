@@ -1,16 +1,14 @@
+project(examples_window)
+
 add_executable(
-    Glow_ExampleWindow
+    ${PROJECT_NAME}
     WIN32
     )
 
 target_sources(
-    Glow_ExampleWindow
-    PRIVATE "src/window.cxx"
-            "${PROJECT_SOURCE_DIR}/data/glow.manifest"
+    ${PROJECT_NAME}
+    PRIVATE "main.cxx"
+            "${CMAKE_SOURCE_DIR}/data/app.manifest"
     )
 
-target_link_libraries(
-    Glow_ExampleWindow
-    PRIVATE glow::glow
-            common::flags
-    )
+target_link_libraries(${PROJECT_NAME} PRIVATE glow::glow)

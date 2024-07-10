@@ -1,469 +1,184 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// Glow - https://github.com/mthierman/Glow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
-#include "text.hxx"
-#include "webview.hxx"
-#include <gdiplus.h>
-#include <stdexcept>
+#include <glow/text.hxx>
+#include <glow/webview.hxx>
+#include <glow/window.hxx>
 
-namespace glow
-{
-WebView::WebView(::HWND parent, std::function<::HRESULT()> callback, size_t id)
-    : Window("WebView", id, WS_CHILD, 0, 0, 0, 0, 0, parent, reinterpret_cast<::HMENU>(id)),
-      m_callback{callback}
-{}
+namespace glow::webview {
+auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
+    auto browserExecutableFolder { glow::text::utf8_to_utf16(m_browserExecutableFolder.string()) };
+    auto userDataFolder { glow::text::utf8_to_utf16(m_userDataFolder.string()) };
 
-WebView::~WebView()
-{
-    if (m_core)
-    {
-        m_core->remove_ContextMenuRequested(m_tokenContextMenuRequested);
-        m_core->remove_SourceChanged(m_tokenSourceChanged);
-        m_core->remove_NavigationStarting(m_tokenNavigationStarting);
-        m_core->remove_NavigationCompleted(m_tokenNavigationCompleted);
-        m_core->remove_WebMessageReceived(m_tokenWebMessageReceived);
-        m_core->remove_DocumentTitleChanged(m_tokenDocumentTitleChanged);
-        m_core->remove_FaviconChanged(m_tokenFaviconChanged);
+    wil::com_ptr<ICoreWebView2EnvironmentOptions> environmentOptions {
+        Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
+    };
+    wil::com_ptr<ICoreWebView2EnvironmentOptions2> environmentOptions2;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions3> environmentOptions3;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions4> environmentOptions4;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions5> environmentOptions5;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> environmentOptions6;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions7> environmentOptions7;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions8> environmentOptions8;
+
+    if (!m_webViewEnvironmentOptions.AdditionalBrowserArguments.empty()) {
+        environmentOptions->put_AdditionalBrowserArguments(
+            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.AdditionalBrowserArguments)
+                .c_str());
     }
 
-    if (m_controller)
-    {
-        m_controller->remove_AcceleratorKeyPressed(m_tokenAcceleratorKeyPressed);
-        m_controller->remove_ZoomFactorChanged(m_tokenZoomFactorChanged);
-        m_controller->remove_GotFocus(m_tokenGotFocus);
-        m_controller->remove_LostFocus(m_tokenLostFocus);
-        m_controller->remove_MoveFocusRequested(m_tokenMoveFocusRequested);
+    environmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
+        m_webViewEnvironmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
+
+    if (!m_webViewEnvironmentOptions.Language.empty()) {
+        environmentOptions->put_Language(
+            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.Language).c_str());
     }
-}
 
-auto WebView::create_webview(std::function<::HRESULT()> callback) -> ::HRESULT
-{
-    m_environmentOptions = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+    if (!m_webViewEnvironmentOptions.TargetCompatibleBrowserVersion.empty()) {
+        environmentOptions->put_TargetCompatibleBrowserVersion(
+            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.TargetCompatibleBrowserVersion)
+                .c_str());
+    }
 
-    if (!m_environmentOptions) return E_POINTER;
+    environmentOptions2 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions2>();
 
-    m_environmentOptions->put_AreBrowserExtensionsEnabled(TRUE);
-    m_environmentOptions->put_AdditionalBrowserArguments(L"--allow-file-access-from-files");
+    environmentOptions2->put_ExclusiveUserDataFolderAccess(
+        m_webViewEnvironmentOptions.ExclusiveUserDataFolderAccess);
+
+    environmentOptions3 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions3>();
+
+    environmentOptions3->put_IsCustomCrashReportingEnabled(
+        m_webViewEnvironmentOptions.IsCustomCrashReportingEnabled);
+
+    // environmentOptions4 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions4>();
+
+    // environmentOptions4->SetCustomSchemeRegistrations();
+
+    environmentOptions5 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions5>();
+
+    environmentOptions5->put_EnableTrackingPrevention(
+        m_webViewEnvironmentOptions.EnableTrackingPrevention);
+
+    environmentOptions6 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions6>();
+
+    environmentOptions6->put_AreBrowserExtensionsEnabled(
+        m_webViewEnvironmentOptions.AreBrowserExtensionsEnabled);
+
+    environmentOptions7 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions7>();
+
+    environmentOptions7->put_ChannelSearchKind(m_webViewEnvironmentOptions.ChannelSearchKind);
+
+    environmentOptions8 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
+
+    environmentOptions8->put_ScrollBarStyle(COREWEBVIEW2_SCROLLBAR_STYLE_FLUENT_OVERLAY);
 
     return CreateCoreWebView2EnvironmentWithOptions(
-        nullptr, nullptr, m_environmentOptions.Get(),
-        Microsoft::WRL::Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+        m_browserExecutableFolder.c_str(),
+        userDataFolder.c_str(),
+        environmentOptions.get(),
+        wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](::HRESULT errorCode,
-                      ICoreWebView2Environment* createdEnvironment) -> ::HRESULT
-            {
-                if (!createdEnvironment) { return errorCode; }
+                      ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+        auto environment { wil::com_ptr(createdEnvironment) };
+        m_environment = environment.try_query<ICoreWebView2Environment13>();
 
-                return createdEnvironment->CreateCoreWebView2Controller(
-                    m_hwnd.get(),
-                    Microsoft::WRL::Callback<
-                        ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                        [=, this](::HRESULT errorCode,
-                                  ICoreWebView2Controller* createdController) -> ::HRESULT
-                        {
-                            if (!createdController) { return errorCode; }
+        callback();
 
-                            m_initController = createdController;
-                            m_controller = m_initController.try_query<ICoreWebView2Controller4>();
-
-                            if (!m_controller) return E_POINTER;
-
-                            m_controller->put_DefaultBackgroundColor(
-                                COREWEBVIEW2_COLOR{0, 0, 0, 0});
-
-                            m_controller->get_CoreWebView2(m_initCore.put());
-                            m_core = m_initCore.try_query<ICoreWebView2_21>();
-
-                            if (!m_core) return E_POINTER;
-
-                            m_core->get_Settings(m_initSettings.put());
-
-                            m_settings = m_initSettings.try_query<ICoreWebView2Settings8>();
-
-                            if (!m_settings) return E_POINTER;
-
-                            put_settings();
-
-                            add_context_menu_requested();
-                            add_source_changed();
-                            add_navigation_starting();
-                            add_navigation_completed();
-                            add_web_message_received();
-                            add_accelerator_key_pressed();
-                            add_favicon_changed();
-                            add_document_title_changed();
-                            add_zoom_factor_changed();
-                            add_got_focus();
-                            add_lost_focus();
-                            add_move_focus_requested();
-
-                            callback();
-
-                            return S_OK;
-                        })
-                        .Get());
-            })
-            .Get());
+        return S_OK;
+    }).Get());
 }
 
-auto WebView::put_settings() -> ::HRESULT
-{
-    m_settings->put_AreBrowserAcceleratorKeysEnabled(true);
-    m_settings->put_AreDefaultContextMenusEnabled(true);
-    m_settings->put_AreDefaultScriptDialogsEnabled(true);
-    m_settings->put_AreDevToolsEnabled(true);
-    m_settings->put_AreHostObjectsAllowed(true);
-    m_settings->put_HiddenPdfToolbarItems(
-        COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE);
-    m_settings->put_IsBuiltInErrorPageEnabled(true);
-    m_settings->put_IsGeneralAutofillEnabled(true);
-    m_settings->put_IsPasswordAutosaveEnabled(true);
-    m_settings->put_IsPinchZoomEnabled(true);
-    m_settings->put_IsReputationCheckingRequired(true);
-    m_settings->put_IsScriptEnabled(true);
-    m_settings->put_IsStatusBarEnabled(true);
-    m_settings->put_IsSwipeNavigationEnabled(true);
-    m_settings->put_IsWebMessageEnabled(true);
-    m_settings->put_IsZoomControlEnabled(true);
+auto WebView::create(const WebViewEnvironment& webViewEnvironment,
+                     ::HWND hwnd,
+                     std::function<void()> callback) -> ::HRESULT {
+    return webViewEnvironment.m_environment.get()->CreateCoreWebView2Controller(
+        hwnd,
+        wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+            [=, this](::HRESULT errorCode,
+                      ICoreWebView2Controller* createdController) -> ::HRESULT {
+        auto controller { wil::com_ptr(createdController) };
+        m_controller = controller.try_query<ICoreWebView2Controller4>();
+        m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR { 0, 0, 0, 0 });
 
-    return S_OK;
+        wil::com_ptr<ICoreWebView2> core;
+        m_controller->get_CoreWebView2(core.put());
+        m_core = core.try_query<ICoreWebView2_22>();
+
+        wil::com_ptr<ICoreWebView2Settings> settings;
+        m_core->get_Settings(settings.put());
+        m_settings = settings.try_query<ICoreWebView2Settings9>();
+
+        m_settings->put_AreBrowserAcceleratorKeysEnabled(
+            m_webViewSettings.AreBrowserAcceleratorKeysEnabled);
+        m_settings->put_AreDefaultContextMenusEnabled(
+            m_webViewSettings.AreDefaultContextMenusEnabled);
+        m_settings->put_AreDefaultScriptDialogsEnabled(
+            m_webViewSettings.AreDefaultScriptDialogsEnabled);
+        m_settings->put_AreDevToolsEnabled(m_webViewSettings.AreDevToolsEnabled);
+        m_settings->put_AreHostObjectsAllowed(m_webViewSettings.AreHostObjectsAllowed);
+        m_settings->put_HiddenPdfToolbarItems(m_webViewSettings.HiddenPdfToolbarItems);
+        m_settings->put_IsBuiltInErrorPageEnabled(m_webViewSettings.IsBuiltInErrorPageEnabled);
+        m_settings->put_IsGeneralAutofillEnabled(m_webViewSettings.IsGeneralAutofillEnabled);
+        m_settings->put_IsNonClientRegionSupportEnabled(
+            m_webViewSettings.IsNonClientRegionSupportEnabled);
+        m_settings->put_IsPasswordAutosaveEnabled(m_webViewSettings.IsPasswordAutosaveEnabled);
+        m_settings->put_IsPinchZoomEnabled(m_webViewSettings.IsPinchZoomEnabled);
+        m_settings->put_IsReputationCheckingRequired(
+            m_webViewSettings.IsReputationCheckingRequired);
+        m_settings->put_IsScriptEnabled(m_webViewSettings.IsScriptEnabled);
+        m_settings->put_IsStatusBarEnabled(m_webViewSettings.IsStatusBarEnabled);
+        m_settings->put_IsSwipeNavigationEnabled(m_webViewSettings.IsSwipeNavigationEnabled);
+        m_settings->put_IsWebMessageEnabled(m_webViewSettings.IsWebMessageEnabled);
+        m_settings->put_IsZoomControlEnabled(m_webViewSettings.IsZoomControlEnabled);
+
+        callback();
+
+        return S_OK;
+    }).Get());
 }
 
-auto WebView::add_context_menu_requested() -> ::HRESULT
-{
-    return m_core->add_ContextMenuRequested(
-        Microsoft::WRL::Callback<ICoreWebView2ContextMenuRequestedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2ContextMenuRequestedEventArgs* args) -> ::HRESULT
-            { return context_menu_requested_handler(sender, args); })
-            .Get(),
-        &m_tokenContextMenuRequested);
-}
-
-auto WebView::context_menu_requested_handler(
-    ICoreWebView2* sender, ICoreWebView2ContextMenuRequestedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_source_changed() -> ::HRESULT
-{
-    return m_core->add_SourceChanged(
-        Microsoft::WRL::Callback<ICoreWebView2SourceChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
-            {
-                wil::unique_cotaskmem_string source;
-                if (SUCCEEDED(sender->get_Source(&source)))
-                {
-                    m_source.assign(glow::string(source.get()));
-                }
-
-                return source_changed_handler(sender, args);
-            })
-            .Get(),
-        &m_tokenSourceChanged);
-}
-
-auto WebView::source_changed_handler(ICoreWebView2* sender,
-                                     ICoreWebView2SourceChangedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_navigation_starting() -> ::HRESULT
-{
-    return m_core->add_NavigationStarting(
-        Microsoft::WRL::Callback<ICoreWebView2NavigationStartingEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2NavigationStartingEventArgs* args) -> ::HRESULT
-            { return navigation_starting_handler(sender, args); })
-            .Get(),
-        &m_tokenNavigationStarting);
-}
-
-auto WebView::navigation_starting_handler(
-    ICoreWebView2* sender, ICoreWebView2NavigationStartingEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_navigation_completed() -> ::HRESULT
-{
-    return m_core->add_NavigationCompleted(
-        Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT
-            { return navigation_completed_handler(sender, args); })
-            .Get(),
-        &m_tokenNavigationCompleted);
-}
-
-auto WebView::navigation_completed_handler(
-    ICoreWebView2* sender, ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_web_message_received() -> ::HRESULT
-{
-    return m_core->add_WebMessageReceived(
-        Microsoft::WRL::Callback<ICoreWebView2WebMessageReceivedEventHandler>(
-            [=, this](ICoreWebView2* sender,
-                      ICoreWebView2WebMessageReceivedEventArgs* args) -> ::HRESULT
-            { return web_message_received_handler(sender, args); })
-            .Get(),
-        &m_tokenWebMessageReceived);
-}
-
-auto WebView::web_message_received_handler(
-    ICoreWebView2* sender, ICoreWebView2WebMessageReceivedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_document_title_changed() -> ::HRESULT
-{
-    return m_core->add_DocumentTitleChanged(
-        Microsoft::WRL::Callback<ICoreWebView2DocumentTitleChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-            {
-                wil::unique_cotaskmem_string buffer;
-
-                if (SUCCEEDED(m_core->get_DocumentTitle(&buffer)))
-                {
-                    m_title = glow::string(buffer.get());
-                }
-
-                return document_title_changed_handler(sender, args);
-            })
-            .Get(),
-        &m_tokenDocumentTitleChanged);
-}
-
-auto WebView::document_title_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_favicon_changed() -> ::HRESULT
-{
-    return m_core->add_FaviconChanged(
-        Microsoft::WRL::Callback<ICoreWebView2FaviconChangedEventHandler>(
-            [=, this](ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-            {
-                wil::unique_cotaskmem_string buffer;
-                if (SUCCEEDED(m_core->get_FaviconUri(&buffer)))
-                {
-                    m_favicon.first.assign(glow::string(buffer.get()));
-                }
-
-                return favicon_changed_handler(sender, args);
-            })
-            .Get(),
-        &m_tokenFaviconChanged);
-}
-
-auto WebView::favicon_changed_handler(ICoreWebView2* sender, IUnknown* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_accelerator_key_pressed() -> ::HRESULT
-{
-    return m_controller->add_AcceleratorKeyPressed(
-        Microsoft::WRL::Callback<ICoreWebView2AcceleratorKeyPressedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender,
-                      ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> ::HRESULT
-            { return accelerator_key_pressed_handler(sender, args); })
-            .Get(),
-        &m_tokenAcceleratorKeyPressed);
-}
-
-auto WebView::accelerator_key_pressed_handler(
-    ICoreWebView2Controller* sender, ICoreWebView2AcceleratorKeyPressedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_zoom_factor_changed() -> ::HRESULT
-{
-    return m_controller->add_ZoomFactorChanged(
-        Microsoft::WRL::Callback<ICoreWebView2ZoomFactorChangedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-            { return zoom_factor_changed_handler(sender, args); })
-            .Get(),
-        &m_tokenZoomFactorChanged);
-}
-
-auto WebView::zoom_factor_changed_handler(ICoreWebView2Controller* sender,
-                                          IUnknown* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_got_focus() -> ::HRESULT
-{
-    return m_controller->add_GotFocus(
-        Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-            { return got_focus_handler(sender, args); })
-            .Get(),
-        &m_tokenGotFocus);
-}
-
-auto WebView::got_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_lost_focus() -> ::HRESULT
-{
-    return m_controller->add_LostFocus(
-        Microsoft::WRL::Callback<ICoreWebView2FocusChangedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-            { return lost_focus_handler(sender, args); })
-            .Get(),
-        &m_tokenLostFocus);
-}
-
-auto WebView::lost_focus_handler(ICoreWebView2Controller* sender, IUnknown* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::add_move_focus_requested() -> ::HRESULT
-{
-    return m_controller->add_MoveFocusRequested(
-        Microsoft::WRL::Callback<ICoreWebView2MoveFocusRequestedEventHandler>(
-            [=, this](ICoreWebView2Controller* sender,
-                      ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
-            { return move_focus_requested_handler(sender, args); })
-            .Get(),
-        &m_tokenMoveFocusRequested);
-}
-
-auto WebView::move_focus_requested_handler(
-    ICoreWebView2Controller* sender, ICoreWebView2MoveFocusRequestedEventArgs* args) -> ::HRESULT
-{
-    return S_OK;
-}
-
-auto WebView::navigate(std::string url) -> ::HRESULT
-{
-    if (!m_core) { return S_OK; }
-
-    auto wideUrl{glow::wstring(url)};
-
-    if (wideUrl.empty()) { return S_OK; }
-
-    return m_core->Navigate(wideUrl.c_str());
-}
-
-auto WebView::post_json(nlohmann::json message) -> ::HRESULT
-{
-    if (!m_core) { return S_OK; }
-
-    auto wideJson{glow::wstring(message.dump())};
-
-    if (wideJson.empty()) { return S_OK; }
-
-    return m_core->PostWebMessageAsJson(wideJson.c_str());
-}
-
-auto WebView::get_favicon(std::function<::HRESULT()> callback) -> ::HRESULT
-{
-    return m_core->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG,
-                              Microsoft::WRL::Callback<ICoreWebView2GetFaviconCompletedHandler>(
-                                  [=, this](::HRESULT errorCode, ::IStream* iconStream) -> ::HRESULT
-                                  {
-                                      if (FAILED(errorCode)) { return S_OK; }
-
-                                      Gdiplus::Bitmap iconBitmap(iconStream);
-
-                                      iconBitmap.GetHICON(&m_favicon.second);
-
-                                      callback();
-
-                                      return S_OK;
-                                  })
-                                  .Get());
-}
-
-auto WebView::open_dev_tools_window() -> ::HRESULT
-{
-    if (!m_core) { return S_OK; }
-
-    return m_core->OpenDevToolsWindow();
-}
-
-auto WebView::move_focus(COREWEBVIEW2_MOVE_FOCUS_REASON reason) -> ::HRESULT
-{
-    if (!m_controller) { return S_OK; }
-
-    return m_controller->MoveFocus(reason);
-}
-
-auto WebView::put_zoom_factor(double zoomFactor) -> ::HRESULT
-{
-    if (!m_controller) { return S_OK; }
-
-    return m_controller->put_ZoomFactor(zoomFactor);
-}
-
-auto WebView::put_is_visible(bool visible) -> ::HRESULT
-{
-    if (!m_controller) { return S_OK; }
-
-    if (visible) { return m_controller->put_IsVisible(true); }
-
-    else { return m_controller->put_IsVisible(false); }
-}
-
-auto WebView::webview_version() -> std::expected<std::string, ::HRESULT>
-{
-    wil::unique_cotaskmem_string buffer;
-
-    if (auto hr{GetAvailableCoreWebView2BrowserVersionString(nullptr, &buffer)}; FAILED(hr))
-    {
-        return std::unexpected(hr);
+auto WebView::put_bounds(::RECT bounds) -> void {
+    if (m_controller) {
+        m_controller->put_Bounds(bounds);
     }
-
-    return glow::string(buffer.get());
 }
 
-auto WebView::WndProc(::UINT uMsg, ::WPARAM wParam, ::LPARAM lParam) -> ::LRESULT
-{
-    switch (uMsg)
-    {
-        case WM_SIZE: return on_size(wParam, lParam);
+auto WebView::put_bounds(::SIZE size) -> void {
+    if (m_controller) {
+        m_controller->put_Bounds(
+            ::RECT { .left = 0, .top = 0, .right = size.cx, .bottom = size.cy });
     }
-
-    return ::DefWindowProcA(m_hwnd.get(), uMsg, wParam, lParam);
 }
 
-auto WebView::on_create(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    position();
-
-    if (FAILED(create_webview(m_callback)))
-    {
-        throw std::runtime_error("WebView creation failure");
+auto WebView::put_bounds(::HWND hwnd) -> void {
+    if (m_controller) {
+        m_controller->put_Bounds(glow::window::get_client_rect(hwnd));
     }
-
-    return 0;
 }
 
-auto WebView::on_size(::WPARAM wParam, ::LPARAM lParam) -> int
-{
-    if (!m_controller) { return 0; }
-
-    position();
-    m_controller->put_Bounds(m_client.rect);
-
-    return 0;
+auto WebView::navigate(const std::string& url) -> void {
+    if (m_core) {
+        m_core->Navigate(glow::text::utf8_to_utf16(url).c_str());
+    }
 }
-} // namespace glow
+
+auto WebView::navigate(const std::wstring& url) -> void {
+    if (m_core) {
+        m_core->Navigate(url.c_str());
+    }
+}
+
+auto WebView::test() -> void {
+    if (m_core) {
+        // std::wstring title;
+        wil::unique_cotaskmem_string buffer;
+        m_core->get_DocumentTitle(&buffer);
+        // auto test = std::wstring(buffer.get());
+        glow::system::dbg(L"{}", std::wstring(buffer.get()));
+    }
+}
+}; // namespace glow::webview

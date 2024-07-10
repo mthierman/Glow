@@ -1,60 +1,84 @@
 // clang-format off
-// ╔──────────────╗
-// │ ╔═╗╦  ╔═╗╦ ╦ │  Glow - https://github.com/mthierman/Glow
-// │ ║ ╦║  ║ ║║║║ │  SPDX-FileCopyrightText: © 2023 Mike Thierman <mthierman@gmail.com>
-// │ ╚═╝╩═╝╚═╝╚╩╝ │  SPDX-License-Identifier: MIT
-// ╚──────────────╝
+// Glow - https://github.com/mthierman/Glow
+// SPDX-FileCopyrightText: © 2024 Mike Thierman <mthierman@gmail.com>
+// SPDX-License-Identifier: MIT
 // clang-format on
 
-#include "system.hxx"
-#include "text.hxx"
-#include <Windows.h>
+#include <glow/math.hxx>
+#include <glow/text.hxx>
 
-namespace glow
-{
-auto string(std::wstring wstring) -> std::string
-{
-    if (wstring.empty()) return {};
+#include <objbase.h>
 
-    auto safeSize{safe_size<size_t, int>(wstring.length())};
+#include <stdexcept>
 
-    auto length{::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                      wstring.data(), safeSize, nullptr, 0, nullptr, nullptr)};
+#include <wil/win32_helpers.h>
 
-    std::string utf8(length, 0);
+namespace glow::text {
+auto utf8_to_utf16(std::string_view utf8) -> std::wstring {
+    std::wstring utf16;
 
-    if (::WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, wstring.data(),
-                              safeSize, utf8.data(), length, nullptr, nullptr) > 0)
-        return utf8;
+    if (utf8.length() > 0) {
+        int safeSize { glow::math::check_safe_size<int>(utf8.length()) };
 
-    else throw std::runtime_error(glow::last_error_string());
+        auto length { ::MultiByteToWideChar(
+            CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, nullptr, 0) };
+
+        utf16.resize(length);
+
+        if (::MultiByteToWideChar(
+                CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, utf16.data(), length)
+            == 0) {
+            throw std::exception("UTF8 to UTF16 conversion failed");
+        }
+    }
+
+    return utf16;
 }
 
-auto wstring(std::string string) -> std::wstring
-{
-    if (string.empty()) return {};
+auto utf16_to_utf8(std::wstring_view utf16) -> std::string {
+    std::string utf8;
 
-    auto safeSize{safe_size<size_t, int>(string.length())};
+    if (utf16.length() > 0) {
+        int safeSize { glow::math::check_safe_size<int>(utf16.length()) };
 
-    auto length{
-        ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, string.data(), safeSize, nullptr, 0)};
+        auto length { ::WideCharToMultiByte(CP_UTF8,
+                                            WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                            utf16.data(),
+                                            safeSize,
+                                            nullptr,
+                                            0,
+                                            nullptr,
+                                            nullptr) };
 
-    std::wstring utf16(length, 0);
+        utf8.resize(length);
 
-    if (::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, string.data(), safeSize, utf16.data(),
-                              length) > 0)
-        return utf16;
+        if (::WideCharToMultiByte(CP_UTF8,
+                                  WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
+                                  utf16.data(),
+                                  safeSize,
+                                  utf8.data(),
+                                  length,
+                                  nullptr,
+                                  nullptr)
+            == 0) {
+            throw std::exception("UTF16 to UTF8 conversion failed");
+        }
+    }
 
-    else throw std::runtime_error(glow::last_error_string());
+    return utf8;
 }
 
-auto trim(std::string string) -> std::string
-{
-    auto is_space{[](unsigned char c) { return std::isspace(c); }};
+auto guid_to_wstring(const ::GUID& guid) -> std::wstring {
+    wchar_t buffer[wil::guid_string_buffer_length];
 
-    auto trimmed{string | std::views::drop_while(is_space) | std::views::reverse |
-                 std::views::drop_while(is_space) | std::views::reverse};
+    if (::StringFromGUID2(guid, buffer, wil::guid_string_buffer_length) == 0) {
+        throw std::overflow_error("Buffer is too small to contain the string");
+    }
 
-    return {trimmed.begin(), trimmed.end()};
+    return buffer;
 }
-} // namespace glow
+
+auto guid_to_string(const ::GUID& guid) -> std::string {
+    return utf16_to_utf8(guid_to_wstring(guid));
+}
+}; // namespace glow::text
