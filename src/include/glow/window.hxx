@@ -131,20 +131,6 @@ struct Window {
     notify(::HWND receiver, glow::messages::notice notice, const std::string& message = "") -> void;
 
     uintptr_t m_id { glow::math::make_random<uintptr_t>() };
-    wil::unique_hwnd m_hwnd;
-    std::unordered_map<::UINT, std::function<::LRESULT(glow::messages::wm message)>> m_map;
-    ::UINT m_dpi { USER_DEFAULT_SCREEN_DPI };
-    float m_scale { 0.0 };
-
-    ::WINDOWPLACEMENT m_windowPlacement {
-        .length { sizeof(::WINDOWPLACEMENT) },
-        .flags { 0 },
-        .showCmd { 0 },
-        .ptMinPosition { ::POINT { .x { 0 }, .y { 0 } } },
-        .ptMaxPosition { ::POINT { .x { 0 }, .y { 0 } } },
-        .rcNormalPosition { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } }
-    };
-
     ::WNDCLASSEXA m_windowClass {
         .cbSize { sizeof(::WNDCLASSEXA) },
         .style { 0 },
@@ -161,6 +147,18 @@ struct Window {
         .hIconSm { glow::system::load_resource_icon() ? glow::system::load_resource_icon()
                                                       : glow::system::load_system_icon() }
     };
+    ::WINDOWPLACEMENT m_windowPlacement {
+        .length { sizeof(::WINDOWPLACEMENT) },
+        .flags { 0 },
+        .showCmd { 0 },
+        .ptMinPosition { ::POINT { .x { 0 }, .y { 0 } } },
+        .ptMaxPosition { ::POINT { .x { 0 }, .y { 0 } } },
+        .rcNormalPosition { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } }
+    };
+    ::UINT m_dpi { USER_DEFAULT_SCREEN_DPI };
+    float m_scale { 0.0 };
+    std::unordered_map<::UINT, std::function<::LRESULT(glow::messages::wm message)>> m_map;
+    wil::unique_hwnd m_hwnd;
 };
 
 template <typename T> struct WindowManager {
