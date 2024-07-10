@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.29)
 
-project(Glow VERSION 0.0.7)
+project(Glow VERSION 0.0.8)
 
 option(
     GLOW_TESTS
@@ -19,17 +19,6 @@ list(
     CMAKE_MODULE_PATH
     "${PROJECT_SOURCE_DIR}/libs/cmake-modules/"
     )
-
-# include(common)
-# include(nuget)
-# include(packages/wil)
-# include(packages/cppwinrt)
-# include(packages/webview2)
-# include(packages/ada)
-# include(packages/json)
-# include(packages/sqlite)
-
-# include(release_info)
 
 include(cmake-modules)
 
