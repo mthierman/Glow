@@ -2,22 +2,25 @@ function Invoke-DevShell
 {
     [CmdletBinding()]
     param (
-        [ValidateNotNullOrEmpty()]
-        [string]$Arch = 'amd64'
+        [ValidateSet('x86', 'amd64', 'arm', 'arm64')]
+        [string]$Arch = 'amd64',
+        [ValidateSet('x86', 'amd64')]
+        [string]$HostArch = 'amd64'
     )
 
     $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     $vspath = & $vswhere -products * -latest -property installationPath
-    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -HostArch $Arch -Arch $Arch -SkipAutomaticLocation
+    & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -Arch $Arch -HostArch $HostArch -SkipAutomaticLocation
 }
 
 function Invoke-CMake
 {
     [CmdletBinding()]
     param (
-        [ValidateNotNullOrEmpty()]
-        [string]$ConfigurePreset = ($env:CI) ? 'CI' : 'Default',
-        [string]$BuildPreset = ($env:CI) ? 'CI' : 'Default'
+        [ValidateSet('Development', 'CI')]
+        [string]$ConfigurePreset = ($env:CI) ? 'CI' : 'Development',
+        [ValidateSet('Debug', 'Release', 'CI')]
+        [string]$BuildPreset = ($env:CI) ? 'CI' : 'Debug`'
     )
 
     cmake --preset $ConfigurePreset
