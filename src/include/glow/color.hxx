@@ -6,4 +6,24 @@
 
 #pragma once
 
-namespace glow::color { };
+#include <Windows.h>
+
+#include <map>
+#include <string>
+
+#include <winrt/Windows.Foundation.h>
+
+#include <winrt/Windows.UI.ViewManagement.h>
+
+#include <nlohmann/json.hpp>
+
+namespace winrt {
+using namespace winrt::Windows::UI;
+using namespace winrt::Windows::UI::ViewManagement;
+}; // namespace winrt
+
+namespace glow::color {
+auto get_ui_settings() -> winrt::UISettings;
+auto get_color(winrt::UISettings& uiSettings,
+               winrt::UIColorType colorType = winrt::UIColorType::Accent) -> winrt::Color;
+}; // namespace glow::color
