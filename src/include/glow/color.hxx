@@ -15,8 +15,6 @@
 
 #include <winrt/Windows.UI.ViewManagement.h>
 
-// #include <nlohmann/json.hpp>
-
 namespace winrt {
 using namespace winrt::Windows::UI;
 using namespace winrt::Windows::UI::ViewManagement;
