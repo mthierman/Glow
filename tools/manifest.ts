@@ -1,9 +1,9 @@
 import { execSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import manifest from "../../package.json" with { type: "json" };
+import manifest from "../package.json" with { type: "json" };
 
-const outdir = resolve(import.meta.dirname, "..", "..", "build");
+const outdir = resolve(import.meta.dirname, "..", "build");
 
 mkdir(outdir, { recursive: true })
     .then(async () => {

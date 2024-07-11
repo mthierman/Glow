@@ -6,7 +6,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "manifest": "tsc && node --no-warnings=ExperimentalWarning tools/scripts/manifest.js"
+        "manifest": "tsc && node --no-warnings=ExperimentalWarning tools/manifest.js"
     },
     "devDependencies": {
         "@types/node": "^20.14.10",
