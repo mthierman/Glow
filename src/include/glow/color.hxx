@@ -26,4 +26,6 @@ namespace glow::color {
 auto get_ui_settings() -> winrt::UISettings;
 auto get_color(winrt::UISettings& uiSettings,
                winrt::UIColorType colorType = winrt::UIColorType::Accent) -> winrt::Color;
+auto color_to_string(winrt::Color color) -> std::string;
+auto color_to_colorref(winrt::Color color) -> ::COLORREF;
 }; // namespace glow::color
