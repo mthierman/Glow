@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include <glow/color.hxx>
 #include <glow/math.hxx>
 #include <glow/text.hxx>
 
@@ -36,6 +37,12 @@ template <> struct less<::GUID> {
 template <> struct formatter<::GUID> : formatter<string_view> {
     auto format(const ::GUID& guid, format_context& context) const noexcept {
         return formatter<string_view>::format(glow::text::guid_to_string(guid), context);
+    }
+};
+
+template <> struct formatter<winrt::Color> : formatter<string_view> {
+    auto format(const winrt::Color& color, format_context& context) const noexcept {
+        return formatter<string_view>::format(glow::color::color_to_string(color), context);
     }
 };
 

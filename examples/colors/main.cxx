@@ -7,6 +7,7 @@
 auto main() -> int {
     auto uiSettings { glow::system::get_ui_settings() };
     auto color { glow::color::get_color(uiSettings, winrt::UIColorType::Accent) };
+    // glow::system::dbg("{}", color.R);
     glow::system::dbg("{}", color);
 
     return EXIT_SUCCESS;
