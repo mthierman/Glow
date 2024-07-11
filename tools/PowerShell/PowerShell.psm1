@@ -81,7 +81,7 @@ function Publish-Glow
     gh release create $version $archive --notes-file $notes -t $version
 }
 
-function Test-CI
+function Test-GlowCI
 {
     pnpm manifest
     Invoke-DevShell
