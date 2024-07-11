@@ -77,6 +77,8 @@ struct WebView {
     auto put_bounds(::RECT bounds) -> void;
     auto put_bounds(::SIZE size) -> void;
     auto put_bounds(::HWND hwnd) -> void;
+    auto show() -> void;
+    auto hide() -> void;
     auto navigate(const std::string& url) -> void;
     auto navigate(const std::wstring& url) -> void;
     auto test() -> void;

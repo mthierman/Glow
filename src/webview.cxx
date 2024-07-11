@@ -160,6 +160,18 @@ auto WebView::put_bounds(::HWND hwnd) -> void {
     }
 }
 
+auto WebView::show() -> void {
+    if (m_controller) {
+        m_controller->put_IsVisible(true);
+    }
+}
+
+auto WebView::hide() -> void {
+    if (m_controller) {
+        m_controller->put_IsVisible(false);
+    }
+}
+
 auto WebView::navigate(const std::string& url) -> void {
     if (m_core) {
         m_core->Navigate(glow::text::utf8_to_utf16(url).c_str());
