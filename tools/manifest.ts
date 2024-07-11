@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+import { rm } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import manifest from "../package.json" with { type: "json" };
@@ -25,4 +26,7 @@ mkdir(outdir, { recursive: true })
             ),
         );
     })
-    .catch(() => process.exit(1));
+    .catch(() => process.exit(1))
+    .finally(() => {
+        rm(resolve(import.meta.dirname, "manifest.js"), () => {});
+    });
