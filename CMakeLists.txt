@@ -38,7 +38,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "src/include")
 
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE "src/filesystem.cxx"
+    PRIVATE "src/color.cxx"
+            "src/filesystem.cxx"
             "src/input.cxx"
             "src/math.cxx"
             "src/messages.cxx"
