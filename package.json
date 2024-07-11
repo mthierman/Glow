@@ -6,7 +6,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "manifest": "esbuild tools/scripts/manifest.ts --bundle --outdir=build/tools --platform=node --format=esm --packages=external && node build/tools/manifest.js"
+        "manifest": "tsc && node --no-warnings=ExperimentalWarning tools/scripts/manifest.js"
     },
     "devDependencies": {
         "@types/node": "^20.14.10",
