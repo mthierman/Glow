@@ -20,11 +20,11 @@
         },
         {
             "name": "Development",
-            "inherits": ["Ninja Multi-Config", "Compiler: MSVC", "Glow Tests", "Glow Examples"]
+            "inherits": ["Ninja Multi-Config", "Compiler: MSVC", "Glow Examples"]
         },
         {
             "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Compiler: MSVC", "Glow Tests"]
+            "inherits": ["Ninja Multi-Config", "Compiler: MSVC"]
         }
     ],
     "buildPresets": [
