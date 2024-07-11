@@ -131,6 +131,6 @@ struct wm_dpichanged : public wm {
 struct wm_getminmaxinfo : public wm {
     wm_getminmaxinfo(const wm& message)
         : wm(message) { }
-    auto minMaxInfo() -> const ::MINMAXINFO&;
+    auto minMaxInfo() -> ::MINMAXINFO&;
 };
 }; // namespace glow::messages

@@ -94,7 +94,7 @@ auto wm_dpichanged::x() -> ::WORD { return LOWORD(wparam); }
 auto wm_dpichanged::suggestedRect() -> const ::RECT& { return *reinterpret_cast<::RECT*>(lparam); }
 auto wm_dpichanged::userDefaultScreenDpi() -> int { return USER_DEFAULT_SCREEN_DPI; }
 
-auto wm_getminmaxinfo::minMaxInfo() -> const ::MINMAXINFO& {
+auto wm_getminmaxinfo::minMaxInfo() -> ::MINMAXINFO& {
     return *reinterpret_cast<::MINMAXINFO*>(lparam);
 }
 }; // namespace glow::messages
