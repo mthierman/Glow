@@ -6,9 +6,8 @@
 
 #pragma once
 
-#include <Windows.h>
+#include <windef.h>
 
-#include <map>
 #include <string>
 
 #include <winrt/Windows.Foundation.h>
