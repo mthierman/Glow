@@ -42,7 +42,7 @@ template <> struct formatter<::GUID> : formatter<string_view> {
 
 template <> struct formatter<winrt::Color> : formatter<string_view> {
     auto format(const winrt::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::color::color_to_string(color), context);
+        return formatter<string_view>::format(std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A), context);
     }
 };
 
