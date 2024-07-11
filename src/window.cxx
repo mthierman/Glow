@@ -93,6 +93,10 @@ auto toggle_fullscreen(::HWND hwnd) -> void {
     }
 }
 
+auto set_position(::HWND hwnd, int x, int y, int cx, int cy) -> bool {
+    return ::SetWindowPos(hwnd, nullptr, x, y, cx, cy, SWP_NOMOVE);
+}
+
 auto top(::HWND hwnd) -> bool {
     return ::SetWindowPos(hwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }

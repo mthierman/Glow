@@ -40,6 +40,7 @@ auto check_visibility(::HWND hwnd) -> bool;
 auto check_maximize(::HWND hwnd) -> bool;
 auto toggle_maximize(::HWND hwnd) -> bool;
 auto toggle_fullscreen(::HWND hwnd) -> void;
+auto set_position(::HWND hwnd, int x, int y, int cx, int cy) -> bool;
 
 auto top(::HWND hwnd) -> bool;
 auto bottom(::HWND hwnd) -> bool;
