@@ -1,4 +1,4 @@
-project(examples_console)
+project(example_console)
 
 add_executable(${PROJECT_NAME})
 

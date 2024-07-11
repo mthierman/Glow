@@ -1,4 +1,4 @@
-project(examples_window)
+project(example_window)
 
 add_executable(
     ${PROJECT_NAME}

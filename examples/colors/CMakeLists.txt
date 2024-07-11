@@ -1,4 +1,4 @@
-project(examples_colors)
+project(example_colors)
 
 add_executable(${PROJECT_NAME})
 
