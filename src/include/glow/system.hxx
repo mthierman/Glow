@@ -25,8 +25,8 @@
 namespace glow::system {
 auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
                        | COINIT_DISABLE_OLE1DDE) -> wil::unique_couninitialize_call;
-auto gdi_plus_startup() -> ::ULONG_PTR&;
-auto gdi_plus_shutdown(::ULONG_PTR& token) -> void;
+auto gdi_plus_startup() -> ::ULONG_PTR;
+auto gdi_plus_shutdown(::ULONG_PTR token) -> void;
 auto create_process(std::filesystem::path path) -> int;
 auto get_instance() -> ::HMODULE;
 auto abort(::UINT exitCode = EXIT_FAILURE) -> void;

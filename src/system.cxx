@@ -15,9 +15,9 @@ auto co_initialize(::DWORD coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit);
 }
 
-auto gdi_plus_startup() -> ::ULONG_PTR& {
-    thread_local ::ULONG_PTR token;
-    thread_local Gdiplus::GdiplusStartupInput input;
+auto gdi_plus_startup() -> ::ULONG_PTR {
+    ::ULONG_PTR token;
+    Gdiplus::GdiplusStartupInput input;
 
     if (auto status { Gdiplus::GdiplusStartup(&token, &input, nullptr) };
         status != Gdiplus::Status::Ok) {
@@ -27,7 +27,7 @@ auto gdi_plus_startup() -> ::ULONG_PTR& {
     return token;
 }
 
-auto gdi_plus_shutdown(::ULONG_PTR& token) -> void { Gdiplus::GdiplusShutdown(token); }
+auto gdi_plus_shutdown(::ULONG_PTR token) -> void { Gdiplus::GdiplusShutdown(token); }
 
 auto create_process(std::filesystem::path path) -> int {
     ::STARTUPINFOA si { .cb { sizeof(::STARTUPINFOA) },
