@@ -121,6 +121,8 @@ auto format_message(::HRESULT errorCode) -> std::string {
 
 auto get_last_error() -> std::string { return format_message(::GetLastError()); }
 
+auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
+
 auto dbg(const std::string& message) -> void {
     ::OutputDebugStringA(message.c_str());
     ::OutputDebugStringA("\n");

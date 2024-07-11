@@ -10,8 +10,6 @@
 #include <format>
 
 namespace glow::color {
-auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
-
 auto get_color(winrt::UISettings& uiSettings, winrt::UIColorType colorType) -> winrt::Color {
     return uiSettings.GetColorValue(colorType);
 }

@@ -22,6 +22,14 @@
 
 #include <wil/resource.h>
 
+#include <winrt/Windows.Foundation.h>
+
+#include <winrt/Windows.UI.ViewManagement.h>
+
+namespace winrt {
+using namespace winrt::Windows::UI::ViewManagement;
+}; // namespace winrt
+
 namespace glow::system {
 auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
                        | COINIT_DISABLE_OLE1DDE) -> wil::unique_couninitialize_call;
@@ -38,6 +46,7 @@ auto load_resource_icon() -> ::HICON;
 auto make_guid() -> ::GUID;
 auto format_message(::HRESULT errorCode) -> std::string;
 auto get_last_error() -> std::string;
+auto get_ui_settings() -> winrt::UISettings;
 
 auto dbg(const std::string& message) -> void;
 auto dbg(const std::wstring& message) -> void;
