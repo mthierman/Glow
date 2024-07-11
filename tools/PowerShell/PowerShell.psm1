@@ -80,3 +80,12 @@ function Publish-Glow
     gh release delete $version -y
     gh release create $version $archive --notes-file $notes -t $version
 }
+
+function Test-CI
+{
+    pnpm manifest
+    Invoke-DevShell
+    Invoke-CMake
+    Compress-Glow
+    Invoke-CTest
+}
