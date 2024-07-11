@@ -20,7 +20,7 @@ function Invoke-CMake
         [ValidateSet('Development', 'CI')]
         [string]$ConfigurePreset = ($env:CI) ? 'CI' : 'Development',
         [ValidateSet('Debug', 'Release', 'CI')]
-        [string]$BuildPreset = ($env:CI) ? 'CI' : 'Debug`'
+        [string]$BuildPreset = ($env:CI) ? 'CI' : 'Debug'
     )
 
     cmake --preset $ConfigurePreset
@@ -32,7 +32,7 @@ function Invoke-CTest
     [CmdletBinding()]
     param (
         [ValidateNotNullOrEmpty()]
-        [string]$TestPreset = ($env:CI) ? 'CI' : 'Default',
+        [string]$TestPreset = ($env:CI) ? 'CI' : 'Debug',
         [switch]$JSON,
         [switch]$XML
     )
