@@ -48,7 +48,9 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
 auto CALLBACK file_io_completion_routine(::DWORD errorCode,
                                          ::DWORD numberOfBytesTransfered,
                                          ::OVERLAPPED* overlapped) -> void {
-    //
+    auto self { static_cast<Watcher*>(overlapped->hEvent) };
+    glow::system::dbg("{}", self->m_path);
+    self->m_callback();
 }
 
 Watcher::Watcher(std::filesystem::path path, std::function<void()> callback)

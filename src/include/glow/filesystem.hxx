@@ -26,7 +26,7 @@ auto CALLBACK file_io_completion_routine(::DWORD errorCode,
                                          ::OVERLAPPED* overlapped) -> void;
 
 struct Watcher {
-    Watcher(std::filesystem::path path, std::function<void()> callback);
+    Watcher(std::filesystem::path path, std::function<void()> callback = []() {});
     auto readDirectoryChanges() -> bool;
 
     std::filesystem::path m_path;
@@ -35,6 +35,6 @@ struct Watcher {
     std::vector<::BYTE> m_buffer;
 
     ::DWORD m_bytes { 0 };
-    ::OVERLAPPED m_overlapped {};
+    ::OVERLAPPED m_overlapped { .Internal { 0 }, .InternalHigh { 0 }, .hEvent { this } };
 };
 }; // namespace glow::filesystem
