@@ -8,6 +8,7 @@
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 
+#include <wil/resource.h>
 #include <wil/win32_helpers.h>
 
 namespace glow::filesystem {
@@ -43,5 +44,30 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
     }
 
     return tempFolder;
+}
+
+auto file_watcher(std::filesystem::path path, std::function<void()> callback) -> void {
+    auto handle { wil::unique_handle(
+        ::CreateFileA(path.string().c_str(),
+                      FILE_LIST_DIRECTORY,
+                      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                      nullptr,
+                      OPEN_EXISTING,
+                      FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                      nullptr)) };
+
+    std::vector<::BYTE> buffer(0, 4096);
+    ::DWORD bytes { 0 };
+    ::OVERLAPPED overlapped;
+
+    auto readDirectory { ::ReadDirectoryChangesW(
+        handle.get(),
+        buffer.data(),
+        buffer.size(),
+        FALSE,
+        FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_FILE_NAME,
+        &bytes,
+        &overlapped,
+        nullptr) };
 }
 }; // namespace glow::filesystem
