@@ -53,27 +53,26 @@ auto CALLBACK file_io_completion_routine(::DWORD errorCode,
 }
 
 Watcher::Watcher(std::filesystem::path path, std::function<void()> callback)
-    : m_handle { ::CreateFileA(path.string().c_str(),
+    : m_path { path },
+      m_handle { ::CreateFileA(path.string().c_str(),
                                FILE_LIST_DIRECTORY,
                                FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
                                nullptr,
                                OPEN_EXISTING,
                                FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
                                nullptr) },
-      m_callback { callback }
+      m_callback { callback },
+      m_buffer(0, 4096) { }
 
-{ }
-
-auto Watcher::readDirectoryChanges() -> void {
-    // m_buffer.resize();
-    auto readDirectory { ::ReadDirectoryChangesW(
-        m_handle.get(),
-        m_buffer.data(),
-        m_buffer.size(),
-        FALSE,
-        FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_FILE_NAME,
-        &m_bytes,
-        &m_overlapped,
-        file_io_completion_routine) };
+auto Watcher::readDirectoryChanges() -> bool {
+    return ::ReadDirectoryChangesW(m_handle.get(),
+                                   m_buffer.data(),
+                                   m_buffer.size(),
+                                   FALSE,
+                                   FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION
+                                       | FILE_NOTIFY_CHANGE_FILE_NAME,
+                                   &m_bytes,
+                                   &m_overlapped,
+                                   file_io_completion_routine);
 }
 }; // namespace glow::filesystem
