@@ -46,28 +46,34 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
     return tempFolder;
 }
 
-auto file_watcher(std::filesystem::path path, std::function<void()> callback) -> void {
-    auto handle { wil::unique_handle(
-        ::CreateFileA(path.string().c_str(),
-                      FILE_LIST_DIRECTORY,
-                      FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-                      nullptr,
-                      OPEN_EXISTING,
-                      FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
-                      nullptr)) };
+auto CALLBACK file_io_completion_routine(::DWORD errorCode,
+                                         ::DWORD numberOfBytesTransfered,
+                                         ::OVERLAPPED* overlapped) -> void {
+    //
+}
 
-    std::vector<::BYTE> buffer(0, 4096);
-    ::DWORD bytes { 0 };
-    ::OVERLAPPED overlapped;
+Watcher::Watcher(std::filesystem::path path, std::function<void()> callback)
+    : m_handle { ::CreateFileA(path.string().c_str(),
+                               FILE_LIST_DIRECTORY,
+                               FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+                               nullptr,
+                               OPEN_EXISTING,
+                               FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
+                               nullptr) },
+      m_callback { callback }
 
+{ }
+
+auto Watcher::readDirectoryChanges() -> void {
+    // m_buffer.resize();
     auto readDirectory { ::ReadDirectoryChangesW(
-        handle.get(),
-        buffer.data(),
-        buffer.size(),
+        m_handle.get(),
+        m_buffer.data(),
+        m_buffer.size(),
         FALSE,
         FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_FILE_NAME,
-        &bytes,
-        &overlapped,
-        nullptr) };
+        &m_bytes,
+        &m_overlapped,
+        file_io_completion_routine) };
 }
 }; // namespace glow::filesystem

@@ -9,8 +9,8 @@
 #include <ShlObj.h>
 #include <Windows.h>
 
-#include <functional>
 #include <filesystem>
+#include <functional>
 #include <initializer_list>
 #include <string>
 
@@ -18,5 +18,20 @@ namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
 auto temp_folder(std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
-auto file_watcher(std::filesystem::path path, std::function<void()> callback) -> void;
+
+auto CALLBACK file_io_completion_routine(::DWORD errorCode,
+                                         ::DWORD numberOfBytesTransfered,
+                                         ::OVERLAPPED* overlapped) -> void;
+
+struct Watcher {
+    Watcher(std::filesystem::path path, std::function<void()> callback);
+    auto readDirectoryChanges() -> void;
+
+    wil::unique_handle m_handle;
+    std::function<void()> m_callback;
+
+    std::vector<::BYTE> m_buffer;
+    ::DWORD m_bytes { 0 };
+    ::OVERLAPPED m_overlapped;
+};
 }; // namespace glow::filesystem
