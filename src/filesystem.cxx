@@ -8,7 +8,6 @@
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 
-#include <wil/resource.h>
 #include <wil/win32_helpers.h>
 
 namespace glow::filesystem {
@@ -62,12 +61,12 @@ Watcher::Watcher(std::filesystem::path path, std::function<void()> callback)
                                FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
                                nullptr) },
       m_callback { callback },
-      m_buffer(0, 4096) { }
+      m_buffer(4096) { }
 
 auto Watcher::readDirectoryChanges() -> bool {
     return ::ReadDirectoryChangesW(m_handle.get(),
                                    m_buffer.data(),
-                                   m_buffer.size(),
+                                   static_cast<::DWORD>(m_buffer.size()),
                                    FALSE,
                                    FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_CREATION
                                        | FILE_NOTIFY_CHANGE_FILE_NAME,

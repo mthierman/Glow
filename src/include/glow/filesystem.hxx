@@ -14,6 +14,8 @@
 #include <initializer_list>
 #include <string>
 
+#include <wil/resource.h>
+
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
@@ -33,6 +35,6 @@ struct Watcher {
     std::vector<::BYTE> m_buffer;
 
     ::DWORD m_bytes { 0 };
-    ::OVERLAPPED m_overlapped;
+    ::OVERLAPPED m_overlapped {};
 };
 }; // namespace glow::filesystem
