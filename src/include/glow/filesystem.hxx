@@ -21,10 +21,11 @@ auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
 auto temp_folder(std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
 
+// https://qualapps.blogspot.com/2010/05/understanding-readdirectorychangesw.html
+// https://qualapps.blogspot.com/2010/05/understanding-readdirectorychangesw_19.html
 auto CALLBACK file_io_completion_routine(::DWORD errorCode,
                                          ::DWORD numberOfBytesTransfered,
                                          ::OVERLAPPED* overlapped) -> void;
-
 struct Watcher {
     Watcher(std::filesystem::path path, std::function<void()> callback = []() {});
     auto readDirectoryChanges() -> bool;

@@ -51,6 +51,7 @@ auto CALLBACK file_io_completion_routine(::DWORD errorCode,
     auto self { static_cast<Watcher*>(overlapped->hEvent) };
     glow::system::dbg("{}", self->m_path);
     self->m_callback();
+    self->readDirectoryChanges();
 }
 
 Watcher::Watcher(std::filesystem::path path, std::function<void()> callback)
