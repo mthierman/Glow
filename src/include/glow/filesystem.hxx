@@ -25,7 +25,7 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders = {}) -> std
 // https://qualapps.blogspot.com/2010/05/understanding-readdirectorychangesw_19.html
 auto CALLBACK file_io_completion_routine(::DWORD errorCode,
                                          ::DWORD numberOfBytesTransfered,
-                                         ::OVERLAPPED* overlapped) -> void;
+                                         ::LPOVERLAPPED overlapped) -> void;
 struct Watcher {
     Watcher(std::filesystem::path path, std::function<void()> callback = []() {});
     auto readDirectoryChanges() -> bool;
@@ -34,6 +34,7 @@ struct Watcher {
     wil::unique_handle m_handle;
     std::function<void()> m_callback;
     std::vector<::BYTE> m_buffer;
+    // FILE_NOTIFY_INFORMATION m_buffer {};
 
     ::DWORD m_bytes { 0 };
     ::OVERLAPPED m_overlapped { .Internal { 0 }, .InternalHigh { 0 }, .hEvent { this } };
