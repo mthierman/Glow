@@ -56,9 +56,9 @@ target_link_libraries(
     PRIVATE common::flags
     PUBLIC common::features
            common::definitions
-           ms::wil
-           ms::cppwinrt
-           ms::webview2
+           microsoft::wil
+           microsoft::cppwinrt
+           microsoft::webview2
            dwmapi.lib
            gdiplus.lib
            WindowsApp.lib
