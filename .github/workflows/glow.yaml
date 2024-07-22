@@ -40,8 +40,8 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
-          Invoke-Manifest
           Invoke-DevShell
+          New-GlowManifest
           Invoke-CMake
           Compress-Glow
           Publish-Glow
