@@ -1,1 +1,1 @@
-ipmo .\tools\PowerShell\
+Import-Module .\tools\PowerShell\
