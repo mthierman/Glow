@@ -28,25 +28,6 @@ jobs:
           token: ${{ secrets.WEBSITE }}
           path: mthierman.com
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "*"
-          check-latest: true
-          cache: "pnpm"
-          cache-dependency-path: glow/pnpm-lock.yaml
-
-      - name: Install node_modules
-        run: |
-          Set-Location ${{ github.workspace }}\glow
-          pnpm install
-          pnpm manifest
-
       - name: Cache
         uses: actions/cache@v4
         id: deps
@@ -59,6 +40,7 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
+          Invoke-Manifest
           Invoke-DevShell
           Invoke-CMake
           Compress-Glow

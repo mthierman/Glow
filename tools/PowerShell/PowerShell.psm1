@@ -1,4 +1,4 @@
-function New-Manifest
+function Invoke-Manifest
 {
     if (!(Test-Path "build")) { New-Item -ItemType Directory "build" }
     $manifest = Get-Content "package.json" | ConvertFrom-Json
