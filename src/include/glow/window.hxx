@@ -157,7 +157,7 @@ struct Window {
         .rcNormalPosition { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } }
     };
     ::UINT m_dpi { USER_DEFAULT_SCREEN_DPI };
-    float m_scale { 0.0 };
+    double m_scale { 0.0 };
     std::unordered_map<::UINT, std::function<::LRESULT(glow::messages::wm message)>> m_map;
     wil::unique_hwnd m_hwnd;
 };

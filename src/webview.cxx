@@ -101,6 +101,7 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
             [=, this](::HRESULT errorCode,
                       ICoreWebView2Controller* createdController) -> ::HRESULT {
         auto controller { wil::com_ptr(createdController) };
+        glow::system::dbg("{}", glow::system::get_last_error());
         m_controller = controller.try_query<ICoreWebView2Controller4>();
         m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR { 0, 0, 0, 0 });
 

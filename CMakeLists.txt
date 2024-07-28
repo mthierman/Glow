@@ -53,7 +53,6 @@ target_sources(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE common::flags
     PUBLIC common::features
            common::definitions
            microsoft::wil
