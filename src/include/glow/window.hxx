@@ -92,7 +92,9 @@ auto get_placement(::HWND hwnd, ::WINDOWPLACEMENT* windowPlacement) -> bool;
 auto get_client_rect(::HWND hwnd) -> ::RECT;
 auto get_window_rect(::HWND hwnd) -> ::RECT;
 
+auto set_style(::HWND hwnd, ::DWORD style) -> ::DWORD;
 auto get_style(::HWND hwnd) -> ::DWORD;
+auto set_ex_style(::HWND hwnd, ::DWORD exStyle) -> ::DWORD;
 auto get_ex_style(::HWND hwnd) -> ::DWORD;
 auto get_id(::HWND hwnd) -> uintptr_t;
 

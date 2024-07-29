@@ -94,7 +94,7 @@ auto toggle_fullscreen(::HWND hwnd) -> void {
 }
 
 auto set_position(::HWND hwnd, int x, int y, int cx, int cy) -> bool {
-    return ::SetWindowPos(hwnd, nullptr, x, y, cx, cy, SWP_NOMOVE);
+    return ::SetWindowPos(hwnd, nullptr, x, y, cx, cy, 0);
 }
 
 auto top(::HWND hwnd) -> bool {
@@ -270,8 +270,16 @@ auto get_window_rect(::HWND hwnd) -> ::RECT {
     return windowRect;
 }
 
+auto set_style(::HWND hwnd, DWORD style) -> ::DWORD {
+    return static_cast<::DWORD>(::SetWindowLongPtrA(hwnd, GWL_STYLE, style));
+}
+
 auto get_style(::HWND hwnd) -> ::DWORD {
     return static_cast<::DWORD>(::GetWindowLongPtrA(hwnd, GWL_STYLE));
+}
+
+auto set_ex_style(::HWND hwnd, DWORD exStyle) -> ::DWORD {
+    return static_cast<::DWORD>(::SetWindowLongPtrA(hwnd, GWL_EXSTYLE, style));
 }
 
 auto get_ex_style(::HWND hwnd) -> ::DWORD {
