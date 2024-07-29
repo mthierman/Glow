@@ -123,6 +123,8 @@ struct Window {
     auto create(::HWND parent, const std::string& title = "", bool visible = true) -> void;
     auto create_message_only() -> void;
 
+    auto close() -> void;
+
     auto message(::UINT msg, std::function<::LRESULT(glow::messages::wm message)> callback) -> bool;
     auto message(::UINT msg) -> bool;
     auto message(glow::messages::wm message) -> ::LRESULT;

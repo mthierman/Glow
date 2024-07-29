@@ -468,6 +468,8 @@ auto Window::create_message_only() -> void {
     }
 }
 
+auto Window::close() -> void { m_hwnd.reset(); }
+
 auto Window::message(::UINT msg,
                      std::function<::LRESULT(glow::messages::wm message)> callback) -> bool {
     auto emplace { m_map.try_emplace(msg, callback) };
