@@ -142,16 +142,23 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
     }).Get());
 }
 
-auto WebView::put_bounds(::RECT bounds) -> void {
+auto WebView::put_bounds(::RECT& rect) -> void {
     if (m_controller) {
-        m_controller->put_Bounds(bounds);
+        m_controller->put_Bounds(rect);
     }
 }
 
-auto WebView::put_bounds(::SIZE size) -> void {
+auto WebView::put_bounds(::SIZE& size) -> void {
     if (m_controller) {
         m_controller->put_Bounds(
             ::RECT { .left = 0, .top = 0, .right = size.cx, .bottom = size.cy });
+    }
+}
+
+auto WebView::put_bounds(::WINDOWPOS& windowPos) -> void {
+    if (m_controller) {
+        m_controller->put_Bounds(
+            ::RECT { .left = 0, .top = 0, .right = windowPos.cx, .bottom = windowPos.cy });
     }
 }
 
