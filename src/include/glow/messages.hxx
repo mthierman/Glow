@@ -133,4 +133,10 @@ struct wm_getminmaxinfo : public wm {
         : wm(message) { }
     auto minMaxInfo() -> ::MINMAXINFO&;
 };
+
+struct wm_windowposchanged : public wm {
+    wm_windowposchanged(const wm& message)
+        : wm(message) { }
+    auto windowPos() -> ::WINDOWPOS&;
+};
 }; // namespace glow::messages

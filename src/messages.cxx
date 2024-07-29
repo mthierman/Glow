@@ -97,4 +97,8 @@ auto wm_dpichanged::userDefaultScreenDpi() -> int { return USER_DEFAULT_SCREEN_D
 auto wm_getminmaxinfo::minMaxInfo() -> ::MINMAXINFO& {
     return *reinterpret_cast<::MINMAXINFO*>(lparam);
 }
+
+auto wm_windowposchanged::windowPos() -> ::WINDOWPOS& {
+    return *reinterpret_cast<::WINDOWPOS*>(lparam);
+}
 }; // namespace glow::messages
