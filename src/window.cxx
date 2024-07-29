@@ -270,7 +270,7 @@ auto get_window_rect(::HWND hwnd) -> ::RECT {
     return windowRect;
 }
 
-auto set_style(::HWND hwnd, DWORD style) -> ::DWORD {
+auto set_style(::HWND hwnd, ::DWORD style) -> ::DWORD {
     return static_cast<::DWORD>(::SetWindowLongPtrA(hwnd, GWL_STYLE, style));
 }
 
@@ -278,8 +278,8 @@ auto get_style(::HWND hwnd) -> ::DWORD {
     return static_cast<::DWORD>(::GetWindowLongPtrA(hwnd, GWL_STYLE));
 }
 
-auto set_ex_style(::HWND hwnd, DWORD exStyle) -> ::DWORD {
-    return static_cast<::DWORD>(::SetWindowLongPtrA(hwnd, GWL_EXSTYLE, style));
+auto set_ex_style(::HWND hwnd, ::DWORD exStyle) -> ::DWORD {
+    return static_cast<::DWORD>(::SetWindowLongPtrA(hwnd, GWL_EXSTYLE, exStyle));
 }
 
 auto get_ex_style(::HWND hwnd) -> ::DWORD {
