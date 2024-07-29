@@ -92,6 +92,8 @@ auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
     }).Get());
 }
 
+auto WebViewEnvironment::close() -> void { m_environment.reset(); }
+
 auto WebView::create(const WebViewEnvironment& webViewEnvironment,
                      ::HWND hwnd,
                      std::function<void()> callback) -> ::HRESULT {
@@ -140,6 +142,12 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
 
         return S_OK;
     }).Get());
+}
+
+auto WebView::close() -> void {
+    m_settings.reset();
+    m_core.reset();
+    m_controller.reset();
 }
 
 auto WebView::put_bounds(::RECT& rect) -> void {

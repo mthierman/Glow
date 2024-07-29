@@ -63,6 +63,7 @@ struct WebViewSettings {
 
 struct WebViewEnvironment {
     auto create(std::function<void()> callback = []() {}) -> ::HRESULT;
+    auto close() -> void;
 
     WebViewEnvironmentOptions m_webViewEnvironmentOptions;
     std::filesystem::path m_userDataFolder;
@@ -74,6 +75,7 @@ struct WebView {
     auto create(const WebViewEnvironment& webViewEnvironment,
                 ::HWND hwnd,
                 std::function<void()> callback = []() {}) -> ::HRESULT;
+    auto close() -> void;
     auto put_bounds(::RECT& rect) -> void;
     auto put_bounds(::SIZE& size) -> void;
     auto put_bounds(::WINDOWPOS& windowPos) -> void;
