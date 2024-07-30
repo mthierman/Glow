@@ -88,15 +88,16 @@ target_sources(
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE common::flags
-    PUBLIC common::features
-           common::definitions
-           microsoft::wil
-           microsoft::cppwinrt
-           microsoft::webview2
-           dwmapi.lib
-           gdiplus.lib
-           WindowsApp.lib
+    PRIVATE common::compile_features
+            common::compile_definitions
+            common::compile_options
+            common::link_options
+            microsoft::wil
+            microsoft::cppwinrt
+            microsoft::webview2
+            dwmapi.lib
+            gdiplus.lib
+            WindowsApp.lib
     )
 
 if(GLOW_EXAMPLES)

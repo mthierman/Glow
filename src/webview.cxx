@@ -81,7 +81,7 @@ auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
         userDataFolder.c_str(),
         environmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [=, this](::HRESULT errorCode,
+            [=, this](::HRESULT /* errorCode */,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
         auto environment { wil::com_ptr(createdEnvironment) };
         m_environment = environment.try_query<ICoreWebView2Environment13>();
@@ -100,7 +100,7 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
     return webViewEnvironment.m_environment.get()->CreateCoreWebView2Controller(
         hwnd,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [=, this](::HRESULT errorCode,
+            [=, this](::HRESULT /* errorCode */,
                       ICoreWebView2Controller* createdController) -> ::HRESULT {
         auto controller { wil::com_ptr(createdController) };
         glow::system::dbg("{}", glow::system::get_last_error());

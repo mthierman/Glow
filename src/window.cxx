@@ -202,15 +202,15 @@ auto set_text_color(::HWND hwnd, ::COLORREF color) -> void {
 
 auto set_focus(::HWND hwnd) -> ::HWND { return ::SetFocus(hwnd); }
 
-auto get_focus(::HWND hwnd) -> ::HWND { return ::GetFocus(); }
+auto get_focus() -> ::HWND { return ::GetFocus(); }
 
 auto set_foreground(::HWND hwnd) -> bool { return ::SetForegroundWindow(hwnd); }
 
-auto get_foreground(::HWND hwnd) -> ::HWND { return ::GetForegroundWindow(); }
+auto get_foreground() -> ::HWND { return ::GetForegroundWindow(); }
 
 auto set_active(::HWND hwnd) -> ::HWND { return ::SetActiveWindow(hwnd); }
 
-auto get_active(::HWND hwnd) -> ::HWND { return ::GetActiveWindow(); }
+auto get_active() -> ::HWND { return ::GetActiveWindow(); }
 
 auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND { return ::SetParent(hwnd, parent); }
 

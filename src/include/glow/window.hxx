@@ -65,13 +65,13 @@ auto set_border_color(::HWND hwnd, ::COLORREF color) -> void;
 auto set_text_color(::HWND hwnd, ::COLORREF color) -> void;
 
 auto set_focus(::HWND hwnd) -> ::HWND;
-auto get_focus(::HWND hwnd) -> ::HWND;
+auto get_focus() -> ::HWND;
 
 auto set_foreground(::HWND hwnd) -> bool;
-auto get_foreground(::HWND hwnd) -> ::HWND;
+auto get_foreground() -> ::HWND;
 
 auto set_active(::HWND hwnd) -> ::HWND;
-auto get_active(::HWND hwnd) -> ::HWND;
+auto get_active() -> ::HWND;
 
 auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND;
 auto get_parent(::HWND hwnd) -> ::HWND;

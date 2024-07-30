@@ -35,12 +35,13 @@ winrt::IAsyncAction WebViewEnvironment::create(::HWND hwnd) {
 
     controller.Bounds(rect);
 
-    core.SourceChanged([](const winrt::CoreWebView2& sender,
+    core.SourceChanged([](const winrt::CoreWebView2& /* sender */,
                           const winrt::CoreWebView2SourceChangedEventArgs& args) {
         glow::system::dbg("SourceChanged: {}", args.IsNewDocument());
     });
 
-    core.NavigationCompleted([](const winrt::CoreWebView2& sender,
-                                const winrt::CoreWebView2NavigationCompletedEventArgs& args) {});
+    core.NavigationCompleted(
+        [](const winrt::CoreWebView2& /* sender */,
+           const winrt::CoreWebView2NavigationCompletedEventArgs& /* args */) {});
 }
 }; // namespace glow::webviewrt
