@@ -14,14 +14,13 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout
+      - name: Checkout Glow
         uses: actions/checkout@v4
         with:
           fetch-depth: 5
-          submodules: recursive
           path: glow
 
-      - name: Checkout website
+      - name: Checkout mthierman.pages.dev
         uses: actions/checkout@v4
         with:
           repository: mthierman/mthierman.com
@@ -34,7 +33,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/glow/build/_deps
-          key: deps-${{ hashFiles('glow/CMakeLists.txt') }}
+          key: deps-${{ hashFiles('glow/cmake/deps.cmake') }}
 
       - name: CMake
         run: |
