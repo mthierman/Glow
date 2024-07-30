@@ -27,18 +27,3 @@ fetch_webview2(
     VERSION
     1.0.2592.51
     )
-
-fetch_ada(
-    VERSION
-    2.8.0
-    )
-
-fetch_json(
-    VERSION
-    3.11.3
-    )
-
-fetch_sqlite(
-    VERSION
-    3460000
-    )
