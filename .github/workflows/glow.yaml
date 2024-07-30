@@ -39,17 +39,19 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
-          Invoke-DevShell
-          New-GlowManifest
-          Invoke-CMake
-          Compress-Glow
-          Publish-Glow
 
-      - name: CTest
-        run: |
-          Set-Location ${{ github.workspace }}\glow
-          Import-Module ${{ github.workspace }}\glow\tools\PowerShell
-          Invoke-CTest
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vspath = & $vswhere -products * -latest -property installationPath
+          & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -Arch $Arch -HostArch $HostArch -SkipAutomaticLocation
+
+          New-GlowManifest
+
+          cmake --preset "Ninja MSVC"
+          cmake --build --preset "Ninja MSVC Release"
+
+          Compress-Glow
+
+          Publish-Glow
 
       - name: Update website
         run: |
