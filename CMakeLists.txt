@@ -27,15 +27,39 @@ list(
 
 include(cmake-modules)
 
-install_common()
-install_wil(1.0.240122.1)
-install_cppwinrt(2.0.240405.15)
-install_webview2(1.0.2592.51)
-install_ada(2.8.0)
-install_json(3.11.3)
-install_sqlite(3460000)
-generate_cppwinrt()
-release_info()
+fetch_common()
+
+fetch_wil(
+    VERSION
+    1.0.240122.1
+    )
+
+fetch_cppwinrt(
+    VERSION
+    2.0.240405.15
+    )
+
+fetch_webview2(
+    VERSION
+    1.0.2592.51
+    )
+
+fetch_ada(
+    VERSION
+    2.8.0
+    )
+
+fetch_json(
+    VERSION
+    3.11.3
+    )
+
+fetch_sqlite(
+    VERSION
+    3460000
+    )
+
+make_release_info()
 
 add_library(${PROJECT_NAME})
 
