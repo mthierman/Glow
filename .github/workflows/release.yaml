@@ -47,9 +47,15 @@ jobs:
           .\powershell-scripts\dev.ps1
           cmake --preset "Ninja MSVC"
           cmake --build --preset "Ninja MSVC Release"
-          .\scripts\manifest.ps1
-          .\scripts\compress.ps1
-          .\scripts\publish.ps1
+
+      - name: Generate manifest
+        run: .\scripts\manifest.ps1
+
+      - name: Compress build
+        run: .\scripts\compress.ps1
+
+      - name: Publish build
+        run: .\scripts\publish.ps1
 
       - name: Update website
         run: |
