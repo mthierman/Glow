@@ -8,13 +8,7 @@ option(
     OFF
     )
 
-list(
-    APPEND
-    CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
-    )
-
-include(deps)
+include(cmake/deps.cmake)
 
 add_library(${PROJECT_NAME})
 
