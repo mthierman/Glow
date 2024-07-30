@@ -27,8 +27,6 @@ list(
 
 include(cmake-modules)
 
-add_subdirectory(libs/cmake-modules/common)
-
 install_wil(1.0.240122.1)
 install_cppwinrt(2.0.240405.15)
 install_webview2(1.0.2592.51)
