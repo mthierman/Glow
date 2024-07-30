@@ -76,9 +76,9 @@ struct WebView {
                 ::HWND hwnd,
                 std::function<void()> callback = []() {}) -> ::HRESULT;
     auto close() -> void;
-    auto put_bounds(::RECT& rect) -> void;
-    auto put_bounds(::SIZE& size) -> void;
-    auto put_bounds(::WINDOWPOS& windowPos) -> void;
+    auto put_bounds(::RECT rect) -> void;
+    auto put_bounds(::SIZE size) -> void;
+    auto put_bounds(::WINDOWPOS windowPos) -> void;
     auto put_bounds(::HWND hwnd) -> void;
     auto show() -> void;
     auto hide() -> void;

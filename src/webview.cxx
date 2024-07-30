@@ -150,20 +150,20 @@ auto WebView::close() -> void {
     m_controller.reset();
 }
 
-auto WebView::put_bounds(::RECT& rect) -> void {
+auto WebView::put_bounds(::RECT rect) -> void {
     if (m_controller) {
         m_controller->put_Bounds(rect);
     }
 }
 
-auto WebView::put_bounds(::SIZE& size) -> void {
+auto WebView::put_bounds(::SIZE size) -> void {
     if (m_controller) {
         m_controller->put_Bounds(
             ::RECT { .left = 0, .top = 0, .right = size.cx, .bottom = size.cy });
     }
 }
 
-auto WebView::put_bounds(::WINDOWPOS& windowPos) -> void {
+auto WebView::put_bounds(::WINDOWPOS windowPos) -> void {
     if (m_controller) {
         m_controller->put_Bounds(
             ::RECT { .left = 0, .top = 0, .right = windowPos.cx, .bottom = windowPos.cy });
