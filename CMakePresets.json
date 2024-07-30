@@ -1,13 +1,87 @@
 {
     "$schema": "https://raw.githubusercontent.com/Kitware/CMake/master/Help/manual/presets/schema.json",
-    "version": 8,
+    "version": 9,
     "cmakeMinimumRequired": {
         "major": 3,
-        "minor": 29,
+        "minor": 30,
         "patch": 0
     },
-    "include": ["libs/cmake-modules/CMakePresets.json"],
     "configurePresets": [
+        {
+            "name": "Generator: Visual Studio",
+            "hidden": true,
+            "generator": "Visual Studio 17 2022"
+        },
+        {
+            "name": "Generator: Ninja",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+        {
+            "name": "Generator: Ninja Multi-Config",
+            "hidden": true,
+            "generator": "Ninja Multi-Config"
+        },
+        {
+            "name": "Compiler: MSVC",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl",
+                "CMAKE_CXX_COMPILER": "cl"
+            }
+        },
+        {
+            "name": "Compiler: Clang",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++"
+            }
+        },
+        {
+            "name": "Architecture",
+            "hidden": true,
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            }
+        },
+        {
+            "name": "Toolset",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "v143,host=x64"
+            }
+        },
+        {
+            "name": "CMake: Unity Build",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_UNITY_BUILD": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "Visual Studio",
+            "hidden": true,
+            "inherits": ["Generator: Visual Studio", "Architecture", "Toolset"],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Ninja",
+            "hidden": true,
+            "inherits": ["Generator: Ninja", "Architecture", "Toolset"],
+            "binaryDir": "${sourceDir}/build"
+        },
+        {
+            "name": "Ninja Multi-Config",
+            "hidden": true,
+            "inherits": ["Generator: Ninja Multi-Config", "Architecture", "Toolset"],
+            "binaryDir": "${sourceDir}/build"
+        },
         {
             "name": "Glow Examples",
             "hidden": true,
@@ -28,6 +102,14 @@
         }
     ],
     "buildPresets": [
+        {
+            "name": "MSBuild",
+            "hidden": true,
+            "nativeToolOptions": [
+                "/p:UseMultiToolTask=true",
+                "/p:EnforceProcessCountAcrossBuilds=true"
+            ]
+        },
         {
             "name": "Debug",
             "configurePreset": "Development",
