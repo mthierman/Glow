@@ -4,7 +4,7 @@ param (
 )
 
 $version = "v$((Get-Content "build/manifest.json" | ConvertFrom-Json).version)"
-$notes = Get-Item "build/notes/release_notes"
+$notes = git --no-pager log -5 --oneline --no-decorate
 $archive = Get-Item "build/Glow.zip"
 
 gh release delete $version -y

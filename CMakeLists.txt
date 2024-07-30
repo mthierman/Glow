@@ -16,8 +16,6 @@ list(
 
 include(deps)
 
-make_release_info()
-
 add_library(${PROJECT_NAME})
 
 add_library(
