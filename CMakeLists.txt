@@ -40,7 +40,7 @@ target_link_libraries(
     PRIVATE common::compile_features
             common::compile_definitions
             common::compile_options
-            common::link_options
+            common::link_options_lib
     PUBLIC microsoft::wil
            microsoft::cppwinrt
            microsoft::webview2
