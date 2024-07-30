@@ -9,13 +9,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cmake-modules)
 
-list(
-    APPEND
-    CMAKE_MODULE_PATH
-    "${cmake-modules_SOURCE_DIR}"
-    )
-
-include(cmake-modules)
+include("${cmake-modules_SOURCE_DIR}/cmake-modules.cmake")
 
 fetch_common()
 
