@@ -8,22 +8,35 @@
     },
     "configurePresets": [
         {
-            "name": "Generator: Visual Studio",
+            "name": "MSBuild",
             "hidden": true,
-            "generator": "Visual Studio 17 2022"
+            "generator": "Visual Studio 17 2022",
+            "architecture": {
+                "strategy": "set",
+                "value": "x64"
+            },
+            "toolset": {
+                "strategy": "set",
+                "value": "v143,host=x64"
+            },
+            "binaryDir": "${sourceDir}/build"
         },
         {
-            "name": "Generator: Ninja",
+            "name": "Ninja",
             "hidden": true,
-            "generator": "Ninja"
+            "generator": "Ninja Multi-Config",
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "toolset": {
+                "strategy": "external",
+                "value": "v143,host=x64"
+            },
+            "binaryDir": "${sourceDir}/build"
         },
         {
-            "name": "Generator: Ninja Multi-Config",
-            "hidden": true,
-            "generator": "Ninja Multi-Config"
-        },
-        {
-            "name": "Compiler: MSVC",
+            "name": "MSVC",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl",
@@ -31,7 +44,7 @@
             }
         },
         {
-            "name": "Compiler: Clang",
+            "name": "Clang",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
@@ -39,23 +52,7 @@
             }
         },
         {
-            "name": "Architecture",
-            "hidden": true,
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            }
-        },
-        {
-            "name": "Toolset",
-            "hidden": true,
-            "toolset": {
-                "strategy": "external",
-                "value": "v143,host=x64"
-            }
-        },
-        {
-            "name": "CMake: Unity Build",
+            "name": "Unity",
             "hidden": true,
             "cacheVariables": {
                 "CMAKE_UNITY_BUILD": {
@@ -65,40 +62,30 @@
             }
         },
         {
-            "name": "Visual Studio",
-            "hidden": true,
-            "inherits": ["Generator: Visual Studio", "Architecture", "Toolset"],
-            "binaryDir": "${sourceDir}/build"
-        },
-        {
-            "name": "Ninja",
-            "hidden": true,
-            "inherits": ["Generator: Ninja", "Architecture", "Toolset"],
-            "binaryDir": "${sourceDir}/build"
-        },
-        {
-            "name": "Ninja Multi-Config",
-            "hidden": true,
-            "inherits": ["Generator: Ninja Multi-Config", "Architecture", "Toolset"],
-            "binaryDir": "${sourceDir}/build"
-        },
-        {
-            "name": "Glow Examples",
+            "name": "Examples",
             "hidden": true,
             "cacheVariables": {
-                "GLOW_EXAMPLES": {
+                "BUILD_EXAMPLES": {
                     "type": "BOOL",
                     "value": "ON"
                 }
             }
         },
         {
-            "name": "Development",
-            "inherits": ["Ninja Multi-Config", "Compiler: MSVC", "Glow Examples"]
+            "name": "MSBuild MSVC",
+            "inherits": ["MSBuild", "MSVC", "Examples"]
         },
         {
-            "name": "CI",
-            "inherits": ["Ninja Multi-Config", "Compiler: MSVC"]
+            "name": "MSBuild Clang",
+            "inherits": ["MSBuild", "Clang", "Examples"]
+        },
+        {
+            "name": "Ninja MSVC",
+            "inherits": ["Ninja", "MSVC", "Examples"]
+        },
+        {
+            "name": "Ninja Clang",
+            "inherits": ["Ninja", "Clang", "Examples"]
         }
     ],
     "buildPresets": [
@@ -112,35 +99,79 @@
         },
         {
             "name": "Debug",
-            "configurePreset": "Development",
+            "hidden": true,
             "configuration": "Debug"
         },
         {
             "name": "Release",
-            "configurePreset": "Development",
-            "configuration": "Release"
+            "hidden": true,
+            "configuration": "Debug"
         },
         {
-            "name": "CI",
-            "configurePreset": "CI",
-            "configuration": "Release"
+            "name": "MSBuild MSVC",
+            "hidden": true,
+            "inherits": "MSBuild",
+            "configurePreset": "MSBuild MSVC"
+        },
+        {
+            "name": "MSBuild Clang",
+            "hidden": true,
+            "inherits": "MSBuild",
+            "configurePreset": "MSBuild Clang"
+        },
+        {
+            "name": "Ninja MSVC",
+            "hidden": true,
+            "configurePreset": "Ninja MSVC"
+        },
+        {
+            "name": "Ninja Clang",
+            "hidden": true,
+            "configurePreset": "Ninja Clang"
+        },
+        {
+            "name": "MSBuild MSVC Debug",
+            "inherits": ["MSBuild MSVC", "Debug"]
+        },
+        {
+            "name": "MSBuild MSVC Release",
+            "inherits": ["MSBuild MSVC", "Release"]
+        },
+        {
+            "name": "MSBuild Clang Debug",
+            "inherits": ["MSBuild Clang", "Debug"]
+        },
+        {
+            "name": "MSBuild Clang Release",
+            "inherits": ["MSBuild Clang", "Release"]
+        },
+        {
+            "name": "Ninja MSVC Debug",
+            "inherits": ["Ninja MSVC", "Debug"]
+        },
+        {
+            "name": "Ninja MSVC Release",
+            "inherits": ["Ninja MSVC", "Release"]
+        },
+        {
+            "name": "Ninja Clang Debug",
+            "inherits": ["Ninja Clang", "Debug"]
+        },
+        {
+            "name": "Ninja Clang Release",
+            "inherits": ["Ninja Clang", "Release"]
         }
     ],
     "testPresets": [
         {
             "name": "Debug",
-            "configurePreset": "Development",
+            "hidden": true,
             "configuration": "Debug"
         },
         {
             "name": "Release",
-            "configurePreset": "Development",
-            "configuration": "Release"
-        },
-        {
-            "name": "CI",
-            "configurePreset": "CI",
-            "configuration": "Release"
+            "hidden": true,
+            "configuration": "Debug"
         }
     ]
 }

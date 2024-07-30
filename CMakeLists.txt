@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.30)
 project(Glow VERSION 0.0.8)
 
 option(
-    GLOW_EXAMPLES
+    BUILD_EXAMPLES
     "Build examples"
     OFF
     )
@@ -100,6 +100,6 @@ target_link_libraries(
            WindowsApp.lib
     )
 
-if(GLOW_EXAMPLES)
+if(BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
