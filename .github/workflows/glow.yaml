@@ -39,19 +39,14 @@ jobs:
         run: |
           Set-Location ${{ github.workspace }}\glow
           Import-Module ${{ github.workspace }}\glow\tools\PowerShell
-
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
           $vspath = & $vswhere -products * -latest -property installationPath
           & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -Arch $Arch -HostArch $HostArch -SkipAutomaticLocation
-
-          New-GlowManifest
-
           cmake --preset "Ninja MSVC"
           cmake --build --preset "Ninja MSVC Release"
-
-          Compress-Glow
-
-          Publish-Glow
+          .\scripts\manifest.ps1
+          .\scripts\compress.ps1
+          .\scripts\publish.ps1
 
       - name: Update website
         run: |
