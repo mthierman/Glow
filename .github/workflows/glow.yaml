@@ -27,6 +27,12 @@ jobs:
           token: ${{ secrets.WEBSITE }}
           path: mthierman.com
 
+      - name: Checkout powershell-scripts
+        uses: actions/checkout@v4
+        with:
+          repository: mthierman/powershell-scripts
+          path: powershell-scripts
+
       - name: Cache
         uses: actions/cache@v4
         id: deps
@@ -38,10 +44,7 @@ jobs:
       - name: CMake
         run: |
           Set-Location ${{ github.workspace }}\glow
-          Import-Module ${{ github.workspace }}\glow\tools\PowerShell
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vspath = & $vswhere -products * -latest -property installationPath
-          & "$vspath\Common7\Tools\Launch-VsDevShell.ps1" -Arch $Arch -HostArch $HostArch -SkipAutomaticLocation
+          .\powershell-scripts\dev.ps1
           cmake --preset "Ninja MSVC"
           cmake --build --preset "Ninja MSVC Release"
           .\scripts\manifest.ps1
