@@ -11,13 +11,22 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glow::glow)
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE common::compile_features
+            common::compile_definitions
+            common::compile_options
+            common::link_options_main
+            glow::glow
+    )
+
+FetchContent_GetProperties(webview2 SOURCE_DIR webview2_SOURCE_DIR)
 
 add_custom_target(
     Microsoft.Web.WebView2.Core.dll
     COMMAND
         ${CMAKE_COMMAND} -E copy
-        "${CMAKE_BINARY_DIR}/_deps/Microsoft.Web.WebView2/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll"
+        "${webview2_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Microsoft.Web.WebView2.Core.dll"
     )
 

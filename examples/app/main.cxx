@@ -16,7 +16,7 @@ using enum glow::messages::notice;
 struct Window final : glow::window::Window {
     Window(std::unordered_map<char, bool>& keys)
         : m_keys { keys } {
-        message(WM_CLOSE, [this](glow::messages::wm message) {
+        message(WM_CLOSE, [this](glow::messages::wm /* message */) {
             notify(CLOSE_WINDOW);
             return 0;
         });

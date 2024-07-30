@@ -3,12 +3,12 @@
 
 struct Window final : glow::window::Window {
     Window() {
-        message(WM_CREATE, [](glow::messages::wm_create message) {
+        message(WM_CREATE, [](glow::messages::wm_create /* message */) {
             glow::system::dbg("WM_CREATE");
             return 0;
         });
 
-        message(WM_DESTROY, [](glow::messages::wm message) {
+        message(WM_DESTROY, [](glow::messages::wm /* message */) {
             glow::system::quit();
             return 0;
         });

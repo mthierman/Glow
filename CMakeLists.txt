@@ -92,12 +92,12 @@ target_link_libraries(
             common::compile_definitions
             common::compile_options
             common::link_options
-            microsoft::wil
-            microsoft::cppwinrt
-            microsoft::webview2
-            dwmapi.lib
-            gdiplus.lib
-            WindowsApp.lib
+    PUBLIC microsoft::wil
+           microsoft::cppwinrt
+           microsoft::webview2
+           dwmapi.lib
+           gdiplus.lib
+           WindowsApp.lib
     )
 
 if(GLOW_EXAMPLES)

@@ -19,7 +19,7 @@ struct Window final : glow::window::Window {
            glow::webview::WebViewEnvironment& webViewEnvironment)
         : m_keys { keys },
           m_webViewEnvironment(webViewEnvironment) {
-        message(WM_CLOSE, [this](glow::messages::wm message) {
+        message(WM_CLOSE, [this](glow::messages::wm /* message */) {
             notify(CLOSE_WINDOW);
             return 0;
         });
@@ -75,8 +75,8 @@ struct Window final : glow::window::Window {
 
             m_webView.m_core->add_NavigationCompleted(
                 Microsoft::WRL::Callback<ICoreWebView2NavigationCompletedEventHandler>(
-                    [this](ICoreWebView2* sender,
-                           ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT {
+                    [this](ICoreWebView2* /* sender */,
+                           ICoreWebView2NavigationCompletedEventArgs* /* args */) -> ::HRESULT {
                 m_webView.test();
                 return S_OK;
             }).Get(),
