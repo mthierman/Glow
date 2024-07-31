@@ -18,7 +18,7 @@ jobs:
       - name: Setup
         uses: mthierman/github-actions/setup@main
         with:
-          repo-path: "testing-gh-actions"
+          repo-path: "Glow"
 
       - name: Website
         uses: mthierman/github-actions/website@main
@@ -30,13 +30,13 @@ jobs:
         id: deps
         with:
           path: |
-            ${{ github.workspace }}/glow/build/_deps
-          key: deps-${{ hashFiles('glow/cmake/deps.cmake') }}
+            ${{ github.workspace }}/Glow/build/_deps
+          key: deps-${{ hashFiles('Glow/cmake/deps.cmake') }}
 
       - name: CMake
         run: |
-          Set-Location ${{ github.workspace }}\glow
           .\powershell-scripts\dev.ps1
+          Set-Location ${{ github.workspace }}\Glow
           cmake --preset "Ninja MSVC"
           cmake --build --preset "Ninja MSVC Release"
 
@@ -52,7 +52,7 @@ jobs:
       - name: Update website
         run: |
           Set-Location ${{ github.workspace }}\mthierman.com
-          Copy-Item "${{ github.workspace }}\glow\build\manifest.json" -Destination "${{ github.workspace }}\mthierman.com\src\content\projects\glow.json"
+          Copy-Item "${{ github.workspace }}\Glow\build\manifest.json" -Destination "${{ github.workspace }}\mthierman.com\src\content\projects\glow.json"
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add -A
