@@ -15,7 +15,7 @@ add_library(${PROJECT_NAME})
 add_library(
     glow::glow
     ALIAS
-    Glow
+    ${PROJECT_NAME}
     )
 
 target_include_directories(${PROJECT_NAME} PUBLIC "src/include")
@@ -39,7 +39,6 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE common::compile_features
             common::compile_definitions
-            common::compile_options
             common::link_options_lib
     PUBLIC microsoft::wil
            microsoft::cppwinrt
@@ -47,6 +46,40 @@ target_link_libraries(
            dwmapi.lib
            gdiplus.lib
            WindowsApp.lib
+    )
+
+target_compile_options(
+    ${PROJECT_NAME}
+    INTERFACE $<$<CXX_COMPILER_ID:MSVC>:
+              /W4
+              /WX
+              /MP
+              /nologo
+              /utf-8
+              /bigobj
+              /diagnostics:caret
+              /Zc:__cplusplus
+              >
+              $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
+              /W4
+              /WX
+              -Wno-braced-scalar-init
+              -Wno-extra-semi
+              -Wno-gnu-zero-variadic-macro-arguments
+              -Wno-language-extension-token
+              -Wno-microsoft-enum-value
+              -Wno-nonportable-include-path
+              >
+              $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
+              -Wall
+              -Werror
+              -Wno-braced-scalar-init
+              -Wno-extra-semi
+              -Wno-gnu-zero-variadic-macro-arguments
+              -Wno-language-extension-token
+              -Wno-microsoft-enum-value
+              -Wno-nonportable-include-path
+              >
     )
 
 if(BUILD_EXAMPLES)
