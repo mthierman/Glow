@@ -10,46 +10,19 @@ option(
 
 include(cmake/deps.cmake)
 
-add_library(${PROJECT_NAME})
+add_library(
+    ${PROJECT_NAME}_compile_options
+    INTERFACE
+    )
 
 add_library(
-    glow::glow
+    glow::compile_options
     ALIAS
-    ${PROJECT_NAME}
-    )
-
-target_include_directories(${PROJECT_NAME} PUBLIC "src/include")
-
-target_sources(
-    ${PROJECT_NAME}
-    PRIVATE "src/color.cxx"
-            "src/filesystem.cxx"
-            "src/input.cxx"
-            "src/math.cxx"
-            "src/messages.cxx"
-            "src/std.cxx"
-            "src/system.cxx"
-            "src/text.cxx"
-            "src/webview.cxx"
-            "src/webviewrt.cxx"
-            "src/window.cxx"
-    )
-
-target_link_libraries(
-    ${PROJECT_NAME}
-    PRIVATE common::compile_features
-            common::compile_definitions
-            common::link_options_lib
-    PUBLIC microsoft::wil
-           microsoft::cppwinrt
-           microsoft::webview2
-           dwmapi.lib
-           gdiplus.lib
-           WindowsApp.lib
+    ${PROJECT_NAME}_compile_options
     )
 
 target_compile_options(
-    ${PROJECT_NAME}
+    ${PROJECT_NAME}_compile_options
     INTERFACE $<$<CXX_COMPILER_ID:MSVC>:
               /W4
               /WX
@@ -80,6 +53,45 @@ target_compile_options(
               -Wno-microsoft-enum-value
               -Wno-nonportable-include-path
               >
+    )
+
+add_library(${PROJECT_NAME})
+
+add_library(
+    glow::glow
+    ALIAS
+    ${PROJECT_NAME}
+    )
+
+target_include_directories(${PROJECT_NAME} PUBLIC "src/include")
+
+target_sources(
+    ${PROJECT_NAME}
+    PRIVATE "src/color.cxx"
+            "src/filesystem.cxx"
+            "src/input.cxx"
+            "src/math.cxx"
+            "src/messages.cxx"
+            "src/std.cxx"
+            "src/system.cxx"
+            "src/text.cxx"
+            "src/webview.cxx"
+            "src/webviewrt.cxx"
+            "src/window.cxx"
+    )
+
+target_link_libraries(
+    ${PROJECT_NAME}
+    PRIVATE common::compile_features
+            common::compile_definitions
+            common::link_options_lib
+            glow::compile_options
+    PUBLIC microsoft::wil
+           microsoft::cppwinrt
+           microsoft::webview2
+           dwmapi.lib
+           gdiplus.lib
+           WindowsApp.lib
     )
 
 if(BUILD_EXAMPLES)
