@@ -110,13 +110,13 @@
         {
             "name": "MSBuild MSVC",
             "hidden": true,
-            "inherits": "MSBuild",
+            "inherits": ["MSBuild"],
             "configurePreset": "MSBuild MSVC"
         },
         {
             "name": "MSBuild Clang",
             "hidden": true,
-            "inherits": "MSBuild",
+            "inherits": ["MSBuild"],
             "configurePreset": "MSBuild Clang"
         },
         {
