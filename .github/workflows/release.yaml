@@ -15,24 +15,15 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout Glow
-        uses: actions/checkout@v4
+      - name: Setup
+        uses: mthierman/github-actions/setup@main
         with:
-          fetch-depth: 5
-          path: glow
+          repo-path: "testing-gh-actions"
 
-      - name: Checkout mthierman.pages.dev
-        uses: actions/checkout@v4
+      - name: Website
+        uses: mthierman/github-actions/website@main
         with:
-          repository: mthierman/mthierman.com
           token: ${{ secrets.WEBSITE }}
-          path: mthierman.com
-
-      - name: Checkout powershell-scripts
-        uses: actions/checkout@v4
-        with:
-          repository: mthierman/powershell-scripts
-          path: powershell-scripts
 
       - name: Cache
         uses: actions/cache@v4
