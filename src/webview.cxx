@@ -83,7 +83,7 @@ auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [=, this](::HRESULT /* errorCode */,
                       ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
-        auto environment { wil::com_ptr(createdEnvironment) };
+        auto environment { wil::com_ptr<ICoreWebView2Environment>(createdEnvironment) };
         m_environment = environment.try_query<ICoreWebView2Environment13>();
 
         callback();
@@ -102,7 +102,7 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
             [=, this](::HRESULT /* errorCode */,
                       ICoreWebView2Controller* createdController) -> ::HRESULT {
-        auto controller { wil::com_ptr(createdController) };
+        auto controller { wil::com_ptr<ICoreWebView2Controller>(createdController) };
         glow::system::dbg("{}", glow::system::get_last_error());
         m_controller = controller.try_query<ICoreWebView2Controller4>();
         m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR { 0, 0, 0, 0 });
