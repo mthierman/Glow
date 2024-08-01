@@ -18,7 +18,7 @@ jobs:
       - name: Setup
         uses: mthierman/github-actions/setup@main
         with:
-          repo-path: "Glow"
+          path: "Glow"
 
       - name: Website
         uses: mthierman/github-actions/website@main
