@@ -13,7 +13,7 @@ fetch_common()
 
 fetch_wil(
     VERSION
-    1.0.240122.1
+    1.0.240803.1
     )
 
 fetch_cppwinrt(
