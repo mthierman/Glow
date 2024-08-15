@@ -23,5 +23,5 @@ fetch_cppwinrt(
 
 fetch_webview2(
     VERSION
-    1.0.2592.51
+    1.0.2651.64
     )
