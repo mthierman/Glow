@@ -9,8 +9,6 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(cmake-modules)
 
-fetch_common()
-
 fetch_wil(
     VERSION
     1.0.240803.1
