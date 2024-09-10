@@ -68,6 +68,7 @@ target_sources(
     PRIVATE "src/color.cxx"
             "src/config.cxx"
             "src/filesystem.cxx"
+            "src/guid.cxx"
             "src/input.cxx"
             "src/log.cxx"
             "src/math.cxx"

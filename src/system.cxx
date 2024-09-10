@@ -6,8 +6,6 @@
 
 #include <glow/system.hxx>
 
-#include <objbase.h>
-
 #include <stdexcept>
 
 namespace glow::system {
@@ -92,13 +90,6 @@ auto load_system_icon(LPSTR name) -> ::HICON {
 auto load_resource_icon() -> ::HICON {
     return static_cast<::HICON>(::LoadImageW(
         get_instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
-}
-
-auto make_guid() -> ::GUID {
-    ::GUID guid;
-    THROW_IF_FAILED(::CoCreateGuid(&guid));
-
-    return guid;
 }
 
 auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }

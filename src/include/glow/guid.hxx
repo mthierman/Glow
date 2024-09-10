@@ -10,7 +10,8 @@
 
 #include <string>
 
-namespace glow::text {
-auto utf8_to_utf16(std::string_view utf8) -> std::wstring;
-auto utf16_to_utf8(std::wstring_view utf16) -> std::string;
-}; // namespace glow::text
+namespace glow::guid {
+auto create() -> ::GUID;
+auto to_wstring(const ::GUID& guid) -> std::wstring;
+auto to_string(const ::GUID& guid) -> std::string;
+}; // namespace glow::guid

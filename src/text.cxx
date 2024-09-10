@@ -68,19 +68,4 @@ auto utf16_to_utf8(std::wstring_view input) -> std::string {
 
     return output;
 }
-
-auto guid_to_wstring(const ::GUID& guid) -> std::wstring {
-    std::wstring buffer;
-    buffer.resize(wil::guid_string_buffer_length);
-
-    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0) {
-        throw std::overflow_error("Buffer is too small to contain the string");
-    }
-
-    return buffer;
-}
-
-auto guid_to_string(const ::GUID& guid) -> std::string {
-    return utf16_to_utf8(guid_to_wstring(guid));
-}
 }; // namespace glow::text

@@ -41,7 +41,6 @@ auto load_system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
 auto load_system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto load_system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto load_resource_icon() -> ::HICON;
-auto make_guid() -> ::GUID;
 auto get_ui_settings() -> winrt::UISettings;
 
 struct Event {
