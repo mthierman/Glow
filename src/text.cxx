@@ -77,4 +77,13 @@ auto to_string(std::u8string_view input) -> std::string {
 }
 
 auto to_wstring(std::u8string_view input) -> std::wstring { return to_wstring(to_string(input)); }
+
+auto to_u8string(std::string_view input) -> std::u8string {
+    return std::u8string(input.begin(), input.end());
+}
+
+auto to_u8string(std::wstring_view input) -> std::u8string {
+    auto converted { to_string(input) };
+    return std::u8string(converted.begin(), converted.end());
+}
 }; // namespace glow::text
