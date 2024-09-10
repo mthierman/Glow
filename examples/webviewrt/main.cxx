@@ -1,3 +1,4 @@
+#include <glow/log.hxx>
 #include <glow/messages.hxx>
 #include <glow/webviewrt.hxx>
 #include <glow/window.hxx>
@@ -5,7 +6,7 @@
 struct Window : glow::window::Window {
     Window() {
         message(WM_CREATE, [this](glow::messages::wm_create /* message */) {
-            glow::system::dbg("WM_CREATE");
+            glow::log::log("WM_CREATE");
             m_webViewEnvironment.create(m_hwnd.get());
             return 0;
         });

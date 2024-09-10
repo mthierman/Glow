@@ -1,10 +1,11 @@
+#include <glow/log.hxx>
 #include <glow/messages.hxx>
 #include <glow/window.hxx>
 
 struct Window final : glow::window::Window {
     Window() {
         message(WM_CREATE, [](glow::messages::wm_create /* message */) {
-            glow::system::dbg("WM_CREATE");
+            glow::log::log("WM_CREATE");
             return 0;
         });
 
