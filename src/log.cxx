@@ -45,12 +45,20 @@ auto log(const std::wstring& message) -> void {
 }
 
 auto msg(const std::string& message) -> void {
-    ::OutputDebugStringA(message.c_str());
-    ::OutputDebugStringA("\n");
+    ::MessageBoxA(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONASTERISK);
 }
 
 auto msg(const std::wstring& message) -> void {
-    ::OutputDebugStringA(glow::text::utf16_to_utf8(message).c_str());
-    ::OutputDebugStringA("\n");
+    ::MessageBoxA(
+        nullptr, glow::text::utf16_to_utf8(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
+}
+
+auto err(const std::string& message) -> void {
+    ::MessageBoxA(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONHAND);
+}
+
+auto err(const std::wstring& message) -> void {
+    ::MessageBoxA(
+        nullptr, glow::text::utf16_to_utf8(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
 }
 }; // namespace glow::log

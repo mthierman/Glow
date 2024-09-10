@@ -65,7 +65,7 @@ auto err(const std::format_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto err(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(
+    ::MessageBoxA(
         nullptr,
         glow::text::utf16_to_utf8(std::vformat(fmt.get(), std::make_wformat_args(args...))).c_str(),
         nullptr,
