@@ -1,21 +1,21 @@
 #include <glow/app.hxx>
 #include <glow/log.hxx>
-#include <glow/messages.hxx>
+#include <glow/message.hxx>
 #include <glow/window.hxx>
 
 struct Window final : glow::window::Window {
     Window() {
-        message(WM_CREATE, [](glow::messages::wm_create /* message */) {
+        message(WM_CREATE, [](glow::message::wm_create /* message */) {
             glow::log::log("WM_CREATE");
             return 0;
         });
 
-        message(WM_DESTROY, [](glow::messages::wm /* message */) {
+        message(WM_DESTROY, [](glow::message::wm /* message */) {
             glow::system::quit();
             return 0;
         });
 
-        message(WM_KEYDOWN, [this](glow::messages::wm_keydown_keyup message) {
+        message(WM_KEYDOWN, [this](glow::message::wm_keydown_keyup message) {
             switch (auto key { message.key() }; key) {
                 case 'N': {
                     glow::window::toggle_fullscreen(m_hwnd.get());

@@ -1,18 +1,18 @@
 #include <glow/app.hxx>
 #include <glow/log.hxx>
-#include <glow/messages.hxx>
+#include <glow/message.hxx>
 #include <glow/webviewrt.hxx>
 #include <glow/window.hxx>
 
 struct Window : glow::window::Window {
     Window() {
-        message(WM_CREATE, [this](glow::messages::wm_create /* message */) {
+        message(WM_CREATE, [this](glow::message::wm_create /* message */) {
             glow::log::log("WM_CREATE");
             m_webViewEnvironment.create(m_hwnd.get());
             return 0;
         });
 
-        message(WM_DESTROY, [](glow::messages::wm /* message */) {
+        message(WM_DESTROY, [](glow::message::wm /* message */) {
             glow::system::quit();
             return 0;
         });

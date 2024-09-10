@@ -1,31 +1,31 @@
 #include <glow/app.hxx>
 #include <glow/input.hxx>
-#include <glow/messages.hxx>
+#include <glow/message.hxx>
 #include <glow/webview.hxx>
 #include <glow/window.hxx>
 
 #include <unordered_map>
 
-namespace glow::messages {
+namespace glow::message {
 enum struct notice : unsigned int {
     CREATE_WINDOW = WM_APP,
     CREATE_FOREGROUND_WINDOW,
     CLOSE_WINDOW,
 };
 }
-using enum glow::messages::notice;
+using enum glow::message::notice;
 
 struct Window final : glow::window::Window {
     Window(std::unordered_map<char, bool>& keys,
            glow::webview::WebViewEnvironment& webViewEnvironment)
         : m_keys { keys },
           m_webViewEnvironment(webViewEnvironment) {
-        message(WM_CLOSE, [this](glow::messages::wm /* message */) {
+        message(WM_CLOSE, [this](glow::message::wm /* message */) {
             notify(CLOSE_WINDOW);
             return 0;
         });
 
-        message(WM_KEYDOWN, [this](glow::messages::wm_keydown_keyup message) {
+        message(WM_KEYDOWN, [this](glow::message::wm_keydown_keyup message) {
             if (glow::input::was_key_down(VK_CONTROL)) {
                 switch (auto key { message.key() }; key) {
                     case 'N': {
@@ -49,7 +49,7 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
-        message(WM_KEYUP, [this](glow::messages::wm_keydown_keyup message) {
+        message(WM_KEYUP, [this](glow::message::wm_keydown_keyup message) {
             auto key { message.key() };
 
             if (m_keys.contains(key)) {
@@ -59,7 +59,7 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
-        message(WM_SIZE, [this](glow::messages::wm_size message) {
+        message(WM_SIZE, [this](glow::message::wm_size message) {
             if (m_webView.m_controller) {
                 m_webView.put_bounds(message.size());
             }
@@ -93,7 +93,7 @@ struct Window final : glow::window::Window {
 struct App final : glow::window::Window {
     App(glow::system::Event& singleInstance)
         : m_singleInstance { singleInstance } {
-        message(WM_NOTIFY, [this](glow::messages::wm_notify message) {
+        message(WM_NOTIFY, [this](glow::message::wm_notify message) {
             auto& notification { message.notification() };
 
             if (notification.notice == CREATE_WINDOW) {

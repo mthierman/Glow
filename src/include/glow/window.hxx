@@ -125,15 +125,15 @@ struct Window {
 
     auto close() -> void;
 
-    auto message(::UINT msg, std::function<::LRESULT(glow::messages::wm message)> callback) -> bool;
+    auto message(::UINT msg, std::function<::LRESULT(glow::message::wm message)> callback) -> bool;
     auto message(::UINT msg) -> bool;
-    auto message(glow::messages::wm message) -> ::LRESULT;
+    auto message(glow::message::wm message) -> ::LRESULT;
 
-    auto notify(glow::messages::notice notice,
+    auto notify(glow::message::notice notice,
                 const std::string& message = "",
                 const std::string& receiver = "MessageWindow") -> void;
     auto
-    notify(::HWND receiver, glow::messages::notice notice, const std::string& message = "") -> void;
+    notify(::HWND receiver, glow::message::notice notice, const std::string& message = "") -> void;
 
     uintptr_t m_id { glow::math::make_random<uintptr_t>() };
     ::WNDCLASSEXA m_windowClass {
@@ -162,7 +162,7 @@ struct Window {
     };
     ::UINT m_dpi { USER_DEFAULT_SCREEN_DPI };
     double m_scale { 0.0 };
-    std::unordered_map<::UINT, std::function<::LRESULT(glow::messages::wm message)>> m_map;
+    std::unordered_map<::UINT, std::function<::LRESULT(glow::message::wm message)>> m_map;
     wil::unique_hwnd m_hwnd;
 };
 

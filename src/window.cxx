@@ -472,47 +472,49 @@ auto Window::create_message_only() -> void {
 auto Window::close() -> void { m_hwnd.reset(); }
 
 auto Window::message(::UINT msg,
-                     std::function<::LRESULT(glow::messages::wm message)> callback) -> bool {
+                     std::function<::LRESULT(glow::message::wm message)> callback) -> bool {
     auto emplace { m_map.try_emplace(msg, callback) };
     return emplace.second;
 }
 
 auto Window::message(::UINT msg) -> bool { return m_map.contains(msg); }
 
-auto Window::message(glow::messages::wm message) -> ::LRESULT {
+auto Window::message(glow::message::wm message) -> ::LRESULT {
     return m_map.find(message.msg)
         ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
 }
 
-auto Window::notify(glow::messages::notice notice,
+auto Window::notify(glow::message::notice notice,
                     const std::string& message,
                     const std::string& receiver) -> void {
-    glow::messages::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
-                                                         .idFrom { m_id },
-                                                         .code { std::to_underlying(notice) } },
-                                                .hwndFrom { m_hwnd.get() },
-                                                .idFrom { m_id },
-                                                .notice { notice },
-                                                .message { message } };
+    glow::message::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
+                                                        .idFrom { m_id },
+                                                        .code { std::to_underlying(notice) } },
+                                               .hwndFrom { m_hwnd.get() },
+                                               .idFrom { m_id },
+                                               .notice { notice },
+                                               .message { message } };
 
-    glow::messages::send_message(glow::window::find_message_only(receiver),
-                                 WM_NOTIFY,
-                                 notification.nmhdr.idFrom,
-                                 reinterpret_cast<::LPARAM>(&notification));
+    glow::message::send({ glow::window::find_message_only(receiver),
+                          WM_NOTIFY,
+                          notification.nmhdr.idFrom,
+                          reinterpret_cast<::LPARAM>(&notification) });
 }
 
 auto Window::notify(::HWND receiver,
-                    glow::messages::notice notice,
+                    glow::message::notice notice,
                     const std::string& message) -> void {
-    glow::messages::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
-                                                         .idFrom { m_id },
-                                                         .code { std::to_underlying(notice) } },
-                                                .hwndFrom { m_hwnd.get() },
-                                                .idFrom { m_id },
-                                                .notice { notice },
-                                                .message { message } };
+    glow::message::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
+                                                        .idFrom { m_id },
+                                                        .code { std::to_underlying(notice) } },
+                                               .hwndFrom { m_hwnd.get() },
+                                               .idFrom { m_id },
+                                               .notice { notice },
+                                               .message { message } };
 
-    glow::messages::send_message(
-        receiver, WM_NOTIFY, notification.nmhdr.idFrom, reinterpret_cast<::LPARAM>(&notification));
+    glow::message::send({ receiver,
+                          WM_NOTIFY,
+                          notification.nmhdr.idFrom,
+                          reinterpret_cast<::LPARAM>(&notification) });
 }
 }; // namespace glow::window
