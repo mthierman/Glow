@@ -23,8 +23,8 @@ using namespace winrt::Windows::UI::ViewManagement;
 namespace glow::color {
 auto get_color(winrt::UISettings& uiSettings,
                winrt::UIColorType colorType = winrt::UIColorType::Accent) -> winrt::Color;
-auto color_to_string(winrt::Color color) -> std::string;
-auto color_to_colorref(winrt::Color color) -> ::COLORREF;
+auto to_hex(winrt::Color color) -> std::string;
+auto to_colorref(winrt::Color color) -> ::COLORREF;
 }; // namespace glow::color
 
 namespace std {
