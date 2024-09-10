@@ -32,7 +32,7 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
     buffer.resize(length);
 
     if (::GetTempPathW(length, buffer.data()) == 0) {
-        throw std::overflow_error(glow::log::get_last_error());
+        throw std::runtime_error(glow::log::get_last_error());
     }
 
     buffer.resize(length - 2);
