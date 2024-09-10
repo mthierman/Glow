@@ -19,19 +19,19 @@ auto known_folder(::KNOWNFOLDERID folderId,
 
     auto knownFolder { std::filesystem::path(buffer.get()) };
 
-    for (const auto subfolder : subfolders) {
-        knownFolder /= subfolder;
+    for (auto subfolder : subfolders) {
+        knownFolder /= glow::text::utf8_to_utf16(subfolder);
     }
 
     return knownFolder;
 }
 
 auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
-    std::string buffer;
-    auto length { ::GetTempPathA(0, buffer.data()) };
+    std::wstring buffer;
+    auto length { ::GetTempPathW(0, buffer.data()) };
     buffer.resize(length);
 
-    if (::GetTempPathA(length, buffer.data()) == 0) {
+    if (::GetTempPathW(length, buffer.data()) == 0) {
         throw std::overflow_error(glow::log::get_last_error());
     }
 
@@ -39,8 +39,8 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
 
     auto tempFolder { std::filesystem::path(buffer) };
 
-    for (const auto& subfolder : subfolders) {
-        tempFolder /= subfolder;
+    for (auto subfolder : subfolders) {
+        tempFolder /= glow::text::utf8_to_utf16(subfolder);
     }
 
     return tempFolder;
