@@ -70,9 +70,10 @@ auto utf16_to_utf8(std::wstring_view input) -> std::string {
 }
 
 auto guid_to_wstring(const ::GUID& guid) -> std::wstring {
-    wchar_t buffer[wil::guid_string_buffer_length];
+    std::wstring buffer;
+    buffer.resize(wil::guid_string_buffer_length);
 
-    if (::StringFromGUID2(guid, buffer, wil::guid_string_buffer_length) == 0) {
+    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0) {
         throw std::overflow_error("Buffer is too small to contain the string");
     }
 
