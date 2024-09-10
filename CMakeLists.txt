@@ -63,8 +63,6 @@ add_library(
     ${PROJECT_NAME}
     )
 
-target_include_directories(${PROJECT_NAME} PUBLIC "src/include")
-
 target_sources(
     ${PROJECT_NAME}
     PRIVATE "src/color.cxx"
@@ -80,6 +78,10 @@ target_sources(
             "src/webview.cxx"
             "src/webviewrt.cxx"
             "src/window.cxx"
+    PUBLIC FILE_SET
+           HEADERS
+           BASE_DIRS
+           "src/include"
     )
 
 target_link_libraries(

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
+#include <glow/log.hxx>
 #include <glow/math.hxx>
 #include <glow/system.hxx>
 #include <glow/window.hxx>
@@ -412,7 +413,7 @@ auto Window::create(const std::string& title, bool visible) -> void {
                           glow::system::get_instance(),
                           this)
         == 0) {
-        throw std::runtime_error(glow::system::get_last_error());
+        throw std::runtime_error(glow::log::get_last_error());
     }
 
     if (visible) {
@@ -438,7 +439,7 @@ auto Window::create(::HWND parent, const std::string& title, bool visible) -> vo
                           glow::system::get_instance(),
                           this)
         == 0) {
-        throw std::runtime_error(glow::system::get_last_error());
+        throw std::runtime_error(glow::log::get_last_error());
     }
 
     if (visible) {
@@ -464,7 +465,7 @@ auto Window::create_message_only() -> void {
                           glow::system::get_instance(),
                           this)
         == 0) {
-        throw std::runtime_error(glow::system::get_last_error());
+        throw std::runtime_error(glow::log::get_last_error());
     }
 }
 

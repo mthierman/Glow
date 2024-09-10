@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
+#include <glow/log.hxx>
 #include <glow/webviewrt.hxx>
 
 namespace glow::webviewrt {
@@ -37,7 +38,7 @@ winrt::IAsyncAction WebViewEnvironment::create(::HWND hwnd) {
 
     core.SourceChanged([](const winrt::CoreWebView2& /* sender */,
                           const winrt::CoreWebView2SourceChangedEventArgs& args) {
-        glow::system::dbg("SourceChanged: {}", args.IsNewDocument());
+        glow::log::log("SourceChanged: {}", args.IsNewDocument());
     });
 
     core.NavigationCompleted(

@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
+#include <glow/log.hxx>
 #include <glow/text.hxx>
 #include <glow/webview.hxx>
 #include <glow/window.hxx>
@@ -103,7 +104,7 @@ auto WebView::create(const WebViewEnvironment& webViewEnvironment,
             [=, this](::HRESULT /* errorCode */,
                       ICoreWebView2Controller* createdController) -> ::HRESULT {
         auto controller { wil::com_ptr<ICoreWebView2Controller>(createdController) };
-        glow::system::dbg("{}", glow::system::get_last_error());
+        glow::log::log("{}", glow::log::get_last_error());
         m_controller = controller.try_query<ICoreWebView2Controller4>();
         m_controller->put_DefaultBackgroundColor(COREWEBVIEW2_COLOR { 0, 0, 0, 0 });
 
@@ -206,7 +207,7 @@ auto WebView::test() -> void {
         wil::unique_cotaskmem_string buffer;
         m_core->get_DocumentTitle(&buffer);
         // auto test = std::wstring(buffer.get());
-        glow::system::dbg(L"{}", std::wstring(buffer.get()));
+        glow::log::log(L"{}", std::wstring(buffer.get()));
     }
 }
 }; // namespace glow::webview

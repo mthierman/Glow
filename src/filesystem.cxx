@@ -5,6 +5,7 @@
 // clang-format on
 
 #include <glow/filesystem.hxx>
+#include <glow/log.hxx>
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 
@@ -31,7 +32,7 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
     buffer.resize(length);
 
     if (::GetTempPathA(length, buffer.data()) == 0) {
-        throw std::overflow_error(glow::system::get_last_error());
+        throw std::overflow_error(glow::log::get_last_error());
     }
 
     buffer.resize(length - 2);
