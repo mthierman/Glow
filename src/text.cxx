@@ -15,47 +15,50 @@
 #include <wil/win32_helpers.h>
 
 namespace glow::text {
-auto utf8_to_utf16(std::string_view utf8) -> std::wstring {
-    std::wstring utf16;
+auto utf8_to_utf16(std::string_view input) -> std::wstring {
+    std::wstring output;
 
-    if (utf8.length() > 0) {
-        int safeSize { glow::math::check_safe_size<int>(utf8.length()) };
+    if (input.length() > 0) {
+        int inputLength { glow::math::check_safe_size<int>(input.length()) };
 
-        auto length { ::MultiByteToWideChar(CP_UTF8, 0, utf8.data(), safeSize, nullptr, 0) };
+        auto outputLength { ::MultiByteToWideChar(
+            CP_UTF8, 0, input.data(), inputLength, nullptr, 0) };
 
-        utf16.resize(length);
+        output.resize(outputLength);
 
-        if (::MultiByteToWideChar(CP_UTF8, 0, utf8.data(), safeSize, utf16.data(), length) == 0) {
+        if (::MultiByteToWideChar(
+                CP_UTF8, 0, input.data(), inputLength, output.data(), outputLength)
+            == 0) {
             throw std::runtime_error(glow::log::get_last_error());
         }
     }
 
-    return utf16;
+    return output;
 }
 
-auto utf16_to_utf8(std::wstring_view utf16) -> std::string {
-    std::string utf8;
+auto utf16_to_utf8(std::wstring_view input) -> std::string {
+    std::string output;
 
-    if (utf16.length() > 0) {
-        int safeSize { glow::math::check_safe_size<int>(utf16.length()) };
+    if (input.length() > 0) {
+        int inputLength { glow::math::check_safe_size<int>(input.length()) };
 
-        auto length { ::WideCharToMultiByte(CP_UTF8,
-                                            WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                            utf16.data(),
-                                            safeSize,
-                                            nullptr,
-                                            0,
-                                            nullptr,
-                                            nullptr) };
+        auto outputLength { ::WideCharToMultiByte(CP_UTF8,
+                                                  WC_NO_BEST_FIT_CHARS,
+                                                  input.data(),
+                                                  inputLength,
+                                                  nullptr,
+                                                  0,
+                                                  nullptr,
+                                                  nullptr) };
 
-        utf8.resize(length);
+        output.resize(outputLength);
 
         if (::WideCharToMultiByte(CP_UTF8,
-                                  WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS,
-                                  utf16.data(),
-                                  safeSize,
-                                  utf8.data(),
-                                  length,
+                                  WC_NO_BEST_FIT_CHARS,
+                                  input.data(),
+                                  inputLength,
+                                  output.data(),
+                                  outputLength,
                                   nullptr,
                                   nullptr)
             == 0) {
@@ -63,7 +66,7 @@ auto utf16_to_utf8(std::wstring_view utf16) -> std::string {
         }
     }
 
-    return utf8;
+    return output;
 }
 
 auto guid_to_wstring(const ::GUID& guid) -> std::wstring {
