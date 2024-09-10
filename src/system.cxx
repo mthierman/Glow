@@ -29,8 +29,8 @@ auto gdi_plus_startup() -> ::ULONG_PTR {
 
 auto gdi_plus_shutdown(::ULONG_PTR token) -> void { Gdiplus::GdiplusShutdown(token); }
 
-auto create_process(std::filesystem::path path) -> int {
-    ::STARTUPINFOA si { .cb { sizeof(::STARTUPINFOA) },
+auto create_process(const std::filesystem::path& path) -> int {
+    ::STARTUPINFOW si { .cb { sizeof(::STARTUPINFOW) },
                         .lpReserved { nullptr },
                         .lpDesktop { nullptr },
                         .lpTitle { nullptr },
@@ -53,10 +53,10 @@ auto create_process(std::filesystem::path path) -> int {
         .hProcess { nullptr }, .hThread { nullptr }, .dwProcessId { 0 }, .dwThreadId { 0 }
     };
 
-    auto process { path.string() };
+    auto process { path.wstring() };
     auto pProcess { process.data() };
 
-    ::CreateProcessA(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+    ::CreateProcessW(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
     ::WaitForSingleObject(pi.hProcess, INFINITE);
     ::CloseHandle(pi.hProcess);
     ::CloseHandle(pi.hThread);
@@ -67,12 +67,21 @@ auto create_process(std::filesystem::path path) -> int {
 auto get_instance() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(0, nullptr, &module);
+
     return module;
 }
 
-auto abort(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
+auto abort(::UINT exitCode) -> ::UINT {
+    ::ExitProcess(exitCode);
 
-auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
+    return exitCode;
+}
+
+auto quit(int exitCode) -> int {
+    ::PostQuitMessage(exitCode);
+
+    return exitCode;
+}
 
 auto load_system_brush(int name) -> ::HBRUSH {
     return static_cast<::HBRUSH>(::GetStockObject(name));
@@ -89,9 +98,8 @@ auto load_system_icon(LPSTR name) -> ::HICON {
 }
 
 auto load_resource_icon() -> ::HICON {
-    auto instance { get_instance() };
-    return static_cast<::HICON>(
-        ::LoadImageW(instance, MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+    return static_cast<::HICON>(::LoadImageW(
+        get_instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
 auto make_guid() -> ::GUID {
@@ -103,7 +111,7 @@ auto make_guid() -> ::GUID {
 
 auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
 
-auto Event::create(const std::string& eventName, std::function<void()> callback) -> bool {
+auto Event::create(const std::string& eventName, std::function<void()>&& callback) -> bool {
     m_callback = std::move(callback);
     watcher.create(event.get(), [this]() { m_callback(); });
 
