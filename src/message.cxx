@@ -4,15 +4,15 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
-#include <glow/messages.hxx>
+#include <glow/message.hxx>
 
-namespace glow::messages {
-auto send_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
-    return ::SendMessageA(hwnd, msg, wparam, lparam);
+namespace glow::message {
+auto send(Message message) -> ::LRESULT {
+    return ::SendMessageW(message.hwnd, message.msg, message.wparam, message.lparam);
 }
 
-auto post_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
-    return ::PostMessageA(hwnd, msg, wparam, lparam);
+auto post(Message message) -> ::LRESULT {
+    return ::PostMessageW(message.hwnd, message.msg, message.wparam, message.lparam);
 }
 
 auto wm::def_window_proc() -> ::LRESULT { return ::DefWindowProcA(hwnd, msg, wparam, lparam); }
@@ -22,12 +22,12 @@ auto wm_notify::notification() -> const Notification& {
     return *reinterpret_cast<Notification*>(lparam);
 }
 
-auto wm_nccreate::createStruct() -> const ::CREATESTRUCTA& {
-    return *reinterpret_cast<::CREATESTRUCTA*>(lparam);
+auto wm_nccreate::createStruct() -> const ::CREATESTRUCTW& {
+    return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
 }
 
-auto wm_create::createStruct() -> const ::CREATESTRUCTA& {
-    return *reinterpret_cast<::CREATESTRUCTA*>(lparam);
+auto wm_create::createStruct() -> const ::CREATESTRUCTW& {
+    return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
 }
 
 auto wm_activate::deactivated() -> bool { return LOWORD(wparam) == 0; }
@@ -81,4 +81,4 @@ auto wm_getminmaxinfo::minMaxInfo() -> ::MINMAXINFO& {
 auto wm_windowposchanged::windowPos() -> ::WINDOWPOS& {
     return *reinterpret_cast<::WINDOWPOS*>(lparam);
 }
-}; // namespace glow::messages
+}; // namespace glow::message

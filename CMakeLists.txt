@@ -73,7 +73,7 @@ target_sources(
             "src/input.cxx"
             "src/log.cxx"
             "src/math.cxx"
-            "src/messages.cxx"
+            "src/message.cxx"
             "src/std.cxx"
             "src/system.cxx"
             "src/text.cxx"

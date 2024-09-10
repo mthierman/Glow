@@ -13,9 +13,16 @@
 #include <string>
 #include <unordered_map>
 
-namespace glow::messages {
-auto send_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
-auto post_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
+namespace glow::message {
+struct Message {
+    ::HWND hwnd;
+    ::UINT msg;
+    ::WPARAM wparam;
+    ::LPARAM lparam;
+};
+
+auto send(Message message) -> ::LRESULT;
+auto post(Message message) -> ::LRESULT;
 
 enum struct notice : ::UINT;
 
@@ -32,11 +39,7 @@ struct Notification {
     std::string message;
 };
 
-struct wm {
-    ::HWND hwnd;
-    ::UINT msg;
-    ::WPARAM wparam;
-    ::LPARAM lparam;
+struct wm : public Message {
     auto def_window_proc() -> ::LRESULT;
 };
 
@@ -50,13 +53,13 @@ struct wm_notify : public wm {
 struct wm_nccreate : public wm {
     wm_nccreate(const wm& message)
         : wm(message) { }
-    auto createStruct() -> const ::CREATESTRUCT&;
+    auto createStruct() -> const ::CREATESTRUCTW&;
 };
 
 struct wm_create : public wm {
     wm_create(const wm& message)
         : wm(message) { }
-    auto createStruct() -> const ::CREATESTRUCT&;
+    auto createStruct() -> const ::CREATESTRUCTW&;
 };
 
 struct wm_activate : public wm {
@@ -138,4 +141,4 @@ struct wm_windowposchanged : public wm {
         : wm(message) { }
     auto windowPos() -> ::WINDOWPOS&;
 };
-}; // namespace glow::messages
+}; // namespace glow::message

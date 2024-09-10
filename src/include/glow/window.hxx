@@ -7,7 +7,7 @@
 #pragma once
 
 #include <glow/math.hxx>
-#include <glow/messages.hxx>
+#include <glow/message.hxx>
 #include <glow/system.hxx>
 
 #include <Windows.h>
