@@ -26,7 +26,7 @@ auto format_message(::HRESULT errorCode) -> std::string {
                          0,
                          nullptr)
         == 0) {
-        throw std::runtime_error(get_last_error());
+        throw std::runtime_error(format_message(::GetLastError()));
     }
 
     return buffer.get();
@@ -40,6 +40,16 @@ auto log(const std::string& message) -> void {
 }
 
 auto log(const std::wstring& message) -> void {
+    ::OutputDebugStringA(glow::text::utf16_to_utf8(message).c_str());
+    ::OutputDebugStringA("\n");
+}
+
+auto msg(const std::string& message) -> void {
+    ::OutputDebugStringA(message.c_str());
+    ::OutputDebugStringA("\n");
+}
+
+auto msg(const std::wstring& message) -> void {
     ::OutputDebugStringA(glow::text::utf16_to_utf8(message).c_str());
     ::OutputDebugStringA("\n");
 }

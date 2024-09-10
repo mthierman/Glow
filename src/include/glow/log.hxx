@@ -18,6 +18,12 @@ auto get_last_error() -> std::string;
 auto log(const std::string& message) -> void;
 auto log(const std::wstring& message) -> void;
 
+auto msg(const std::string& message) -> void;
+auto msg(const std::wstring& message) -> void;
+
+auto err(const std::string& message) -> void;
+auto err(const std::wstring& message) -> void;
+
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
     ::OutputDebugStringA(std::vformat(fmt.get(), std::make_format_args(args...)).c_str());
@@ -31,7 +37,7 @@ auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
 }
 
 template <typename... Args>
-auto message_box(const std::format_string<Args...> fmt, Args&&... args) -> void {
+auto msg(const std::format_string<Args...> fmt, Args&&... args) -> void {
     ::MessageBoxA(nullptr,
                   std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
                   nullptr,
@@ -39,7 +45,7 @@ auto message_box(const std::format_string<Args...> fmt, Args&&... args) -> void 
 }
 
 template <typename... Args>
-auto message_box(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+auto msg(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
     ::MessageBoxW(nullptr,
                   std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
                   nullptr,
@@ -47,7 +53,7 @@ auto message_box(const std::wformat_string<Args...> fmt, Args&&... args) -> void
 }
 
 template <typename... Args>
-auto error_box(const std::format_string<Args...> fmt, Args&&... args) -> void {
+auto err(const std::format_string<Args...> fmt, Args&&... args) -> void {
     ::MessageBoxA(nullptr,
                   std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
                   nullptr,
@@ -55,7 +61,7 @@ auto error_box(const std::format_string<Args...> fmt, Args&&... args) -> void {
 }
 
 template <typename... Args>
-auto error_box(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+auto err(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
     ::MessageBoxW(nullptr,
                   std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
                   nullptr,
