@@ -41,35 +41,35 @@ auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto msg(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(nullptr,
-                  std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONASTERISK);
-}
-
-template <typename... Args>
-auto msg(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(
+    ::MessageBoxW(
         nullptr,
-        glow::text::utf16_to_utf8(std::vformat(fmt.get(), std::make_wformat_args(args...))).c_str(),
+        glow::text::utf8_to_utf16(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
         nullptr,
         MB_OK | MB_ICONASTERISK);
 }
 
 template <typename... Args>
-auto err(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(nullptr,
-                  std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
+auto msg(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+    ::MessageBoxW(nullptr,
+                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
                   nullptr,
-                  MB_OK | MB_ICONHAND);
+                  MB_OK | MB_ICONASTERISK);
+}
+
+template <typename... Args>
+auto err(const std::format_string<Args...> fmt, Args&&... args) -> void {
+    ::MessageBoxW(
+        nullptr,
+        glow::text::utf8_to_utf16(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
+        nullptr,
+        MB_OK | MB_ICONHAND);
 }
 
 template <typename... Args>
 auto err(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(
-        nullptr,
-        glow::text::utf16_to_utf8(std::vformat(fmt.get(), std::make_wformat_args(args...))).c_str(),
-        nullptr,
-        MB_OK | MB_ICONHAND);
+    ::MessageBoxW(nullptr,
+                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
+                  nullptr,
+                  MB_OK | MB_ICONHAND);
 }
 }; // namespace glow::log
