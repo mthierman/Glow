@@ -6,12 +6,6 @@
 
 #pragma once
 
-#include <Windows.h>
-
-#include <functional>
-#include <initializer_list>
-#include <unordered_map>
-
 namespace glow::input {
 auto was_key_down(int key) -> bool;
 }; // namespace glow::input

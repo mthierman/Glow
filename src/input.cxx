@@ -6,6 +6,8 @@
 
 #include <glow/input.hxx>
 
+#include <Windows.h>
+
 namespace glow::input {
 auto was_key_down(int key) -> bool { return (::GetKeyState(key) & 0x8000); }
 }; // namespace glow::input
