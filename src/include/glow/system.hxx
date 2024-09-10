@@ -44,62 +44,13 @@ auto load_system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto load_system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto load_resource_icon() -> ::HICON;
 auto make_guid() -> ::GUID;
-auto format_message(::HRESULT errorCode) -> std::string;
-auto get_last_error() -> std::string;
 auto get_ui_settings() -> winrt::UISettings;
 
-auto dbg(const std::string& message) -> void;
-auto dbg(const std::wstring& message) -> void;
-
-template <typename... Args>
-auto dbg(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringA(std::vformat(fmt.get(), std::make_format_args(args...)).c_str());
-    ::OutputDebugStringA("\n");
-}
-
-template <typename... Args>
-auto dbg(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
-    ::OutputDebugStringW(L"\n");
-}
-
-template <typename... Args>
-auto message_box(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(nullptr,
-                  std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONASTERISK);
-}
-
-template <typename... Args>
-auto message_box(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(nullptr,
-                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONASTERISK);
-}
-
-template <typename... Args>
-auto error_box(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxA(nullptr,
-                  std::vformat(fmt.get(), std::make_format_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONHAND);
-}
-
-template <typename... Args>
-auto error_box(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(nullptr,
-                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONHAND);
-}
-
 struct Event {
-    auto create(const std::string& name, std::function<void()> callback = []() {}) -> bool;
+    auto create(const std::string& name, std::function<void()> callback = 0) -> bool;
 
     wil::unique_event_nothrow event;
     wil::unique_event_watcher_nothrow watcher;
-    std::function<void()> m_callback { []() {} };
+    std::function<void()> m_callback;
 };
 }; // namespace glow::system

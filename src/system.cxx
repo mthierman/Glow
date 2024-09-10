@@ -101,37 +101,7 @@ auto make_guid() -> ::GUID {
     return guid;
 }
 
-auto format_message(::HRESULT errorCode) -> std::string {
-    wil::unique_hlocal_ansistring buffer;
-
-    if (::FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
-                             | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
-                         nullptr,
-                         errorCode,
-                         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                         wil::out_param_ptr<::LPSTR>(buffer),
-                         0,
-                         nullptr)
-        == 0) {
-        throw std::runtime_error(glow::system::get_last_error());
-    }
-
-    return buffer.get();
-}
-
-auto get_last_error() -> std::string { return format_message(::GetLastError()); }
-
 auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
-
-auto dbg(const std::string& message) -> void {
-    ::OutputDebugStringA(message.c_str());
-    ::OutputDebugStringA("\n");
-}
-
-auto dbg(const std::wstring& message) -> void {
-    ::OutputDebugStringW(message.c_str());
-    ::OutputDebugStringW(L"\n");
-}
 
 auto Event::create(const std::string& eventName, std::function<void()> callback) -> bool {
     m_callback = std::move(callback);
