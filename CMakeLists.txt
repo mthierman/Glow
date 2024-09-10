@@ -65,7 +65,8 @@ add_library(
 
 target_sources(
     ${PROJECT_NAME}
-    PRIVATE "src/color.cxx"
+    PRIVATE "src/app.cxx"
+            "src/color.cxx"
             "src/config.cxx"
             "src/filesystem.cxx"
             "src/guid.cxx"

@@ -6,27 +6,7 @@
 
 #include <glow/messages.hxx>
 
-#include <stdlib.h>
-
 namespace glow::messages {
-auto run_loop() -> int {
-    ::MSG msg {};
-    int r {};
-
-    while ((r = ::GetMessageA(&msg, nullptr, 0, 0)) != 0) {
-        if (r == -1) {
-            return EXIT_FAILURE;
-        }
-
-        else {
-            ::TranslateMessage(&msg);
-            ::DispatchMessageA(&msg);
-        }
-    }
-
-    return static_cast<int>(msg.wParam);
-}
-
 auto send_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
     return ::SendMessageA(hwnd, msg, wparam, lparam);
 }

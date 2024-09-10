@@ -1,3 +1,4 @@
+#include <glow/app.hxx>
 #include <glow/input.hxx>
 #include <glow/messages.hxx>
 #include <glow/webview.hxx>
@@ -120,7 +121,7 @@ struct App final : glow::window::Window {
         });
     }
 
-    auto operator()() -> int { return glow::messages::run_loop(); }
+    auto operator()() -> int { return glow::app::run(); }
 
     glow::system::Event& m_singleInstance;
     glow::window::WindowManager<Window> m_windows;

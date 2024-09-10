@@ -14,7 +14,6 @@
 #include <unordered_map>
 
 namespace glow::messages {
-auto run_loop() -> int;
 auto send_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
 auto post_message(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
 

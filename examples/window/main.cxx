@@ -1,3 +1,4 @@
+#include <glow/app.hxx>
 #include <glow/log.hxx>
 #include <glow/messages.hxx>
 #include <glow/window.hxx>
@@ -33,5 +34,5 @@ struct Window final : glow::window::Window {
 
 auto main() -> int {
     Window window;
-    return glow::messages::run_loop();
+    return glow::app::run();
 }

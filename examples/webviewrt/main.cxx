@@ -1,3 +1,4 @@
+#include <glow/app.hxx>
 #include <glow/log.hxx>
 #include <glow/messages.hxx>
 #include <glow/webviewrt.hxx>
@@ -25,5 +26,5 @@ struct Window : glow::window::Window {
 auto main() -> int {
     winrt::init_apartment(winrt::apartment_type::single_threaded);
     Window window;
-    return glow::messages::run_loop();
+    return glow::app::run();
 }
