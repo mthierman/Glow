@@ -32,30 +32,30 @@ auto format_message(::HRESULT errorCode) -> std::string {
 auto get_last_error() -> std::string { return format_message(::GetLastError()); }
 
 auto log(const std::string& message) -> void {
-    ::OutputDebugStringA(message.c_str());
-    ::OutputDebugStringA("\n");
+    ::OutputDebugStringW(glow::text::utf8_to_utf16(message).c_str());
+    ::OutputDebugStringW(L"\n");
 }
 
 auto log(const std::wstring& message) -> void {
-    ::OutputDebugStringA(glow::text::utf16_to_utf8(message).c_str());
-    ::OutputDebugStringA("\n");
+    ::OutputDebugStringW(message.c_str());
+    ::OutputDebugStringW(L"\n");
 }
 
 auto msg(const std::string& message) -> void {
-    ::MessageBoxA(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONASTERISK);
+    ::MessageBoxW(
+        nullptr, glow::text::utf8_to_utf16(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
 }
 
 auto msg(const std::wstring& message) -> void {
-    ::MessageBoxA(
-        nullptr, glow::text::utf16_to_utf8(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
+    ::MessageBoxW(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONASTERISK);
 }
 
 auto err(const std::string& message) -> void {
-    ::MessageBoxA(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONHAND);
+    ::MessageBoxW(
+        nullptr, glow::text::utf8_to_utf16(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
 }
 
 auto err(const std::wstring& message) -> void {
-    ::MessageBoxA(
-        nullptr, glow::text::utf16_to_utf8(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
+    ::MessageBoxW(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONHAND);
 }
 }; // namespace glow::log

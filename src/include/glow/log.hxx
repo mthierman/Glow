@@ -28,16 +28,15 @@ auto err(const std::wstring& message) -> void;
 
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringA(std::vformat(fmt.get(), std::make_format_args(args...)).c_str());
-    ::OutputDebugStringA("\n");
+    ::OutputDebugStringW(
+        glow::text::utf8_to_utf16(std::vformat(fmt.get(), std::make_format_args(args...))).c_str());
+    ::OutputDebugStringW(L"\n");
 }
 
 template <typename... Args>
 auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringA(
-        glow::text::utf16_to_utf8(std::vformat(fmt.get(), std::make_wformat_args(args...)))
-            .c_str());
-    ::OutputDebugStringA("\n");
+    ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
+    ::OutputDebugStringW(L"\n");
 }
 
 template <typename... Args>
