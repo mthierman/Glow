@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
+#include <glow/log.hxx>
 #include <glow/math.hxx>
 #include <glow/text.hxx>
 
@@ -20,15 +21,12 @@ auto utf8_to_utf16(std::string_view utf8) -> std::wstring {
     if (utf8.length() > 0) {
         int safeSize { glow::math::check_safe_size<int>(utf8.length()) };
 
-        auto length { ::MultiByteToWideChar(
-            CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, nullptr, 0) };
+        auto length { ::MultiByteToWideChar(CP_UTF8, 0, utf8.data(), safeSize, nullptr, 0) };
 
         utf16.resize(length);
 
-        if (::MultiByteToWideChar(
-                CP_UTF8, MB_ERR_INVALID_CHARS, utf8.data(), safeSize, utf16.data(), length)
-            == 0) {
-            throw std::exception("UTF8 to UTF16 conversion failed");
+        if (::MultiByteToWideChar(CP_UTF8, 0, utf8.data(), safeSize, utf16.data(), length) == 0) {
+            throw std::runtime_error(glow::log::get_last_error());
         }
     }
 
@@ -61,7 +59,7 @@ auto utf16_to_utf8(std::wstring_view utf16) -> std::string {
                                   nullptr,
                                   nullptr)
             == 0) {
-            throw std::exception("UTF16 to UTF8 conversion failed");
+            throw std::runtime_error(glow::log::get_last_error());
         }
     }
 
