@@ -26,7 +26,7 @@ auto format_message(::HRESULT errorCode) -> std::string {
                          0,
                          nullptr)
         == 0) {
-        throw std::runtime_error(format_message(::GetLastError()));
+        throw std::runtime_error(get_last_error());
     }
 
     return buffer.get();
