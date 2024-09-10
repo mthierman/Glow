@@ -26,13 +26,13 @@ auto format_message(::HRESULT errorCode) -> std::string {
         throw std::runtime_error(get_last_error());
     }
 
-    return glow::text::utf16_to_utf8(buffer.get());
+    return glow::text::to_string(buffer.get());
 }
 
 auto get_last_error() -> std::string { return format_message(::GetLastError()); }
 
 auto log(const std::string& message) -> void {
-    ::OutputDebugStringW(glow::text::utf8_to_utf16(message).c_str());
+    ::OutputDebugStringW(glow::text::to_wstring(message).c_str());
     ::OutputDebugStringW(L"\n");
 }
 
@@ -43,7 +43,7 @@ auto log(const std::wstring& message) -> void {
 
 auto msg(const std::string& message) -> void {
     ::MessageBoxW(
-        nullptr, glow::text::utf8_to_utf16(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
+        nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
 }
 
 auto msg(const std::wstring& message) -> void {
@@ -51,8 +51,7 @@ auto msg(const std::wstring& message) -> void {
 }
 
 auto err(const std::string& message) -> void {
-    ::MessageBoxW(
-        nullptr, glow::text::utf8_to_utf16(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
+    ::MessageBoxW(nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
 }
 
 auto err(const std::wstring& message) -> void {

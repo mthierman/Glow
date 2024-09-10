@@ -4,9 +4,9 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
-#include <glow/log.hxx>
-#include <glow/math.hxx>
 #include <glow/text.hxx>
+
+#include <Windows.h>
 
 #include <objbase.h>
 
@@ -14,8 +14,11 @@
 
 #include <wil/win32_helpers.h>
 
+#include <glow/log.hxx>
+#include <glow/math.hxx>
+
 namespace glow::text {
-auto utf8_to_utf16(std::string_view input) -> std::wstring {
+auto to_wstring(std::string_view input) -> std::wstring {
     std::wstring output;
 
     if (input.length() > 0) {
@@ -36,7 +39,7 @@ auto utf8_to_utf16(std::string_view input) -> std::wstring {
     return output;
 }
 
-auto utf16_to_utf8(std::wstring_view input) -> std::string {
+auto to_string(std::wstring_view input) -> std::string {
     std::string output;
 
     if (input.length() > 0) {

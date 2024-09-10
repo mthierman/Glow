@@ -100,7 +100,7 @@ auto Event::create(const std::string& eventName, std::function<void()>&& callbac
 
     bool exists;
     event.try_create(
-        wil::EventOptions::None, glow::text::utf8_to_utf16(eventName).c_str(), nullptr, &exists);
+        wil::EventOptions::None, glow::text::to_wstring(eventName).c_str(), nullptr, &exists);
 
     if (exists) {
         event.SetEvent();

@@ -11,8 +11,8 @@
 
 namespace glow::webview {
 auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
-    auto browserExecutableFolder { glow::text::utf8_to_utf16(m_browserExecutableFolder.string()) };
-    auto userDataFolder { glow::text::utf8_to_utf16(m_userDataFolder.string()) };
+    auto browserExecutableFolder { glow::text::to_wstring(m_browserExecutableFolder.string()) };
+    auto userDataFolder { glow::text::to_wstring(m_userDataFolder.string()) };
 
     wil::com_ptr<ICoreWebView2EnvironmentOptions> environmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
@@ -27,8 +27,7 @@ auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
 
     if (!m_webViewEnvironmentOptions.AdditionalBrowserArguments.empty()) {
         environmentOptions->put_AdditionalBrowserArguments(
-            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.AdditionalBrowserArguments)
-                .c_str());
+            glow::text::to_wstring(m_webViewEnvironmentOptions.AdditionalBrowserArguments).c_str());
     }
 
     environmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
@@ -36,12 +35,12 @@ auto WebViewEnvironment::create(std::function<void()> callback) -> ::HRESULT {
 
     if (!m_webViewEnvironmentOptions.Language.empty()) {
         environmentOptions->put_Language(
-            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.Language).c_str());
+            glow::text::to_wstring(m_webViewEnvironmentOptions.Language).c_str());
     }
 
     if (!m_webViewEnvironmentOptions.TargetCompatibleBrowserVersion.empty()) {
         environmentOptions->put_TargetCompatibleBrowserVersion(
-            glow::text::utf8_to_utf16(m_webViewEnvironmentOptions.TargetCompatibleBrowserVersion)
+            glow::text::to_wstring(m_webViewEnvironmentOptions.TargetCompatibleBrowserVersion)
                 .c_str());
     }
 
@@ -191,7 +190,7 @@ auto WebView::hide() -> void {
 
 auto WebView::navigate(const std::string& url) -> void {
     if (m_core) {
-        m_core->Navigate(glow::text::utf8_to_utf16(url).c_str());
+        m_core->Navigate(glow::text::to_wstring(url).c_str());
     }
 }
 

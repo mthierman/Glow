@@ -49,7 +49,7 @@ template <> struct formatter<::GUID, wchar_t> : formatter<wstring_view, wchar_t>
 
 template <> struct formatter<std::filesystem::path> : formatter<string_view> {
     auto format(const std::filesystem::path& path, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::text::utf16_to_utf8(path.wstring()), context);
+        return formatter<string_view>::format(glow::text::to_string(path.wstring()), context);
     }
 };
 

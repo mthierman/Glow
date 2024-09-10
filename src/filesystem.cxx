@@ -20,7 +20,7 @@ auto known_folder(::KNOWNFOLDERID folderId,
     auto knownFolder { std::filesystem::path(buffer.get()) };
 
     for (auto subfolder : subfolders) {
-        knownFolder /= glow::text::utf8_to_utf16(subfolder);
+        knownFolder /= glow::text::to_wstring(subfolder);
     }
 
     return knownFolder;
@@ -40,13 +40,13 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
     auto tempFolder { std::filesystem::path(buffer) };
 
     for (auto subfolder : subfolders) {
-        tempFolder /= glow::text::utf8_to_utf16(subfolder);
+        tempFolder /= glow::text::to_wstring(subfolder);
     }
 
     return tempFolder;
 }
 
 auto to_string(const std::filesystem::path& path) -> std::string {
-    return glow::text::utf16_to_utf8(path.c_str());
+    return glow::text::to_string(path.c_str());
 }
 }; // namespace glow::filesystem

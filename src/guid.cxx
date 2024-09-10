@@ -35,6 +35,6 @@ auto to_wstring(const ::GUID& guid) -> std::wstring {
 }
 
 auto to_string(const ::GUID& guid) -> std::string {
-    return glow::text::utf16_to_utf8(to_wstring(guid));
+    return glow::text::to_string(to_wstring(guid));
 }
 }; // namespace glow::guid
