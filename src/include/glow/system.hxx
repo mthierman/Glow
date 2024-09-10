@@ -15,9 +15,7 @@
 
 #include <stdlib.h>
 
-#include <format>
 #include <functional>
-#include <print>
 #include <string>
 
 #include <wil/resource.h>
