@@ -71,17 +71,9 @@ auto get_instance() -> ::HMODULE {
     return module;
 }
 
-auto abort(::UINT exitCode) -> ::UINT {
-    ::ExitProcess(exitCode);
+auto abort(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
 
-    return exitCode;
-}
-
-auto quit(int exitCode) -> int {
-    ::PostQuitMessage(exitCode);
-
-    return exitCode;
-}
+auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
 
 auto load_system_brush(int name) -> ::HBRUSH {
     return static_cast<::HBRUSH>(::GetStockObject(name));

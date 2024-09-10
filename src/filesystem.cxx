@@ -17,9 +17,9 @@ auto known_folder(::KNOWNFOLDERID folderId,
     wil::unique_cotaskmem_string buffer;
     ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
-    auto knownFolder { std::filesystem::path(glow::text::utf16_to_utf8(buffer.get())) };
+    auto knownFolder { std::filesystem::path(buffer.get()) };
 
-    for (const auto& subfolder : subfolders) {
+    for (const auto subfolder : subfolders) {
         knownFolder /= subfolder;
     }
 

@@ -1,4 +1,15 @@
 #include <print>
 #include <stdlib.h>
 
-auto main() -> int { return EXIT_SUCCESS; }
+#include <glow/filesystem.hxx>
+#include <glow/log.hxx>
+
+auto main() -> int {
+    auto knownFolder { glow::filesystem::known_folder() };
+
+    glow::log::log(knownFolder);
+
+    auto path { glow::filesystem::known_folder() / L"Test" };
+
+    return EXIT_SUCCESS;
+}

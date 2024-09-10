@@ -35,8 +35,8 @@ auto gdi_plus_startup() -> ::ULONG_PTR;
 auto gdi_plus_shutdown(::ULONG_PTR token) -> void;
 auto create_process(const std::filesystem::path& path) -> int;
 auto get_instance() -> ::HMODULE;
-auto abort(::UINT exitCode = EXIT_FAILURE) -> ::UINT;
-auto quit(int exitCode = EXIT_SUCCESS) -> int;
+auto abort(::UINT exitCode = EXIT_FAILURE) -> void;
+auto quit(int exitCode = EXIT_SUCCESS) -> void;
 auto load_system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
 auto load_system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto load_system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
@@ -45,7 +45,7 @@ auto make_guid() -> ::GUID;
 auto get_ui_settings() -> winrt::UISettings;
 
 struct Event {
-    auto create(const std::string& name, std::function<void()>&& callback) -> bool;
+    auto create(const std::string& name, std::function<void()>&& callback = 0) -> bool;
 
     wil::unique_event_nothrow event;
     wil::unique_event_watcher_nothrow watcher;
