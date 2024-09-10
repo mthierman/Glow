@@ -8,6 +8,8 @@
 
 #include <stdexcept>
 
+#include <glow/text.hxx>
+
 namespace glow::system {
 auto co_initialize(::DWORD coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit);

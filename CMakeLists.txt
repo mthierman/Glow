@@ -74,7 +74,6 @@ target_sources(
             "src/log.cxx"
             "src/math.cxx"
             "src/message.cxx"
-            "src/std.cxx"
             "src/system.cxx"
             "src/text.cxx"
             "src/webview.cxx"

@@ -8,6 +8,7 @@
 
 #include <Windows.h>
 
+#include <format>
 #include <string>
 
 #include <winrt/Windows.Foundation.h>
@@ -25,3 +26,12 @@ auto get_color(winrt::UISettings& uiSettings,
 auto color_to_string(winrt::Color color) -> std::string;
 auto color_to_colorref(winrt::Color color) -> ::COLORREF;
 }; // namespace glow::color
+
+namespace std {
+template <> struct formatter<winrt::Color> : formatter<string_view> {
+    auto format(const winrt::Color& color, format_context& context) const noexcept {
+        return formatter<string_view>::format(
+            std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A), context);
+    }
+};
+} // namespace std

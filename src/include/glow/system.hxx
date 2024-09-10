@@ -6,8 +6,6 @@
 
 #pragma once
 
-#include <glow/std.hxx>
-
 #include <Windows.h>
 
 #include <ShlObj.h>
@@ -15,6 +13,7 @@
 
 #include <stdlib.h>
 
+#include <filesystem>
 #include <functional>
 #include <string>
 
