@@ -23,15 +23,22 @@ using namespace winrt::Windows::UI::ViewManagement;
 namespace glow::color {
 auto get_color(winrt::UISettings& uiSettings,
                winrt::UIColorType colorType = winrt::UIColorType::Accent) -> winrt::Color;
-auto to_hex(winrt::Color color) -> std::string;
-auto to_colorref(winrt::Color color) -> ::COLORREF;
+auto to_string(const winrt::Color& color) -> std::string;
+auto to_wstring(const winrt::Color& color) -> std::wstring;
+auto to_hex(const winrt::Color& color) -> std::string;
+auto to_colorref(const winrt::Color& color) -> ::COLORREF;
 }; // namespace glow::color
 
 namespace std {
 template <> struct formatter<winrt::Color> : formatter<string_view> {
     auto format(const winrt::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(
-            std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A), context);
+        return formatter<string_view>::format(glow::color::to_string(color), context);
+    }
+};
+
+template <> struct formatter<winrt::Color, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const winrt::Color& color, wformat_context& context) const noexcept {
+        return formatter<wstring_view, wchar_t>::format(glow::color::to_wstring(color), context);
     }
 };
 } // namespace std
