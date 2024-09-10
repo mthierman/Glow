@@ -17,11 +17,11 @@ auto get_color(winrt::UISettings& uiSettings, winrt::UIColorType colorType) -> w
 }
 
 auto to_string(const winrt::Color& color) -> std::string {
-    return std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A)
+    return std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A);
 }
 
 auto to_wstring(const winrt::Color& color) -> std::wstring {
-    glow::text::to_wstring(to_string(color));
+    return glow::text::to_wstring(to_string(color));
 }
 
 auto to_hex(const winrt::Color& color) -> std::string {
