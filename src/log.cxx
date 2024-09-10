@@ -11,6 +11,8 @@
 
 #include <stdexcept>
 
+#include <wil/resource.h>
+
 namespace glow::log {
 auto format_message(::HRESULT errorCode) -> std::string {
     wil::unique_hlocal_ansistring buffer;
