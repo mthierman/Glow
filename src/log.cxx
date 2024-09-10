@@ -5,9 +5,6 @@
 // clang-format on
 
 #include <glow/log.hxx>
-#include <glow/text.hxx>
-
-#include <objbase.h>
 
 #include <stdexcept>
 

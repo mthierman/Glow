@@ -11,6 +11,8 @@
 #include <format>
 #include <string>
 
+#include <glow/text.hxx>
+
 namespace glow::log {
 auto format_message(::HRESULT errorCode) -> std::string;
 auto get_last_error() -> std::string;
