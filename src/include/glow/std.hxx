@@ -46,11 +46,12 @@ template <> struct formatter<::GUID, wchar_t> : formatter<wstring_view, wchar_t>
     }
 };
 
-template <> struct formatter<std::filesystem::path> : formatter<string_view> {
-    auto format(const std::filesystem::path& path, format_context& context) const noexcept {
-        return formatter<string_view>::format(path.string(), context);
-    }
-};
+// NOT COMPILE TIME SO DOESN'T WORK, NEED VFORMAT OR RUNTIME_FORMAT (C++ 26)
+// template <> struct formatter<std::filesystem::path, wchar_t> : formatter<wstring_view, wchar_t> {
+//     auto format(const std::filesystem::path& path, wformat_context& context) const noexcept {
+//         return formatter<wstring_view, wchar_t>::format(path.wstring(), context);
+//     }
+// };
 
 template <> struct formatter<winrt::Color> : formatter<string_view> {
     auto format(const winrt::Color& color, format_context& context) const noexcept {

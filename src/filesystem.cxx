@@ -45,4 +45,8 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
 
     return tempFolder;
 }
+
+auto to_string(const std::filesystem::path& path) -> std::string {
+    return glow::text::utf16_to_utf8(path.c_str());
+}
 }; // namespace glow::filesystem
