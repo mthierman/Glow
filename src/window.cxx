@@ -15,8 +15,8 @@
 
 #include <winrt/Windows.UI.ViewManagement.h>
 
-namespace glow {
-auto Window::create(const std::string& title) -> void {
+namespace glow::gui {
+auto Window::create(std::string_view title) -> void {
     auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
@@ -348,7 +348,7 @@ auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
 auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
 
 auto Window::close() -> void { hwnd.reset(); }
-} // namespace glow
+} // namespace glow::gui
 
 namespace glow::window {
 // auto register_class(::WNDCLASSEXA* windowClass) -> void {

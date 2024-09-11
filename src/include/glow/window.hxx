@@ -22,7 +22,7 @@
 
 #include <wil/resource.h>
 
-namespace glow {
+namespace glow::gui {
 struct Position {
     int x { 0 };
     int y { 0 };
@@ -31,7 +31,7 @@ struct Position {
 };
 
 struct Window {
-    auto create(const std::string& title) -> void;
+    auto create(std::string_view title = "Window") -> void;
 
 private:
     static auto CALLBACK procedure(::HWND hwnd,
@@ -113,7 +113,50 @@ public:
     glow::message::MessageHandler message;
     wil::unique_hwnd hwnd;
 };
-} // namespace glow
+
+template <typename T> struct WindowManager {
+    auto add(std::unique_ptr<T> window) -> void {
+        m_keys.push_back(window->m_id);
+        m_map.try_emplace(window->m_id, std::move(window));
+    }
+
+    auto remove(uintptr_t id) -> void {
+        auto pos { std::find(m_keys.begin(), m_keys.end(), id) };
+
+        if (pos != m_keys.end()) {
+            m_keys.erase(pos);
+        }
+
+        m_map.erase(id);
+
+        if (m_map.empty()) {
+            glow::system::quit();
+        }
+    }
+
+    auto empty() -> bool { return m_map.empty(); }
+
+    auto first_window() -> ::HWND {
+        if (m_keys.empty()) {
+            return nullptr;
+        }
+
+        return m_map.at(m_keys.front())->m_hwnd.get();
+    }
+
+    auto last_window() -> ::HWND {
+        if (m_keys.empty()) {
+            return nullptr;
+        }
+
+        return m_map.at(m_keys.back())->m_hwnd.get();
+    }
+
+private:
+    std::vector<uintptr_t> m_keys;
+    std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
+};
+} // namespace glow::gui
 
 namespace glow::window {
 // auto register_class(::WNDCLASSEXA* windowClass) -> void;
@@ -259,47 +302,4 @@ namespace glow::window {
 //     std::unordered_map<::UINT, std::function<::LRESULT(glow::message::wm message)>> m_map;
 //     wil::unique_hwnd m_hwnd;
 // };
-
-template <typename T> struct WindowManager {
-    auto add(std::unique_ptr<T> window) -> void {
-        m_keys.push_back(window->m_id);
-        m_map.try_emplace(window->m_id, std::move(window));
-    }
-
-    auto remove(uintptr_t id) -> void {
-        auto pos { std::find(m_keys.begin(), m_keys.end(), id) };
-
-        if (pos != m_keys.end()) {
-            m_keys.erase(pos);
-        }
-
-        m_map.erase(id);
-
-        if (m_map.empty()) {
-            glow::system::quit();
-        }
-    }
-
-    auto empty() -> bool { return m_map.empty(); }
-
-    auto first_window() -> ::HWND {
-        if (m_keys.empty()) {
-            return nullptr;
-        }
-
-        return m_map.at(m_keys.front())->m_hwnd.get();
-    }
-
-    auto last_window() -> ::HWND {
-        if (m_keys.empty()) {
-            return nullptr;
-        }
-
-        return m_map.at(m_keys.back())->m_hwnd.get();
-    }
-
-private:
-    std::vector<uintptr_t> m_keys;
-    std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
-};
 }; // namespace glow::window
