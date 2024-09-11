@@ -88,6 +88,7 @@ public:
     auto get_style() -> ::LONG_PTR;
     auto set_ex_style(::LONG_PTR exStyle) -> void;
     auto get_ex_style() -> ::LONG_PTR;
+    auto get_id() -> ::LONG_PTR;
 
     auto flash() -> void;
 

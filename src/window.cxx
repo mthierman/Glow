@@ -320,7 +320,9 @@ auto Window::set_ex_style(::LONG_PTR exStyle) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE, exStyle);
 }
 
-auto Window::get_ex_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE); }
+auto Window::get_ex_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE); }
+
+auto Window::get_id() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWLP_ID); }
 
 auto Window::flash() -> void {
     ::FLASHWINFO fwi { .cbSize { sizeof(::FLASHWINFO) },
