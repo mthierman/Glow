@@ -32,8 +32,6 @@ struct Notification {
     std::string message;
 };
 
-auto default_procedure(Message message) -> ::LRESULT;
-
 struct MSG : public Message {
     MSG(const Message& message)
         : Message(message) { }
@@ -142,4 +140,6 @@ struct WINDOWPOSCHANGED : public Message {
         : Message(message) { }
     auto windowPos() -> ::WINDOWPOS&;
 };
+
+auto default_procedure(Message message) -> ::LRESULT;
 }; // namespace glow::message
