@@ -7,19 +7,6 @@
 #include <glow/message.hxx>
 
 namespace glow::message {
-auto MessageHandler::on(::UINT msg, MessageCallback callback) -> bool {
-    auto emplace { map.try_emplace(msg, callback) };
-
-    return emplace.second;
-}
-
-auto MessageHandler::contains(::UINT msg) -> bool { return map.contains(msg); }
-
-auto MessageHandler::invoke(Message message) -> ::LRESULT {
-    return map.find(message.msg)
-        ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
-}
-
 auto wm::def_window_proc() -> ::LRESULT { return ::DefWindowProcA(hwnd, msg, wparam, lparam); }
 
 auto wm_notify::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }

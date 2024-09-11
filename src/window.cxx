@@ -16,6 +16,19 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 
 namespace glow::window {
+auto Messages::on(::UINT msg, Callback callback) -> bool {
+    auto emplace { map.try_emplace(msg, callback) };
+
+    return emplace.second;
+}
+
+auto Messages::contains(::UINT msg) -> bool { return map.contains(msg); }
+
+auto Messages::invoke(Message message) -> ::LRESULT {
+    return map.find(message.msg)
+        ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
+}
+
 auto Window::create(std::string_view title) -> void {
     auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };

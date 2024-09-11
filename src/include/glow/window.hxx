@@ -23,6 +23,32 @@
 #include <wil/resource.h>
 
 namespace glow::window {
+struct Message {
+    ::HWND hwnd;
+    ::UINT msg;
+    ::WPARAM wparam;
+    ::LPARAM lparam;
+};
+
+struct Messages {
+    using Callback = std::function<::LRESULT(Message)>;
+
+    bool on(::UINT msg, Callback callback);
+    bool contains(::UINT msg);
+    ::LRESULT invoke(Message message);
+
+    template <typename W, typename L>::LRESULT send(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+        return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+    template <typename W, typename L>::LRESULT post(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+        return ::PostMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+private:
+    std::unordered_map<::UINT, Callback> map;
+};
+
 struct Position {
     int x { 0 };
     int y { 0 };
@@ -110,7 +136,7 @@ public:
     uint64_t dpi;
     double scale;
 
-    glow::message::MessageHandler message;
+    Messages message;
     wil::unique_hwnd hwnd;
 };
 
