@@ -13,14 +13,14 @@
 
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId,
-                  std::initializer_list<std::u8string_view> subfolders) -> std::filesystem::path {
+                  std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
     wil::unique_cotaskmem_string buffer;
     ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
 
-    auto knownFolder { std::filesystem::path(glow::text::to_u8string(buffer.get())) };
+    auto knownFolder { std::filesystem::path(buffer.get()) };
 
     for (auto subfolder : subfolders) {
-        knownFolder /= subfolder;
+        knownFolder /= glow::text::to_wstring(subfolder);
     }
 
     return knownFolder;
@@ -47,6 +47,8 @@ auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::fil
 }
 
 auto to_string(const std::filesystem::path& path) -> std::string {
-    return glow::text::to_string(path.c_str());
+    return glow::text::to_string(path.wstring());
 }
+
+auto to_wstring(const std::filesystem::path& path) -> std::wstring { return path.wstring(); }
 }; // namespace glow::filesystem
