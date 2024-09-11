@@ -65,6 +65,12 @@ struct ACTIVATE : public Message {
     auto hwnd() -> ::HWND;
 };
 
+struct ERASEBKGND : public Message {
+    ERASEBKGND(const Message& message)
+        : Message(message) { }
+    auto deviceContext() -> ::HDC;
+};
+
 struct KEYDOWN : public Message {
     KEYDOWN(const Message& message)
         : Message(message) { }

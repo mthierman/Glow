@@ -25,6 +25,8 @@ auto ACTIVATE::activated() -> bool { return LOWORD(wparam) == 1; }
 auto ACTIVATE::clickActivated() -> bool { return LOWORD(wparam) == 2; }
 auto ACTIVATE::hwnd() -> ::HWND { return reinterpret_cast<::HWND>(lparam); }
 
+auto ERASEBKGND::deviceContext() -> ::HDC { return reinterpret_cast<::HDC>(wparam); }
+
 auto KEYDOWN::virtualKeyCode() -> ::WORD { return LOWORD(wparam); }
 auto KEYDOWN::key() -> char { return static_cast<char>(virtualKeyCode()); }
 auto KEYDOWN::keyFlags() -> ::WORD { return HIWORD(lparam); }

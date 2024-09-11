@@ -16,6 +16,16 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
+        messages.on(WM_ERASEBKGND, [](wm::ERASEBKGND msg) {
+            auto hdc { msg.deviceContext() };
+            ::RECT rect;
+            ::GetClientRect(msg.hwnd, &rect);
+            auto brush { ::CreateSolidBrush(RGB(255, 0, 0)) };
+            ::FillRect(hdc, &rect, brush);
+
+            return 1;
+        });
+
         messages.on(WM_KEYDOWN, [this](wm::KEYDOWN msg) {
             switch (msg.key()) {
                 case VK_F11: {
