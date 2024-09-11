@@ -200,6 +200,53 @@ auto Window::uncloak() -> void {
     ::DwmSetWindowAttribute(hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
 }
 
+auto Window::enable_dark_mode() -> void {
+    auto attribute { TRUE };
+    ::DwmSetWindowAttribute(hwnd.get(),
+                            ::DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE,
+                            &attribute,
+                            sizeof(attribute));
+}
+
+auto Window::disable_dark_mode() -> void {
+    auto attribute { FALSE };
+    ::DwmSetWindowAttribute(hwnd.get(),
+                            ::DWMWINDOWATTRIBUTE::DWMWA_USE_IMMERSIVE_DARK_MODE,
+                            &attribute,
+                            sizeof(attribute));
+}
+
+auto Window::set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void {
+    ::MARGINS margins { .cxLeftWidth { 0 },
+                        .cxRightWidth { 0 },
+                        .cyTopHeight { 0 },
+                        .cyBottomHeight { ::GetSystemMetrics(SM_CYVIRTUALSCREEN) } };
+
+    ::DwmExtendFrameIntoClientArea(hwnd.get(), &margins);
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_SYSTEMBACKDROP_TYPE, &backdrop, sizeof(&backdrop));
+}
+
+auto Window::set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void {
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
+}
+
+auto Window::set_caption_color(::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &color, sizeof(color));
+}
+
+auto Window::set_border_color(::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &color, sizeof(color));
+}
+
+auto Window::set_text_color(::COLORREF color) -> void {
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &color, sizeof(color));
+}
+
 auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }

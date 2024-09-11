@@ -53,6 +53,13 @@ public:
     auto no_topmost() -> void;
     auto cloak() -> void;
     auto uncloak() -> void;
+    auto enable_dark_mode() -> void;
+    auto disable_dark_mode() -> void;
+    auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
+    auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
+    auto set_caption_color(::COLORREF color) -> void;
+    auto set_border_color(::COLORREF color) -> void;
+    auto set_text_color(::COLORREF color) -> void;
 
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
