@@ -167,7 +167,7 @@ private:
     std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
 };
 
-auto default_procedure(Message message) -> ::LRESULT;
+auto default_procedure(glow::message::Message message) -> ::LRESULT;
 } // namespace glow::window
 
 namespace glow::window {
