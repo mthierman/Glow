@@ -7,7 +7,9 @@
 #include <glow/message.hxx>
 
 namespace glow::message {
-auto wm::def_window_proc() -> ::LRESULT { return ::DefWindowProcA(hwnd, msg, wparam, lparam); }
+auto default_procedure(Message message) -> ::LRESULT {
+    return ::DefWindowProcA(message.hwnd, message.msg, message.wparam, message.lparam);
+}
 
 auto wm_notify::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
 auto wm_notify::notification() -> const Notification& {
