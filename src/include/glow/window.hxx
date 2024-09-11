@@ -26,9 +26,9 @@ namespace glow::window {
 struct Messages {
     using Callback = std::function<::LRESULT(glow::message::Message)>;
 
-    bool on(::UINT msg, Callback callback);
-    bool contains(::UINT msg);
-    ::LRESULT invoke(glow::message::Message message);
+    auto on(::UINT msg, Callback callback) -> bool;
+    auto contains(::UINT msg) -> bool;
+    auto invoke(glow::message::Message message) -> ::LRESULT;
 
     template <typename W, typename L>::LRESULT send(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
         return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
@@ -85,36 +85,27 @@ public:
     auto is_foreground() -> bool;
     auto active() -> void;
     auto is_active() -> bool;
-
     auto set_parent(::HWND parent) -> void;
     auto get_parent() -> ::HWND;
     auto bring_to_top() -> void;
-
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
     auto is_cloaked() -> bool;
     auto is_maximized() -> bool;
-
     auto set_title(const std::string& title) -> void;
-
     auto set_position(Position position) -> void;
     auto set_placement() -> void;
     auto get_placement() -> void;
-
     auto set_style(::LONG_PTR style) -> void;
     auto get_style() -> ::LONG_PTR;
     auto set_ex_style(::LONG_PTR exStyle) -> void;
     auto get_ex_style() -> ::LONG_PTR;
     auto get_id() -> ::LONG_PTR;
-
     auto set_small_icon(::HICON hicon) -> void;
     auto set_big_icon(::HICON hicon) -> void;
-
     auto flash() -> void;
-
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto timer_stop(::UINT_PTR timerId) -> bool;
-
     auto close() -> void;
 
     struct Positions {
@@ -124,12 +115,10 @@ public:
         Position restore;
         ::WINDOWPLACEMENT placement;
     };
-
     Positions positions;
     uint64_t dpi;
     double scale;
-
-    Messages message;
+    Messages messages;
     wil::unique_hwnd hwnd;
 };
 

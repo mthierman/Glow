@@ -76,7 +76,7 @@ struct KEYDOWN : public Message {
     auto wasAltKeyDown() -> bool;
 };
 
-struct KEYUP : public Message, public KEYDOWN {
+struct KEYUP : public KEYDOWN {
     KEYUP(const Message& message)
         : KEYDOWN(message) { }
 };

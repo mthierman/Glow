@@ -24,7 +24,7 @@ auto Messages::on(::UINT msg, Callback callback) -> bool {
 
 auto Messages::contains(::UINT msg) -> bool { return map.contains(msg); }
 
-auto Messages::invoke(Message message) -> ::LRESULT {
+auto Messages::invoke(glow::message::Message message) -> ::LRESULT {
     return map.find(message.msg)
         ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
 }
@@ -132,8 +132,8 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                 = (static_cast<double>(self->dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
         }
 
-        if (self->message.contains(msg)) {
-            return self->message.invoke({ hwnd, msg, wparam, lparam });
+        if (self->messages.contains(msg)) {
+            return self->messages.invoke({ hwnd, msg, wparam, lparam });
         }
 
         if (msg == WM_CLOSE) {
@@ -338,11 +338,11 @@ auto Window::get_ex_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(
 auto Window::get_id() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWLP_ID); }
 
 auto Window::set_small_icon(::HICON hicon) -> void {
-    message.send(hwnd.get(), WM_SETICON, ICON_SMALL, hicon);
+    messages.send(hwnd.get(), WM_SETICON, ICON_SMALL, hicon);
 }
 
 auto Window::set_big_icon(::HICON hicon) -> void {
-    message.send(hwnd.get(), WM_SETICON, ICON_BIG, hicon);
+    messages.send(hwnd.get(), WM_SETICON, ICON_BIG, hicon);
 }
 
 auto Window::flash() -> void {

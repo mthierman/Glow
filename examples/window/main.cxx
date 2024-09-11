@@ -2,6 +2,14 @@
 
 struct Window final : glow::window::Window {
     Window() {
+        messages.on(WM_CREATE, [](glow::message::CREATE message) {
+            //
+            auto createStruct { message.createStruct() };
+            glow::log::log("{}", glow::text::to_string(createStruct.lpszName));
+
+            return 0;
+        });
+
         // message(WM_CREATE, [](glow::message::wm_create /* message */) {
         //     glow::log::log("WM_CREATE");
         //     return 0;
