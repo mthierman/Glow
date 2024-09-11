@@ -21,16 +21,16 @@ struct Message {
     ::LPARAM lparam;
 };
 
-// enum struct Notice : ::UINT;
+enum struct Notice : ::UINT;
 
-// struct Notification {
-//     ::NMHDR nmhdr;
-//     ::HWND hwndFrom;
-//     ::UINT_PTR idFrom;
-//     ::UINT code;
-//     Notice notice;
-//     std::string message;
-// };
+struct Notification {
+    ::NMHDR nmhdr;
+    ::HWND hwndFrom;
+    ::UINT_PTR idFrom;
+    ::UINT code;
+    Notice notice;
+    std::string message;
+};
 
 auto default_procedure(Message message) -> ::LRESULT;
 
