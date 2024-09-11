@@ -4,13 +4,13 @@ namespace wm = glow::message;
 
 struct Window final : glow::window::Window {
     Window() {
-        messages.on(WM_CREATE, [](wm::CREATE message) {
-            glow::log::log("{}", glow::text::to_string(message.createStruct().lpszName));
+        messages.on(WM_CREATE, [](wm::CREATE msg) {
+            glow::log::log("{}", glow::text::to_string(msg.createStruct().lpszName));
 
             return 0;
         });
 
-        messages.on(WM_DESTROY, [](wm::DEFAULT /* message */) {
+        messages.on(WM_DESTROY, [](wm::MSG /* msg */) {
             glow::system::quit();
 
             return 0;
