@@ -46,6 +46,7 @@ public:
     auto maximize() -> void;
     auto minimize() -> void;
     auto restore() -> void;
+    auto center() -> void;
     auto is_visible() -> bool;
     auto is_maximized() -> bool;
 

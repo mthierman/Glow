@@ -145,6 +145,16 @@ auto Window::minimize() -> void { ::ShowWindow(hwnd.get(), SW_MINIMIZE); }
 
 auto Window::restore() -> void { ::ShowWindow(hwnd.get(), SW_RESTORE); }
 
+auto Window::center() -> void {
+    if (position.monitor.width > position.window.width
+        && position.monitor.height > position.window.height) {
+        auto x { static_cast<int>((position.monitor.width - position.window.width) / 2) };
+        auto y { static_cast<int>((position.monitor.height - position.window.height) / 2) };
+
+        ::SetWindowPos(hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
+    }
+}
+
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
@@ -207,6 +217,16 @@ auto Window::flash() -> void {
                        .dwTimeout { 100 } };
     ::FlashWindowEx(&fwi);
 }
+
+// auto cloak(::HWND hwnd) -> void {
+//     auto cloak { TRUE };
+//     ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
+// }
+
+// auto uncloak(::HWND hwnd) -> void {
+//     auto cloak { FALSE };
+//     ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
+// }
 
 auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
