@@ -361,6 +361,39 @@ auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
 auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
 
 auto Window::close() -> void { hwnd.reset(); }
+
+auto Window::fullscreen(bool /* fullscreen */) -> void {
+    // thread_local ::RECT pos { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
+
+    // if (check_overlapped(hwnd)) {
+    //     ::MONITORINFO mi {
+    //         .cbSize { sizeof(::MONITORINFO) },
+    //         .rcMonitor { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+    //         .rcWork { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
+    //         .dwFlags { 0 }
+    //     };
+    //     ::GetWindowRect(hwnd, &pos);
+    //     if (::GetMonitorInfoA(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi)) {
+    //         ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) & ~WS_OVERLAPPEDWINDOW);
+    //         ::SetWindowPos(hwnd,
+    //                        HWND_TOP,
+    //                        mi.rcMonitor.left,
+    //                        mi.rcMonitor.top,
+    //                        mi.rcMonitor.right - mi.rcMonitor.left,
+    //                        mi.rcMonitor.bottom - mi.rcMonitor.top,
+    //                        SWP_FRAMECHANGED);
+    //     }
+    // } else {
+    //     ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) | WS_OVERLAPPEDWINDOW);
+    //     ::SetWindowPos(hwnd,
+    //                    nullptr,
+    //                    pos.left,
+    //                    pos.top,
+    //                    (pos.right - pos.left),
+    //                    (pos.bottom - pos.top),
+    //                    SWP_FRAMECHANGED);
+    // }
+}
 } // namespace glow::window
 
 namespace glow::window {

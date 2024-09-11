@@ -108,6 +108,8 @@ public:
     auto timer_stop(::UINT_PTR timerId) -> bool;
     auto close() -> void;
 
+    auto fullscreen(bool fullscreen) -> void;
+
     struct Positions {
         Position window;
         Position client;
