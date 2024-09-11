@@ -90,6 +90,9 @@ public:
     auto get_ex_style() -> ::LONG_PTR;
     auto get_id() -> ::LONG_PTR;
 
+    auto set_small_icon(::HICON hicon) -> void;
+    auto set_big_icon(::HICON hicon) -> void;
+
     auto flash() -> void;
 
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;

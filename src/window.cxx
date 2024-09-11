@@ -324,6 +324,14 @@ auto Window::get_ex_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(
 
 auto Window::get_id() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWLP_ID); }
 
+auto Window::set_small_icon(::HICON hicon) -> void {
+    message.send(hwnd.get(), WM_SETICON, ICON_SMALL, hicon);
+}
+
+auto Window::set_big_icon(::HICON hicon) -> void {
+    message.send(hwnd.get(), WM_SETICON, ICON_BIG, hicon);
+}
+
 auto Window::flash() -> void {
     ::FLASHWINFO fwi { .cbSize { sizeof(::FLASHWINFO) },
                        .hwnd { hwnd.get() },
