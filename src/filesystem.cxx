@@ -5,11 +5,11 @@
 // clang-format on
 
 #include <glow/filesystem.hxx>
-#include <glow/log.hxx>
-#include <glow/system.hxx>
-#include <glow/text.hxx>
 
 #include <wil/win32_helpers.h>
+
+#include <glow/log.hxx>
+#include <glow/text.hxx>
 
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId,
