@@ -6,9 +6,6 @@
 
 #include <glow/color.hxx>
 
-#include <format>
-
-#include <glow/math.hxx>
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 
