@@ -21,8 +21,24 @@ struct Message {
     ::LPARAM lparam;
 };
 
-auto send(Message message) -> ::LRESULT;
-auto post(Message message) -> ::LRESULT;
+struct MessageHandler {
+    using MessageCallback = std::function<::LRESULT(Message)>;
+
+    bool on(::UINT msg, MessageCallback callback);
+    bool contains(::UINT msg);
+    ::LRESULT invoke(Message message);
+
+    template <typename W, typename L>::LRESULT send(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+        return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+    template <typename W, typename L>::LRESULT post(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+        return ::PostMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+private:
+    std::unordered_map<::UINT, MessageCallback> map;
+};
 
 enum struct notice : ::UINT;
 
