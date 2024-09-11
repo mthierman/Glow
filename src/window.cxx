@@ -247,6 +247,24 @@ auto Window::set_text_color(::COLORREF color) -> void {
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &color, sizeof(color));
 }
 
+auto Window::focus() -> void { ::SetFocus(hwnd.get()); }
+
+auto Window::is_focused() -> bool { return ::GetFocus() == hwnd.get(); }
+
+// auto set_foreground(::HWND hwnd) -> bool { return ::SetForegroundWindow(hwnd); }
+
+// auto get_foreground() -> ::HWND { return ::GetForegroundWindow(); }
+
+// auto set_active(::HWND hwnd) -> ::HWND { return ::SetActiveWindow(hwnd); }
+
+// auto get_active() -> ::HWND { return ::GetActiveWindow(); }
+
+// auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND { return ::SetParent(hwnd, parent); }
+
+// auto get_parent(::HWND hwnd) -> ::HWND { return ::GetParent(hwnd); }
+
+// auto bring_to_top(::HWND hwnd) -> bool { return ::BringWindowToTop(hwnd); }
+
 auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }

@@ -60,6 +60,8 @@ public:
     auto set_caption_color(::COLORREF color) -> void;
     auto set_border_color(::COLORREF color) -> void;
     auto set_text_color(::COLORREF color) -> void;
+    auto focus() -> void;
+    auto is_focused() -> bool;
 
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
