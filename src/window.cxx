@@ -25,18 +25,18 @@ void Window::create(const std::string& title) {
     auto systemCursor { glow::system::system_cursor() };
     auto systemBrush { glow::system::system_brush() };
 
-    WNDCLASSEXW windowClass { sizeof(::WNDCLASSEXW) };
-    windowClass.style = 0;
-    windowClass.lpfnWndProc = procedure;
-    windowClass.cbClsExtra = 0;
-    windowClass.cbWndExtra = sizeof(void*);
-    windowClass.hInstance = instance;
-    windowClass.hIcon = resourceIcon ? resourceIcon : systemIcon;
-    windowClass.hCursor = systemCursor;
-    windowClass.hbrBackground = systemBrush;
-    windowClass.lpszMenuName = nullptr;
-    windowClass.lpszClassName = className.c_str();
-    windowClass.hIconSm = resourceIcon ? resourceIcon : systemIcon;
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { instance },
+                                .hIcon { resourceIcon ? resourceIcon : systemIcon },
+                                .hCursor { systemCursor },
+                                .hbrBackground { systemBrush },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { className.c_str() },
+                                .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
 
     if (::GetClassInfoExW(instance, className.c_str(), &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
@@ -130,6 +130,75 @@ auto CALLBACK Window::procedure(::HWND hwnd,
 
     return ::DefWindowProcW(hwnd, msg, wparam, lparam);
 }
+
+void Window::activate() { ::ShowWindow(hwnd.get(), SW_NORMAL); }
+
+void Window::show() { ::ShowWindow(hwnd.get(), SW_SHOW); }
+
+void Window::hide() { ::ShowWindow(hwnd.get(), SW_HIDE); }
+
+bool Window::isVisible() { return ::IsWindowVisible(hwnd.get()); }
+
+void Window::adjustSize(uint32_t width, uint32_t height) {
+    ::RECT rect {};
+    rect.left = 0;
+    rect.top = 0;
+    rect.right = width;
+    rect.bottom = height;
+
+    ::AdjustWindowRectExForDpi(&rect,
+                               static_cast<::DWORD>(::GetWindowLongPtrW(hwnd.get(), GWL_STYLE)),
+                               ::GetMenu(hwnd.get()) != nullptr,
+                               static_cast<::DWORD>(::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE)),
+                               dpi);
+
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   0,
+                   0,
+                   (rect.right - rect.left),
+                   (rect.bottom - rect.top),
+                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
+}
+
+void Window::setPosition(Position position) {
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   position.x,
+                   position.y,
+                   position.width,
+                   position.height,
+                   SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+void Window::setStyle(::LONG_PTR style) { ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style); }
+
+void Window::toggleCentered(bool centered) {
+    restore = window;
+
+    if (centered) {
+        if (monitor.width > window.width && monitor.height > window.height) {
+            auto x { static_cast<int>((monitor.width - window.width) / 2) };
+            auto y { static_cast<int>((monitor.height - window.height) / 2) };
+
+            ::SetWindowPos(
+                hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
+        }
+    } else {
+        setPosition(restore);
+    }
+}
+
+void Window::toggleTopmost(bool topmost) {
+    ::SetWindowPos(
+        hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+}
+
+bool Window::startTimer(::UINT_PTR timerId, ::UINT intervalMs) {
+    return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
+}
+
+bool Window::stopTimer(::UINT_PTR timerId) { return ::KillTimer(hwnd.get(), timerId); }
 } // namespace glow
 
 namespace glow::window {

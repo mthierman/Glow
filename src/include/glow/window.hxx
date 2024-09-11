@@ -33,10 +33,29 @@ struct Position {
 struct Window {
     void create(const std::string& title);
 
+private:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
                                    ::WPARAM wparam,
                                    ::LPARAM lparam) -> ::LRESULT;
+
+public:
+    void activate();
+    void show();
+    void hide();
+    bool isVisible();
+
+    void adjustSize(uint32_t width, uint32_t height);
+    void setPosition(Position position);
+    void setStyle(::LONG_PTR style);
+
+    void toggleCentered(bool centered);
+    void toggleTopmost(bool topmost);
+
+    void repaint();
+
+    bool startTimer(::UINT_PTR timerId, ::UINT intervalMs);
+    bool stopTimer(::UINT_PTR timerId);
 
     Position window;
     Position client;
