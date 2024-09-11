@@ -155,6 +155,43 @@ auto Window::center() -> void {
     }
 }
 
+auto Window::top() -> void {
+    ::SetWindowPos(
+        hwnd.get(), HWND_TOP, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+auto Window::bottom() -> void {
+    ::SetWindowPos(hwnd.get(),
+                   HWND_BOTTOM,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+auto Window::topmost() -> void {
+    ::SetWindowPos(hwnd.get(),
+                   HWND_TOPMOST,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+auto Window::no_topmost() -> void {
+    ::SetWindowPos(hwnd.get(),
+                   HWND_NOTOPMOST,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+}
+
+auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
+
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
@@ -179,15 +216,11 @@ auto Window::set_style(::LONG_PTR style) -> void {
 
 auto Window::get_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
-auto Window::toggle_topmost(bool topmost) -> void {
-    ::SetWindowPos(hwnd.get(),
-                   topmost ? HWND_TOPMOST : HWND_NOTOPMOST,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+auto Window::set_ex_style(::LONG_PTR exStyle) -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE, exStyle);
 }
+
+auto Window::get_ex_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE); }
 
 auto Window::flash() -> void {
     ::FLASHWINFO fwi { .cbSize { sizeof(::FLASHWINFO) },

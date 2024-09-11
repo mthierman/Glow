@@ -47,6 +47,12 @@ public:
     auto minimize() -> void;
     auto restore() -> void;
     auto center() -> void;
+    auto top() -> void;
+    auto bottom() -> void;
+    auto topmost() -> void;
+    auto no_topmost() -> void;
+
+    auto is_topmost() -> bool;
     auto is_visible() -> bool;
     auto is_maximized() -> bool;
 
@@ -56,10 +62,9 @@ public:
 
     auto set_style(::LONG_PTR style) -> void;
     auto get_style() -> ::LONG_PTR;
+    auto set_ex_style(::LONG_PTR exStyle) -> void;
+    auto get_ex_style() -> ::LONG_PTR;
 
-    auto toggle_centered(bool centered) -> void;
-    auto toggle_topmost(bool topmost) -> void;
-    auto toggle_maximize() -> void;
     auto flash() -> void;
 
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
