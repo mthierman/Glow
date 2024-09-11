@@ -34,6 +34,11 @@ struct Notification {
 
 auto default_procedure(Message message) -> ::LRESULT;
 
+struct DEFAULT : public Message {
+    DEFAULT(const Message& message)
+        : Message(message) { }
+};
+
 struct NOTIFY : public Message {
     NOTIFY(const Message& message)
         : Message(message) { }
