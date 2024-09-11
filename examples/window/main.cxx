@@ -16,6 +16,24 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
+        messages.on(WM_KEYDOWN, [this](wm::KEYDOWN msg) {
+            if (glow::input::was_key_down(VK_CONTROL)) {
+                switch (msg.key()) {
+                    case 'N': {
+                        if (positions.fullscreen) {
+                            positions.fullscreen = disable_fullscreen();
+                        } else {
+                            positions.fullscreen = enable_fullscreen();
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            return 0;
+        });
+
         create();
         activate();
     }

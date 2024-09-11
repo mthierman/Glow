@@ -108,7 +108,8 @@ public:
     auto timer_stop(::UINT_PTR timerId) -> bool;
     auto close() -> void;
 
-    auto fullscreen(bool fullscreen) -> void;
+    auto enable_fullscreen() -> bool;
+    auto disable_fullscreen() -> bool;
 
     struct Positions {
         Position window;
@@ -116,10 +117,12 @@ public:
         Position monitor;
         Position restore;
         ::WINDOWPLACEMENT placement;
+        uint64_t dpi;
+        double scale;
+        bool fullscreen;
     };
     Positions positions;
-    uint64_t dpi;
-    double scale;
+
     Messages messages;
     wil::unique_hwnd hwnd;
 };

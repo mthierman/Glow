@@ -78,9 +78,9 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (auto self { static_cast<Window*>(create->lpCreateParams) }; self) {
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
             self->hwnd.reset(hwnd);
-            self->dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
-            self->scale
-                = (static_cast<double>(self->dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+            self->positions.dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
+            self->positions.scale = (static_cast<double>(self->positions.dpi)
+                                     / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
         }
     }
 
@@ -127,9 +127,9 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                            (rect->bottom - rect->top),
                            SWP_NOZORDER | SWP_NOACTIVATE);
 
-            self->dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
-            self->scale
-                = (static_cast<double>(self->dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+            self->positions.dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
+            self->positions.scale = (static_cast<double>(self->positions.dpi)
+                                     / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
         }
 
         if (self->messages.contains(msg)) {
@@ -362,37 +362,35 @@ auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.ge
 
 auto Window::close() -> void { hwnd.reset(); }
 
-auto Window::fullscreen(bool /* fullscreen */) -> void {
-    // thread_local ::RECT pos { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } };
+auto Window::enable_fullscreen() -> bool {
+    if (get_style() & WS_OVERLAPPEDWINDOW) {
+        positions.restore = positions.window;
+        ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() & ~WS_OVERLAPPEDWINDOW);
+        ::SetWindowPos(hwnd.get(),
+                       HWND_TOP,
+                       positions.monitor.x,
+                       positions.monitor.y,
+                       positions.monitor.width,
+                       positions.monitor.height,
+                       SWP_FRAMECHANGED);
+    }
 
-    // if (check_overlapped(hwnd)) {
-    //     ::MONITORINFO mi {
-    //         .cbSize { sizeof(::MONITORINFO) },
-    //         .rcMonitor { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
-    //         .rcWork { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } },
-    //         .dwFlags { 0 }
-    //     };
-    //     ::GetWindowRect(hwnd, &pos);
-    //     if (::GetMonitorInfoA(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi)) {
-    //         ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) & ~WS_OVERLAPPEDWINDOW);
-    //         ::SetWindowPos(hwnd,
-    //                        HWND_TOP,
-    //                        mi.rcMonitor.left,
-    //                        mi.rcMonitor.top,
-    //                        mi.rcMonitor.right - mi.rcMonitor.left,
-    //                        mi.rcMonitor.bottom - mi.rcMonitor.top,
-    //                        SWP_FRAMECHANGED);
-    //     }
-    // } else {
-    //     ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) | WS_OVERLAPPEDWINDOW);
-    //     ::SetWindowPos(hwnd,
-    //                    nullptr,
-    //                    pos.left,
-    //                    pos.top,
-    //                    (pos.right - pos.left),
-    //                    (pos.bottom - pos.top),
-    //                    SWP_FRAMECHANGED);
-    // }
+    return true;
+}
+
+auto Window::disable_fullscreen() -> bool {
+    if (!(get_style() & WS_OVERLAPPEDWINDOW)) {
+        ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() | WS_OVERLAPPEDWINDOW);
+        ::SetWindowPos(hwnd.get(),
+                       HWND_TOP,
+                       positions.restore.x,
+                       positions.restore.y,
+                       positions.restore.width,
+                       positions.restore.height,
+                       SWP_FRAMECHANGED);
+    }
+
+    return false;
 }
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT {
