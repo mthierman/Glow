@@ -140,6 +140,4 @@ struct WINDOWPOSCHANGED : public Message {
         : Message(message) { }
     auto windowPos() -> ::WINDOWPOS&;
 };
-
-auto default_procedure(Message message) -> ::LRESULT;
 }; // namespace glow::message

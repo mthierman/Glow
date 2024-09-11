@@ -71,8 +71,4 @@ auto GETMINMAXINFO::minMaxInfo() -> ::MINMAXINFO& {
 auto WINDOWPOSCHANGED::windowPos() -> ::WINDOWPOS& {
     return *reinterpret_cast<::WINDOWPOS*>(lparam);
 }
-
-auto default_procedure(Message message) -> ::LRESULT {
-    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
-}
 }; // namespace glow::message

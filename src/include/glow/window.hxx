@@ -166,6 +166,8 @@ private:
     std::vector<uintptr_t> m_keys;
     std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
 };
+
+auto default_procedure(Message message) -> ::LRESULT;
 } // namespace glow::window
 
 namespace glow::window {

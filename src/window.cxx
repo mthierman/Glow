@@ -394,6 +394,10 @@ auto Window::fullscreen(bool /* fullscreen */) -> void {
     //                    SWP_FRAMECHANGED);
     // }
 }
+
+auto default_procedure(glow::message::Message message) -> ::LRESULT {
+    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
+}
 } // namespace glow::window
 
 namespace glow::window {
