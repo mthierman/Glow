@@ -84,7 +84,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             self->position.window.width = windowPos->cx;
             self->position.window.height = windowPos->cy;
 
-            ::GetWindowPlacement(hwnd, &self->placement);
+            ::GetWindowPlacement(hwnd, &self->position.placement);
 
             ::RECT rect {};
             ::GetClientRect(hwnd, &rect);
