@@ -13,8 +13,6 @@
 #include <format>
 #include <string>
 
-#include <glow/math.hxx>
-
 namespace glow::guid {
 auto create() -> ::GUID;
 auto to_string(const ::GUID& guid) -> std::string;
@@ -25,7 +23,7 @@ namespace std {
 template <> struct hash<::GUID> {
     auto operator()(const ::GUID& guid) const noexcept {
         ::RPC_STATUS status { RPC_S_OK };
-        return glow::math::check_safe_size<size_t>(::UuidHash(&const_cast<::GUID&>(guid), &status));
+        return static_cast<size_t>(::UuidHash(&const_cast<::GUID&>(guid), &status));
     }
 };
 
