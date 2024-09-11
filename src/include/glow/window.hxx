@@ -67,6 +67,12 @@ public:
     auto active() -> void;
     auto is_active() -> bool;
 
+    auto set_parent(::HWND parent) -> void;
+    auto get_parent() -> ::HWND;
+    auto bring_to_top() -> void;
+
+    auto set_parent(::HWND parent) -> void;
+
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
     auto is_cloaked() -> bool;

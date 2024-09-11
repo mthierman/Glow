@@ -259,11 +259,15 @@ auto Window::active() -> void { ::SetActiveWindow(hwnd.get()); }
 
 auto Window::is_active() -> bool { return ::GetActiveWindow() == hwnd.get(); }
 
-// auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND { return ::SetParent(hwnd, parent); }
+auto Window::set_parent(::HWND parent) -> void {
+    parent ? set_style(WS_CHILD) : set_style(WS_POPUP);
 
-// auto get_parent(::HWND hwnd) -> ::HWND { return ::GetParent(hwnd); }
+    ::SetParent(hwnd.get(), parent);
+}
 
-// auto bring_to_top(::HWND hwnd) -> bool { return ::BringWindowToTop(hwnd); }
+auto Window::get_parent() -> ::HWND { return ::GetParent(hwnd.get()); }
+
+auto Window::bring_to_top() -> void { ::BringWindowToTop(hwnd.get()); }
 
 auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
 
