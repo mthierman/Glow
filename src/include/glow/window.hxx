@@ -43,7 +43,7 @@ public:
     void activate();
     void show();
     void hide();
-    bool isVisible();
+    bool is_visible();
 
     void adjustSize(uint32_t width, uint32_t height);
     void setPosition(Position position);
@@ -52,8 +52,6 @@ public:
     void toggleCentered(bool centered);
     void toggleTopmost(bool topmost);
 
-    void repaint();
-
     bool startTimer(::UINT_PTR timerId, ::UINT intervalMs);
     bool stopTimer(::UINT_PTR timerId);
 
@@ -61,11 +59,8 @@ public:
     Position client;
     Position monitor;
     ::WINDOWPLACEMENT placement;
-    uint32_t dpi;
+    uint64_t dpi;
     double scale;
-
-    Position restore;
-    Position suggested;
 
     glow::message::MessageHandler message;
     wil::unique_hwnd hwnd;

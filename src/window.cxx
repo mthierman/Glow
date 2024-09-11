@@ -17,8 +17,7 @@
 
 namespace glow {
 void Window::create(const std::string& title) {
-    std::wstring className { L"Window" };
-
+    auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
@@ -107,10 +106,13 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (msg == WM_DPICHANGED) {
             auto rect { reinterpret_cast<::LPRECT>(lparam) };
 
-            self->suggested.x = rect->left;
-            self->suggested.y = rect->top;
-            self->suggested.width = rect->left - rect->right;
-            self->suggested.height = rect->bottom - rect->top;
+            ::SetWindowPos(hwnd,
+                           nullptr,
+                           rect->left,
+                           rect->top,
+                           (rect->right - rect->left),
+                           (rect->bottom - rect->top),
+                           SWP_NOZORDER | SWP_NOACTIVATE);
 
             self->dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
             self->scale
@@ -137,7 +139,7 @@ void Window::show() { ::ShowWindow(hwnd.get(), SW_SHOW); }
 
 void Window::hide() { ::ShowWindow(hwnd.get(), SW_HIDE); }
 
-bool Window::isVisible() { return ::IsWindowVisible(hwnd.get()); }
+bool Window::is_visible() { return ::IsWindowVisible(hwnd.get()); }
 
 void Window::adjustSize(uint32_t width, uint32_t height) {
     ::RECT rect {};
