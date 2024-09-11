@@ -1,14 +1,13 @@
-#include <print>
 #include <stdlib.h>
 
-#include <glow/color.hxx>
-#include <glow/log.hxx>
-#include <glow/system.hxx>
+#include <print>
+
+#include <glow/glow.hxx>
 
 auto main() -> int {
-    auto color { glow::color::system(glow::system::ui_settings(), winrt::UIColorType::Accent) };
+    auto accent { glow::color::system(winrt::UIColorType::Accent) };
 
-    glow::log::log("{}", color);
+    std::println("{}", accent);
 
     return EXIT_SUCCESS;
 }

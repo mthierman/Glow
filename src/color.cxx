@@ -9,11 +9,12 @@
 #include <format>
 
 #include <glow/math.hxx>
+#include <glow/system.hxx>
 #include <glow/text.hxx>
 
 namespace glow::color {
-auto system(const winrt::UISettings& uiSettings,
-                  winrt::UIColorType colorType) -> winrt::Color {
+auto system(winrt::UIColorType colorType) -> winrt::Color {
+    auto uiSettings { glow::system::ui_settings() };
     return uiSettings.GetColorValue(colorType);
 }
 
