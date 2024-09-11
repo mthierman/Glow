@@ -24,10 +24,10 @@
 
 namespace glow {
 struct Position {
-    uint64_t x { 0 };
-    uint64_t y { 0 };
-    uint64_t width { 0 };
-    uint64_t height { 0 };
+    int x { 0 };
+    int y { 0 };
+    int width { 0 };
+    int height { 0 };
 };
 
 struct Window {
@@ -71,8 +71,6 @@ public:
     auto get_parent() -> ::HWND;
     auto bring_to_top() -> void;
 
-    auto set_parent(::HWND parent) -> void;
-
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
     auto is_cloaked() -> bool;
@@ -108,8 +106,7 @@ public:
         ::WINDOWPLACEMENT placement;
     };
 
-    Positions position;
-
+    Positions positions;
     uint64_t dpi;
     double scale;
 

@@ -79,28 +79,28 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
 
-            self->position.window.x = windowPos->x;
-            self->position.window.y = windowPos->y;
-            self->position.window.width = windowPos->cx;
-            self->position.window.height = windowPos->cy;
+            self->positions.window.x = windowPos->x;
+            self->positions.window.y = windowPos->y;
+            self->positions.window.width = windowPos->cx;
+            self->positions.window.height = windowPos->cy;
 
-            ::GetWindowPlacement(hwnd, &self->position.placement);
+            ::GetWindowPlacement(hwnd, &self->positions.placement);
 
             ::RECT rect {};
             ::GetClientRect(hwnd, &rect);
 
-            self->position.client.x = rect.left;
-            self->position.client.y = rect.top;
-            self->position.client.width = rect.right - rect.left;
-            self->position.client.height = rect.bottom - rect.top;
+            self->positions.client.x = rect.left;
+            self->positions.client.y = rect.top;
+            self->positions.client.width = rect.right - rect.left;
+            self->positions.client.height = rect.bottom - rect.top;
 
             ::MONITORINFO mi { sizeof(::MONITORINFO) };
             ::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi);
 
-            self->position.monitor.x = mi.rcWork.left;
-            self->position.monitor.y = mi.rcWork.top;
-            self->position.monitor.width = mi.rcWork.right - mi.rcWork.left;
-            self->position.monitor.height = mi.rcWork.bottom - mi.rcWork.top;
+            self->positions.monitor.x = mi.rcWork.left;
+            self->positions.monitor.y = mi.rcWork.top;
+            self->positions.monitor.width = mi.rcWork.right - mi.rcWork.left;
+            self->positions.monitor.height = mi.rcWork.bottom - mi.rcWork.top;
         }
 
         if (msg == WM_DPICHANGED) {
@@ -146,10 +146,10 @@ auto Window::minimize() -> void { ::ShowWindow(hwnd.get(), SW_MINIMIZE); }
 auto Window::restore() -> void { ::ShowWindow(hwnd.get(), SW_RESTORE); }
 
 auto Window::center() -> void {
-    if (position.monitor.width > position.window.width
-        && position.monitor.height > position.window.height) {
-        auto x { static_cast<int>((position.monitor.width - position.window.width) / 2) };
-        auto y { static_cast<int>((position.monitor.height - position.window.height) / 2) };
+    if (positions.monitor.width > positions.window.width
+        && positions.monitor.height > positions.window.height) {
+        auto x { static_cast<int>((positions.monitor.width - positions.window.width) / 2) };
+        auto y { static_cast<int>((positions.monitor.height - positions.window.height) / 2) };
 
         ::SetWindowPos(hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
     }
@@ -306,15 +306,15 @@ auto Window::set_position(Position position) -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &position.placement); }
+auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &positions.placement); }
 
-auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &position.placement); }
+auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &positions.placement); }
 
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);
 }
 
-auto Window::get_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
+auto Window::get_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
 auto Window::set_ex_style(::LONG_PTR exStyle) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE, exStyle);
