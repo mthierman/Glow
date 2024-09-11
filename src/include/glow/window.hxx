@@ -62,6 +62,10 @@ public:
     auto set_text_color(::COLORREF color) -> void;
     auto focus() -> void;
     auto is_focused() -> bool;
+    auto foreground() -> void;
+    auto is_foreground() -> bool;
+    auto active() -> void;
+    auto is_active() -> bool;
 
     auto is_topmost() -> bool;
     auto is_visible() -> bool;

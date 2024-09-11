@@ -251,13 +251,13 @@ auto Window::focus() -> void { ::SetFocus(hwnd.get()); }
 
 auto Window::is_focused() -> bool { return ::GetFocus() == hwnd.get(); }
 
-// auto set_foreground(::HWND hwnd) -> bool { return ::SetForegroundWindow(hwnd); }
+auto Window::foreground() -> void { ::SetForegroundWindow(hwnd.get()); }
 
-// auto get_foreground() -> ::HWND { return ::GetForegroundWindow(); }
+auto Window::is_foreground() -> bool { return ::GetForegroundWindow() == hwnd.get(); }
 
-// auto set_active(::HWND hwnd) -> ::HWND { return ::SetActiveWindow(hwnd); }
+auto Window::active() -> void { ::SetActiveWindow(hwnd.get()); }
 
-// auto get_active() -> ::HWND { return ::GetActiveWindow(); }
+auto Window::is_active() -> bool { return ::GetActiveWindow() == hwnd.get(); }
 
 // auto set_parent(::HWND hwnd, ::HWND parent) -> ::HWND { return ::SetParent(hwnd, parent); }
 
