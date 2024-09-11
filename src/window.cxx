@@ -306,6 +306,10 @@ auto Window::set_position(Position position) -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
+auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &position.placement); }
+
+auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &position.placement); }
+
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);
 }
@@ -332,6 +336,8 @@ auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
 }
 
 auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
+
+auto Window::close() -> void { hwnd.reset(); }
 } // namespace glow
 
 namespace glow::window {

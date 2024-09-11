@@ -81,6 +81,8 @@ public:
     auto set_title(const std::string& title) -> void;
 
     auto set_position(Position position) -> void;
+    auto set_placement() -> void;
+    auto get_placement() -> void;
 
     auto set_style(::LONG_PTR style) -> void;
     auto get_style() -> ::LONG_PTR;
@@ -92,15 +94,18 @@ public:
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto timer_stop(::UINT_PTR timerId) -> bool;
 
+    auto close() -> void;
+
     struct Positions {
         Position window;
         Position client;
         Position monitor;
         Position restore;
+        ::WINDOWPLACEMENT placement;
     };
 
     Positions position;
-    ::WINDOWPLACEMENT placement;
+
     uint64_t dpi;
     double scale;
 
