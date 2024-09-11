@@ -199,6 +199,15 @@ auto Window::toggle_maximize() -> void {
     }
 }
 
+auto Window::flash() -> void {
+    ::FLASHWINFO fwi { .cbSize { sizeof(::FLASHWINFO) },
+                       .hwnd { hwnd.get() },
+                       .dwFlags { FLASHW_CAPTION },
+                       .uCount { 1 },
+                       .dwTimeout { 100 } };
+    ::FlashWindowEx(&fwi);
+}
+
 auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
 }

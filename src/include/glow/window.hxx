@@ -59,6 +59,7 @@ public:
     auto toggle_centered(bool centered) -> void;
     auto toggle_topmost(bool topmost) -> void;
     auto toggle_maximize() -> void;
+    auto flash() -> void;
 
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto timer_stop(::UINT_PTR timerId) -> bool;
