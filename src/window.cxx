@@ -79,28 +79,28 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
 
-            self->window.x = windowPos->x;
-            self->window.y = windowPos->y;
-            self->window.width = windowPos->cx;
-            self->window.height = windowPos->cy;
+            self->position.window.x = windowPos->x;
+            self->position.window.y = windowPos->y;
+            self->position.window.width = windowPos->cx;
+            self->position.window.height = windowPos->cy;
 
             ::GetWindowPlacement(hwnd, &self->placement);
 
             ::RECT rect {};
             ::GetClientRect(hwnd, &rect);
 
-            self->client.x = rect.left;
-            self->client.y = rect.top;
-            self->client.width = rect.right - rect.left;
-            self->client.height = rect.bottom - rect.top;
+            self->position.client.x = rect.left;
+            self->position.client.y = rect.top;
+            self->position.client.width = rect.right - rect.left;
+            self->position.client.height = rect.bottom - rect.top;
 
             ::MONITORINFO mi { sizeof(::MONITORINFO) };
             ::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi);
 
-            self->monitor.x = mi.rcWork.left;
-            self->monitor.y = mi.rcWork.top;
-            self->monitor.width = mi.rcWork.right - mi.rcWork.left;
-            self->monitor.height = mi.rcWork.bottom - mi.rcWork.top;
+            self->position.monitor.x = mi.rcWork.left;
+            self->position.monitor.y = mi.rcWork.top;
+            self->position.monitor.width = mi.rcWork.right - mi.rcWork.left;
+            self->position.monitor.height = mi.rcWork.bottom - mi.rcWork.top;
         }
 
         if (msg == WM_DPICHANGED) {
@@ -170,18 +170,19 @@ auto Window::set_style(::LONG_PTR style) -> void {
 auto Window::get_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
 auto Window::toggle_centered(bool centered) -> void {
-    restore = window;
+    position.restore = position.window;
 
     if (centered) {
-        if (monitor.width > window.width && monitor.height > window.height) {
-            auto x { static_cast<int>((monitor.width - window.width) / 2) };
-            auto y { static_cast<int>((monitor.height - window.height) / 2) };
+        if (position.monitor.width > position.window.width
+            && position.monitor.height > position.window.height) {
+            auto x { static_cast<int>((position.monitor.width - position.window.width) / 2) };
+            auto y { static_cast<int>((position.monitor.height - position.window.height) / 2) };
 
             ::SetWindowPos(
                 hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
         }
     } else {
-        set_position(restore);
+        set_position(position.restore);
     }
 }
 

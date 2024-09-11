@@ -69,6 +69,7 @@ public:
         Position restore;
     };
 
+    Positions position;
     ::WINDOWPLACEMENT placement;
     uint64_t dpi;
     double scale;
