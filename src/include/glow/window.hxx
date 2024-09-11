@@ -31,7 +31,7 @@ struct Position {
 };
 
 struct Window {
-    void create(const std::string& title);
+    auto create(const std::string& title) -> void;
 
 private:
     static auto CALLBACK procedure(::HWND hwnd,
@@ -40,24 +40,26 @@ private:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
-    void activate();
-    void show();
-    void hide();
-    bool is_visible();
+    auto activate() -> void;
+    auto show() -> void;
+    auto hide() -> void;
+    auto is_visible() -> bool;
 
-    void adjustSize(uint32_t width, uint32_t height);
-    void setPosition(Position position);
-    void setStyle(::LONG_PTR style);
+    auto set_position(Position position) -> void;
 
-    void toggleCentered(bool centered);
-    void toggleTopmost(bool topmost);
+    auto set_style(::LONG_PTR style) -> void;
+    auto get_style() -> ::LONG_PTR;
 
-    bool startTimer(::UINT_PTR timerId, ::UINT intervalMs);
-    bool stopTimer(::UINT_PTR timerId);
+    auto toggle_centered(bool centered) -> void;
+    auto toggle_topmost(bool topmost) -> void;
+
+    auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
+    auto timer_stop(::UINT_PTR timerId) -> bool;
 
     Position window;
     Position client;
     Position monitor;
+    Position restore;
     ::WINDOWPLACEMENT placement;
     uint64_t dpi;
     double scale;

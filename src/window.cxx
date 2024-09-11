@@ -16,7 +16,7 @@
 #include <winrt/Windows.UI.ViewManagement.h>
 
 namespace glow {
-void Window::create(const std::string& title) {
+auto Window::create(const std::string& title) -> void {
     auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
@@ -133,37 +133,15 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return ::DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-void Window::activate() { ::ShowWindow(hwnd.get(), SW_NORMAL); }
+auto Window::activate() -> void { ::ShowWindow(hwnd.get(), SW_NORMAL); }
 
-void Window::show() { ::ShowWindow(hwnd.get(), SW_SHOW); }
+auto Window::show() -> void { ::ShowWindow(hwnd.get(), SW_SHOW); }
 
-void Window::hide() { ::ShowWindow(hwnd.get(), SW_HIDE); }
+auto Window::hide() -> void { ::ShowWindow(hwnd.get(), SW_HIDE); }
 
-bool Window::is_visible() { return ::IsWindowVisible(hwnd.get()); }
+auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
-void Window::adjustSize(uint32_t width, uint32_t height) {
-    ::RECT rect {};
-    rect.left = 0;
-    rect.top = 0;
-    rect.right = width;
-    rect.bottom = height;
-
-    ::AdjustWindowRectExForDpi(&rect,
-                               static_cast<::DWORD>(::GetWindowLongPtrW(hwnd.get(), GWL_STYLE)),
-                               ::GetMenu(hwnd.get()) != nullptr,
-                               static_cast<::DWORD>(::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE)),
-                               dpi);
-
-    ::SetWindowPos(hwnd.get(),
-                   nullptr,
-                   0,
-                   0,
-                   (rect.right - rect.left),
-                   (rect.bottom - rect.top),
-                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE);
-}
-
-void Window::setPosition(Position position) {
+auto Window::set_position(Position position) -> void {
     ::SetWindowPos(hwnd.get(),
                    nullptr,
                    position.x,
@@ -173,9 +151,13 @@ void Window::setPosition(Position position) {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-void Window::setStyle(::LONG_PTR style) { ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style); }
+auto Window::set_style(::LONG_PTR style) -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);
+}
 
-void Window::toggleCentered(bool centered) {
+auto Window::get_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
+
+auto Window::toggle_centered(bool centered) -> void {
     restore = window;
 
     if (centered) {
@@ -187,20 +169,20 @@ void Window::toggleCentered(bool centered) {
                 hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
         }
     } else {
-        setPosition(restore);
+        set_position(restore);
     }
 }
 
-void Window::toggleTopmost(bool topmost) {
+auto Window::toggle_topmost(bool topmost) -> void {
     ::SetWindowPos(
         hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
-bool Window::startTimer(::UINT_PTR timerId, ::UINT intervalMs) {
+auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
 }
 
-bool Window::stopTimer(::UINT_PTR timerId) { return ::KillTimer(hwnd.get(), timerId); }
+auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
 } // namespace glow
 
 namespace glow::window {
