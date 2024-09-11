@@ -33,13 +33,13 @@ auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
 auto gdi_plus_startup() -> ::ULONG_PTR;
 auto gdi_plus_shutdown(::ULONG_PTR token) -> void;
 auto create_process(const std::filesystem::path& path) -> int;
-auto get_instance() -> ::HMODULE;
+auto instance() -> ::HMODULE;
 auto abort(::UINT exitCode = EXIT_FAILURE) -> void;
 auto quit(int exitCode = EXIT_SUCCESS) -> void;
-auto load_system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
-auto load_system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
-auto load_system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
-auto load_resource_icon() -> ::HICON;
+auto system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
+auto system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
+auto system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
+auto resource_icon() -> ::HICON;
 auto ui_settings() -> winrt::UISettings;
 
 struct Event {

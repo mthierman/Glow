@@ -64,7 +64,7 @@ auto create_process(const std::filesystem::path& path) -> int {
     return 0;
 }
 
-auto get_instance() -> ::HMODULE {
+auto instance() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(0, nullptr, &module);
 
@@ -75,23 +75,21 @@ auto abort(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
 
 auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
 
-auto load_system_brush(int name) -> ::HBRUSH {
-    return static_cast<::HBRUSH>(::GetStockObject(name));
-}
+auto system_brush(int name) -> ::HBRUSH { return static_cast<::HBRUSH>(::GetStockObject(name)); }
 
-auto load_system_cursor(LPSTR name) -> ::HCURSOR {
+auto system_cursor(LPSTR name) -> ::HCURSOR {
     return static_cast<::HCURSOR>(
         ::LoadImageA(nullptr, name, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-auto load_system_icon(LPSTR name) -> ::HICON {
+auto system_icon(LPSTR name) -> ::HICON {
     return static_cast<::HICON>(
         ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-auto load_resource_icon() -> ::HICON {
+auto resource_icon() -> ::HICON {
     return static_cast<::HICON>(::LoadImageW(
-        get_instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+        instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
 auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
