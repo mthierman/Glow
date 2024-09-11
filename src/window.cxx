@@ -206,7 +206,7 @@ auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
 
-auto Window::is_cloak() -> bool {
+auto Window::is_cloaked() -> bool {
     auto cloaked { DWM_CLOAKED_APP };
     ::DwmGetWindowAttribute(
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
