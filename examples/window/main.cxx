@@ -1,7 +1,4 @@
-#include <glow/app.hxx>
-#include <glow/log.hxx>
-#include <glow/message.hxx>
-#include <glow/window.hxx>
+#include <glow/glow.hxx>
 
 struct Window final : glow::window::Window {
     Window() {
