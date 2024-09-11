@@ -14,8 +14,6 @@
 #include <initializer_list>
 #include <string>
 
-#include <glow/text.hxx>
-
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::string_view> subfolders = {}) -> std::filesystem::path;
@@ -33,7 +31,8 @@ template <> struct formatter<std::filesystem::path> : formatter<string_view> {
 
 template <> struct formatter<std::filesystem::path, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const std::filesystem::path& path, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::filesystem::to_wstring(path), context);
+        return formatter<wstring_view, wchar_t>::format(glow::filesystem::to_wstring(path),
+                                                        context);
     }
 };
 } // namespace std
