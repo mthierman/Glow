@@ -14,7 +14,12 @@
 #include <unordered_map>
 
 namespace glow::message {
-
+struct Message {
+    ::HWND hwnd;
+    ::UINT msg;
+    ::WPARAM wparam;
+    ::LPARAM lparam;
+};
 
 enum struct notice : ::UINT;
 

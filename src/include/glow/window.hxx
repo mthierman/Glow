@@ -6,10 +6,6 @@
 
 #pragma once
 
-#include <glow/math.hxx>
-#include <glow/message.hxx>
-#include <glow/system.hxx>
-
 #include <Windows.h>
 
 #include <dwmapi.h>
@@ -22,20 +18,17 @@
 
 #include <wil/resource.h>
 
-namespace glow::window {
-struct Message {
-    ::HWND hwnd;
-    ::UINT msg;
-    ::WPARAM wparam;
-    ::LPARAM lparam;
-};
+#include <glow/math.hxx>
+#include <glow/message.hxx>
+#include <glow/system.hxx>
 
+namespace glow::window {
 struct Messages {
-    using Callback = std::function<::LRESULT(Message)>;
+    using Callback = std::function<::LRESULT(glow::message::Message)>;
 
     bool on(::UINT msg, Callback callback);
     bool contains(::UINT msg);
-    ::LRESULT invoke(Message message);
+    ::LRESULT invoke(glow::message::Message message);
 
     template <typename W, typename L>::LRESULT send(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
         return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
