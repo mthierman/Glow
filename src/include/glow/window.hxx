@@ -51,9 +51,12 @@ public:
     auto bottom() -> void;
     auto topmost() -> void;
     auto no_topmost() -> void;
+    auto cloak() -> void;
+    auto uncloak() -> void;
 
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
+    auto is_cloaked() -> bool;
     auto is_maximized() -> bool;
 
     auto set_title(const std::string& title) -> void;

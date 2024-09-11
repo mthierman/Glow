@@ -190,11 +190,38 @@ auto Window::no_topmost() -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
+auto Window::cloak() -> void {
+    auto cloak { TRUE };
+    ::DwmSetWindowAttribute(hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
+}
+
+auto Window::uncloak() -> void {
+    auto cloak { FALSE };
+    ::DwmSetWindowAttribute(hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
+}
+
 auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
 
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
+
+auto Window::is_cloak() -> bool {
+    auto cloaked { DWM_CLOAKED_APP };
+    ::DwmGetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+
+    switch (cloaked) {
+        case DWM_CLOAKED_APP:
+            return true;
+        case DWM_CLOAKED_INHERITED:
+            return true;
+        case DWM_CLOAKED_SHELL:
+            return true;
+    }
+
+    return false;
+}
 
 auto Window::set_title(const std::string& title) -> void {
     ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
@@ -230,16 +257,6 @@ auto Window::flash() -> void {
                        .dwTimeout { 100 } };
     ::FlashWindowEx(&fwi);
 }
-
-// auto cloak(::HWND hwnd) -> void {
-//     auto cloak { TRUE };
-//     ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
-// }
-
-// auto uncloak(::HWND hwnd) -> void {
-//     auto cloak { FALSE };
-//     ::DwmSetWindowAttribute(hwnd, ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
-// }
 
 auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
