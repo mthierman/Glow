@@ -179,34 +179,14 @@ auto Window::set_style(::LONG_PTR style) -> void {
 
 auto Window::get_style() -> ::LONG_PTR { ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
-auto Window::toggle_centered(bool centered) -> void {
-    position.restore = position.window;
-
-    if (centered) {
-        if (position.monitor.width > position.window.width
-            && position.monitor.height > position.window.height) {
-            auto x { static_cast<int>((position.monitor.width - position.window.width) / 2) };
-            auto y { static_cast<int>((position.monitor.height - position.window.height) / 2) };
-
-            ::SetWindowPos(
-                hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
-        }
-    } else {
-        set_position(position.restore);
-    }
-}
-
 auto Window::toggle_topmost(bool topmost) -> void {
-    ::SetWindowPos(
-        hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-}
-
-auto Window::toggle_maximize() -> void {
-    if (is_maximized()) {
-        restore();
-    } else {
-        maximize();
-    }
+    ::SetWindowPos(hwnd.get(),
+                   topmost ? HWND_TOPMOST : HWND_NOTOPMOST,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
 auto Window::flash() -> void {
