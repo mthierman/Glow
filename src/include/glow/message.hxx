@@ -35,36 +35,36 @@ struct Message {
 auto default_procedure(Message message) -> ::LRESULT;
 
 struct NOTIFY : public Message {
-    wm_notify(const wm& message)
-        : wm(message) { }
+    NOTIFY(const Message& message)
+        : Message(message) { }
     auto nmhdr() -> const ::NMHDR&;
     auto notification() -> const Notification&;
 };
 
 struct NCCREATE : public Message {
-    wm_nccreate(const wm& message)
-        : wm(message) { }
+    NCCREATE(const Message& message)
+        : Message(message) { }
     auto createStruct() -> const ::CREATESTRUCTW&;
 };
 
-struct wm_create : public Message {
-    wm_create(const wm& message)
-        : wm(message) { }
+struct CREATE : public Message {
+    CREATE(const Message& message)
+        : Message(message) { }
     auto createStruct() -> const ::CREATESTRUCTW&;
 };
 
-struct wm_activate : public Message {
-    wm_activate(const wm& message)
-        : wm(message) { }
+struct ACTIVATE : public Message {
+    ACTIVATE(const Message& message)
+        : Message(message) { }
     auto deactivated() -> bool;
     auto activated() -> bool;
     auto clickActivated() -> bool;
     auto hwnd() -> ::HWND;
 };
 
-struct wm_keydown_keyup : public Message {
-    wm_keydown_keyup(const wm& message)
-        : wm(message) { }
+struct KEYDOWN : public Message {
+    KEYDOWN(const Message& message)
+        : Message(message) { }
     auto virtualKeyCode() -> ::WORD;
     auto key() -> char;
     auto keyFlags() -> ::WORD;
@@ -76,9 +76,14 @@ struct wm_keydown_keyup : public Message {
     auto wasAltKeyDown() -> bool;
 };
 
-struct wm_char : public Message {
-    wm_char(const wm& message)
-        : wm(message) { }
+struct KEYUP : public Message, public KEYDOWN {
+    KEYUP(const Message& message)
+        : KEYDOWN(message) { }
+};
+
+struct CHAR : public Message {
+    CHAR(const Message& message)
+        : Message(message) { }
     auto characterCode() -> ::WORD;
     auto character() -> char;
     auto keyFlags() -> ::WORD;
@@ -90,9 +95,9 @@ struct wm_char : public Message {
     auto wasAltKeyDown() -> bool;
 };
 
-struct wm_showwindow : public Message {
-    wm_showwindow(const wm& message)
-        : wm(message) { }
+struct SHOWWINDOW : public Message {
+    SHOWWINDOW(const Message& message)
+        : Message(message) { }
     auto show() -> bool;
     auto statusShow() -> bool;
     auto parentClosing() -> bool;
@@ -101,9 +106,9 @@ struct wm_showwindow : public Message {
     auto otherUnzoom() -> bool;
 };
 
-struct wm_size : public Message {
-    wm_size(const wm& message)
-        : wm(message) { }
+struct SIZE : public Message {
+    SIZE(const Message& message)
+        : Message(message) { }
     auto sizeRestored() -> bool;
     auto sizeMinimized() -> bool;
     auto sizeOtherRestored() -> bool;
@@ -112,24 +117,24 @@ struct wm_size : public Message {
     auto size() -> ::SIZE;
 };
 
-struct wm_dpichanged : public Message {
-    wm_dpichanged(const wm& message)
-        : wm(message) { }
+struct DPICHANGED : public Message {
+    DPICHANGED(const Message& message)
+        : Message(message) { }
     auto y() -> ::WORD;
     auto x() -> ::WORD;
     auto suggestedRect() -> const ::RECT&;
     auto userDefaultScreenDpi() -> int;
 };
 
-struct wm_getminmaxinfo : public Message {
-    wm_getminmaxinfo(const wm& message)
-        : wm(message) { }
+struct GETMINMAXINFO : public Message {
+    GETMINMAXINFO(const Message& message)
+        : Message(message) { }
     auto minMaxInfo() -> ::MINMAXINFO&;
 };
 
-struct wm_windowposchanged : public Message {
-    wm_windowposchanged(const wm& message)
-        : wm(message) { }
+struct WINDOWPOSCHANGED : public Message {
+    WINDOWPOSCHANGED(const Message& message)
+        : Message(message) { }
     auto windowPos() -> ::WINDOWPOS&;
 };
 }; // namespace glow::message
