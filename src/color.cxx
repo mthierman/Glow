@@ -28,4 +28,10 @@ auto to_hex(const winrt::Color& color) -> std::string {
 }
 
 auto to_colorref(const winrt::Color& color) -> ::COLORREF { return RGB(color.R, color.G, color.B); }
+
+auto is_dark_mode() -> bool {
+    auto fg { system(winrt::UIColorType::Foreground) };
+
+    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) ? true : false;
+}
 }; // namespace glow::color
