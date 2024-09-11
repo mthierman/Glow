@@ -139,7 +139,19 @@ auto Window::show() -> void { ::ShowWindow(hwnd.get(), SW_SHOW); }
 
 auto Window::hide() -> void { ::ShowWindow(hwnd.get(), SW_HIDE); }
 
+auto Window::maximize() -> void { ::ShowWindow(hwnd.get(), SW_MAXIMIZE); }
+
+auto Window::minimize() -> void { ::ShowWindow(hwnd.get(), SW_MINIMIZE); }
+
+auto Window::restore() -> void { ::ShowWindow(hwnd.get(), SW_RESTORE); }
+
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
+
+auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
+
+auto Window::set_title(const std::string& title) -> void {
+    ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
+}
 
 auto Window::set_position(Position position) -> void {
     ::SetWindowPos(hwnd.get(),

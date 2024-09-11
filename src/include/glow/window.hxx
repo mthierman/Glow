@@ -43,7 +43,13 @@ public:
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
+    auto maximize() -> void;
+    auto minimize() -> void;
+    auto restore() -> void;
     auto is_visible() -> bool;
+    auto is_maximized() -> bool;
+
+    auto set_title(const std::string& title) -> void;
 
     auto set_position(Position position) -> void;
 
@@ -56,10 +62,13 @@ public:
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto timer_stop(::UINT_PTR timerId) -> bool;
 
-    Position window;
-    Position client;
-    Position monitor;
-    Position restore;
+    struct Positions {
+        Position window;
+        Position client;
+        Position monitor;
+        Position restore;
+    };
+
     ::WINDOWPLACEMENT placement;
     uint64_t dpi;
     double scale;
