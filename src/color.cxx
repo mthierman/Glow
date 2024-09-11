@@ -12,7 +12,8 @@
 #include <glow/text.hxx>
 
 namespace glow::color {
-auto get_color(winrt::UISettings& uiSettings, winrt::UIColorType colorType) -> winrt::Color {
+auto system(const winrt::UISettings& uiSettings,
+                  winrt::UIColorType colorType) -> winrt::Color {
     return uiSettings.GetColorValue(colorType);
 }
 

@@ -40,7 +40,7 @@ auto load_system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
 auto load_system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto load_system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto load_resource_icon() -> ::HICON;
-auto get_ui_settings() -> winrt::UISettings;
+auto ui_settings() -> winrt::UISettings;
 
 struct Event {
     auto create(const std::string& name, std::function<void()>&& callback = 0) -> bool;

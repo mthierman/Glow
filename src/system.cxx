@@ -94,7 +94,7 @@ auto load_resource_icon() -> ::HICON {
         get_instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-auto get_ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
+auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
 
 auto Event::create(const std::string& eventName, std::function<void()>&& callback) -> bool {
     m_callback = std::move(callback);
