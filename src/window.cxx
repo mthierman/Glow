@@ -191,6 +191,14 @@ auto Window::toggle_topmost(bool topmost) -> void {
         hwnd.get(), topmost ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 }
 
+auto Window::toggle_maximize() -> void {
+    if (is_maximized()) {
+        restore();
+    } else {
+        maximize();
+    }
+}
+
 auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
 }
