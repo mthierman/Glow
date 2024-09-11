@@ -17,8 +17,8 @@
 
 namespace glow::guid {
 auto create() -> ::GUID;
-auto to_wstring(const ::GUID& guid) -> std::wstring;
 auto to_string(const ::GUID& guid) -> std::string;
+auto to_wstring(const ::GUID& guid) -> std::wstring;
 }; // namespace glow::guid
 
 namespace std {

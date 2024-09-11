@@ -23,6 +23,10 @@ auto create() -> ::GUID {
     return guid;
 }
 
+auto to_string(const ::GUID& guid) -> std::string {
+    return glow::text::to_string(to_wstring(guid));
+}
+
 auto to_wstring(const ::GUID& guid) -> std::wstring {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
@@ -34,7 +38,4 @@ auto to_wstring(const ::GUID& guid) -> std::wstring {
     return buffer;
 }
 
-auto to_string(const ::GUID& guid) -> std::string {
-    return glow::text::to_string(to_wstring(guid));
-}
 }; // namespace glow::guid
