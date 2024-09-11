@@ -20,10 +20,10 @@ struct Window final : glow::window::Window {
             if (glow::input::was_key_down(VK_CONTROL)) {
                 switch (msg.key()) {
                     case 'N': {
-                        if (positions.fullscreen) {
-                            positions.fullscreen = disable_fullscreen();
-                        } else {
+                        if (!positions.fullscreen) {
                             positions.fullscreen = enable_fullscreen();
+                        } else {
+                            positions.fullscreen = disable_fullscreen();
                         }
 
                         break;

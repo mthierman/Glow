@@ -117,9 +117,9 @@ public:
         Position monitor;
         Position restore;
         ::WINDOWPLACEMENT placement;
-        uint64_t dpi;
-        double scale;
-        bool fullscreen;
+        uint64_t dpi { USER_DEFAULT_SCREEN_DPI };
+        double scale{1.0};
+        bool fullscreen{false};
     };
     Positions positions;
 
