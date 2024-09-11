@@ -22,7 +22,7 @@
 
 #include <wil/resource.h>
 
-namespace glow::gui {
+namespace glow::window {
 struct Position {
     int x { 0 };
     int y { 0 };
@@ -114,7 +114,7 @@ public:
     wil::unique_hwnd hwnd;
 };
 
-template <typename T> struct WindowManager {
+template <typename T> struct Manager {
     auto add(std::unique_ptr<T> window) -> void {
         m_keys.push_back(window->m_id);
         m_map.try_emplace(window->m_id, std::move(window));
@@ -156,7 +156,7 @@ private:
     std::vector<uintptr_t> m_keys;
     std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
 };
-} // namespace glow::gui
+} // namespace glow::window
 
 namespace glow::window {
 // auto register_class(::WNDCLASSEXA* windowClass) -> void;

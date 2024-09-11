@@ -1,6 +1,6 @@
 #include <glow/glow.hxx>
 
-struct Window final : glow::gui::Window {
+struct Window final : glow::window::Window {
     Window() {
         // message(WM_CREATE, [](glow::message::wm_create /* message */) {
         //     glow::log::log("WM_CREATE");
