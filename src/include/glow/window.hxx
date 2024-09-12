@@ -178,45 +178,45 @@ public:
 
 template <typename T> struct Manager {
     auto add(std::unique_ptr<T> window) -> void {
-        m_keys.push_back(window->m_id);
-        m_map.try_emplace(window->m_id, std::move(window));
+        keys.push_back(window->id);
+        map.try_emplace(window->id, std::move(window));
     }
 
     auto remove(uintptr_t id) -> void {
-        auto pos { std::find(m_keys.begin(), m_keys.end(), id) };
+        auto pos { std::find(keys.begin(), keys.end(), id) };
 
-        if (pos != m_keys.end()) {
-            m_keys.erase(pos);
+        if (pos != keys.end()) {
+            keys.erase(pos);
         }
 
-        m_map.erase(id);
+        map.erase(id);
 
-        if (m_map.empty()) {
+        if (map.empty()) {
             glow::system::quit();
         }
     }
 
-    auto empty() -> bool { return m_map.empty(); }
+    auto empty() -> bool { return map.empty(); }
 
     auto first_window() -> ::HWND {
-        if (m_keys.empty()) {
+        if (keys.empty()) {
             return nullptr;
         }
 
-        return m_map.at(m_keys.front())->m_hwnd.get();
+        return map.at(keys.front())->hwnd.get();
     }
 
     auto last_window() -> ::HWND {
-        if (m_keys.empty()) {
+        if (keys.empty()) {
             return nullptr;
         }
 
-        return m_map.at(m_keys.back())->m_hwnd.get();
+        return map.at(keys.back())->hwnd.get();
     }
 
 private:
-    std::vector<uintptr_t> m_keys;
-    std::unordered_map<uintptr_t, std::unique_ptr<T>> m_map;
+    std::vector<uintptr_t> keys;
+    std::unordered_map<uintptr_t, std::unique_ptr<T>> map;
 };
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT;
