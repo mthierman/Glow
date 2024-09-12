@@ -70,8 +70,10 @@ struct App final : glow::app::App {
                 } break;
                 case CREATE_FOREGROUND_WINDOW: {
                     notify_app(CREATE_WINDOW);
-                    // glow::window::set_foreground(m_windows.last_window());
-                    // auto last { windows.last_window() };
+
+                    if (auto last { windows.last() }; last) {
+                        last->bring_to_top();
+                    }
                 } break;
                 case CLOSE_WINDOW: {
                     windows.remove(idFrom);

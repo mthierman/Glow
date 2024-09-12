@@ -200,20 +200,20 @@ template <typename T> struct Manager {
 
     auto empty() -> bool { return map.empty(); }
 
-    auto first_window() -> ::HWND {
+    auto first() -> T* {
         if (keys.empty()) {
             return nullptr;
         }
 
-        return map.at(keys.front())->hwnd.get();
+        return map.at(keys.front()).get();
     }
 
-    auto last_window() -> ::HWND {
+    auto last() -> T* {
         if (keys.empty()) {
             return nullptr;
         }
 
-        return map.at(keys.back())->hwnd.get();
+        return map.at(keys.back()).get();
     }
 
 private:
