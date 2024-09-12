@@ -74,6 +74,8 @@ public:
     auto bottom() -> void;
     auto topmost() -> void;
     auto no_topmost() -> void;
+    auto enable_border() -> void;
+    auto disable_border() -> void;
     auto cloak() -> void;
     auto uncloak() -> void;
     auto enable_dark_mode() -> void;

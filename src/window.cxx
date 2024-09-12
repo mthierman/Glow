@@ -264,6 +264,28 @@ auto Window::no_topmost() -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
+auto Window::enable_border() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() | WS_BORDER);
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
+auto Window::disable_border() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() & ~WS_BORDER);
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+}
+
 auto Window::cloak() -> void {
     auto cloak { TRUE };
     ::DwmSetWindowAttribute(hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
@@ -538,149 +560,4 @@ namespace glow::window {
 // }
 
 // auto check_child(::HWND hwnd) -> bool { return get_style(hwnd) & WS_CHILDWINDOW; }
-
-// auto add_border(::HWND hwnd) -> void {
-//     ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) | WS_BORDER);
-//     ::SetWindowPos(hwnd,
-//                    nullptr,
-//                    0,
-//                    0,
-//                    0,
-//                    0,
-//                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-// }
-
-// auto remove_border(::HWND hwnd) -> void {
-//     ::SetWindowLongPtrA(hwnd, GWL_STYLE, get_style(hwnd) & ~WS_BORDER);
-//     ::SetWindowPos(hwnd,
-//                    nullptr,
-//                    0,
-//                    0,
-//                    0,
-//                    0,
-//                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-// }
-
-// auto Window::create(const std::string& title, bool visible) -> void {
-//     m_windowClass.lpszClassName = "OverlappedWindow";
-
-//     register_class(&m_windowClass);
-
-//     if (::CreateWindowExA(0,
-//                           m_windowClass.lpszClassName,
-//                           title.empty() ? m_windowClass.lpszClassName : title.c_str(),
-//                           WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           nullptr,
-//                           nullptr,
-//                           glow::system::get_instance(),
-//                           this)
-//         == 0) {
-//         throw std::runtime_error(glow::log::get_last_error());
-//     }
-
-//     if (visible) {
-//         glow::window::activate(m_hwnd.get());
-//     }
-// }
-
-// auto Window::create(::HWND parent, const std::string& title, bool visible) -> void {
-//     m_windowClass.lpszClassName = "ChildWindow";
-
-//     register_class(&m_windowClass);
-
-//     if (::CreateWindowExA(0,
-//                           m_windowClass.lpszClassName,
-//                           title.empty() ? m_windowClass.lpszClassName : title.c_str(),
-//                           WS_CHILDWINDOW | WS_CLIPSIBLINGS,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           parent,
-//                           reinterpret_cast<::HMENU>(m_id),
-//                           glow::system::get_instance(),
-//                           this)
-//         == 0) {
-//         throw std::runtime_error(glow::log::get_last_error());
-//     }
-
-//     if (visible) {
-//         glow::window::activate(m_hwnd.get());
-//     }
-// }
-
-// auto Window::create_message_only() -> void {
-//     m_windowClass.lpszClassName = "MessageWindow";
-
-//     register_class(&m_windowClass);
-
-//     if (::CreateWindowExA(0,
-//                           m_windowClass.lpszClassName,
-//                           m_windowClass.lpszClassName,
-//                           0,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           CW_USEDEFAULT,
-//                           HWND_MESSAGE,
-//                           nullptr,
-//                           glow::system::get_instance(),
-//                           this)
-//         == 0) {
-//         throw std::runtime_error(glow::log::get_last_error());
-//     }
-// }
-
-// auto Window::close() -> void { m_hwnd.reset(); }
-
-// auto Window::message(::UINT msg,
-//                      std::function<::LRESULT(glow::message::wm message)> callback) -> bool {
-//     auto emplace { m_map.try_emplace(msg, callback) };
-//     return emplace.second;
-// }
-
-// auto Window::message(::UINT msg) -> bool { return m_map.contains(msg); }
-
-// auto Window::message(glow::message::wm message) -> ::LRESULT {
-//     return m_map.find(message.msg)
-//         ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
-// }
-
-// auto Window::notify(glow::message::notice notice,
-//                     const std::string& message,
-//                     const std::string& receiver) -> void {
-//     glow::message::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
-//                                                         .idFrom { m_id },
-//                                                         .code { std::to_underlying(notice) } },
-//                                                .hwndFrom { m_hwnd.get() },
-//                                                .idFrom { m_id },
-//                                                .notice { notice },
-//                                                .message { message } };
-
-//     glow::message::send({ glow::window::find_message_only(receiver),
-//                           WM_NOTIFY,
-//                           notification.nmhdr.idFrom,
-//                           reinterpret_cast<::LPARAM>(&notification) });
-// }
-
-// auto Window::notify(::HWND receiver,
-//                     glow::message::notice notice,
-//                     const std::string& message) -> void {
-//     glow::message::Notification notification { .nmhdr { .hwndFrom { m_hwnd.get() },
-//                                                         .idFrom { m_id },
-//                                                         .code { std::to_underlying(notice) } },
-//                                                .hwndFrom { m_hwnd.get() },
-//                                                .idFrom { m_id },
-//                                                .notice { notice },
-//                                                .message { message } };
-
-//     glow::message::send({ receiver,
-//                           WM_NOTIFY,
-//                           notification.nmhdr.idFrom,
-//                           reinterpret_cast<::LPARAM>(&notification) });
-// }
 }; // namespace glow::window
