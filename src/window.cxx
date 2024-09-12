@@ -100,9 +100,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (auto self { static_cast<Window*>(create->lpCreateParams) }; self) {
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
             self->hwnd.reset(hwnd);
-            self->positions.dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
-            self->positions.scale = (static_cast<double>(self->positions.dpi)
-                                     / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+            self->update_dpi();
         }
     }
 
@@ -125,7 +123,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             self->positions.window.width = windowPos->cx;
             self->positions.window.height = windowPos->cy;
 
-            ::GetWindowPlacement(hwnd, &self->positions.placement);
+            ::GetWindowPlacement(hwnd, &self->placement);
 
             ::RECT rect {};
             ::GetClientRect(hwnd, &rect);
@@ -155,9 +153,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                            (rect->bottom - rect->top),
                            SWP_NOZORDER | SWP_NOACTIVATE);
 
-            self->positions.dpi = static_cast<uint32_t>(::GetDpiForWindow(hwnd));
-            self->positions.scale = (static_cast<double>(self->positions.dpi)
-                                     / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+            self->update_dpi();
         }
 
         if (self->messages.contains(msg)) {
@@ -187,6 +183,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     }
 
     return ::DefWindowProcW(hwnd, msg, wparam, lparam);
+}
+
+auto Window::update_dpi() -> void {
+    dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
+    scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
 }
 
 auto Window::activate() -> void { ::ShowWindow(hwnd.get(), SW_NORMAL); }
@@ -384,9 +385,9 @@ auto Window::set_position(Position position) -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &positions.placement); }
+auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &placement); }
 
-auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &positions.placement); }
+auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &placement); }
 
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);

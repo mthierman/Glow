@@ -42,6 +42,7 @@ private:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
+    auto update_dpi() -> void;
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
@@ -112,18 +113,26 @@ public:
         Position client;
         Position monitor;
         Position restore;
-        ::WINDOWPLACEMENT placement;
-        uint64_t dpi { USER_DEFAULT_SCREEN_DPI };
-        double scale { 1.0 };
-        bool fullscreen { false };
     };
     Positions positions;
+
+    struct States {
+        bool centered { false };
+        bool fullscreen { false };
+        bool maximized { false };
+        bool minimized { false };
+    };
+    States states;
 
     struct Backgrounds {
         wil::unique_hbrush system;
         wil::unique_hbrush custom;
     };
     Backgrounds backgrounds;
+
+    ::WINDOWPLACEMENT placement;
+    size_t dpi { USER_DEFAULT_SCREEN_DPI };
+    double scale { 1.0 };
 
     glow::message::Manager messages;
     uintptr_t id { glow::math::make_random<uintptr_t>() };

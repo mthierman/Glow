@@ -33,14 +33,23 @@ struct Window final : glow::window::Window {
         messages.on(WM_KEYDOWN, [this](wm::KEYDOWN msg) {
             switch (msg.key()) {
                 case VK_F11: {
-                    if (!positions.fullscreen) {
-                        positions.fullscreen = enable_fullscreen();
+                    if (!states.fullscreen) {
+                        states.fullscreen = enable_fullscreen();
                     } else {
-                        positions.fullscreen = disable_fullscreen();
+                        states.fullscreen = disable_fullscreen();
                     }
+                } break;
 
-                    break;
-                }
+                case VK_F4: {
+                    if (states.centered) {
+                        set_position(positions.restore);
+                        states.centered = false;
+                    } else {
+                        positions.restore = positions.window;
+                        center();
+                        states.centered = true;
+                    }
+                } break;
             }
 
             return 0;
