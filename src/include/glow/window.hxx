@@ -112,7 +112,8 @@ public:
         Position window;
         Position client;
         Position monitor;
-        Position restore;
+        Position restoreCentered;
+        Position restoreFullscreen;
     };
     Positions positions;
 

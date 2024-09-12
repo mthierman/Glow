@@ -430,7 +430,7 @@ auto Window::close() -> void { hwnd.reset(); }
 
 auto Window::enable_fullscreen() -> bool {
     if (get_style() & WS_OVERLAPPEDWINDOW) {
-        positions.restore = positions.window;
+        positions.restoreFullscreen = positions.window;
         ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() & ~WS_OVERLAPPEDWINDOW);
         ::SetWindowPos(hwnd.get(),
                        HWND_TOP,
@@ -449,10 +449,10 @@ auto Window::disable_fullscreen() -> bool {
         ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() | WS_OVERLAPPEDWINDOW);
         ::SetWindowPos(hwnd.get(),
                        HWND_TOP,
-                       positions.restore.x,
-                       positions.restore.y,
-                       positions.restore.width,
-                       positions.restore.height,
+                       positions.restoreFullscreen.x,
+                       positions.restoreFullscreen.y,
+                       positions.restoreFullscreen.width,
+                       positions.restoreFullscreen.height,
                        SWP_FRAMECHANGED);
     }
 

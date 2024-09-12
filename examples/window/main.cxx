@@ -42,10 +42,10 @@ struct Window final : glow::window::Window {
 
                 case VK_F4: {
                     if (states.centered) {
-                        set_position(positions.restore);
+                        set_position(positions.restoreCentered);
                         states.centered = false;
                     } else {
-                        positions.restore = positions.window;
+                        positions.restoreCentered = positions.window;
                         center();
                         states.centered = true;
                     }
