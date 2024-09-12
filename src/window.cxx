@@ -89,6 +89,17 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
         }
 
+        if (msg == WM_ERASEBKGND) {
+            if (self->hbrush) {
+                auto hdc { reinterpret_cast<::HDC>(wparam) };
+                ::RECT rect;
+                ::GetClientRect(hwnd, &rect);
+                ::FillRect(hdc, &rect, self->hbrush.get());
+
+                return 1;
+            }
+        }
+
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
 
@@ -391,6 +402,11 @@ auto Window::disable_fullscreen() -> bool {
     }
 
     return false;
+}
+
+auto Window::set_background(uint8_t r, uint8_t g, uint8_t b) -> void {
+    hbrush.reset(::CreateSolidBrush(RGB(r, g, b)));
+    ::UpdateWindow(hwnd.get());
 }
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT {

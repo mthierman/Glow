@@ -18,6 +18,7 @@
 
 #include <wil/resource.h>
 
+#include <glow/color.hxx>
 #include <glow/math.hxx>
 #include <glow/message.hxx>
 #include <glow/system.hxx>
@@ -111,6 +112,8 @@ public:
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
 
+    auto set_background(uint8_t r, uint8_t g, uint8_t b) -> void;
+
     struct Positions {
         Position window;
         Position client;
@@ -118,12 +121,13 @@ public:
         Position restore;
         ::WINDOWPLACEMENT placement;
         uint64_t dpi { USER_DEFAULT_SCREEN_DPI };
-        double scale{1.0};
-        bool fullscreen{false};
+        double scale { 1.0 };
+        bool fullscreen { false };
     };
     Positions positions;
 
     Messages messages;
+    wil::unique_hbrush hbrush;
     wil::unique_hwnd hwnd;
 };
 
