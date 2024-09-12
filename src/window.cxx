@@ -111,6 +111,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (msg == WM_SETTINGCHANGE) {
             self->backgrounds.system.reset(
                 glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
+            self->invalidate_rect();
         }
 
         if (msg == WM_WINDOWPOSCHANGED) {
