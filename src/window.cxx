@@ -443,11 +443,11 @@ auto Window::flash() -> void {
     ::FlashWindowEx(&fwi);
 }
 
-auto Window::timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
+auto Window::start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
 }
 
-auto Window::timer_stop(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
+auto Window::stop_timer(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
 
 auto Window::close() -> void { hwnd.reset(); }
 

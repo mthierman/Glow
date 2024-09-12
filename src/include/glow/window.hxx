@@ -119,8 +119,8 @@ public:
     auto set_small_icon(::HICON hicon) -> void;
     auto set_big_icon(::HICON hicon) -> void;
     auto flash() -> void;
-    auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
-    auto timer_stop(::UINT_PTR timerId) -> bool;
+    auto start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
+    auto stop_timer(::UINT_PTR timerId) -> bool;
     auto close() -> void;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
