@@ -1,11 +1,12 @@
 #include <glow/glow.hxx>
 
-namespace wm = glow::message;
+namespace wm = glow::message::wm;
 
 struct App final : glow::app::App {
     App() {
-        messages.on(WM_NOTIFY, [](wm::MSG /* msg */) {
-            glow::log::log("WM_NOTIFY");
+        messages.on(WM_NOTIFY, [](wm::NOTIFY msg) {
+            glow::log::log("WM_NOTIFY {}", );
+            glow::log::log("WM_NOTIFY {}", msg.notification().idFrom);
 
             return 0;
         });
@@ -48,8 +49,10 @@ auto main() -> int {
 
     Window window;
 
-    window.messages.send(app.hwnd.get(), WM_NOTIFY, 0, 0);
-    window.messages.send(app.hwnd.get(), WM_NOTIFY, 0, 0);
+    glow::message::Notification notification;
+    notification.idFrom = 24;
+
+    window.messages.send(app.hwnd.get(), WM_NOTIFY, &notification.idFrom, &notification);
 
     if (app.hwnd) {
         glow::log::log("app.hwnd exists");
