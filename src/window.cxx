@@ -69,7 +69,7 @@ auto Window::create() -> void {
 }
 
 auto Window::create(::HWND parent) -> void {
-    auto className { std::wstring(L"Window") };
+    auto className { std::wstring(L"ChildWindow") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
