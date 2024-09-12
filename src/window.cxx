@@ -430,7 +430,7 @@ auto Window::enable_system_background() -> void {
     invalidate_rect();
 }
 
-auto Window::clear_system_background() -> void {
+auto Window::disable_system_background() -> void {
     backgrounds.system.reset();
     invalidate_rect();
 }

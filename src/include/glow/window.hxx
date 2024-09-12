@@ -116,7 +116,7 @@ public:
     auto clear_custom_background() -> void;
 
     auto enable_system_background() -> void;
-    auto clear_system_background() -> void;
+    auto disable_system_background() -> void;
 
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
