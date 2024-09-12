@@ -19,6 +19,7 @@
 
 #include <wil/resource.h>
 
+#include <glow/color.hxx>
 #include <glow/math.hxx>
 #include <glow/message.hxx>
 #include <glow/system.hxx>
@@ -30,6 +31,8 @@ struct Position {
     int width { 0 };
     int height { 0 };
 };
+
+enum struct BackgroundType { BG_TRANSPARENT, BG_SYSTEM, BG_CUSTOM };
 
 struct Window {
     auto create() -> void;
@@ -95,10 +98,8 @@ public:
     auto close() -> void;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-    auto enable_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto disable_custom_background() -> void;
-    auto enable_system_background() -> void;
-    auto disable_system_background() -> void;
+    auto set_background_type(BackgroundType backgroundType) -> void;
+    auto set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;
@@ -126,8 +127,11 @@ public:
     States states;
 
     struct Backgrounds {
-        wil::unique_hbrush system;
-        wil::unique_hbrush custom;
+        BackgroundType type { BackgroundType::BG_TRANSPARENT };
+        wil::unique_hbrush transparent { glow::system::system_brush() };
+        wil::unique_hbrush system { glow::color::create_brush(
+            glow::color::system(winrt::UIColorType::Background)) };
+        wil::unique_hbrush custom { glow::color::create_brush(255, 0, 0) };
     };
     Backgrounds backgrounds;
 

@@ -13,7 +13,6 @@
 
 #include <winrt/Windows.UI.ViewManagement.h>
 
-#include <glow/color.hxx>
 #include <glow/log.hxx>
 #include <glow/system.hxx>
 
@@ -109,11 +108,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
         }
 
-        if (msg == WM_SETTINGCHANGE) {
-            if (self->backgrounds.system) {
-                self->enable_system_background();
-            }
-        }
+        // if (msg == WM_SETTINGCHANGE) {
+        //     if (self->backgrounds.system) {
+        //         self->enable_system_background();
+        //     }
+        // }
 
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
@@ -164,15 +163,19 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             auto hdc { reinterpret_cast<::HDC>(wparam) };
             auto rect { self->client_rect() };
 
-            if (self->backgrounds.custom) {
-                ::FillRect(hdc, &rect, self->backgrounds.custom.get());
-
-                return 1;
-            } else if (self->backgrounds.system) {
-                ::FillRect(hdc, &rect, self->backgrounds.system.get());
-
-                return 1;
+            switch (self->backgrounds.type) {
+                case BackgroundType::BG_TRANSPARENT: {
+                    ::FillRect(hdc, &rect, self->backgrounds.transparent.get());
+                } break;
+                case BackgroundType::BG_SYSTEM: {
+                    ::FillRect(hdc, &rect, self->backgrounds.system.get());
+                } break;
+                case BackgroundType::BG_CUSTOM: {
+                    ::FillRect(hdc, &rect, self->backgrounds.custom.get());
+                } break;
             }
+
+            return 1;
         }
 
         if (msg == WM_CLOSE) {
@@ -459,24 +462,14 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::enable_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void {
+auto Window::set_background_type(BackgroundType backgroundType) -> void {
+    backgrounds.type = backgroundType;
+    invalidate_rect();
+}
+
+auto Window::set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void {
+    set_background_type(BackgroundType::BG_CUSTOM);
     backgrounds.custom.reset(::CreateSolidBrush(RGB(r, g, b)));
-    invalidate_rect();
-}
-
-auto Window::disable_custom_background() -> void {
-    backgrounds.custom.reset();
-    invalidate_rect();
-}
-
-auto Window::enable_system_background() -> void {
-    backgrounds.system.reset(
-        glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
-    invalidate_rect();
-}
-
-auto Window::disable_system_background() -> void {
-    backgrounds.system.reset();
     invalidate_rect();
 }
 
