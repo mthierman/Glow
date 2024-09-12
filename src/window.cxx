@@ -4,9 +4,6 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
-#include <glow/log.hxx>
-#include <glow/math.hxx>
-#include <glow/system.hxx>
 #include <glow/window.hxx>
 
 #include <stdexcept>
@@ -15,6 +12,10 @@
 #include <winrt/Windows.Foundation.h>
 
 #include <winrt/Windows.UI.ViewManagement.h>
+
+#include <glow/color.hxx>
+#include <glow/log.hxx>
+#include <glow/system.hxx>
 
 namespace glow::window {
 auto Messages::on(::UINT msg, Callback callback) -> bool {
