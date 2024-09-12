@@ -76,10 +76,9 @@ namespace wm {
         auto createStruct() -> const ::CREATESTRUCTW&;
     };
 
-    struct CREATE : public Message {
+    struct CREATE : public NCCREATE {
         CREATE(const Message& message)
-            : Message(message) { }
-        auto createStruct() -> const ::CREATESTRUCTW&;
+            : NCCREATE(message) { }
     };
 
     struct DESTROY : public Message {

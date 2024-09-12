@@ -49,10 +49,6 @@ namespace wm {
         return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
     }
 
-    auto CREATE::createStruct() -> const ::CREATESTRUCTW& {
-        return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
-    }
-
     auto DESTROY::quit(int exitCode) -> void { glow::system::quit(exitCode); }
 
     auto ACTIVATE::deactivated() -> bool { return LOWORD(wparam) == 0; }
