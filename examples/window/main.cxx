@@ -4,11 +4,11 @@ namespace wm = glow::message;
 
 struct App final : glow::app::App {
     App() {
-        // messages.on(WM_NOTIFY, [](wm::DESTROY msg) {
-        //     msg.quit();
+        messages.on(WM_NOTIFY, [](wm::MSG /* msg */) {
+            glow::log::log("WM_NOTIFY");
 
-        //     return 0;
-        // });
+            return 0;
+        });
 
         create();
     }
@@ -48,6 +48,7 @@ auto main() -> int {
 
     Window window;
 
+    window.messages.send(app.hwnd.get(), WM_NOTIFY, 0, 0);
     window.messages.send(app.hwnd.get(), WM_NOTIFY, 0, 0);
 
     if (app.hwnd) {
