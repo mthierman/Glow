@@ -6,6 +6,8 @@
 
 #include <glow/message.hxx>
 
+#include <glow/system.hxx>
+
 namespace glow::message {
 auto NOTIFY::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
 auto NOTIFY::notification() -> const Notification& {
@@ -19,6 +21,8 @@ auto NCCREATE::createStruct() -> const ::CREATESTRUCTW& {
 auto CREATE::createStruct() -> const ::CREATESTRUCTW& {
     return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
 }
+
+auto DESTROY::quit(int exitCode) -> void { glow::system::quit(exitCode); }
 
 auto ACTIVATE::deactivated() -> bool { return LOWORD(wparam) == 0; }
 auto ACTIVATE::activated() -> bool { return LOWORD(wparam) == 1; }

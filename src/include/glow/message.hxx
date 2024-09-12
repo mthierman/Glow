@@ -56,6 +56,12 @@ struct CREATE : public Message {
     auto createStruct() -> const ::CREATESTRUCTW&;
 };
 
+struct DESTROY : public Message {
+    DESTROY(const Message& message)
+        : Message(message) { }
+    auto quit(int exitCode = 0) -> void;
+};
+
 struct ACTIVATE : public Message {
     ACTIVATE(const Message& message)
         : Message(message) { }

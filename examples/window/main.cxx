@@ -10,8 +10,8 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
-        messages.on(WM_DESTROY, [](wm::MSG /* msg */) {
-            glow::system::quit();
+        messages.on(WM_DESTROY, [](wm::DESTROY msg) {
+            msg.quit();
 
             return 0;
         });
