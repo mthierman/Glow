@@ -74,5 +74,9 @@ auto main() -> int {
     window.set_caption_color(glow::color::system(winrt::UIColorType::Accent));
     window.set_text_color(glow::color::system(winrt::UIColorType::Foreground));
 
+    window.enable_dark_mode();
+
+    window.set_backdrop(DWM_SYSTEMBACKDROP_TYPE::DWMSBT_MAINWINDOW);
+
     return glow::app::run();
 }
