@@ -97,7 +97,7 @@ auto WebView::create(const Environment& environment, ::HWND hwnd, Callback callb
                 ICoreWebView2Controller* createdController) -> ::HRESULT {
         controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                          .try_query<ICoreWebView2Controller4>();
-        controller->put_DefaultBackgroundColor(options.backgroundColor);
+        controller->put_DefaultBackgroundColor(webViewSettings.backgroundColor);
 
         wil::com_ptr<ICoreWebView2> createdCore;
         controller->get_CoreWebView2(createdCore.put());
@@ -107,23 +107,26 @@ auto WebView::create(const Environment& environment, ::HWND hwnd, Callback callb
         core->get_Settings(createdSettings.put());
         settings = createdSettings.try_query<ICoreWebView2Settings9>();
 
-        settings->put_AreBrowserAcceleratorKeysEnabled(options.AreBrowserAcceleratorKeysEnabled);
-        settings->put_AreDefaultContextMenusEnabled(options.AreDefaultContextMenusEnabled);
-        settings->put_AreDefaultScriptDialogsEnabled(options.AreDefaultScriptDialogsEnabled);
-        settings->put_AreDevToolsEnabled(options.AreDevToolsEnabled);
-        settings->put_AreHostObjectsAllowed(options.AreHostObjectsAllowed);
-        settings->put_HiddenPdfToolbarItems(options.HiddenPdfToolbarItems);
-        settings->put_IsBuiltInErrorPageEnabled(options.IsBuiltInErrorPageEnabled);
-        settings->put_IsGeneralAutofillEnabled(options.IsGeneralAutofillEnabled);
-        settings->put_IsNonClientRegionSupportEnabled(options.IsNonClientRegionSupportEnabled);
-        settings->put_IsPasswordAutosaveEnabled(options.IsPasswordAutosaveEnabled);
-        settings->put_IsPinchZoomEnabled(options.IsPinchZoomEnabled);
-        settings->put_IsReputationCheckingRequired(options.IsReputationCheckingRequired);
-        settings->put_IsScriptEnabled(options.IsScriptEnabled);
-        settings->put_IsStatusBarEnabled(options.IsStatusBarEnabled);
-        settings->put_IsSwipeNavigationEnabled(options.IsSwipeNavigationEnabled);
-        settings->put_IsWebMessageEnabled(options.IsWebMessageEnabled);
-        settings->put_IsZoomControlEnabled(options.IsZoomControlEnabled);
+        settings->put_AreBrowserAcceleratorKeysEnabled(
+            webViewSettings.AreBrowserAcceleratorKeysEnabled);
+        settings->put_AreDefaultContextMenusEnabled(webViewSettings.AreDefaultContextMenusEnabled);
+        settings->put_AreDefaultScriptDialogsEnabled(
+            webViewSettings.AreDefaultScriptDialogsEnabled);
+        settings->put_AreDevToolsEnabled(webViewSettings.AreDevToolsEnabled);
+        settings->put_AreHostObjectsAllowed(webViewSettings.AreHostObjectsAllowed);
+        settings->put_HiddenPdfToolbarItems(webViewSettings.HiddenPdfToolbarItems);
+        settings->put_IsBuiltInErrorPageEnabled(webViewSettings.IsBuiltInErrorPageEnabled);
+        settings->put_IsGeneralAutofillEnabled(webViewSettings.IsGeneralAutofillEnabled);
+        settings->put_IsNonClientRegionSupportEnabled(
+            webViewSettings.IsNonClientRegionSupportEnabled);
+        settings->put_IsPasswordAutosaveEnabled(webViewSettings.IsPasswordAutosaveEnabled);
+        settings->put_IsPinchZoomEnabled(webViewSettings.IsPinchZoomEnabled);
+        settings->put_IsReputationCheckingRequired(webViewSettings.IsReputationCheckingRequired);
+        settings->put_IsScriptEnabled(webViewSettings.IsScriptEnabled);
+        settings->put_IsStatusBarEnabled(webViewSettings.IsStatusBarEnabled);
+        settings->put_IsSwipeNavigationEnabled(webViewSettings.IsSwipeNavigationEnabled);
+        settings->put_IsWebMessageEnabled(webViewSettings.IsWebMessageEnabled);
+        settings->put_IsZoomControlEnabled(webViewSettings.IsZoomControlEnabled);
 
         ::RECT rect;
         ::GetClientRect(hwnd, &rect);

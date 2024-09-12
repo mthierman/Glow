@@ -43,7 +43,7 @@ struct EnvironmentOptions {
     std::filesystem::path userDataFolder;
 };
 
-struct Settings {
+struct WebViewSettings {
     COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
     bool AreBrowserAcceleratorKeysEnabled { true };
     bool AreDefaultContextMenusEnabled { true };
@@ -95,7 +95,7 @@ struct WebView {
     auto navigate(const std::wstring& url) -> void;
     auto test() -> void;
 
-    Settings settings;
+    WebViewSettings webViewSettings;
 
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
