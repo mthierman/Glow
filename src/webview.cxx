@@ -10,7 +10,7 @@
 #include <glow/window.hxx>
 
 namespace glow::webview {
-auto Environment::create(std::function<::HRESULT()> callback) -> ::HRESULT {
+auto Environment::create(const Callback& callback) -> ::HRESULT {
     wil::com_ptr<ICoreWebView2EnvironmentOptions> environmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
     };
@@ -60,8 +60,8 @@ auto Environment::create(std::function<::HRESULT()> callback) -> ::HRESULT {
         options.userDataFolder.c_str(),
         environmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [this, callback](::HRESULT /* errorCode */,
-                             ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+            [this, &callback](::HRESULT /* errorCode */,
+                              ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
         environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                           .try_query<ICoreWebView2Environment13>();
 

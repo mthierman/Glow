@@ -13,13 +13,15 @@ struct WebView final : glow::window::Window {
         create();
         activate();
 
+        // environment.create();
+
         environment.create([]() {
             glow::log::log("Environment created!");
 
             return S_OK;
         });
 
-        environment.close();
+        // environment.close();
     }
 
     glow::webview::Environment environment;
