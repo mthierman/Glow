@@ -76,9 +76,7 @@ auto Environment::create(Callback callback) -> ::HRESULT {
 
 auto Environment::close() -> void { environment.reset(); }
 
-auto Controller::create(const Environment& environment,
-                        ::HWND hwnd,
-                        Callback callback) -> ::HRESULT {
+auto WebView::create(const Environment& environment, ::HWND hwnd, Callback callback) -> ::HRESULT {
     return environment.environment->CreateCoreWebView2Controller(
         hwnd,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
@@ -127,67 +125,67 @@ auto Controller::create(const Environment& environment,
     }).Get());
 }
 
-auto Controller::close() -> void {
+auto WebView::close() -> void {
     settings.reset();
     core.reset();
     controller.reset();
 }
 
-auto Controller::put_bounds(const glow::window::Position& position) -> void {
+auto WebView::put_bounds(const glow::window::Position& position) -> void {
     if (controller) {
         controller->put_Bounds(glow::window::to_rect(position));
     }
 }
 
-auto Controller::put_bounds(const ::RECT& rect) -> void {
+auto WebView::put_bounds(const ::RECT& rect) -> void {
     if (controller) {
         controller->put_Bounds(rect);
     }
 }
 
-auto Controller::put_bounds(const ::SIZE& size) -> void {
+auto WebView::put_bounds(const ::SIZE& size) -> void {
     if (controller) {
         controller->put_Bounds(glow::window::to_rect(size));
     }
 }
 
-auto Controller::put_bounds(const ::WINDOWPOS& windowPos) -> void {
+auto WebView::put_bounds(const ::WINDOWPOS& windowPos) -> void {
     if (controller) {
         controller->put_Bounds(glow::window::to_rect(windowPos));
     }
 }
 
-template <typename T> auto Controller::put_bounds(const T& window) -> void {
+template <typename T> auto WebView::put_bounds(const T& window) -> void {
     if (controller) {
         controller->put_Bounds(window.client_rect());
     }
 }
 
-auto Controller::show() -> void {
+auto WebView::show() -> void {
     if (controller) {
         controller->put_IsVisible(true);
     }
 }
 
-auto Controller::hide() -> void {
+auto WebView::hide() -> void {
     if (controller) {
         controller->put_IsVisible(false);
     }
 }
 
-auto Controller::navigate(const std::string& url) -> void {
+auto WebView::navigate(const std::string& url) -> void {
     if (core) {
         core->Navigate(glow::text::to_wstring(url).c_str());
     }
 }
 
-auto Controller::navigate(const std::wstring& url) -> void {
+auto WebView::navigate(const std::wstring& url) -> void {
     if (core) {
         core->Navigate(url.c_str());
     }
 }
 
-auto Controller::test() -> void {
+auto WebView::test() -> void {
     if (core) {
         // std::wstring title;
         wil::unique_cotaskmem_string buffer;

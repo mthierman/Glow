@@ -53,7 +53,7 @@ struct Environment {
     wil::com_ptr<ICoreWebView2Environment13> environment;
 };
 
-struct Controller {
+struct WebView {
     using Callback = std::function<void()>;
 
     auto create(const Environment& environment, ::HWND hwnd, Callback callback = 0) -> ::HRESULT;
