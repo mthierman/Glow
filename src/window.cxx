@@ -414,12 +414,12 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::set_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void {
+auto Window::enable_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void {
     backgrounds.custom.reset(::CreateSolidBrush(RGB(r, g, b)));
     invalidate_rect();
 }
 
-auto Window::clear_custom_background() -> void {
+auto Window::disable_custom_background() -> void {
     backgrounds.custom.reset();
     invalidate_rect();
 }

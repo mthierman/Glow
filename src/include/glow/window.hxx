@@ -112,8 +112,8 @@ public:
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
 
-    auto set_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto clear_custom_background() -> void;
+    auto enable_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void;
+    auto disable_custom_background() -> void;
 
     auto enable_system_background() -> void;
     auto disable_system_background() -> void;
