@@ -55,7 +55,8 @@ auto main() -> int {
     App app;
 
     Window window;
-    window.notify(GOODBYE, "TEST2");
+    window.notify({});
+    // window.notify(GOODBYE, "TEST2");
 
     return glow::app::run();
 }
