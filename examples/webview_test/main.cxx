@@ -10,14 +10,23 @@ struct WebView final : glow::window::Window {
             return 0;
         });
 
+        messages.on(WM_WINDOWPOSCHANGED, [this](wm::WINDOWPOSCHANGED /* msg */) {
+            webView.put_bounds(client_rect());
+
+            return 0;
+        });
+
         create();
         activate();
 
         environment.create([this]() {
             glow::log::log("Environment created!");
 
-            webView.create(environment, hwnd.get());
-            // webView.create(environment, hwnd.get(), []() { return S_OK; });
+            webView.create(environment, hwnd.get(), [this]() {
+                webView.navigate("https://mthierman.pages.dev/");
+
+                return S_OK;
+            });
 
             return S_OK;
         });
