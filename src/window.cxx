@@ -541,4 +541,17 @@ auto Window::notify_app(glow::message::Code code,
                         ::HWND receiverHwnd) -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
+
+auto rect_to_position(const ::RECT& rect) -> Position {
+    return Position { .x { rect.left },
+                      .y { rect.top },
+                      .width { rect.right - rect.left },
+                      .height { rect.bottom - rect.top } };
+}
+auto position_to_rect(const Position& position) -> ::RECT {
+    return ::RECT { .left { position.x },
+                    .top { position.y },
+                    .right { position.width },
+                    .bottom { position.height } };
+}
 } // namespace glow::window

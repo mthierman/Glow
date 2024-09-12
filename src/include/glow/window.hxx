@@ -220,4 +220,7 @@ private:
     std::vector<uintptr_t> keys;
     std::unordered_map<uintptr_t, std::unique_ptr<T>> map;
 };
+
+auto rect_to_position(const ::RECT& rect) -> Position;
+auto position_to_rect(const Position& position) -> ::RECT;
 } // namespace glow::window
