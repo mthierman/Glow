@@ -31,11 +31,13 @@ struct Messages {
     auto contains(::UINT msg) -> bool;
     auto invoke(glow::message::Message message) -> ::LRESULT;
 
-    template <typename W, typename L>::LRESULT send(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+    template <typename W, typename L>
+    auto send(::HWND hwnd, ::UINT msg, W wparam, L lparam) -> ::LRESULT {
         return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
     }
 
-    template <typename W, typename L>::LRESULT post(::HWND hwnd, ::UINT msg, W wparam, L lparam) {
+    template <typename W, typename L>
+    auto post(::HWND hwnd, ::UINT msg, W wparam, L lparam) -> ::LRESULT {
         return ::PostMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
     }
 
