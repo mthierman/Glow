@@ -12,21 +12,23 @@ namespace wm = glow::message::wm;
 struct App final : glow::app::App {
     App(glow::system::Event& singleInstance)
         : m_singleInstance { singleInstance } {
-        message(WM_NOTIFY, [this](wm::NOTIFY msg) {
+        messages.on(WM_NOTIFY, [this](wm::NOTIFY msg) {
+            auto& idFrom { msg.notification().nmhdr.idFrom };
             auto& code { msg.notification().code };
 
             using enum glow::message::Code;
 
             switch (code) {
                 case CREATE_WINDOW: {
-                    m_windows.add(std::make_unique<::Window>(m_keys));
+                    windows.add(std::make_unique<::Window>(m_keys));
                 } break;
                 case CREATE_FOREGROUND_WINDOW: {
                     notify(CREATE_WINDOW);
-                    glow::window::set_foreground(m_windows.last_window());
+                    // glow::window::set_foreground(m_windows.last_window());
+                    auto last { windows.last_window() };
                 } break;
                 case CLOSE_WINDOW: {
-                    m_windows.remove(notification.idFrom);
+                    windows.remove(idFrom);
                 } break;
             }
 
@@ -43,7 +45,8 @@ struct App final : glow::app::App {
     auto operator()() -> int { return glow::app::run(); }
 
     glow::system::Event& m_singleInstance;
-    glow::window::WindowManager<Window> m_windows;
+    // glow::window::WindowManager<Window> m_windows;
+    glow::window::Manager<Window> windows;
     std::unordered_map<char, bool> m_keys { { 'N', false }, { 'W', false } };
 };
 
