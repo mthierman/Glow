@@ -207,6 +207,16 @@ auto Window::minimize() -> void { ::ShowWindow(hwnd.get(), SW_MINIMIZE); }
 
 auto Window::restore() -> void { ::ShowWindow(hwnd.get(), SW_RESTORE); }
 
+auto Window::refresh_frame() -> void {
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+}
+
 auto Window::center() -> void {
     if (positions.monitor.width > positions.window.width
         && positions.monitor.height > positions.window.height) {
@@ -218,60 +228,30 @@ auto Window::center() -> void {
 }
 
 auto Window::top() -> void {
-    ::SetWindowPos(
-        hwnd.get(), HWND_TOP, 0, 0, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+    ::SetWindowPos(hwnd.get(), HWND_TOP, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
 auto Window::bottom() -> void {
-    ::SetWindowPos(hwnd.get(),
-                   HWND_BOTTOM,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+    ::SetWindowPos(hwnd.get(), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
 auto Window::enable_topmost() -> void {
-    ::SetWindowPos(hwnd.get(),
-                   HWND_TOPMOST,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+    ::SetWindowPos(hwnd.get(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
 auto Window::disable_topmost() -> void {
-    ::SetWindowPos(hwnd.get(),
-                   HWND_NOTOPMOST,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+    ::SetWindowPos(
+        hwnd.get(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
 auto Window::enable_border() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() | WS_BORDER);
-    ::SetWindowPos(hwnd.get(),
-                   nullptr,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+    refresh_frame();
 }
 
 auto Window::disable_border() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() & ~WS_BORDER);
-    ::SetWindowPos(hwnd.get(),
-                   nullptr,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
+    refresh_frame();
 }
 
 auto Window::cloak() -> void {
@@ -282,6 +262,23 @@ auto Window::cloak() -> void {
 auto Window::uncloak() -> void {
     auto cloak { FALSE };
     ::DwmSetWindowAttribute(hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAK, &cloak, sizeof(cloak));
+}
+
+auto Window::is_cloaked() -> bool {
+    auto cloaked { DWM_CLOAKED_APP };
+    ::DwmGetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
+
+    switch (cloaked) {
+        case DWM_CLOAKED_APP:
+            return true;
+        case DWM_CLOAKED_INHERITED:
+            return true;
+        case DWM_CLOAKED_SHELL:
+            return true;
+    }
+
+    return false;
 }
 
 auto Window::enable_dark_mode() -> void {
@@ -358,23 +355,6 @@ auto Window::is_topmost() -> bool { return get_ex_style() & WS_EX_TOPMOST; }
 auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
-
-auto Window::is_cloaked() -> bool {
-    auto cloaked { DWM_CLOAKED_APP };
-    ::DwmGetWindowAttribute(
-        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CLOAKED, &cloaked, sizeof(cloaked));
-
-    switch (cloaked) {
-        case DWM_CLOAKED_APP:
-            return true;
-        case DWM_CLOAKED_INHERITED:
-            return true;
-        case DWM_CLOAKED_SHELL:
-            return true;
-    }
-
-    return false;
-}
 
 auto Window::set_title(const std::string& title) -> void {
     ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());

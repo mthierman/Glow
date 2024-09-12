@@ -68,5 +68,8 @@ auto main() -> int {
     window.notify_app(glow::message::Code::HELLO, "TEST1");
     window.notify_app(glow::message::Code::GOODBYE, "TEST2");
 
+    window.set_style(WS_POPUP);
+    window.enable_border();
+
     return glow::app::run();
 }

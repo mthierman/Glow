@@ -46,12 +46,15 @@ private:
 
 public:
     auto refresh_dpi() -> void;
+
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
     auto maximize() -> void;
     auto minimize() -> void;
     auto restore() -> void;
+
+    auto refresh_frame() -> void;
     auto center() -> void;
     auto top() -> void;
     auto bottom() -> void;
@@ -59,8 +62,11 @@ public:
     auto disable_topmost() -> void;
     auto enable_border() -> void;
     auto disable_border() -> void;
+
     auto cloak() -> void;
     auto uncloak() -> void;
+    auto is_cloaked() -> bool;
+
     auto enable_dark_mode() -> void;
     auto disable_dark_mode() -> void;
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
@@ -79,7 +85,6 @@ public:
     auto bring_to_top() -> void;
     auto is_topmost() -> bool;
     auto is_visible() -> bool;
-    auto is_cloaked() -> bool;
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
     auto set_position(Position position) -> void;
