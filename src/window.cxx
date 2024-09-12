@@ -496,7 +496,9 @@ auto Window::invalidate_rect() -> void {
 
 auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }
 
-auto Window::notify(glow::message::Code code, std::string_view message, ::HWND receiver) -> void {
+auto Window::notify_app(glow::message::Code code,
+                        std::string_view message,
+                        ::HWND receiver) -> void {
     glow::message::Notification notification {
         .nmhdr { .hwndFrom { hwnd.get() }, .idFrom { id }, .code { std::to_underlying(code) } },
         .code { code },

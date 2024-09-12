@@ -56,8 +56,8 @@ auto main() -> int {
 
     Window window;
 
-    window.notify(glow::message::Code::HELLO, "TEST1");
-    window.notify(glow::message::Code::GOODBYE, "TEST2");
+    window.notify_app(glow::message::Code::HELLO, "TEST1");
+    window.notify_app(glow::message::Code::GOODBYE, "TEST2");
 
     return glow::app::run();
 }
