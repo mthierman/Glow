@@ -19,9 +19,7 @@
 #include <wil/resource.h>
 
 #include <glow/color.hxx>
-#include <glow/math.hxx>
 #include <glow/message.hxx>
-#include <glow/system.hxx>
 
 namespace glow::window {
 struct Messages {
