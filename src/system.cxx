@@ -66,7 +66,7 @@ auto create_process(const std::filesystem::path& path) -> int {
 
 auto instance() -> ::HMODULE {
     ::HMODULE module;
-    ::GetModuleHandleExW(0, nullptr, &module);
+    ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, nullptr, &module);
 
     return module;
 }
