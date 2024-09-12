@@ -37,37 +37,39 @@ auto Environment::create(Callback callback) -> ::HRESULT {
     createdEnvironmentOptions8
         = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
 
-    if (!options.AdditionalBrowserArguments.empty()) {
+    if (!environmentOptions.AdditionalBrowserArguments.empty()) {
         createdEnvironmentOptions->put_AdditionalBrowserArguments(
-            glow::text::to_wstring(options.AdditionalBrowserArguments).c_str());
+            glow::text::to_wstring(environmentOptions.AdditionalBrowserArguments).c_str());
     }
 
     createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
-        options.AllowSingleSignOnUsingOSPrimaryAccount);
+        environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
 
-    if (!options.Language.empty()) {
-        createdEnvironmentOptions->put_Language(glow::text::to_wstring(options.Language).c_str());
+    if (!environmentOptions.Language.empty()) {
+        createdEnvironmentOptions->put_Language(
+            glow::text::to_wstring(environmentOptions.Language).c_str());
     }
 
-    if (!options.TargetCompatibleBrowserVersion.empty()) {
+    if (!environmentOptions.TargetCompatibleBrowserVersion.empty()) {
         createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
-            glow::text::to_wstring(options.TargetCompatibleBrowserVersion).c_str());
+            glow::text::to_wstring(environmentOptions.TargetCompatibleBrowserVersion).c_str());
     }
 
     createdEnvironmentOptions2->put_ExclusiveUserDataFolderAccess(
-        options.ExclusiveUserDataFolderAccess);
+        environmentOptions.ExclusiveUserDataFolderAccess);
     createdEnvironmentOptions3->put_IsCustomCrashReportingEnabled(
-        options.IsCustomCrashReportingEnabled);
+        environmentOptions.IsCustomCrashReportingEnabled);
     // createdEnvironmentOptions4->SetCustomSchemeRegistrations();
-    createdEnvironmentOptions5->put_EnableTrackingPrevention(options.EnableTrackingPrevention);
+    createdEnvironmentOptions5->put_EnableTrackingPrevention(
+        environmentOptions.EnableTrackingPrevention);
     createdEnvironmentOptions6->put_AreBrowserExtensionsEnabled(
-        options.AreBrowserExtensionsEnabled);
-    createdEnvironmentOptions7->put_ChannelSearchKind(options.ChannelSearchKind);
-    createdEnvironmentOptions8->put_ScrollBarStyle(options.ScrollBarStyle);
+        environmentOptions.AreBrowserExtensionsEnabled);
+    createdEnvironmentOptions7->put_ChannelSearchKind(environmentOptions.ChannelSearchKind);
+    createdEnvironmentOptions8->put_ScrollBarStyle(environmentOptions.ScrollBarStyle);
 
     return CreateCoreWebView2EnvironmentWithOptions(
-        options.browserExecutableFolder.c_str(),
-        options.userDataFolder.c_str(),
+        environmentOptions.browserExecutableFolder.c_str(),
+        environmentOptions.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
