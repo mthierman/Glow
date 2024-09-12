@@ -118,15 +118,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             self->positions.window = to_position(*windowPos);
             self->positions.client = to_position(self->client_rect());
 
-            ::GetWindowPlacement(hwnd, &self->placement);
+            self->get_window_placement();
 
-            ::MONITORINFO mi { sizeof(::MONITORINFO) };
-            ::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi);
-
-            self->positions.monitor.x = mi.rcWork.left;
-            self->positions.monitor.y = mi.rcWork.top;
-            self->positions.monitor.width = mi.rcWork.right - mi.rcWork.left;
-            self->positions.monitor.height = mi.rcWork.bottom - mi.rcWork.top;
+            self->get_monitor_info();
+            self->positions.monitor = to_position(self->monitorInfo.rcMonitor);
+            self->positions.work = to_position(self->monitorInfo.rcWork);
         }
 
         if (msg == WM_DPICHANGED) {
@@ -243,10 +239,10 @@ auto Window::set_child() -> void {
 auto Window::is_child() -> bool { return get_style() & WS_CHILD; }
 
 auto Window::center() -> void {
-    if (positions.monitor.width > positions.window.width
-        && positions.monitor.height > positions.window.height) {
-        auto x { static_cast<int>((positions.monitor.width - positions.window.width) / 2) };
-        auto y { static_cast<int>((positions.monitor.height - positions.window.height) / 2) };
+    if (positions.work.width > positions.window.width
+        && positions.work.height > positions.window.height) {
+        auto x { static_cast<int>((positions.work.width - positions.window.width) / 2) };
+        auto y { static_cast<int>((positions.work.height - positions.window.height) / 2) };
 
         ::SetWindowPos(hwnd.get(), nullptr, x, y, 0, 0, SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOSIZE);
     }
@@ -416,9 +412,13 @@ auto Window::set_position(Position position) -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-auto Window::set_placement() -> void { ::SetWindowPlacement(hwnd.get(), &placement); }
+auto Window::set_window_placement() -> void { ::SetWindowPlacement(hwnd.get(), &windowPlacement); }
 
-auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &placement); }
+auto Window::get_window_placement() -> void { ::GetWindowPlacement(hwnd.get(), &windowPlacement); }
+
+auto Window::get_monitor_info() -> void {
+    ::GetMonitorInfoW(::MonitorFromWindow(hwnd.get(), MONITOR_DEFAULTTONEAREST), &monitorInfo);
+}
 
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);

@@ -108,8 +108,9 @@ public:
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
     auto set_position(Position position) -> void;
-    auto set_placement() -> void;
-    auto get_placement() -> void;
+    auto set_window_placement() -> void;
+    auto get_window_placement() -> void;
+    auto get_monitor_info() -> void;
     auto set_style(::LONG_PTR style) -> void;
     auto get_style() -> ::LONG_PTR;
     auto set_ex_style(::LONG_PTR exStyle) -> void;
@@ -139,6 +140,7 @@ public:
         Position window;
         Position client;
         Position monitor;
+        Position work;
         Position restoreCentered;
         Position restoreFullscreen;
     };
@@ -168,7 +170,8 @@ public:
     };
     Resources resources;
 
-    ::WINDOWPLACEMENT placement;
+    ::WINDOWPLACEMENT windowPlacement { .length { sizeof(::WINDOWPLACEMENT) } };
+    ::MONITORINFO monitorInfo { sizeof(::MONITORINFO) };
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
 
