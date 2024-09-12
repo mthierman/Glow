@@ -29,7 +29,7 @@ auto Messages::invoke(glow::message::Message message) -> ::LRESULT {
         ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
 }
 
-auto Window::create(std::string_view title) -> void {
+auto Window::create() -> void {
     auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
@@ -56,7 +56,7 @@ auto Window::create(std::string_view title) -> void {
 
     ::CreateWindowExW(0,
                       className.c_str(),
-                      glow::text::to_wstring(title).c_str(),
+                      L"",
                       WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -64,6 +64,45 @@ auto Window::create(std::string_view title) -> void {
                       CW_USEDEFAULT,
                       nullptr,
                       nullptr,
+                      instance,
+                      this);
+}
+
+auto Window::create(::HWND parent) -> void {
+    auto className { std::wstring(L"Window") };
+    auto instance { glow::system::instance() };
+    auto resourceIcon { glow::system::resource_icon() };
+    auto systemIcon { glow::system::system_icon() };
+    auto systemCursor { glow::system::system_cursor() };
+    auto systemBrush { glow::system::system_brush() };
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { instance },
+                                .hIcon { resourceIcon ? resourceIcon : systemIcon },
+                                .hCursor { systemCursor },
+                                .hbrBackground { systemBrush },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { className.c_str() },
+                                .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
+
+    if (::GetClassInfoExW(instance, className.c_str(), &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+
+    ::CreateWindowExW(0,
+                      className.c_str(),
+                      L"",
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      parent,
+                      reinterpret_cast<::HMENU>(id),
                       instance,
                       this);
 }

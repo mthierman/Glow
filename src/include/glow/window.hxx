@@ -19,6 +19,7 @@
 #include <wil/resource.h>
 
 #include <glow/color.hxx>
+#include <glow/math.hxx>
 #include <glow/message.hxx>
 
 namespace glow::window {
@@ -49,7 +50,8 @@ struct Position {
 };
 
 struct Window {
-    auto create(std::string_view title = "Window") -> void;
+    auto create() -> void;
+    auto create(::HWND parent) -> void;
 
 private:
     static auto CALLBACK procedure(::HWND hwnd,
@@ -141,6 +143,7 @@ public:
     Backgrounds backgrounds;
 
     Messages messages;
+    uintptr_t id { glow::math::make_random<uintptr_t>() };
     wil::unique_hwnd hwnd;
 };
 
@@ -221,33 +224,5 @@ namespace glow::window {
 //     void;
 
 //     uintptr_t m_id { glow::math::make_random<uintptr_t>() };
-//     ::WNDCLASSEXA m_windowClass {
-//         .cbSize { sizeof(::WNDCLASSEXA) },
-//         .style { 0 },
-//         .lpfnWndProc { window_proc },
-//         .cbClsExtra { 0 },
-//         .cbWndExtra { sizeof(Window) },
-//         .hInstance { glow::system::get_instance() },
-//         .hIcon { glow::system::load_resource_icon() ? glow::system::load_resource_icon()
-//                                                     : glow::system::load_system_icon() },
-//         .hCursor { glow::system::load_system_cursor() },
-//         .hbrBackground { glow::system::load_system_brush() },
-//         .lpszMenuName { nullptr },
-//         .lpszClassName { "Window" },
-//         .hIconSm { glow::system::load_resource_icon() ? glow::system::load_resource_icon()
-//                                                       : glow::system::load_system_icon() }
-//     };
-//     ::WINDOWPLACEMENT m_windowPlacement {
-//         .length { sizeof(::WINDOWPLACEMENT) },
-//         .flags { 0 },
-//         .showCmd { 0 },
-//         .ptMinPosition { ::POINT { .x { 0 }, .y { 0 } } },
-//         .ptMaxPosition { ::POINT { .x { 0 }, .y { 0 } } },
-//         .rcNormalPosition { ::RECT { .left { 0 }, .top { 0 }, .right { 0 }, .bottom { 0 } } }
-//     };
-//     ::UINT m_dpi { USER_DEFAULT_SCREEN_DPI };
-//     double m_scale { 0.0 };
-//     std::unordered_map<::UINT, std::function<::LRESULT(glow::message::wm message)>> m_map;
-//     wil::unique_hwnd m_hwnd;
 // };
 }; // namespace glow::window
