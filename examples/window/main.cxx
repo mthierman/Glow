@@ -2,14 +2,20 @@
 
 namespace wm = glow::message;
 
+struct App final : glow::app::App {
+    App() {
+        // messages.on(WM_NOTIFY, [](wm::DESTROY msg) {
+        //     msg.quit();
+
+        //     return 0;
+        // });
+
+        create();
+    }
+};
+
 struct Window final : glow::window::Window {
     Window() {
-        messages.on(WM_CREATE, [this](wm::CREATE msg) {
-            glow::log::log("{}", glow::text::to_string(msg.createStruct().lpszName));
-
-            return 0;
-        });
-
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();
 
@@ -38,7 +44,15 @@ struct Window final : glow::window::Window {
 };
 
 auto main() -> int {
+    App app;
+
     Window window;
+
+    window.messages.send(app.hwnd.get(), WM_NOTIFY, 0, 0);
+
+    if (app.hwnd) {
+        glow::log::log("app.hwnd exists");
+    }
 
     return glow::app::run();
 }

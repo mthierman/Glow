@@ -10,6 +10,9 @@
 
 #include <wil/resource.h>
 
+#include <glow/message.hxx>
+#include <glow/window.hxx>
+
 namespace glow::app {
 struct App {
     auto create() -> void;
@@ -21,6 +24,9 @@ private:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
+    auto close() -> void;
+
+    glow::window::Messages messages;
     wil::unique_hwnd hwnd;
 };
 

@@ -12,16 +12,13 @@
 
 #include <string>
 
+#include <glow/log.hxx>
 #include <glow/system.hxx>
 
 namespace glow::app {
 auto App::create() -> void {
     auto className { std::wstring(L"App") };
     auto instance { glow::system::instance() };
-    auto resourceIcon { glow::system::resource_icon() };
-    auto systemIcon { glow::system::system_icon() };
-    auto systemCursor { glow::system::system_cursor() };
-    auto systemBrush { glow::system::system_brush() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -53,6 +50,38 @@ auto App::create() -> void {
                       instance,
                       this);
 }
+
+auto CALLBACK App::procedure(::HWND hwnd,
+                             ::UINT msg,
+                             ::WPARAM wparam,
+                             ::LPARAM lparam) -> ::LRESULT {
+    if (msg == WM_NCCREATE) {
+        auto create { reinterpret_cast<::CREATESTRUCTW*>(lparam) };
+
+        if (auto self { static_cast<App*>(create->lpCreateParams) }; self) {
+            ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
+            self->hwnd.reset(hwnd);
+        }
+    }
+
+    if (auto self { reinterpret_cast<App*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
+        if (msg == WM_NCDESTROY) {
+            ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
+        }
+
+        if (self->messages.contains(msg)) {
+            return self->messages.invoke({ hwnd, msg, wparam, lparam });
+        }
+    }
+
+    if (msg == WM_NOTIFY) {
+        glow::log::log("WM_NOTIFY");
+    }
+
+    return ::DefWindowProcW(hwnd, msg, wparam, lparam);
+}
+
+auto App::close() -> void { hwnd.reset(); }
 
 auto run() -> int {
     ::MSG msg {};
