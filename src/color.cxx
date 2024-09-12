@@ -15,6 +15,11 @@ auto system(winrt::UIColorType colorType) -> winrt::Color {
     return uiSettings.GetColorValue(colorType);
 }
 
+auto element(winrt::UIElementType elementType) -> winrt::Color {
+    auto uiSettings { glow::system::ui_settings() };
+    return uiSettings.UIElementColor(elementType);
+}
+
 auto to_string(const winrt::Color& color) -> std::string {
     return std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A);
 }
