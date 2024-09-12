@@ -53,12 +53,10 @@ struct Environment {
     wil::com_ptr<ICoreWebView2Environment13> environment;
 };
 
-struct WebView {
+struct Controller {
     using Callback = std::function<void()>;
 
-    auto create(const Environment& environment,
-                ::HWND hwnd,
-                Callback callback = 0) -> ::HRESULT;
+    auto create(const Environment& environment, ::HWND hwnd, Callback callback = 0) -> ::HRESULT;
     auto close() -> void;
 
     auto put_bounds(const glow::window::Position& rect) -> void;

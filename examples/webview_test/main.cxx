@@ -11,7 +11,7 @@ struct WebView final : glow::window::Window {
         });
 
         messages.on(WM_WINDOWPOSCHANGED, [this](wm::WINDOWPOSCHANGED /* msg */) {
-            webView.put_bounds(client_rect());
+            controller.put_bounds(client_rect());
 
             return 0;
         });
@@ -20,14 +20,14 @@ struct WebView final : glow::window::Window {
         activate();
 
         environment.create([this]() {
-            webView.create(environment, hwnd.get(), [this]() {
-                webView.navigate("https://mthierman.pages.dev/");
+            controller.create(environment, hwnd.get(), [this]() {
+                controller.navigate("https://mthierman.pages.dev/");
             });
         });
     }
 
     glow::webview::Environment environment;
-    glow::webview::WebView webView;
+    glow::webview::Controller controller;
 };
 
 auto main() -> int {
