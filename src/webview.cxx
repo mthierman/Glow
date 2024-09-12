@@ -82,7 +82,7 @@ auto WebView::create(const Environment& environment,
     return environment.environment.get()->CreateCoreWebView2Controller(
         parentHwnd,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [this, callback { std::move(callback) }](
+            [this, callback { std::move(callback) }, parentHwnd](
                 ::HRESULT /* errorCode */,
                 ICoreWebView2Controller* createdController) -> ::HRESULT {
         controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
@@ -114,6 +114,10 @@ auto WebView::create(const Environment& environment,
         settings->put_IsSwipeNavigationEnabled(options.IsSwipeNavigationEnabled);
         settings->put_IsWebMessageEnabled(options.IsWebMessageEnabled);
         settings->put_IsZoomControlEnabled(options.IsZoomControlEnabled);
+
+        ::RECT rect;
+        ::GetClientRect(parentHwnd, &rect);
+        put_bounds(rect);
 
         if (callback) {
             callback();
