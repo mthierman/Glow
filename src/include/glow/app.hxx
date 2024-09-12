@@ -6,6 +6,23 @@
 
 #pragma once
 
+#include <Windows.h>
+
+#include <wil/resource.h>
+
 namespace glow::app {
+struct App {
+    auto create() -> void;
+
+private:
+    static auto CALLBACK procedure(::HWND hwnd,
+                                   ::UINT msg,
+                                   ::WPARAM wparam,
+                                   ::LPARAM lparam) -> ::LRESULT;
+
+public:
+    wil::unique_hwnd hwnd;
+};
+
 auto run() -> int;
 }; // namespace glow::app
