@@ -114,6 +114,7 @@ public:
     auto disable_fullscreen() -> bool;
     auto set_background_type(BackgroundType backgroundType) -> void;
     auto set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void;
+    auto set_background_color(const winrt::Color& color) -> void;
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;

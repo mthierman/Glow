@@ -477,6 +477,10 @@ auto Window::set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void {
     backgrounds.custom.reset(glow::color::create_brush(r, g, b));
 }
 
+auto Window::set_background_color(const winrt::Color& color) -> void {
+    backgrounds.custom.reset(glow::color::create_brush(color));
+}
+
 auto Window::client_rect() -> ::RECT {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
