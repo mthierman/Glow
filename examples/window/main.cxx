@@ -55,8 +55,8 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
-        // set_background_type(glow::window::BackgroundType::BG_SYSTEM);
-        set_background_color(0, 0, 255);
+        set_background_type(glow::window::BackgroundType::BG_SYSTEM);
+        // set_background_color(0, 0, 255);
 
         create();
         activate();

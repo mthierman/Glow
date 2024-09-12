@@ -468,9 +468,7 @@ auto Window::set_background_type(BackgroundType backgroundType) -> void {
 }
 
 auto Window::set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    set_background_type(BackgroundType::BG_CUSTOM);
-    backgrounds.custom.reset(::CreateSolidBrush(RGB(r, g, b)));
-    invalidate_rect();
+    backgrounds.custom.reset(glow::color::create_brush(r, g, b));
 }
 
 auto Window::client_rect() -> ::RECT {
