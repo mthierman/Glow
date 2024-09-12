@@ -19,7 +19,6 @@
 
 namespace glow::window {
 auto Window::create() -> void {
-    auto className { std::wstring(L"Window") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
@@ -36,15 +35,15 @@ auto Window::create() -> void {
                                 .hCursor { systemCursor },
                                 .hbrBackground { systemBrush },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { className.c_str() },
+                                .lpszClassName { L"Window" },
                                 .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
 
-    if (::GetClassInfoExW(instance, className.c_str(), &windowClass) == 0) {
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
     }
 
     ::CreateWindowExW(0,
-                      className.c_str(),
+                      windowClass.lpszClassName,
                       L"",
                       WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT,
@@ -58,7 +57,6 @@ auto Window::create() -> void {
 }
 
 auto Window::create(::HWND parent) -> void {
-    auto className { std::wstring(L"ChildWindow") };
     auto instance { glow::system::instance() };
     auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
@@ -75,15 +73,15 @@ auto Window::create(::HWND parent) -> void {
                                 .hCursor { systemCursor },
                                 .hbrBackground { systemBrush },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { className.c_str() },
+                                .lpszClassName { L"ChildWindow" },
                                 .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
 
-    if (::GetClassInfoExW(instance, className.c_str(), &windowClass) == 0) {
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
     }
 
     ::CreateWindowExW(0,
-                      className.c_str(),
+                      windowClass.lpszClassName,
                       L"",
                       WS_CHILDWINDOW | WS_CLIPSIBLINGS,
                       CW_USEDEFAULT,

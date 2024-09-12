@@ -16,7 +16,6 @@
 
 namespace glow::app {
 auto App::create() -> void {
-    auto className { std::wstring(L"App") };
     auto instance { glow::system::instance() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
@@ -29,15 +28,15 @@ auto App::create() -> void {
                                 .hCursor { nullptr },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { className.c_str() },
+                                .lpszClassName { L"App" },
                                 .hIconSm { nullptr } };
 
-    if (::GetClassInfoExW(instance, className.c_str(), &windowClass) == 0) {
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
     }
 
     ::CreateWindowExW(0,
-                      className.c_str(),
+                      windowClass.lpszClassName,
                       L"",
                       0,
                       CW_USEDEFAULT,
