@@ -122,7 +122,9 @@ public:
     auto invalidate_rect() -> void;
     auto device_context() -> ::HDC;
 
-    auto notify(::HWND receiver, std::string&& message) -> void;
+    auto notify(::HWND receiver,
+                glow::message::Code code,
+                std::string&& message = "") -> void;
 
     struct Positions {
         Position window;
