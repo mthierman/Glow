@@ -406,8 +406,30 @@ auto Window::disable_fullscreen() -> bool {
 
 auto Window::set_background(uint8_t r, uint8_t g, uint8_t b) -> void {
     hbrush.reset(::CreateSolidBrush(RGB(r, g, b)));
+    invalidate_rect();
+}
+
+auto Window::clear_background() -> void {
+    hbrush.reset();
+    invalidate_rect();
+}
+
+auto Window::client_rect() -> ::RECT {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
+
+    return rect;
+}
+
+auto Window::window_rect() -> ::RECT {
+    ::RECT rect;
+    ::GetWindowRect(hwnd.get(), &rect);
+
+    return rect;
+}
+
+auto Window::invalidate_rect() -> void {
+    auto rect { client_rect() };
     ::InvalidateRect(hwnd.get(), &rect, TRUE);
 }
 

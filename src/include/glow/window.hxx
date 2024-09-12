@@ -113,6 +113,11 @@ public:
     auto disable_fullscreen() -> bool;
 
     auto set_background(uint8_t r, uint8_t g, uint8_t b) -> void;
+    auto clear_background() -> void;
+
+    auto client_rect() -> ::RECT;
+    auto window_rect() -> ::RECT;
+    auto invalidate_rect() -> void;
 
     struct Positions {
         Position window;
