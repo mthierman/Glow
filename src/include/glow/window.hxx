@@ -133,8 +133,13 @@ public:
     };
     Positions positions;
 
+    struct Backgrounds {
+        wil::unique_hbrush system;
+        wil::unique_hbrush custom;
+    };
+    Backgrounds backgrounds;
+
     Messages messages;
-    wil::unique_hbrush hbrush;
     wil::unique_hwnd hwnd;
 };
 

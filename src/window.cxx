@@ -90,11 +90,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_ERASEBKGND) {
-            if (self->hbrush) {
+            if (self->backgrounds.custom) {
                 auto hdc { reinterpret_cast<::HDC>(wparam) };
                 ::RECT rect;
                 ::GetClientRect(hwnd, &rect);
-                ::FillRect(hdc, &rect, self->hbrush.get());
+                ::FillRect(hdc, &rect, self->backgrounds.custom.get());
 
                 return 1;
             }
@@ -405,12 +405,12 @@ auto Window::disable_fullscreen() -> bool {
 }
 
 auto Window::set_background(uint8_t r, uint8_t g, uint8_t b) -> void {
-    hbrush.reset(::CreateSolidBrush(RGB(r, g, b)));
+    backgrounds.custom.reset(::CreateSolidBrush(RGB(r, g, b)));
     invalidate_rect();
 }
 
 auto Window::clear_background() -> void {
-    hbrush.reset();
+    backgrounds.custom.reset();
     invalidate_rect();
 }
 
