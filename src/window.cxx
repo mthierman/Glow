@@ -100,7 +100,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (auto self { static_cast<Window*>(create->lpCreateParams) }; self) {
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
             self->hwnd.reset(hwnd);
-            self->update_dpi();
+            self->refresh_dpi();
         }
     }
 
@@ -153,7 +153,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                            (rect->bottom - rect->top),
                            SWP_NOZORDER | SWP_NOACTIVATE);
 
-            self->update_dpi();
+            self->refresh_dpi();
         }
 
         if (self->messages.contains(msg)) {
@@ -185,7 +185,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return ::DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
-auto Window::update_dpi() -> void {
+auto Window::refresh_dpi() -> void {
     dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
 }

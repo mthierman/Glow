@@ -42,7 +42,7 @@ private:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
-    auto update_dpi() -> void;
+    auto refresh_dpi() -> void;
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
