@@ -10,6 +10,14 @@
 #include <glow/text.hxx>
 
 namespace glow::color {
+auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
+    return ::CreateSolidBrush(RGB(r, g, b));
+}
+
+auto create_brush(const winrt::Color& color) -> ::HBRUSH {
+    return ::CreateSolidBrush(RGB(color.R, color.G, color.B));
+}
+
 auto system(winrt::UIColorType colorType) -> winrt::Color {
     auto uiSettings { glow::system::ui_settings() };
     return uiSettings.GetColorValue(colorType);
