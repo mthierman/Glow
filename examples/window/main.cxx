@@ -68,7 +68,9 @@ auto main() -> int {
     window.notify_app(glow::message::Code::HELLO, "TEST1");
     window.notify_app(glow::message::Code::GOODBYE, "TEST2");
 
-    window.set_border_color(RGB(0, 255, 0));
+    window.set_border_color(glow::color::system(winrt::UIColorType::Background));
+    window.set_caption_color(glow::color::system(winrt::UIColorType::Background));
+    window.set_text_color(glow::color::system(winrt::UIColorType::Foreground));
 
     return glow::app::run();
 }
