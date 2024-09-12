@@ -119,6 +119,8 @@ public:
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;
 
+    auto device_context() -> ::HDC;
+
     struct Positions {
         Position window;
         Position client;

@@ -433,6 +433,8 @@ auto Window::invalidate_rect() -> void {
     ::InvalidateRect(hwnd.get(), &rect, TRUE);
 }
 
+auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }
+
 auto default_procedure(glow::message::Message message) -> ::LRESULT {
     return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
 }
