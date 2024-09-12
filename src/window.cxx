@@ -214,7 +214,8 @@ auto Window::refresh_frame() -> void {
                    0,
                    0,
                    0,
-                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED);
+                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED
+                       | SWP_SHOWWINDOW);
 }
 
 auto Window::center() -> void {
@@ -376,12 +377,14 @@ auto Window::get_placement() -> void { ::GetWindowPlacement(hwnd.get(), &placeme
 
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);
+    refresh_frame();
 }
 
 auto Window::get_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
 auto Window::set_ex_style(::LONG_PTR exStyle) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE, exStyle);
+    refresh_frame();
 }
 
 auto Window::get_ex_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE); }

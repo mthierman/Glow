@@ -57,6 +57,7 @@ struct Window final : glow::window::Window {
 
         create();
         activate();
+        set_style(WS_POPUP);
     }
 };
 
@@ -68,8 +69,8 @@ auto main() -> int {
     window.notify_app(glow::message::Code::HELLO, "TEST1");
     window.notify_app(glow::message::Code::GOODBYE, "TEST2");
 
-    window.set_style(WS_POPUP);
-    window.enable_border();
+    // window.disable_border();
+    // window.set_border_color(RGB(0, 255, 0));
 
     return glow::app::run();
 }
