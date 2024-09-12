@@ -76,13 +76,11 @@ auto Environment::create(Callback callback) -> ::HRESULT {
 
 auto Environment::close() -> void { environment.reset(); }
 
-auto WebView::create(const Environment& environment,
-                     ::HWND parentHwnd,
-                     Callback callback) -> ::HRESULT {
+auto WebView::create(const Environment& environment, ::HWND hwnd, Callback callback) -> ::HRESULT {
     return environment.environment.get()->CreateCoreWebView2Controller(
-        parentHwnd,
+        hwnd,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [this, callback { std::move(callback) }, parentHwnd](
+            [this, callback { std::move(callback) }, hwnd](
                 ::HRESULT /* errorCode */,
                 ICoreWebView2Controller* createdController) -> ::HRESULT {
         controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
@@ -116,7 +114,7 @@ auto WebView::create(const Environment& environment,
         settings->put_IsZoomControlEnabled(options.IsZoomControlEnabled);
 
         ::RECT rect;
-        ::GetClientRect(parentHwnd, &rect);
+        ::GetClientRect(hwnd, &rect);
         put_bounds(rect);
 
         if (callback) {

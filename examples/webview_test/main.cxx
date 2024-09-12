@@ -24,8 +24,6 @@ struct WebView final : glow::window::Window {
                 webView.navigate("https://mthierman.pages.dev/");
             });
         });
-
-        // environment.close();
     }
 
     glow::webview::Environment environment;
