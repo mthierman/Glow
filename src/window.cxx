@@ -163,7 +163,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_CLOSE) {
-            self->hwnd.reset();
+            self->close();
 
             return 0;
         }
