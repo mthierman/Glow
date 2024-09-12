@@ -131,7 +131,7 @@ public:
         wil::unique_hbrush transparent { glow::system::system_brush() };
         wil::unique_hbrush system { glow::color::create_brush(
             glow::color::system(winrt::UIColorType::Background)) };
-        wil::unique_hbrush custom { glow::color::create_brush(255, 0, 0) };
+        wil::unique_hbrush custom;
     };
     Backgrounds backgrounds;
 

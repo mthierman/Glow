@@ -30,7 +30,7 @@ auto Window::create() -> void {
                                 .hInstance { instance },
                                 .hIcon { resourceIcon ? resourceIcon : systemIcon },
                                 .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { glow::system::system_brush() },
+                                .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"Window" },
                                 .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
@@ -171,7 +171,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                     ::FillRect(hdc, &rect, self->backgrounds.system.get());
                 } break;
                 case BackgroundType::BG_CUSTOM: {
-                    ::FillRect(hdc, &rect, self->backgrounds.custom.get());
+                    if (self->backgrounds.custom) {
+                        ::FillRect(hdc, &rect, self->backgrounds.custom.get());
+                    } else {
+                        ::FillRect(hdc, &rect, self->backgrounds.system.get());
+                    }
                 } break;
             }
 
