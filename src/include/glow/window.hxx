@@ -55,6 +55,17 @@ public:
     auto restore() -> void;
 
     auto refresh_frame() -> void;
+
+    auto set_overlapped_window() -> void;
+    auto is_overlapped_window() -> bool;
+    auto set_popup_window() -> void;
+    auto is_popup_window() -> bool;
+
+    auto set_popup() -> void;
+    auto is_popup() -> bool;
+    auto set_child() -> void;
+    auto is_child() -> bool;
+
     auto center() -> void;
     auto top() -> void;
     auto bottom() -> void;
@@ -69,14 +80,14 @@ public:
 
     auto enable_dark_mode() -> void;
     auto disable_dark_mode() -> void;
-    
+
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
-    
+
     auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
-    
+
     auto set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_caption_color(const winrt::Color& color) -> void;
-    
+
     auto set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_border_color(const winrt::Color& color) -> void;
 
@@ -210,12 +221,3 @@ private:
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT;
 } // namespace glow::window
-
-namespace glow::window {
-// auto set_overlapped(::HWND hwnd) -> void;
-// auto check_overlapped(::HWND hwnd) -> bool;
-// auto set_child(::HWND hwnd) -> void;
-// auto check_child(::HWND hwnd) -> bool;
-// auto set_popup(::HWND hwnd) -> void;
-// auto check_popup(::HWND hwnd) -> bool;
-}; // namespace glow::window

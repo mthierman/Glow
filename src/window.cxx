@@ -218,6 +218,34 @@ auto Window::refresh_frame() -> void {
                        | SWP_SHOWWINDOW);
 }
 
+auto Window::set_overlapped_window() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
+    refresh_frame();
+}
+
+auto Window::is_overlapped_window() -> bool { return get_style() & WS_OVERLAPPEDWINDOW; }
+
+auto Window::set_popup_window() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_POPUPWINDOW | WS_CLIPCHILDREN);
+    refresh_frame();
+}
+
+auto Window::is_popup_window() -> bool { return get_style() & WS_POPUPWINDOW; }
+
+auto Window::set_popup() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
+    refresh_frame();
+}
+
+auto Window::is_popup() -> bool { return get_style() & WS_POPUP; }
+
+auto Window::set_child() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_CHILD | WS_CLIPSIBLINGS);
+    refresh_frame();
+}
+
+auto Window::is_child() -> bool { return get_style() & WS_CHILD; }
+
 auto Window::center() -> void {
     if (positions.monitor.width > positions.window.width
         && positions.monitor.height > positions.window.height) {
@@ -517,31 +545,3 @@ auto default_procedure(glow::message::Message message) -> ::LRESULT {
     return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
 }
 } // namespace glow::window
-
-namespace glow::window {
-// auto set_overlapped(::HWND hwnd) -> void {
-//     ::SetWindowLongPtrA(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
-//     ::SetWindowPos(hwnd,
-//                    nullptr,
-//                    0,
-//                    0,
-//                    0,
-//                    0,
-//                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-// }
-
-// auto check_overlapped(::HWND hwnd) -> bool { return get_style(hwnd) & WS_OVERLAPPEDWINDOW; }
-
-// auto set_child(::HWND hwnd) -> void {
-//     ::SetWindowLongPtrA(hwnd, GWL_STYLE, WS_CHILDWINDOW | WS_CLIPSIBLINGS);
-//     ::SetWindowPos(hwnd,
-//                    nullptr,
-//                    0,
-//                    0,
-//                    0,
-//                    0,
-//                    SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW);
-// }
-
-// auto check_child(::HWND hwnd) -> bool { return get_style(hwnd) & WS_CHILDWINDOW; }
-}; // namespace glow::window
