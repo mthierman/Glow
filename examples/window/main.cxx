@@ -4,9 +4,7 @@ namespace wm = glow::message;
 
 struct Window final : glow::window::Window {
     Window() {
-        enable_system_background();
-
-        messages.on(WM_CREATE, [](wm::CREATE msg) {
+        messages.on(WM_CREATE, [this](wm::CREATE msg) {
             glow::log::log("{}", glow::text::to_string(msg.createStruct().lpszName));
 
             return 0;
