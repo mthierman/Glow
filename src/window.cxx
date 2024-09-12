@@ -244,7 +244,7 @@ auto Window::bottom() -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::topmost() -> void {
+auto Window::enable_topmost() -> void {
     ::SetWindowPos(hwnd.get(),
                    HWND_TOPMOST,
                    0,
@@ -254,7 +254,7 @@ auto Window::topmost() -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 }
 
-auto Window::no_topmost() -> void {
+auto Window::disable_topmost() -> void {
     ::SetWindowPos(hwnd.get(),
                    HWND_NOTOPMOST,
                    0,

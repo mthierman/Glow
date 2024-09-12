@@ -72,8 +72,8 @@ public:
     auto center() -> void;
     auto top() -> void;
     auto bottom() -> void;
-    auto topmost() -> void;
-    auto no_topmost() -> void;
+    auto enable_topmost() -> void;
+    auto disable_topmost() -> void;
     auto enable_border() -> void;
     auto disable_border() -> void;
     auto cloak() -> void;
