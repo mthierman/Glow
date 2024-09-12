@@ -8,7 +8,9 @@
 
 #include <Windows.h>
 
+#include <functional>
 #include <string>
+#include <unordered_map>
 
 namespace glow::message {
 struct Message {
@@ -24,6 +26,27 @@ struct Notification {
     ::NMHDR nmhdr;
     Code code;
     std::string_view message;
+};
+
+struct Manager {
+    using Callback = std::function<::LRESULT(glow::message::Message)>;
+
+    auto on(::UINT msg, Callback callback) -> bool;
+    auto contains(::UINT msg) -> bool;
+    auto invoke(glow::message::Message message) -> ::LRESULT;
+
+    template <typename W, typename L>
+    auto send(::HWND hwnd, ::UINT msg, W wparam, L lparam) -> ::LRESULT {
+        return ::SendMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+    template <typename W, typename L>
+    auto post(::HWND hwnd, ::UINT msg, W wparam, L lparam) -> ::LRESULT {
+        return ::PostMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
+    }
+
+private:
+    std::unordered_map<::UINT, Callback> map;
 };
 
 namespace wm {

@@ -10,7 +10,7 @@
 
 #include <wil/resource.h>
 
-#include <glow/window.hxx>
+#include <glow/message.hxx>
 
 namespace glow::app {
 struct App {
@@ -25,7 +25,7 @@ private:
 public:
     auto close() -> void;
 
-    glow::window::Messages messages;
+    glow::message::Manager messages;
     wil::unique_hwnd hwnd;
 };
 

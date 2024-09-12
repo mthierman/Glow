@@ -9,6 +9,19 @@
 #include <glow/system.hxx>
 
 namespace glow::message {
+auto Manager::on(::UINT msg, Callback callback) -> bool {
+    auto emplace { map.try_emplace(msg, callback) };
+
+    return emplace.second;
+}
+
+auto Manager::contains(::UINT msg) -> bool { return map.contains(msg); }
+
+auto Manager::invoke(glow::message::Message message) -> ::LRESULT {
+    return map.find(message.msg)
+        ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
+}
+
 namespace wm {
     auto NOTIFY::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
     auto NOTIFY::notification() -> const Notification& {
