@@ -27,7 +27,7 @@ namespace glow::webview {
 struct Environment {
     using Callback = std::function<::HRESULT()>;
 
-    auto create(const Callback& callback = 0) -> ::HRESULT;
+    auto create(Callback creationCallback = 0) -> ::HRESULT;
     auto close() -> void;
 
     struct Options {
@@ -58,7 +58,7 @@ struct WebView {
 
     auto create(const Environment& environment,
                 ::HWND parentHwnd,
-                const Callback& callback = 0) -> ::HRESULT;
+                Callback creationCallback = 0) -> ::HRESULT;
     auto close() -> void;
 
     auto put_bounds(const glow::window::Position& rect) -> void;

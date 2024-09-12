@@ -10,7 +10,7 @@
 #include <glow/window.hxx>
 
 namespace glow::webview {
-auto Environment::create(const Callback& callback) -> ::HRESULT {
+auto Environment::create(Callback callback) -> ::HRESULT {
     wil::com_ptr<ICoreWebView2EnvironmentOptions> environmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
     };
@@ -60,8 +60,9 @@ auto Environment::create(const Callback& callback) -> ::HRESULT {
         options.userDataFolder.c_str(),
         environmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-            [this, &callback](::HRESULT /* errorCode */,
-                              ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+            [this, callback { std::move(callback) }](
+                ::HRESULT /* errorCode */,
+                ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
         environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                           .try_query<ICoreWebView2Environment13>();
 
@@ -77,12 +78,13 @@ auto Environment::close() -> void { environment.reset(); }
 
 auto WebView::create(const Environment& environment,
                      ::HWND parentHwnd,
-                     const Callback& callback) -> ::HRESULT {
+                     Callback callback) -> ::HRESULT {
     return environment.environment.get()->CreateCoreWebView2Controller(
         parentHwnd,
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-            [this, &callback](::HRESULT /* errorCode */,
-                              ICoreWebView2Controller* createdController) -> ::HRESULT {
+            [this, callback { std::move(callback) }](
+                ::HRESULT /* errorCode */,
+                ICoreWebView2Controller* createdController) -> ::HRESULT {
         controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                          .try_query<ICoreWebView2Controller4>();
         controller->put_DefaultBackgroundColor(options.backgroundColor);
