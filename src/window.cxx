@@ -90,13 +90,23 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_ERASEBKGND) {
+            auto hdc { reinterpret_cast<::HDC>(wparam) };
+            auto rect { self->client_rect() };
+
             if (self->backgrounds.custom) {
-                auto hdc { reinterpret_cast<::HDC>(wparam) };
-                ::RECT rect;
-                ::GetClientRect(hwnd, &rect);
                 ::FillRect(hdc, &rect, self->backgrounds.custom.get());
 
                 return 1;
+            } else if (self->backgrounds.system) {
+                ::FillRect(hdc, &rect, self->backgrounds.system.get());
+
+                return 1;
+            }
+        }
+
+        if (msg == WM_SETTINGCHANGE) {
+            if (self->backgrounds.system) {
+                self->enable_system_background();
             }
         }
 
@@ -404,13 +414,24 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::set_background(uint8_t r, uint8_t g, uint8_t b) -> void {
+auto Window::set_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void {
     backgrounds.custom.reset(::CreateSolidBrush(RGB(r, g, b)));
     invalidate_rect();
 }
 
-auto Window::clear_background() -> void {
+auto Window::clear_custom_background() -> void {
     backgrounds.custom.reset();
+    invalidate_rect();
+}
+
+auto Window::enable_system_background() -> void {
+    backgrounds.system.reset(
+        glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
+    invalidate_rect();
+}
+
+auto Window::clear_system_background() -> void {
+    backgrounds.system.reset();
     invalidate_rect();
 }
 
