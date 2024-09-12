@@ -172,10 +172,15 @@ namespace wm {
         auto minMaxInfo() -> ::MINMAXINFO&;
     };
 
-    struct WINDOWPOSCHANGED : public Message {
-        WINDOWPOSCHANGED(const Message& message)
+    struct WINDOWPOSCHANGING : public Message {
+        WINDOWPOSCHANGING(const Message& message)
             : Message(message) { }
         auto windowPos() -> ::WINDOWPOS&;
+    };
+
+    struct WINDOWPOSCHANGED : public WINDOWPOSCHANGING {
+        WINDOWPOSCHANGED(const Message& message)
+            : WINDOWPOSCHANGING(message) { }
     };
 } // namespace wm
 }; // namespace glow::message

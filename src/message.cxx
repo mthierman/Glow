@@ -101,7 +101,7 @@ namespace wm {
         return *reinterpret_cast<::MINMAXINFO*>(lparam);
     }
 
-    auto WINDOWPOSCHANGED::windowPos() -> ::WINDOWPOS& {
+    auto WINDOWPOSCHANGING::windowPos() -> ::WINDOWPOS& {
         return *reinterpret_cast<::WINDOWPOS*>(lparam);
     }
 } // namespace wm
