@@ -72,7 +72,7 @@ auto CALLBACK App::procedure(::HWND hwnd,
         }
     }
 
-    return ::DefWindowProcW(hwnd, msg, wparam, lparam);
+    return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
 auto App::close() -> void { hwnd.reset(); }

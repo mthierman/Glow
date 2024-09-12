@@ -35,6 +35,10 @@ auto Manager::notify(Code code,
     send(receiverHwnd, WM_NOTIFY, senderId, &notification);
 }
 
+auto default_procedure(Message message) -> ::LRESULT {
+    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
+}
+
 namespace wm {
     auto NOTIFY::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
     auto NOTIFY::notification() -> const Notification& {

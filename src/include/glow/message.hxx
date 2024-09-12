@@ -55,6 +55,8 @@ private:
     std::unordered_map<::UINT, Callback> map;
 };
 
+auto default_procedure(Message message) -> ::LRESULT;
+
 namespace wm {
     struct MSG : public Message {
         MSG(const Message& message)

@@ -187,7 +187,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
     }
 
-    return ::DefWindowProcW(hwnd, msg, wparam, lparam);
+    return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
 auto Window::refresh_dpi() -> void {
@@ -534,9 +534,5 @@ auto Window::notify_app(glow::message::Code code,
                         std::string_view message,
                         ::HWND receiverHwnd) -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
-}
-
-auto default_procedure(glow::message::Message message) -> ::LRESULT {
-    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
 }
 } // namespace glow::window
