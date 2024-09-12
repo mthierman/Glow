@@ -74,10 +74,6 @@ auto CALLBACK App::procedure(::HWND hwnd,
         }
     }
 
-    if (msg == WM_NOTIFY) {
-        glow::log::log("WM_NOTIFY");
-    }
-
     return ::DefWindowProcW(hwnd, msg, wparam, lparam);
 }
 
