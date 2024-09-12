@@ -127,7 +127,7 @@ public:
     States states;
 
     struct Backgrounds {
-        BackgroundType type { BackgroundType::BG_TRANSPARENT };
+        BackgroundType type { BackgroundType::BG_SYSTEM };
         wil::unique_hbrush transparent { glow::system::system_brush() };
         wil::unique_hbrush system { glow::color::create_brush(
             glow::color::system(winrt::UIColorType::Background)) };
@@ -135,8 +135,8 @@ public:
     };
     Backgrounds backgrounds;
 
-    struct Resources{
-    wil::unique_hicon icon { glow::system::resource_icon() };
+    struct Resources {
+        wil::unique_hicon icon { glow::system::resource_icon() };
     };
     Resources resources;
 
