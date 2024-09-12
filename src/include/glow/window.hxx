@@ -32,7 +32,7 @@ struct Position {
     int height { 0 };
 };
 
-enum struct BackgroundType { BG_TRANSPARENT, BG_SYSTEM, BG_BLACK, BG_WHITE, BG_CUSTOM };
+enum struct Background { Transparent, System, Black, White, Custom };
 
 struct Window {
     auto create() -> void;
@@ -124,9 +124,10 @@ public:
     auto close() -> void;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-    auto set_background_type(BackgroundType backgroundType) -> void;
+    auto set_background(Background background) -> void;
     auto set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_background_color(const winrt::Color& color) -> void;
+    auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;
@@ -147,6 +148,7 @@ public:
     Positions positions;
 
     struct States {
+        Background background { Background::System };
         bool centered { false };
         bool fullscreen { false };
         bool maximized { false };
@@ -154,8 +156,12 @@ public:
     };
     States states;
 
-    struct Backgrounds {
-        BackgroundType type { BackgroundType::BG_SYSTEM };
+    ::WINDOWPLACEMENT windowPlacement { .length { sizeof(::WINDOWPLACEMENT) } };
+    ::MONITORINFO monitorInfo { sizeof(::MONITORINFO) };
+    size_t dpi { USER_DEFAULT_SCREEN_DPI };
+    double scale { 1.0 };
+
+    struct Brushes {
         wil::unique_hbrush transparent { glow::system::system_brush() };
         wil::unique_hbrush black { glow::system::system_brush(BLACK_BRUSH) };
         wil::unique_hbrush white { glow::system::system_brush(WHITE_BRUSH) };
@@ -163,17 +169,12 @@ public:
             glow::color::system(winrt::UIColorType::Background)) };
         wil::unique_hbrush custom;
     };
-    Backgrounds backgrounds;
+    Brushes brushes;
 
-    struct Resources {
-        wil::unique_hicon icon { glow::system::resource_icon() };
+    struct Icons {
+        wil::unique_hicon app { glow::system::resource_icon() };
     };
-    Resources resources;
-
-    ::WINDOWPLACEMENT windowPlacement { .length { sizeof(::WINDOWPLACEMENT) } };
-    ::MONITORINFO monitorInfo { sizeof(::MONITORINFO) };
-    size_t dpi { USER_DEFAULT_SCREEN_DPI };
-    double scale { 1.0 };
+    Icons icons;
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;

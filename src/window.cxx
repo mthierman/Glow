@@ -19,7 +19,7 @@
 namespace glow::window {
 auto Window::create() -> void {
     auto instance { glow::system::instance() };
-    auto icon { resources.icon ? resources.icon.get() : glow::system::system_icon() };
+    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -54,7 +54,7 @@ auto Window::create() -> void {
 
 auto Window::create(::HWND parent) -> void {
     auto instance { glow::system::instance() };
-    auto icon { resources.icon ? resources.icon.get() : glow::system::system_icon() };
+    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -107,7 +107,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_SETTINGCHANGE) {
-            self->backgrounds.system.reset(
+            self->brushes.system.reset(
                 glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
             self->invalidate_rect();
         }
@@ -136,26 +136,25 @@ auto CALLBACK Window::procedure(::HWND hwnd,
 
         if (msg == WM_ERASEBKGND) {
             auto hdc { reinterpret_cast<::HDC>(wparam) };
-            auto rect { self->client_rect() };
 
-            switch (self->backgrounds.type) {
-                case BackgroundType::BG_TRANSPARENT: {
-                    ::FillRect(hdc, &rect, self->backgrounds.transparent.get());
+            switch (self->states.background) {
+                case Background::Transparent: {
+                    self->paint_background(hdc, self->brushes.transparent);
                 } break;
-                case BackgroundType::BG_SYSTEM: {
-                    ::FillRect(hdc, &rect, self->backgrounds.system.get());
+                case Background::System: {
+                    self->paint_background(hdc, self->brushes.system);
                 } break;
-                case BackgroundType::BG_BLACK: {
-                    ::FillRect(hdc, &rect, self->backgrounds.black.get());
+                case Background::Black: {
+                    self->paint_background(hdc, self->brushes.black);
                 } break;
-                case BackgroundType::BG_WHITE: {
-                    ::FillRect(hdc, &rect, self->backgrounds.white.get());
+                case Background::White: {
+                    self->paint_background(hdc, self->brushes.white);
                 } break;
-                case BackgroundType::BG_CUSTOM: {
-                    if (self->backgrounds.custom) {
-                        ::FillRect(hdc, &rect, self->backgrounds.custom.get());
+                case Background::Custom: {
+                    if (self->brushes.custom) {
+                        self->paint_background(hdc, self->brushes.custom);
                     } else {
-                        ::FillRect(hdc, &rect, self->backgrounds.system.get());
+                        self->paint_background(hdc, self->brushes.system);
                     }
                 } break;
             }
@@ -483,17 +482,22 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::set_background_type(BackgroundType backgroundType) -> void {
-    backgrounds.type = backgroundType;
+auto Window::set_background(Background background) -> void {
+    states.background = background;
     invalidate_rect();
 }
 
 auto Window::set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    backgrounds.custom.reset(glow::color::create_brush(r, g, b));
+    brushes.custom.reset(glow::color::create_brush(r, g, b));
 }
 
 auto Window::set_background_color(const winrt::Color& color) -> void {
-    backgrounds.custom.reset(glow::color::create_brush(color));
+    brushes.custom.reset(glow::color::create_brush(color));
+}
+
+auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
+    auto rect { client_rect() };
+    ::FillRect(hdc, &rect, brush.get());
 }
 
 auto Window::client_rect() -> ::RECT {
