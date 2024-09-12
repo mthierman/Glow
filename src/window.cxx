@@ -391,7 +391,7 @@ auto Window::active() -> void { ::SetActiveWindow(hwnd.get()); }
 auto Window::is_active() -> bool { return ::GetActiveWindow() == hwnd.get(); }
 
 auto Window::set_parent(::HWND parent) -> void {
-    parent ? set_style(WS_CHILD) : set_style(WS_POPUP);
+    parent ? set_child() : set_popup();
 
     ::SetParent(hwnd.get(), parent);
 }
