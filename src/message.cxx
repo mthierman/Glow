@@ -22,6 +22,19 @@ auto Manager::invoke(glow::message::Message message) -> ::LRESULT {
         ->second({ message.hwnd, message.msg, message.wparam, message.lparam });
 }
 
+auto Manager::notify(Code code,
+                     std::string_view message,
+                     ::HWND senderHwnd,
+                     ::UINT senderId,
+                     ::HWND receiverHwnd) -> void {
+    Notification notification { .nmhdr { .hwndFrom { senderHwnd },
+                                         .idFrom { senderId },
+                                         .code { std::to_underlying(code) } },
+                                .code { code },
+                                .message { message } };
+    send(receiverHwnd, WM_NOTIFY, senderId, &notification);
+}
+
 namespace wm {
     auto NOTIFY::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
     auto NOTIFY::notification() -> const Notification& {
