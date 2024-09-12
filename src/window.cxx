@@ -168,6 +168,12 @@ auto CALLBACK Window::procedure(::HWND hwnd,
                 case BackgroundType::BG_SYSTEM: {
                     ::FillRect(hdc, &rect, self->backgrounds.system.get());
                 } break;
+                case BackgroundType::BG_BLACK: {
+                    ::FillRect(hdc, &rect, self->backgrounds.black.get());
+                } break;
+                case BackgroundType::BG_WHITE: {
+                    ::FillRect(hdc, &rect, self->backgrounds.white.get());
+                } break;
                 case BackgroundType::BG_CUSTOM: {
                     if (self->backgrounds.custom) {
                         ::FillRect(hdc, &rect, self->backgrounds.custom.get());

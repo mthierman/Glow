@@ -32,7 +32,7 @@ struct Position {
     int height { 0 };
 };
 
-enum struct BackgroundType { BG_TRANSPARENT, BG_SYSTEM, BG_CUSTOM };
+enum struct BackgroundType { BG_TRANSPARENT, BG_SYSTEM, BG_BLACK, BG_WHITE, BG_CUSTOM };
 
 struct Window {
     auto create() -> void;
