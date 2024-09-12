@@ -45,8 +45,11 @@ struct Manager {
         return ::PostMessageW(hwnd, msg, (::WPARAM)wparam, (::LPARAM)lparam);
     }
 
-    auto
-    notify(Code code, std::string_view message, ::HWND sender, ::UINT id, ::HWND receiver) -> void;
+    auto notify(Code code,
+                std::string_view message,
+                ::HWND senderHwnd,
+                uintptr_t senderId,
+                ::HWND receiverHwnd) -> void;
 
 private:
     std::unordered_map<::UINT, Callback> map;

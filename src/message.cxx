@@ -25,7 +25,7 @@ auto Manager::invoke(glow::message::Message message) -> ::LRESULT {
 auto Manager::notify(Code code,
                      std::string_view message,
                      ::HWND senderHwnd,
-                     ::UINT senderId,
+                     uintptr_t senderId,
                      ::HWND receiverHwnd) -> void {
     Notification notification { .nmhdr { .hwndFrom { senderHwnd },
                                          .idFrom { senderId },
