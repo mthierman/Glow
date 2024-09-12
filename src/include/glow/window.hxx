@@ -132,7 +132,7 @@ public:
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
                     std::string_view message,
-                    ::HWND receiver
+                    ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
 
     struct Positions {
