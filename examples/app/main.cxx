@@ -14,12 +14,6 @@ struct Window final : glow::window::Window {
 
     Window(std::unordered_map<char, bool>& keyMap)
         : keys { keyMap } {
-        messages.on(WM_DESTROY, [](wm::DESTROY msg) {
-            msg.quit();
-
-            return 0;
-        });
-
         messages.on(WM_KEYDOWN, [this](wm::KEYDOWN message) {
             if (glow::input::was_key_down(VK_CONTROL)) {
                 switch (auto key { message.key() }; key) {
