@@ -65,7 +65,6 @@ struct WebView {
     auto put_bounds(const ::RECT& rect) -> void;
     auto put_bounds(const ::SIZE& size) -> void;
     auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
-
     template <typename T> auto put_bounds(const T& window) -> void;
 
     auto show() -> void;
