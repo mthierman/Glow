@@ -11,54 +11,64 @@
 
 namespace glow::webview {
 auto Environment::create(Callback callback) -> ::HRESULT {
-    wil::com_ptr<ICoreWebView2EnvironmentOptions> environmentOptions {
+    wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
     };
-    wil::com_ptr<ICoreWebView2EnvironmentOptions2> environmentOptions2;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions3> environmentOptions3;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions4> environmentOptions4;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions5> environmentOptions5;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions6> environmentOptions6;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions7> environmentOptions7;
-    wil::com_ptr<ICoreWebView2EnvironmentOptions8> environmentOptions8;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions2> createdEnvironmentOptions2;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions3> createdEnvironmentOptions3;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions4> createdEnvironmentOptions4;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions5> createdEnvironmentOptions5;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> createdEnvironmentOptions6;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions7> createdEnvironmentOptions7;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions8> createdEnvironmentOptions8;
 
-    environmentOptions2 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions2>();
-    environmentOptions3 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions3>();
-    environmentOptions4 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions4>();
-    environmentOptions5 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions5>();
-    environmentOptions6 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions6>();
-    environmentOptions7 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions7>();
-    environmentOptions8 = environmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
+    createdEnvironmentOptions2
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions2>();
+    createdEnvironmentOptions3
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions3>();
+    createdEnvironmentOptions4
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions4>();
+    createdEnvironmentOptions5
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions5>();
+    createdEnvironmentOptions6
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions6>();
+    createdEnvironmentOptions7
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions7>();
+    createdEnvironmentOptions8
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
 
     if (!options.AdditionalBrowserArguments.empty()) {
-        environmentOptions->put_AdditionalBrowserArguments(
+        createdEnvironmentOptions->put_AdditionalBrowserArguments(
             glow::text::to_wstring(options.AdditionalBrowserArguments).c_str());
     }
 
-    environmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
+    createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
         options.AllowSingleSignOnUsingOSPrimaryAccount);
 
     if (!options.Language.empty()) {
-        environmentOptions->put_Language(glow::text::to_wstring(options.Language).c_str());
+        createdEnvironmentOptions->put_Language(glow::text::to_wstring(options.Language).c_str());
     }
 
     if (!options.TargetCompatibleBrowserVersion.empty()) {
-        environmentOptions->put_TargetCompatibleBrowserVersion(
+        createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
             glow::text::to_wstring(options.TargetCompatibleBrowserVersion).c_str());
     }
 
-    environmentOptions2->put_ExclusiveUserDataFolderAccess(options.ExclusiveUserDataFolderAccess);
-    environmentOptions3->put_IsCustomCrashReportingEnabled(options.IsCustomCrashReportingEnabled);
-    // environmentOptions4->SetCustomSchemeRegistrations();
-    environmentOptions5->put_EnableTrackingPrevention(options.EnableTrackingPrevention);
-    environmentOptions6->put_AreBrowserExtensionsEnabled(options.AreBrowserExtensionsEnabled);
-    environmentOptions7->put_ChannelSearchKind(options.ChannelSearchKind);
-    environmentOptions8->put_ScrollBarStyle(options.ScrollBarStyle);
+    createdEnvironmentOptions2->put_ExclusiveUserDataFolderAccess(
+        options.ExclusiveUserDataFolderAccess);
+    createdEnvironmentOptions3->put_IsCustomCrashReportingEnabled(
+        options.IsCustomCrashReportingEnabled);
+    // createdEnvironmentOptions4->SetCustomSchemeRegistrations();
+    createdEnvironmentOptions5->put_EnableTrackingPrevention(options.EnableTrackingPrevention);
+    createdEnvironmentOptions6->put_AreBrowserExtensionsEnabled(
+        options.AreBrowserExtensionsEnabled);
+    createdEnvironmentOptions7->put_ChannelSearchKind(options.ChannelSearchKind);
+    createdEnvironmentOptions8->put_ScrollBarStyle(options.ScrollBarStyle);
 
     return CreateCoreWebView2EnvironmentWithOptions(
         options.browserExecutableFolder.c_str(),
         options.userDataFolder.c_str(),
-        environmentOptions.get(),
+        createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
                 ::HRESULT /* errorCode */,
