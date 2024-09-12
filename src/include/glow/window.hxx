@@ -191,8 +191,6 @@ auto default_procedure(glow::message::Message message) -> ::LRESULT;
 } // namespace glow::window
 
 namespace glow::window {
-// auto find_message_only(const std::string& name = "MessageWindow") -> ::HWND;
-
 // auto set_overlapped(::HWND hwnd) -> void;
 // auto check_overlapped(::HWND hwnd) -> bool;
 

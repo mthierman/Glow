@@ -462,10 +462,6 @@ auto default_procedure(glow::message::Message message) -> ::LRESULT {
 } // namespace glow::window
 
 namespace glow::window {
-// auto find_message_only(const std::string& name) -> ::HWND {
-//     return ::FindWindowExA(HWND_MESSAGE, nullptr, name.c_str(), nullptr);
-// }
-
 // auto set_overlapped(::HWND hwnd) -> void {
 //     ::SetWindowLongPtrA(hwnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
 //     ::SetWindowPos(hwnd,
