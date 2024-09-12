@@ -88,8 +88,8 @@ auto system_icon(LPSTR name) -> ::HICON {
 }
 
 auto resource_icon() -> ::HICON {
-    return static_cast<::HICON>(::LoadImageW(
-        instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+    return static_cast<::HICON>(
+        ::LoadImageW(instance(), MAKEINTRESOURCEW(1), IMAGE_ICON, 0, 0, LR_DEFAULTSIZE));
 }
 
 auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }

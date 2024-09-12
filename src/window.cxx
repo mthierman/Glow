@@ -19,8 +19,7 @@
 namespace glow::window {
 auto Window::create() -> void {
     auto instance { glow::system::instance() };
-    auto resourceIcon { glow::system::resource_icon() };
-    auto systemIcon { glow::system::system_icon() };
+    auto icon { resources.icon ? resources.icon.get() : glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -28,12 +27,12 @@ auto Window::create() -> void {
                                 .cbClsExtra { 0 },
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { instance },
-                                .hIcon { resourceIcon ? resourceIcon : systemIcon },
+                                .hIcon { icon },
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"Window" },
-                                .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
+                                .hIconSm { icon } };
 
     if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
@@ -55,8 +54,7 @@ auto Window::create() -> void {
 
 auto Window::create(::HWND parent) -> void {
     auto instance { glow::system::instance() };
-    auto resourceIcon { glow::system::resource_icon() };
-    auto systemIcon { glow::system::system_icon() };
+    auto icon { resources.icon ? resources.icon.get() : glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -64,12 +62,12 @@ auto Window::create(::HWND parent) -> void {
                                 .cbClsExtra { 0 },
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { instance },
-                                .hIcon { resourceIcon ? resourceIcon : systemIcon },
+                                .hIcon { icon },
                                 .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { glow::system::system_brush() },
+                                .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"ChildWindow" },
-                                .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
+                                .hIconSm { icon } };
 
     if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);

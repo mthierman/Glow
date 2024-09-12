@@ -135,12 +135,18 @@ public:
     };
     Backgrounds backgrounds;
 
+    struct Resources{
+    wil::unique_hicon icon { glow::system::resource_icon() };
+    };
+    Resources resources;
+
     ::WINDOWPLACEMENT placement;
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
 
     glow::message::Manager messages;
     uintptr_t id { glow::math::make_random<uintptr_t>() };
+
     wil::unique_hwnd hwnd;
 };
 
