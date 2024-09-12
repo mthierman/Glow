@@ -221,6 +221,9 @@ private:
     std::unordered_map<uintptr_t, std::unique_ptr<T>> map;
 };
 
-auto rect_to_position(const ::RECT& rect) -> Position;
-auto position_to_rect(const Position& position) -> ::RECT;
+auto to_position(const ::RECT& rect) -> Position;
+auto to_position(const ::WINDOWPOS& windowPos) -> Position;
+
+auto to_rect(const Position& position) -> ::RECT;
+auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT;
 } // namespace glow::window

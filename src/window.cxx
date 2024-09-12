@@ -115,20 +115,10 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
 
-            self->positions.window.x = windowPos->x;
-            self->positions.window.y = windowPos->y;
-            self->positions.window.width = windowPos->cx;
-            self->positions.window.height = windowPos->cy;
+            self->positions.window = to_position(*windowPos);
+            self->positions.client = to_position(self->client_rect());
 
             ::GetWindowPlacement(hwnd, &self->placement);
-
-            ::RECT rect {};
-            ::GetClientRect(hwnd, &rect);
-
-            self->positions.client.x = rect.left;
-            self->positions.client.y = rect.top;
-            self->positions.client.width = rect.right - rect.left;
-            self->positions.client.height = rect.bottom - rect.top;
 
             ::MONITORINFO mi { sizeof(::MONITORINFO) };
             ::GetMonitorInfoW(::MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST), &mi);
@@ -542,16 +532,30 @@ auto Window::notify_app(glow::message::Code code,
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
 
-auto rect_to_position(const ::RECT& rect) -> Position {
+auto to_position(const ::RECT& rect) -> Position {
     return Position { .x { rect.left },
                       .y { rect.top },
                       .width { rect.right - rect.left },
                       .height { rect.bottom - rect.top } };
 }
-auto position_to_rect(const Position& position) -> ::RECT {
+
+auto to_position(const ::WINDOWPOS& windowPos) -> Position {
+    return Position {
+        .x { windowPos.x }, .y { windowPos.y }, .width { windowPos.cx }, .height { windowPos.cy }
+    };
+}
+
+auto to_rect(const Position& position) -> ::RECT {
     return ::RECT { .left { position.x },
                     .top { position.y },
                     .right { position.width },
                     .bottom { position.height } };
+}
+
+auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT {
+    return ::RECT { .left { windowPos.x },
+                    .top { windowPos.y },
+                    .right { windowPos.cx },
+                    .bottom { windowPos.cy } };
 }
 } // namespace glow::window
