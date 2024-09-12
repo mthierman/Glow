@@ -1,22 +1,16 @@
 #include <glow/glow.hxx>
 
+enum struct glow::message::Code : ::UINT { HELLO, GOODBYE };
 namespace wm = glow::message::wm;
 
-// namespace glow::message {
-// enum struct Code : ::UINT { HELLO, GOODBYE };
-// }
-
-enum struct glow::message::Code : ::UINT { HELLO, GOODBYE };
 struct App final : glow::app::App {
     App() {
         messages.on(WM_NOTIFY, [](wm::NOTIFY msg) {
-            using enum glow::message::Code;
-
             switch (msg.notification().code) {
-                case HELLO: {
+                case glow::message::Code::HELLO: {
                     glow::log::log("HELLO: {}", msg.notification().message);
                 } break;
-                case GOODBYE: {
+                case glow::message::Code::GOODBYE: {
                     glow::log::log("GOODBYE: {}", msg.notification().message);
                 } break;
             }
