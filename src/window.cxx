@@ -108,11 +108,10 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
         }
 
-        // if (msg == WM_SETTINGCHANGE) {
-        //     if (self->backgrounds.system) {
-        //         self->enable_system_background();
-        //     }
-        // }
+        if (msg == WM_SETTINGCHANGE) {
+            self->backgrounds.system.reset(
+                glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
+        }
 
         if (msg == WM_WINDOWPOSCHANGED) {
             auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
