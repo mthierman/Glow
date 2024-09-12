@@ -155,6 +155,8 @@ public:
     struct Backgrounds {
         BackgroundType type { BackgroundType::BG_SYSTEM };
         wil::unique_hbrush transparent { glow::system::system_brush() };
+        wil::unique_hbrush black { glow::system::system_brush(BLACK_BRUSH) };
+        wil::unique_hbrush white { glow::system::system_brush(WHITE_BRUSH) };
         wil::unique_hbrush system { glow::color::create_brush(
             glow::color::system(winrt::UIColorType::Background)) };
         wil::unique_hbrush custom;
