@@ -200,33 +200,8 @@ auto default_procedure(glow::message::Message message) -> ::LRESULT;
 namespace glow::window {
 // auto set_overlapped(::HWND hwnd) -> void;
 // auto check_overlapped(::HWND hwnd) -> bool;
-
 // auto set_child(::HWND hwnd) -> void;
 // auto check_child(::HWND hwnd) -> bool;
-
 // auto set_popup(::HWND hwnd) -> void;
 // auto check_popup(::HWND hwnd) -> bool;
-
-// auto add_border(::HWND hwnd) -> void;
-// auto remove_border(::HWND hwnd) -> void;
-
-// struct Window {
-//     auto create(const std::string& title = "", bool visible = true) -> void;
-//     auto create(::HWND parent, const std::string& title = "", bool visible = true) -> void;
-//     auto create_message_only() -> void;
-
-//     auto close() -> void;
-
-//     auto message(::UINT msg, std::function<::LRESULT(glow::message::wm message)> callback) ->
-//     bool; auto message(::UINT msg) -> bool; auto message(glow::message::wm message) -> ::LRESULT;
-
-//     auto notify(glow::message::notice notice,
-//                 const std::string& message = "",
-//                 const std::string& receiver = "MessageWindow") -> void;
-//     auto
-//     notify(::HWND receiver, glow::message::notice notice, const std::string& message = "") ->
-//     void;
-
-//     uintptr_t m_id { glow::math::make_random<uintptr_t>() };
-// };
 }; // namespace glow::window

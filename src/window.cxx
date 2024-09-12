@@ -129,21 +129,6 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
         }
 
-        if (msg == WM_ERASEBKGND) {
-            auto hdc { reinterpret_cast<::HDC>(wparam) };
-            auto rect { self->client_rect() };
-
-            if (self->backgrounds.custom) {
-                ::FillRect(hdc, &rect, self->backgrounds.custom.get());
-
-                return 1;
-            } else if (self->backgrounds.system) {
-                ::FillRect(hdc, &rect, self->backgrounds.system.get());
-
-                return 1;
-            }
-        }
-
         if (msg == WM_SETTINGCHANGE) {
             if (self->backgrounds.system) {
                 self->enable_system_background();
@@ -195,6 +180,21 @@ auto CALLBACK Window::procedure(::HWND hwnd,
 
         if (self->messages.contains(msg)) {
             return self->messages.invoke({ hwnd, msg, wparam, lparam });
+        }
+
+        if (msg == WM_ERASEBKGND) {
+            auto hdc { reinterpret_cast<::HDC>(wparam) };
+            auto rect { self->client_rect() };
+
+            if (self->backgrounds.custom) {
+                ::FillRect(hdc, &rect, self->backgrounds.custom.get());
+
+                return 1;
+            } else if (self->backgrounds.system) {
+                ::FillRect(hdc, &rect, self->backgrounds.system.get());
+
+                return 1;
+            }
         }
 
         if (msg == WM_CLOSE) {
