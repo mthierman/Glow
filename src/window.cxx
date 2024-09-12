@@ -20,10 +20,8 @@
 namespace glow::window {
 auto Window::create() -> void {
     auto instance { glow::system::instance() };
-    auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
-    auto systemCursor { glow::system::system_cursor() };
-    auto systemBrush { glow::system::system_brush() };
+    auto resourceIcon { glow::system::resource_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -32,8 +30,8 @@ auto Window::create() -> void {
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { instance },
                                 .hIcon { resourceIcon ? resourceIcon : systemIcon },
-                                .hCursor { systemCursor },
-                                .hbrBackground { systemBrush },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { glow::system::system_brush() },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"Window" },
                                 .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
@@ -58,10 +56,8 @@ auto Window::create() -> void {
 
 auto Window::create(::HWND parent) -> void {
     auto instance { glow::system::instance() };
-    auto resourceIcon { glow::system::resource_icon() };
     auto systemIcon { glow::system::system_icon() };
-    auto systemCursor { glow::system::system_cursor() };
-    auto systemBrush { glow::system::system_brush() };
+    auto resourceIcon { glow::system::resource_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -70,8 +66,8 @@ auto Window::create(::HWND parent) -> void {
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { instance },
                                 .hIcon { resourceIcon ? resourceIcon : systemIcon },
-                                .hCursor { systemCursor },
-                                .hbrBackground { systemBrush },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { glow::system::system_brush() },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"ChildWindow" },
                                 .hIconSm { resourceIcon ? resourceIcon : systemIcon } };
