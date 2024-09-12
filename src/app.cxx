@@ -12,7 +12,6 @@
 
 #include <string>
 
-#include <glow/log.hxx>
 #include <glow/system.hxx>
 
 namespace glow::app {

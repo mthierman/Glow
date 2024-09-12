@@ -10,7 +10,6 @@
 
 #include <wil/resource.h>
 
-#include <glow/message.hxx>
 #include <glow/window.hxx>
 
 namespace glow::app {
