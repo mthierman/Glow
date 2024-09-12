@@ -24,14 +24,14 @@ private:
 
 public:
     auto notify_app(glow::message::Code code,
-                    std::string_view message,
+                    std::string_view message = "",
                     ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
     auto close() -> void;
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;
-    
+
     wil::unique_hwnd hwnd;
 };
 

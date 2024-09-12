@@ -131,7 +131,7 @@ public:
     auto invalidate_rect() -> void;
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
-                    std::string_view message,
+                    std::string_view message = "",
                     ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
 

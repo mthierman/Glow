@@ -10,22 +10,22 @@ enum struct glow::message::Code : ::UINT {
 namespace wm = glow::message::wm;
 
 struct App final : glow::app::App {
+    using enum glow::message::Code;
+
     App(glow::system::Event& singleInstance)
-        : m_singleInstance { singleInstance } {
+        : singleInstance { singleInstance } {
         messages.on(WM_NOTIFY, [this](wm::NOTIFY msg) {
             auto& idFrom { msg.notification().nmhdr.idFrom };
             auto& code { msg.notification().code };
 
-            using enum glow::message::Code;
-
             switch (code) {
                 case CREATE_WINDOW: {
-                    windows.add(std::make_unique<::Window>(m_keys));
+                    windows.add(std::make_unique<::Window>(keys));
                 } break;
                 case CREATE_FOREGROUND_WINDOW: {
-                    notify(CREATE_WINDOW);
+                    notify_app(CREATE_WINDOW);
                     // glow::window::set_foreground(m_windows.last_window());
-                    auto last { windows.last_window() };
+                    // auto last { windows.last_window() };
                 } break;
                 case CLOSE_WINDOW: {
                     windows.remove(idFrom);
@@ -37,43 +37,44 @@ struct App final : glow::app::App {
 
         create();
 
-        m_singleInstance.m_callback = [this]() { notify(CREATE_FOREGROUND_WINDOW); };
+        singleInstance.m_callback = [this]() { notify_app(CREATE_FOREGROUND_WINDOW); };
 
-        notify(CREATE_WINDOW);
+        notify_app(CREATE_WINDOW);
     }
 
     auto operator()() -> int { return glow::app::run(); }
 
-    glow::system::Event& m_singleInstance;
-    // glow::window::WindowManager<Window> m_windows;
+    glow::system::Event& singleInstance;
     glow::window::Manager<Window> windows;
-    std::unordered_map<char, bool> m_keys { { 'N', false }, { 'W', false } };
+    std::unordered_map<char, bool> keys { { 'N', false }, { 'W', false } };
 };
 
 struct Window final : glow::window::Window {
-    Window(std::unordered_map<char, bool>& keys)
-        : m_keys { keys } {
+    using enum glow::message::Code;
+
+    Window(std::unordered_map<char, bool>& keyMap)
+        : keys { keyMap } {
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();
 
             return 0;
         });
 
-        message(WM_KEYDOWN, [this](glow::message::wm_keydown_keyup message) {
+        messages.on(WM_KEYDOWN, [this](wm::KEYDOWN message) {
             if (glow::input::was_key_down(VK_CONTROL)) {
                 switch (auto key { message.key() }; key) {
                     case 'N': {
-                        if (!m_keys.at(key)) {
-                            m_keys.at(key) = true;
-                            notify(CREATE_WINDOW);
+                        if (!keys.at(key)) {
+                            keys.at(key) = true;
+                            notify_app(CREATE_WINDOW);
                         }
                         break;
                     }
 
                     case 'W': {
-                        if (!m_keys.at(key)) {
-                            m_keys.at(key) = true;
-                            notify(CLOSE_WINDOW);
+                        if (!keys.at(key)) {
+                            keys.at(key) = true;
+                            notify_app(CLOSE_WINDOW);
                         }
                         break;
                     }
@@ -83,11 +84,11 @@ struct Window final : glow::window::Window {
             return 0;
         });
 
-        message(WM_KEYUP, [this](glow::message::wm_keydown_keyup message) {
+        messages.on(WM_KEYUP, [this](wm::KEYUP message) {
             auto key { message.key() };
 
-            if (m_keys.contains(key)) {
-                m_keys.at(key) = false;
+            if (keys.contains(key)) {
+                keys.at(key) = false;
             }
 
             return 0;
@@ -97,7 +98,7 @@ struct Window final : glow::window::Window {
         activate();
     }
 
-    std::unordered_map<char, bool>& m_keys;
+    std::unordered_map<char, bool>& keys;
 };
 
 auto main() -> int {
