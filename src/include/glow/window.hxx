@@ -111,21 +111,18 @@ public:
     auto timer_start(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto timer_stop(::UINT_PTR timerId) -> bool;
     auto close() -> void;
-
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-
     auto enable_custom_background(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto disable_custom_background() -> void;
-
     auto enable_system_background() -> void;
     auto disable_system_background() -> void;
-
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;
-
     auto device_context() -> ::HDC;
+
+    auto notify(::HWND receiver, std::string&& message) -> void;
 
     struct Positions {
         Position window;

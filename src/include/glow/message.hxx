@@ -21,13 +21,11 @@ struct Message {
     ::LPARAM lparam;
 };
 
-enum struct Notice : ::UINT;
+// enum struct Notice : ::UINT;
+enum Notice { DEFAULT };
 
 struct Notification {
     ::NMHDR nmhdr;
-    ::HWND hwndFrom;
-    ::UINT_PTR idFrom;
-    ::UINT code;
     Notice notice;
     std::string message;
 };

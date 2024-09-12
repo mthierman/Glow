@@ -5,8 +5,7 @@ namespace wm = glow::message::wm;
 struct App final : glow::app::App {
     App() {
         messages.on(WM_NOTIFY, [](wm::NOTIFY msg) {
-            glow::log::log("WM_NOTIFY {}", );
-            glow::log::log("WM_NOTIFY {}", msg.notification().idFrom);
+            glow::log::log("WM_NOTIFY {}", msg.notification().message);
 
             return 0;
         });
@@ -48,11 +47,7 @@ auto main() -> int {
     App app;
 
     Window window;
-
-    glow::message::Notification notification;
-    notification.idFrom = 24;
-
-    window.messages.send(app.hwnd.get(), WM_NOTIFY, &notification.idFrom, &notification);
+    window.notify(app.hwnd.get(), "TEST2");
 
     if (app.hwnd) {
         glow::log::log("app.hwnd exists");
