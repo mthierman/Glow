@@ -8,10 +8,7 @@
 
 #include <Windows.h>
 
-#include <functional>
-#include <initializer_list>
 #include <string>
-#include <unordered_map>
 
 namespace glow::message {
 struct Message {
