@@ -2,12 +2,24 @@
 
 namespace wm = glow::message::wm;
 
+// namespace glow::message {
+// enum struct Code : ::UINT { HELLO, GOODBYE };
+// }
+
+enum struct glow::message::Code : ::UINT { HELLO, GOODBYE };
 struct App final : glow::app::App {
     App() {
         messages.on(WM_NOTIFY, [](wm::NOTIFY msg) {
-            glow::log::log("WM_NOTIFY message {}", msg.notification().message);
-            glow::log::log("WM_NOTIFY nmhdr.code {}", msg.notification().nmhdr.code);
-            glow::log::log("WM_NOTIFY code {}", std::to_underlying(msg.notification().code));
+            using enum glow::message::Code;
+
+            switch (msg.notification().code) {
+                case HELLO: {
+                    glow::log::log("HELLO: {}", msg.notification().message);
+                } break;
+                case GOODBYE: {
+                    glow::log::log("GOODBYE: {}", msg.notification().message);
+                } break;
+            }
 
             return 0;
         });
@@ -45,18 +57,13 @@ struct Window final : glow::window::Window {
     }
 };
 
-namespace glow::message {
-enum struct Code : ::UINT { HELLO, GOODBYE };
-}
-
-using enum glow::message::Code;
-
 auto main() -> int {
     App app;
 
     Window window;
-    window.notify({});
-    // window.notify(GOODBYE, "TEST2");
+
+    window.notify(glow::message::Code::HELLO, "TEST1");
+    window.notify(glow::message::Code::GOODBYE, "TEST2");
 
     return glow::app::run();
 }

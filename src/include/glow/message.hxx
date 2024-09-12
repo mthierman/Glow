@@ -26,7 +26,7 @@ enum struct Code : ::UINT;
 struct Notification {
     ::NMHDR nmhdr;
     Code code;
-    std::string message;
+    std::string_view message;
 };
 
 namespace wm {

@@ -496,13 +496,13 @@ auto Window::invalidate_rect() -> void {
 
 auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }
 
-auto Window::notify(glow::message::Code code, std::string&& message, ::HWND receiver) -> void {
+auto Window::notify(glow::message::Code code, std::string_view message, ::HWND receiver) -> void {
     glow::message::Notification notification {
         .nmhdr { .hwndFrom { hwnd.get() }, .idFrom { id }, .code { std::to_underlying(code) } },
         .code { code },
-        .message { std::move(message) }
+        .message { message }
     };
-    messages.send(receiver, WM_NOTIFY, 0, &notification);
+    messages.send(receiver, WM_NOTIFY, id, &notification);
 }
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT {
