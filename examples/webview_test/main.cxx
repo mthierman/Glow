@@ -2,8 +2,8 @@
 
 namespace wm = glow::message::wm;
 
-struct Window final : glow::window::Window {
-    Window() {
+struct WebView final : glow::window::Window {
+    WebView() {
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();
 
@@ -12,11 +12,21 @@ struct Window final : glow::window::Window {
 
         create();
         activate();
+
+        environment.create([]() {
+            glow::log::log("Environment created!");
+
+            return S_OK;
+        });
+
+        environment.close();
     }
+
+    glow::webview::Environment environment;
 };
 
 auto main() -> int {
-    Window window;
+    WebView webView;
 
     return glow::app::run();
 }

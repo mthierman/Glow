@@ -51,45 +51,46 @@ struct Environment {
     wil::com_ptr<ICoreWebView2Environment13> environment;
 };
 
-struct WebView {
-    auto create(const Environment& environment, ::HWND hwnd, std::function<void()> callback = []() {
-    }) -> ::HRESULT;
-    auto close() -> void;
-    auto put_bounds(::RECT rect) -> void;
-    auto put_bounds(::SIZE size) -> void;
-    auto put_bounds(::WINDOWPOS windowPos) -> void;
-    auto put_bounds(::HWND hwnd) -> void;
-    auto show() -> void;
-    auto hide() -> void;
-    auto navigate(const std::string& url) -> void;
-    auto navigate(const std::wstring& url) -> void;
-    auto test() -> void;
+// struct WebView {
+//     auto create(const Environment& environment, ::HWND hwnd, std::function<void()> callback =
+//     []() {
+//     }) -> ::HRESULT;
+//     auto close() -> void;
+//     auto put_bounds(::RECT rect) -> void;
+//     auto put_bounds(::SIZE size) -> void;
+//     auto put_bounds(::WINDOWPOS windowPos) -> void;
+//     auto put_bounds(::HWND hwnd) -> void;
+//     auto show() -> void;
+//     auto hide() -> void;
+//     auto navigate(const std::string& url) -> void;
+//     auto navigate(const std::wstring& url) -> void;
+//     auto test() -> void;
 
-    struct Options {
-        bool AreBrowserAcceleratorKeysEnabled { true };
-        bool AreDefaultContextMenusEnabled { true };
-        bool AreDefaultScriptDialogsEnabled { true };
-        bool AreDevToolsEnabled { true };
-        bool AreHostObjectsAllowed { true };
-        COREWEBVIEW2_PDF_TOOLBAR_ITEMS HiddenPdfToolbarItems {
-            COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE
-        };
-        bool IsBuiltInErrorPageEnabled { true };
-        bool IsGeneralAutofillEnabled { true };
-        bool IsNonClientRegionSupportEnabled { true };
-        bool IsPasswordAutosaveEnabled { true };
-        bool IsPinchZoomEnabled { true };
-        bool IsReputationCheckingRequired { true };
-        bool IsScriptEnabled { true };
-        bool IsStatusBarEnabled { true };
-        bool IsSwipeNavigationEnabled { true };
-        bool IsWebMessageEnabled { true };
-        bool IsZoomControlEnabled { true };
-    };
-    Options options;
+//     struct Options {
+//         bool AreBrowserAcceleratorKeysEnabled { true };
+//         bool AreDefaultContextMenusEnabled { true };
+//         bool AreDefaultScriptDialogsEnabled { true };
+//         bool AreDevToolsEnabled { true };
+//         bool AreHostObjectsAllowed { true };
+//         COREWEBVIEW2_PDF_TOOLBAR_ITEMS HiddenPdfToolbarItems {
+//             COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE
+//         };
+//         bool IsBuiltInErrorPageEnabled { true };
+//         bool IsGeneralAutofillEnabled { true };
+//         bool IsNonClientRegionSupportEnabled { true };
+//         bool IsPasswordAutosaveEnabled { true };
+//         bool IsPinchZoomEnabled { true };
+//         bool IsReputationCheckingRequired { true };
+//         bool IsScriptEnabled { true };
+//         bool IsStatusBarEnabled { true };
+//         bool IsSwipeNavigationEnabled { true };
+//         bool IsWebMessageEnabled { true };
+//         bool IsZoomControlEnabled { true };
+//     };
+//     Options options;
 
-    wil::com_ptr<ICoreWebView2Controller4> controller;
-    wil::com_ptr<ICoreWebView2_22> core;
-    wil::com_ptr<ICoreWebView2Settings9> settings;
-};
+//     wil::com_ptr<ICoreWebView2Controller4> controller;
+//     wil::com_ptr<ICoreWebView2_22> core;
+//     wil::com_ptr<ICoreWebView2Settings9> settings;
+// };
 }; // namespace glow::webview
