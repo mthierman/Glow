@@ -46,14 +46,16 @@ struct Window final : glow::window::Window {
 };
 
 namespace glow::message {
-enum struct Code : ::UINT { TEST, TEST2, TEST3 };
+enum struct Code : ::UINT { HELLO, GOODBYE };
 }
+
+using enum glow::message::Code;
 
 auto main() -> int {
     App app;
 
     Window window;
-    window.notify(app.hwnd.get(), glow::message::Code::TEST2, "TEST");
+    window.notify(GOODBYE, "TEST2");
 
     return glow::app::run();
 }

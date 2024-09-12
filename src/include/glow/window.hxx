@@ -122,9 +122,9 @@ public:
     auto invalidate_rect() -> void;
     auto device_context() -> ::HDC;
 
-    auto notify(::HWND receiver,
-                glow::message::Code code,
-                std::string&& message = "") -> void;
+    auto notify(glow::message::Code code,
+                std::string&& message = "",
+                ::HWND receiver = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
 
     struct Positions {
         Position window;
