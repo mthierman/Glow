@@ -25,6 +25,8 @@
 
 namespace glow::webview {
 struct EnvironmentOptions {
+    std::filesystem::path browserExecutableFolder;
+    std::filesystem::path userDataFolder;
     std::string AdditionalBrowserArguments;
     bool AllowSingleSignOnUsingOSPrimaryAccount { false };
     std::string Language;
@@ -39,8 +41,6 @@ struct EnvironmentOptions {
     COREWEBVIEW2_SCROLLBAR_STYLE ScrollBarStyle {
         COREWEBVIEW2_SCROLLBAR_STYLE::COREWEBVIEW2_SCROLLBAR_STYLE_DEFAULT
     };
-    std::filesystem::path browserExecutableFolder;
-    std::filesystem::path userDataFolder;
 };
 
 struct WebViewSettings {
