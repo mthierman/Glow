@@ -6,8 +6,9 @@
 
 #pragma once
 
-#include <ShlObj.h>
 #include <Windows.h>
+
+#include <ShlObj.h>
 
 #include <filesystem>
 #include <format>
