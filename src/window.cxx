@@ -315,21 +315,39 @@ auto Window::set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void {
 }
 
 auto Window::set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    auto color { RGB(r, g, b) };
+    auto colorref { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
-        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &color, sizeof(color));
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &colorref, sizeof(colorref));
+}
+
+auto Window::set_caption_color(const winrt::Color& color) -> void {
+    auto colorref { glow::color::to_colorref(color) };
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &colorref, sizeof(colorref));
 }
 
 auto Window::set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    auto color { RGB(r, g, b) };
+    auto colorref { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
-        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &color, sizeof(color));
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &colorref, sizeof(colorref));
+}
+
+auto Window::set_border_color(const winrt::Color& color) -> void {
+    auto colorref { glow::color::to_colorref(color) };
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &colorref, sizeof(colorref));
 }
 
 auto Window::set_text_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    auto color { RGB(r, g, b) };
+    auto colorref { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
-        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &color, sizeof(color));
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &colorref, sizeof(colorref));
+}
+
+auto Window::set_text_color(const winrt::Color& color) -> void {
+    auto colorref { glow::color::to_colorref(color) };
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &colorref, sizeof(colorref));
 }
 
 auto Window::focus() -> void { ::SetFocus(hwnd.get()); }
