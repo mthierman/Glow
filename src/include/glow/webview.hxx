@@ -25,7 +25,7 @@
 
 namespace glow::webview {
 struct Environment {
-    using Callback = std::function<::HRESULT()>;
+    using Callback = std::function<void()>;
 
     auto create(Callback creationCallback = 0) -> ::HRESULT;
     auto close() -> void;
@@ -54,7 +54,7 @@ struct Environment {
 };
 
 struct WebView {
-    using Callback = std::function<::HRESULT()>;
+    using Callback = std::function<void()>;
 
     auto create(const Environment& environment,
                 ::HWND parentHwnd,

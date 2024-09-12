@@ -20,15 +20,9 @@ struct WebView final : glow::window::Window {
         activate();
 
         environment.create([this]() {
-            glow::log::log("Environment created!");
-
             webView.create(environment, hwnd.get(), [this]() {
                 webView.navigate("https://mthierman.pages.dev/");
-
-                return S_OK;
             });
-
-            return S_OK;
         });
 
         // environment.close();
