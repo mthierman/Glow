@@ -20,8 +20,8 @@
 namespace glow::window {
 auto Window::create() -> void {
     auto instance { glow::system::instance() };
-    auto systemIcon { glow::system::system_icon() };
     auto resourceIcon { glow::system::resource_icon() };
+    auto systemIcon { glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -56,8 +56,8 @@ auto Window::create() -> void {
 
 auto Window::create(::HWND parent) -> void {
     auto instance { glow::system::instance() };
-    auto systemIcon { glow::system::system_icon() };
     auto resourceIcon { glow::system::resource_icon() };
+    auto systemIcon { glow::system::system_icon() };
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
