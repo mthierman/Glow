@@ -8,8 +8,6 @@
 
 #include <Windows.h>
 
-#include <objbase.h>
-
 #include <stdexcept>
 
 #include <wil/win32_helpers.h>
