@@ -540,6 +540,10 @@ auto to_position(const ::WINDOWPOS& windowPos) -> Position {
     };
 }
 
+auto to_position(const ::SIZE& size) -> Position {
+    return Position { .x { 0 }, .y { 0 }, .width { size.cx }, .height { size.cy } };
+}
+
 auto to_rect(const Position& position) -> ::RECT {
     return ::RECT { .left { position.x },
                     .top { position.y },
@@ -552,5 +556,9 @@ auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT {
                     .top { windowPos.y },
                     .right { windowPos.cx },
                     .bottom { windowPos.cy } };
+}
+
+auto to_rect(const ::SIZE& size) -> ::RECT {
+    return ::RECT { .left { 0 }, .top { 0 }, .right { size.cx }, .bottom { size.cy } };
 }
 } // namespace glow::window

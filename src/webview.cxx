@@ -127,30 +127,35 @@ auto WebView::close() -> void {
     controller.reset();
 }
 
-auto WebView::put_bounds(::RECT rect) -> void {
+auto WebView::put_bounds(const glow::window::Position& position) -> void {
+    if (controller) {
+        controller->put_Bounds(glow::window::to_rect(position));
+    }
+}
+
+auto WebView::put_bounds(const ::RECT& rect) -> void {
     if (controller) {
         controller->put_Bounds(rect);
     }
 }
 
-auto WebView::put_bounds(::SIZE size) -> void {
+auto WebView::put_bounds(const ::SIZE& size) -> void {
     if (controller) {
-        controller->put_Bounds(::RECT { .left = 0, .top = 0, .right = size.cx, .bottom = size.cy });
+        controller->put_Bounds(glow::window::to_rect(size));
     }
 }
 
-auto WebView::put_bounds(::WINDOWPOS windowPos) -> void {
+auto WebView::put_bounds(const ::WINDOWPOS& windowPos) -> void {
     if (controller) {
-        controller->put_Bounds(
-            ::RECT { .left = 0, .top = 0, .right = windowPos.cx, .bottom = windowPos.cy });
+        controller->put_Bounds(glow::window::to_rect(windowPos));
     }
 }
 
-// auto WebView::put_bounds(::HWND hwnd) -> void {
-//     if (controller) {
-//         controller->put_Bounds(glow::window::get_client_rect(hwnd));
-//     }
-// }
+template <typename T> auto WebView::put_bounds(const T& window) -> void {
+    if (controller) {
+        controller->put_Bounds(window.client_rect());
+    }
+}
 
 auto WebView::show() -> void {
     if (controller) {

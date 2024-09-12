@@ -227,7 +227,9 @@ private:
 
 auto to_position(const ::RECT& rect) -> Position;
 auto to_position(const ::WINDOWPOS& windowPos) -> Position;
+auto to_position(const ::SIZE& size) -> Position;
 
 auto to_rect(const Position& position) -> ::RECT;
 auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT;
+auto to_rect(const ::SIZE& size) -> ::RECT;
 } // namespace glow::window

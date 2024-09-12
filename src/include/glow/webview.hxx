@@ -21,6 +21,8 @@
 #include <functional>
 #include <string>
 
+#include <glow/window.hxx>
+
 namespace glow::webview {
 struct Environment {
     using Callback = std::function<::HRESULT()>;
@@ -58,10 +60,14 @@ struct WebView {
                 ::HWND parentHwnd,
                 const Callback& callback = 0) -> ::HRESULT;
     auto close() -> void;
-    auto put_bounds(::RECT rect) -> void;
-    auto put_bounds(::SIZE size) -> void;
-    auto put_bounds(::WINDOWPOS windowPos) -> void;
-    auto put_bounds(::HWND hwnd) -> void;
+
+    auto put_bounds(const glow::window::Position& rect) -> void;
+    auto put_bounds(const ::RECT& rect) -> void;
+    auto put_bounds(const ::SIZE& size) -> void;
+    auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
+
+    template <typename T> auto put_bounds(const T& window) -> void;
+
     auto show() -> void;
     auto hide() -> void;
     auto navigate(const std::string& url) -> void;
