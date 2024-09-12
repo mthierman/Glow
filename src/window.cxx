@@ -406,7 +406,9 @@ auto Window::disable_fullscreen() -> bool {
 
 auto Window::set_background(uint8_t r, uint8_t g, uint8_t b) -> void {
     hbrush.reset(::CreateSolidBrush(RGB(r, g, b)));
-    ::UpdateWindow(hwnd.get());
+    ::RECT rect;
+    ::GetClientRect(hwnd.get(), &rect);
+    ::InvalidateRect(hwnd.get(), &rect, TRUE);
 }
 
 auto default_procedure(glow::message::Message message) -> ::LRESULT {

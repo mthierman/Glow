@@ -4,7 +4,6 @@ namespace wm = glow::message;
 
 struct Window final : glow::window::Window {
     Window() {
-        set_background(255, 0, 255);
         // hbrush.reset();
 
         messages.on(WM_CREATE, [](wm::CREATE msg) {
@@ -37,6 +36,8 @@ struct Window final : glow::window::Window {
 
         create();
         activate();
+
+        set_background(255, 0, 255);
     }
 };
 
