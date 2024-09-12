@@ -126,17 +126,8 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_DPICHANGED) {
-            auto rect { reinterpret_cast<::LPRECT>(lparam) };
-
-            ::SetWindowPos(hwnd,
-                           nullptr,
-                           rect->left,
-                           rect->top,
-                           (rect->right - rect->left),
-                           (rect->bottom - rect->top),
-                           SWP_NOZORDER | SWP_NOACTIVATE);
-
             self->refresh_dpi();
+            self->set_position(to_position(*reinterpret_cast<::LPRECT>(lparam)));
         }
 
         if (self->messages.contains(msg)) {
