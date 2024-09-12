@@ -77,6 +77,12 @@ auto CALLBACK App::procedure(::HWND hwnd,
 
 auto App::close() -> void { hwnd.reset(); }
 
+auto App::notify_app(glow::message::Code code,
+                     std::string_view message,
+                     ::HWND receiverHwnd) -> void {
+    messages.notify(code, message, hwnd.get(), id, receiverHwnd);
+}
+
 auto run() -> int {
     ::MSG msg {};
     int r {};

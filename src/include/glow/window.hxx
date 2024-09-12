@@ -170,8 +170,8 @@ public:
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
 
-    glow::message::Manager messages;
     uintptr_t id { glow::math::make_random<uintptr_t>() };
+    glow::message::Manager messages;
 
     wil::unique_hwnd hwnd;
 };
