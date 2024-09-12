@@ -71,9 +71,9 @@ public:
     auto disable_dark_mode() -> void;
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
     auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
-    auto set_caption_color(::COLORREF color) -> void;
-    auto set_border_color(::COLORREF color) -> void;
-    auto set_text_color(::COLORREF color) -> void;
+    auto set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void;
+    auto set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void;
+    auto set_text_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto focus() -> void;
     auto is_focused() -> bool;
     auto foreground() -> void;

@@ -314,17 +314,20 @@ auto Window::set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void {
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_WINDOW_CORNER_PREFERENCE, &corner, sizeof(corner));
 }
 
-auto Window::set_caption_color(::COLORREF color) -> void {
+auto Window::set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void {
+    auto color { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &color, sizeof(color));
 }
 
-auto Window::set_border_color(::COLORREF color) -> void {
+auto Window::set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void {
+    auto color { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &color, sizeof(color));
 }
 
-auto Window::set_text_color(::COLORREF color) -> void {
+auto Window::set_text_color(uint8_t r, uint8_t g, uint8_t b) -> void {
+    auto color { RGB(r, g, b) };
     ::DwmSetWindowAttribute(
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &color, sizeof(color));
 }
