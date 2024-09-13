@@ -216,6 +216,24 @@ struct Child : Window {
                                 .hIconSm { default_icon() } };
 };
 
+struct WebView : Window {
+    auto create() -> void;
+    auto create(::HWND parent) -> void;
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { glow::system::instance() },
+                                .hIcon { default_icon() },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"WebView" },
+                                .hIconSm { default_icon() } };
+};
+
 template <typename T> struct Manager {
     auto add(std::unique_ptr<T> window) -> void {
         keys.push_back(window->id);

@@ -499,6 +499,38 @@ auto Child::create(::HWND parent) -> void {
                       this);
 }
 
+auto WebView::create() -> void {
+    register_class(windowClass);
+    ::CreateWindowExW(0,
+                      windowClass.lpszClassName,
+                      L"",
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      nullptr,
+                      nullptr,
+                      glow::system::instance(),
+                      this);
+}
+
+auto WebView::create(::HWND parent) -> void {
+    register_class(windowClass);
+    ::CreateWindowExW(0,
+                      windowClass.lpszClassName,
+                      L"",
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      parent,
+                      reinterpret_cast<::HMENU>(id),
+                      glow::system::instance(),
+                      this);
+}
+
 auto to_position(const ::RECT& rect) -> Position {
     return Position { .x { rect.left },
                       .y { rect.top },
