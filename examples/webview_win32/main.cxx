@@ -26,8 +26,8 @@ struct WebView final : glow::window::Window {
         });
     }
 
-    glow::webview::Environment environment;
-    glow::webview::WebView webView;
+    glow::webview::win32::Environment environment;
+    glow::webview::win32::WebView webView;
 };
 
 auto main() -> int {

@@ -23,7 +23,7 @@
 
 #include <glow/window.hxx>
 
-namespace glow::webview {
+namespace glow::webview::win32 {
 struct EnvironmentOptions {
     std::filesystem::path browserExecutableFolder;
     std::filesystem::path userDataFolder;
@@ -101,4 +101,4 @@ struct WebView {
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
-}; // namespace glow::webview
+}; // namespace glow::webview::win32

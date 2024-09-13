@@ -4,12 +4,13 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
+#include <glow/webview_win32.hxx>
+
 #include <glow/log.hxx>
 #include <glow/text.hxx>
-#include <glow/webview.hxx>
 #include <glow/window.hxx>
 
-namespace glow::webview {
+namespace glow::webview::win32 {
 auto Environment::create(Callback callback) -> ::HRESULT {
     wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
@@ -209,4 +210,4 @@ auto WebView::test() -> void {
         glow::log::log(L"{}", std::wstring(buffer.get()));
     }
 }
-}; // namespace glow::webview
+}; // namespace glow::webview::win32
