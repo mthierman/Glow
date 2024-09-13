@@ -11,6 +11,15 @@ target_sources(
             "../../data/glow.manifest"
     )
 
+target_link_libraries(
+    ${PROJECT_NAME}_overlapped
+    PRIVATE common::compile_features
+            common::compile_definitions
+            common::link_options_exe
+            glow::glow
+            glow::compile_options
+    )
+
 add_executable(
     ${PROJECT_NAME}_split
     WIN32
@@ -23,7 +32,7 @@ target_sources(
     )
 
 target_link_libraries(
-    ${PROJECT_NAME}_overlapped
+    ${PROJECT_NAME}_split
     PRIVATE common::compile_features
             common::compile_definitions
             common::link_options_exe
@@ -31,8 +40,19 @@ target_link_libraries(
             glow::compile_options
     )
 
+add_executable(
+    ${PROJECT_NAME}_derived
+    WIN32
+    )
+
+target_sources(
+    ${PROJECT_NAME}_derived
+    PRIVATE "derived.cxx"
+            "../../data/glow.manifest"
+    )
+
 target_link_libraries(
-    ${PROJECT_NAME}_split
+    ${PROJECT_NAME}_derived
     PRIVATE common::compile_features
             common::compile_definitions
             common::link_options_exe
