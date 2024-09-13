@@ -10,12 +10,6 @@ struct WebView final : glow::window::WebView {
             return 0;
         });
 
-        messages.on(WM_WINDOWPOSCHANGED, [this](wm::WINDOWPOSCHANGED /* msg */) {
-            update_bounds();
-
-            return 0;
-        });
-
         create([this]() { navigate("https://mthierman.pages.dev/"); });
     }
 };

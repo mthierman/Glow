@@ -60,6 +60,10 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             self->set_position(to_position(*reinterpret_cast<::LPRECT>(lparam)));
         }
 
+        if (self->derivedMessages.contains(msg)) {
+            self->derivedMessages.invoke({ hwnd, msg, wparam, lparam });
+        }
+
         if (self->messages.contains(msg)) {
             return self->messages.invoke({ hwnd, msg, wparam, lparam });
         }
@@ -640,6 +644,13 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
             update_bounds();
+
+            derivedMessages.on(WM_WINDOWPOSCHANGED,
+                               [this](glow::message::wm::WINDOWPOSCHANGED /* msg */) {
+                update_bounds();
+
+                return 0;
+            });
 
             if (callback) {
                 callback();

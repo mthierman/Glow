@@ -186,6 +186,7 @@ public:
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;
+    glow::message::Manager derivedMessages;
 
     wil::unique_hwnd hwnd;
 };
