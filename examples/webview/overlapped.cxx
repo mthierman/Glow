@@ -10,7 +10,7 @@ auto main() -> int {
         return 0;
     });
 
-    webView.config.settings.backgroundColor
+    webView.config.backgroundColor
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
     webView.create([]() {
