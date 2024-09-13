@@ -65,31 +65,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_ERASEBKGND) {
-            auto hdc { reinterpret_cast<::HDC>(wparam) };
-
-            switch (self->states.background) {
-                case Background::Transparent: {
-                    self->paint_background(hdc, self->brushes.transparent);
-                } break;
-                case Background::System: {
-                    self->paint_background(hdc, self->brushes.system);
-                } break;
-                case Background::Black: {
-                    self->paint_background(hdc, self->brushes.black);
-                } break;
-                case Background::White: {
-                    self->paint_background(hdc, self->brushes.white);
-                } break;
-                case Background::Custom: {
-                    if (self->brushes.custom) {
-                        self->paint_background(hdc, self->brushes.custom);
-                    } else {
-                        self->paint_background(hdc, self->brushes.system);
-                    }
-                } break;
-            }
-
-            return 1;
+            return self->erase_background(reinterpret_cast<::HDC>(wparam));
         }
 
         if (msg == WM_CLOSE) {
@@ -115,6 +91,32 @@ auto Window::default_icon() -> ::HICON {
 auto Window::refresh_dpi() -> void {
     dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+}
+
+auto Window::erase_background(::HDC hdc) -> int {
+    switch (states.background) {
+        case Background::Transparent: {
+            paint_background(hdc, brushes.transparent);
+        } break;
+        case Background::System: {
+            paint_background(hdc, brushes.system);
+        } break;
+        case Background::Black: {
+            paint_background(hdc, brushes.black);
+        } break;
+        case Background::White: {
+            paint_background(hdc, brushes.white);
+        } break;
+        case Background::Custom: {
+            if (brushes.custom) {
+                paint_background(hdc, brushes.custom);
+            } else {
+                paint_background(hdc, brushes.system);
+            }
+        } break;
+    }
+
+    return 1;
 }
 
 auto Window::activate() -> void { ::ShowWindow(hwnd.get(), SW_NORMAL); }

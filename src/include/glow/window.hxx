@@ -54,6 +54,7 @@ public:
     auto default_icon() -> ::HICON;
 
     auto refresh_dpi() -> void;
+    auto erase_background(::HDC hdc) -> int;
 
     auto activate() -> void;
     auto show() -> void;
