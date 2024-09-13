@@ -102,6 +102,16 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
+auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+}
+
+auto Window::default_icon() -> ::HICON {
+    return icons.app ? icons.app.get() : glow::system::system_icon();
+}
+
 auto Window::refresh_dpi() -> void {
     dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
@@ -458,25 +468,7 @@ auto Window::notify_app(glow::message::Code code,
 }
 
 auto Overlapped::create() -> void {
-    auto instance { glow::system::instance() };
-    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Window) },
-                                .hInstance { instance },
-                                .hIcon { icon },
-                                .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"Overlapped" },
-                                .hIconSm { icon } };
-
-    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
+    register_class(windowClass);
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -488,30 +480,12 @@ auto Overlapped::create() -> void {
                       CW_USEDEFAULT,
                       nullptr,
                       nullptr,
-                      instance,
+                      glow::system::instance(),
                       this);
 }
 
 auto Child::create(::HWND parent) -> void {
-    auto instance { glow::system::instance() };
-    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Window) },
-                                .hInstance { instance },
-                                .hIcon { icon },
-                                .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"Child" },
-                                .hIconSm { icon } };
-
-    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
+    register_class(windowClass);
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -523,7 +497,7 @@ auto Child::create(::HWND parent) -> void {
                       CW_USEDEFAULT,
                       parent,
                       reinterpret_cast<::HMENU>(id),
-                      instance,
+                      glow::system::instance(),
                       this);
 }
 

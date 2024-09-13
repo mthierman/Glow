@@ -42,6 +42,9 @@ protected:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
+    auto register_class(::WNDCLASSEXW& windowClass) -> void;
+    auto default_icon() -> ::HICON;
+
     auto refresh_dpi() -> void;
 
     auto activate() -> void;
@@ -181,10 +184,36 @@ public:
 
 struct Overlapped : Window {
     auto create() -> void;
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { glow::system::instance() },
+                                .hIcon { default_icon() },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Overlapped" },
+                                .hIconSm { default_icon() } };
 };
 
 struct Child : Window {
     auto create(::HWND parent) -> void;
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { glow::system::instance() },
+                                .hIcon { default_icon() },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Child" },
+                                .hIconSm { default_icon() } };
 };
 
 template <typename T> struct Manager {
