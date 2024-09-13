@@ -101,9 +101,9 @@ target_link_libraries(
     PUBLIC microsoft::wil
            microsoft::cppwinrt
            microsoft::webview2
+           WindowsApp.lib
            dwmapi.lib
            gdiplus.lib
-           WindowsApp.lib
     )
 
 if(BUILD_EXAMPLES)
