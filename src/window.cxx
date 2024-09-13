@@ -84,10 +84,6 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
     }
 }
 
-auto Window::default_icon() -> ::HICON {
-    return icons.app ? icons.app.get() : glow::system::system_icon();
-}
-
 auto Window::refresh_dpi() -> void {
     dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));

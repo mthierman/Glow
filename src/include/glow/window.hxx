@@ -51,7 +51,6 @@ protected:
 
 public:
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
-    auto default_icon() -> ::HICON;
 
     auto refresh_dpi() -> void;
     auto erase_background(::HDC hdc) -> int;
@@ -180,7 +179,8 @@ public:
     Brushes brushes;
 
     struct Icons {
-        wil::unique_hicon app { glow::system::resource_icon() };
+        wil::unique_hicon app { glow::system::resource_icon() ? glow::system::resource_icon()
+                                                              : glow::system::system_icon() };
     };
     Icons icons;
 
@@ -199,12 +199,12 @@ struct Overlapped : Window {
                                 .cbClsExtra { 0 },
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { glow::system::instance() },
-                                .hIcon { default_icon() },
+                                .hIcon { icons.app.get() },
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"Overlapped" },
-                                .hIconSm { default_icon() } };
+                                .hIconSm { icons.app.get() } };
 };
 
 struct Child : Window {
@@ -216,12 +216,12 @@ struct Child : Window {
                                 .cbClsExtra { 0 },
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { glow::system::instance() },
-                                .hIcon { default_icon() },
+                                .hIcon { icons.app.get() },
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"Child" },
-                                .hIconSm { default_icon() } };
+                                .hIconSm { icons.app.get() } };
 };
 
 struct WebView : Window {
@@ -250,12 +250,12 @@ struct WebView : Window {
                                 .cbClsExtra { 0 },
                                 .cbWndExtra { sizeof(Window) },
                                 .hInstance { glow::system::instance() },
-                                .hIcon { default_icon() },
+                                .hIcon { icons.app.get() },
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"WebView" },
-                                .hIconSm { default_icon() } };
+                                .hIconSm { icons.app.get() } };
 
     struct Config {
         struct EnvironmentOptions {
