@@ -504,7 +504,7 @@ auto WebView::create(Callback callback) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_VISIBLE,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -513,7 +513,6 @@ auto WebView::create(Callback callback) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
-    activate();
     create_webview(callback);
 }
 
@@ -522,7 +521,7 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | WS_VISIBLE,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -531,7 +530,6 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
-    activate();
     create_webview(callback);
 }
 
