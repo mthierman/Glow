@@ -660,6 +660,52 @@ auto WebView::update_bounds() -> void {
     }
 }
 
+auto WebView::put_bounds(const Position& position) -> void {
+    if (controller) {
+        controller->put_Bounds(glow::window::to_rect(position));
+    }
+}
+
+auto WebView::put_bounds(const ::RECT& rect) -> void {
+    if (controller) {
+        controller->put_Bounds(rect);
+    }
+}
+
+auto WebView::put_bounds(const ::SIZE& size) -> void {
+    if (controller) {
+        controller->put_Bounds(glow::window::to_rect(size));
+    }
+}
+
+auto WebView::put_bounds(const ::WINDOWPOS& windowPos) -> void {
+    if (controller) {
+        controller->put_Bounds(glow::window::to_rect(windowPos));
+    }
+}
+
+auto WebView::show() -> void {
+    if (controller) {
+        controller->put_IsVisible(true);
+    }
+}
+
+auto WebView::hide() -> void {
+    if (controller) {
+        controller->put_IsVisible(false);
+    }
+}
+
+auto WebView::get_document_title() -> std::string {
+    if (core) {
+        wil::unique_cotaskmem_string buffer;
+        core->get_DocumentTitle(&buffer);
+        return glow::text::to_string(buffer.get());
+    } else {
+        return {};
+    }
+}
+
 auto WebView::navigate(const std::string& url) -> void {
     if (core) {
         core->Navigate(glow::text::to_wstring(url).c_str());

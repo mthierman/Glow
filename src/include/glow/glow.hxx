@@ -11,5 +11,4 @@
 #include <glow/message.hxx>
 #include <glow/system.hxx>
 #include <glow/text.hxx>
-#include <glow/webview.hxx>
 #include <glow/window.hxx>

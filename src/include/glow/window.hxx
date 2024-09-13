@@ -9,21 +9,28 @@
 #include <Windows.h>
 
 #include <dwmapi.h>
+#include <wrl.h>
 
 #include <algorithm>
+#include <filesystem>
+#include <functional>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
+#include <wil/com.h>
 #include <wil/resource.h>
+#include <wil/wrl.h>
+
+#include <WebView2.h>
+#include <WebView2EnvironmentOptions.h>
 
 #include <glow/color.hxx>
 #include <glow/math.hxx>
 #include <glow/message.hxx>
 #include <glow/system.hxx>
-#include <glow/webview.hxx>
 
 namespace glow::window {
 struct Position {
@@ -216,7 +223,7 @@ struct Child : Window {
                                 .hIconSm { default_icon() } };
 };
 
-struct WebView : Window, glow::webview::WebView {
+struct WebView : Window {
     using Callback = std::function<void()>;
 
     auto create(Callback callback = 0) -> void;
@@ -224,8 +231,17 @@ struct WebView : Window, glow::webview::WebView {
     auto create_webview(Callback callback = 0) -> void;
 
     auto update_bounds() -> void;
+
+    auto put_bounds(const Position& position) -> void;
+    auto put_bounds(const ::RECT& rect) -> void;
+    auto put_bounds(const ::SIZE& size) -> void;
+    auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
+
+    auto show() -> void;
+    auto hide() -> void;
     auto navigate(const std::string& url) -> void;
     auto navigate(const std::wstring& url) -> void;
+    auto get_document_title() -> std::string;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -239,6 +255,59 @@ struct WebView : Window, glow::webview::WebView {
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"WebView" },
                                 .hIconSm { default_icon() } };
+
+    struct Config {
+        struct EnvironmentOptions {
+            std::filesystem::path browserExecutableFolder;
+            std::filesystem::path userDataFolder;
+            std::string AdditionalBrowserArguments;
+            bool AllowSingleSignOnUsingOSPrimaryAccount { false };
+            std::string Language;
+            std::string TargetCompatibleBrowserVersion;
+            bool ExclusiveUserDataFolderAccess { false };
+            bool IsCustomCrashReportingEnabled { false };
+            bool EnableTrackingPrevention { true };
+            bool AreBrowserExtensionsEnabled { false };
+            COREWEBVIEW2_CHANNEL_SEARCH_KIND ChannelSearchKind {
+                COREWEBVIEW2_CHANNEL_SEARCH_KIND::COREWEBVIEW2_CHANNEL_SEARCH_KIND_MOST_STABLE
+            };
+            COREWEBVIEW2_SCROLLBAR_STYLE ScrollBarStyle {
+                COREWEBVIEW2_SCROLLBAR_STYLE::COREWEBVIEW2_SCROLLBAR_STYLE_DEFAULT
+            };
+        };
+
+        struct Settings {
+            COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
+            bool AreBrowserAcceleratorKeysEnabled { true };
+            bool AreDefaultContextMenusEnabled { true };
+            bool AreDefaultScriptDialogsEnabled { true };
+            bool AreDevToolsEnabled { true };
+            bool AreHostObjectsAllowed { true };
+            COREWEBVIEW2_PDF_TOOLBAR_ITEMS HiddenPdfToolbarItems {
+                COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE
+            };
+            bool IsBuiltInErrorPageEnabled { true };
+            bool IsGeneralAutofillEnabled { true };
+            bool IsNonClientRegionSupportEnabled { true };
+            bool IsPasswordAutosaveEnabled { true };
+            bool IsPinchZoomEnabled { true };
+            bool IsReputationCheckingRequired { true };
+            bool IsScriptEnabled { true };
+            bool IsStatusBarEnabled { true };
+            bool IsSwipeNavigationEnabled { true };
+            bool IsWebMessageEnabled { true };
+            bool IsZoomControlEnabled { true };
+        };
+
+        EnvironmentOptions environmentOptions;
+        Settings settings;
+    };
+
+    Config config;
+    wil::com_ptr<ICoreWebView2Environment13> environment;
+    wil::com_ptr<ICoreWebView2Controller4> controller;
+    wil::com_ptr<ICoreWebView2_22> core;
+    wil::com_ptr<ICoreWebView2Settings9> settings;
 };
 
 template <typename T> struct Manager {
