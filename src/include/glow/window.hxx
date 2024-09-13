@@ -300,6 +300,16 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
+
+    struct Event {
+        ::EventRegistrationToken token;
+        std::function<::HRESULT(ICoreWebView2*, ICoreWebView2DOMContentLoadedEventArgs*)> handler;
+    };
+
+    struct Events {
+        Event DOMContentLoaded;
+    };
+    Events events;
 };
 
 template <typename T> struct Manager {
