@@ -467,9 +467,9 @@ auto Window::notify_app(glow::message::Code code,
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
 
-auto Overlapped::create() -> void {
-    register_class(windowClass);
+Overlapped::Overlapped() { register_class(windowClass); }
 
+auto Overlapped::create() -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
@@ -484,9 +484,9 @@ auto Overlapped::create() -> void {
                       this);
 }
 
-auto Child::create(::HWND parent) -> void {
-    register_class(windowClass);
+Child::Child() { register_class(windowClass); }
 
+auto Child::create(::HWND parent) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
