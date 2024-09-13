@@ -93,7 +93,7 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
 
         if (msg == WM_CLOSE) {
-            self->close();
+            self->hwnd.reset();
 
             return 0;
         }
@@ -388,8 +388,6 @@ auto Window::start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
 }
 
 auto Window::stop_timer(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
-
-auto Window::close() -> void { hwnd.reset(); }
 
 auto Window::enable_fullscreen() -> bool {
     if (get_style() & WS_OVERLAPPEDWINDOW) {

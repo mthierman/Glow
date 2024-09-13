@@ -122,7 +122,6 @@ public:
     auto flash() -> void;
     auto start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
     auto stop_timer(::UINT_PTR timerId) -> bool;
-    auto close() -> void;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
     auto set_background(Background background) -> void;
