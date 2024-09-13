@@ -344,11 +344,18 @@ auto Window::set_position(Position position) -> void {
                    SWP_NOZORDER | SWP_NOACTIVATE);
 }
 
-auto Window::set_window_placement() -> void { ::SetWindowPlacement(hwnd.get(), &windowPlacement); }
+auto Window::set_window_placement() -> void {
+    windowPlacement.length = sizeof(::WINDOWPLACEMENT);
+    ::SetWindowPlacement(hwnd.get(), &windowPlacement);
+}
 
-auto Window::get_window_placement() -> void { ::GetWindowPlacement(hwnd.get(), &windowPlacement); }
+auto Window::get_window_placement() -> void {
+    windowPlacement.length = sizeof(::WINDOWPLACEMENT);
+    ::GetWindowPlacement(hwnd.get(), &windowPlacement);
+}
 
 auto Window::get_monitor_info() -> void {
+    monitorInfo.cbSize = sizeof(::MONITORINFO);
     ::GetMonitorInfoW(::MonitorFromWindow(hwnd.get(), MONITOR_DEFAULTTONEAREST), &monitorInfo);
 }
 

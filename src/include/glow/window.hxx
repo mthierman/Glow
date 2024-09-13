@@ -51,29 +51,23 @@ protected:
 
 public:
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
-
     auto refresh_dpi() -> void;
     auto erase_background(::HDC hdc) -> int;
-
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
     auto maximize() -> void;
     auto minimize() -> void;
     auto restore() -> void;
-
     auto refresh_frame() -> void;
-
     auto set_overlapped_window() -> void;
     auto is_overlapped_window() -> bool;
     auto set_popup_window() -> void;
     auto is_popup_window() -> bool;
-
     auto set_popup() -> void;
     auto is_popup() -> bool;
     auto set_child() -> void;
     auto is_child() -> bool;
-
     auto center() -> void;
     auto top() -> void;
     auto bottom() -> void;
@@ -81,27 +75,19 @@ public:
     auto disable_topmost() -> void;
     auto enable_border() -> void;
     auto disable_border() -> void;
-
     auto cloak() -> void;
     auto uncloak() -> void;
     auto is_cloaked() -> bool;
-
     auto enable_dark_mode() -> void;
     auto disable_dark_mode() -> void;
-
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
-
     auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
-
     auto set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_caption_color(const winrt::Color& color) -> void;
-
     auto set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_border_color(const winrt::Color& color) -> void;
-
     auto set_text_color(uint8_t r, uint8_t g, uint8_t b) -> void;
     auto set_text_color(const winrt::Color& color) -> void;
-
     auto focus() -> void;
     auto is_focused() -> bool;
     auto foreground() -> void;
@@ -163,8 +149,8 @@ public:
     };
     States states;
 
-    ::WINDOWPLACEMENT windowPlacement { .length { sizeof(::WINDOWPLACEMENT) } };
-    ::MONITORINFO monitorInfo { sizeof(::MONITORINFO) };
+    ::WINDOWPLACEMENT windowPlacement {};
+    ::MONITORINFO monitorInfo {};
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
 

@@ -10,51 +10,6 @@ option(
 
 include(cmake/deps.cmake)
 
-add_library(
-    ${PROJECT_NAME}_compile_options
-    INTERFACE
-    )
-
-add_library(
-    glow::compile_options
-    ALIAS
-    ${PROJECT_NAME}_compile_options
-    )
-
-target_compile_options(
-    ${PROJECT_NAME}_compile_options
-    INTERFACE $<$<CXX_COMPILER_ID:MSVC>:
-              /W4
-              /WX
-              /MP
-              /nologo
-              /utf-8
-              /bigobj
-              /diagnostics:caret
-              /Zc:__cplusplus
-              >
-              $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
-              /W4
-              /WX
-              -Wno-braced-scalar-init
-              -Wno-extra-semi
-              -Wno-gnu-zero-variadic-macro-arguments
-              -Wno-language-extension-token
-              -Wno-microsoft-enum-value
-              -Wno-nonportable-include-path
-              >
-              $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
-              -Wall
-              -Werror
-              -Wno-braced-scalar-init
-              -Wno-extra-semi
-              -Wno-gnu-zero-variadic-macro-arguments
-              -Wno-language-extension-token
-              -Wno-microsoft-enum-value
-              -Wno-nonportable-include-path
-              >
-    )
-
 add_library(${PROJECT_NAME})
 
 add_library(
@@ -83,12 +38,66 @@ target_sources(
            "src/include"
     )
 
+target_compile_features(
+    ${PROJECT_NAME}
+    PUBLIC c_std_17
+           cxx_std_23
+    )
+
+target_compile_definitions(
+    ${PROJECT_NAME}
+    PUBLIC NOMINMAX
+           WIN32_LEAN_AND_MEAN
+    )
+
+target_compile_options(
+    ${PROJECT_NAME}
+    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:
+            /W4
+            /WX
+            >
+            $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
+            /W4
+            /WX
+            >
+            $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
+            -Wall
+            -Werror
+            >
+    PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
+           /MP
+           /nologo
+           /utf-8
+           /bigobj
+           /diagnostics:caret
+           /Zc:__cplusplus
+           >
+           $<$<AND:$<CXX_COMPILER_ID:Clang>>:
+           -Wno-braced-scalar-init
+           -Wno-nonportable-include-path
+           >
+    )
+
+target_link_options(
+    ${PROJECT_NAME}
+    PUBLIC
+    $<$<CXX_COMPILER_ID:MSVC>:
+    /entry:mainCRTStartup
+    /WX
+    /NOLOGO
+    >
+    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
+    /entry:mainCRTStartup
+    /WX
+    /NOLOGO
+    >
+    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
+    -Wl,/entry:mainCRTStartup,/WX,/NOLOGO
+    >
+    )
+
 target_link_libraries(
     ${PROJECT_NAME}
-    PRIVATE common::compile_features
-            common::compile_definitions
-            common::link_options_lib
-            glow::compile_options
     PUBLIC microsoft::wil
            microsoft::cppwinrt
            microsoft::webview2
