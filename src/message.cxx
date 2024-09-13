@@ -10,7 +10,7 @@
 
 namespace glow::message {
 auto Manager::on(::UINT msg, Callback callback) -> bool {
-    auto emplace { map.emplace(msg, callback) };
+    auto emplace { map.try_emplace(msg, callback) };
 
     return emplace.second;
 }
