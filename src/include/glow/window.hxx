@@ -239,8 +239,8 @@ struct WebView : Window {
     auto put_bounds(const ::SIZE& size) -> void;
     auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
 
-    auto show() -> void;
-    auto hide() -> void;
+    auto show_controller() -> void;
+    auto hide_controller() -> void;
     auto navigate(const std::string& url) -> void;
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;

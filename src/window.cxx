@@ -504,7 +504,7 @@ auto WebView::create(Callback callback) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_VISIBLE,
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -521,7 +521,7 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | WS_VISIBLE,
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -534,6 +534,8 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
 }
 
 auto WebView::create_webview(Callback callback) -> void {
+    auto coInit { glow::system::co_initialize() };
+
     wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
     };
@@ -693,13 +695,13 @@ auto WebView::put_bounds(const ::WINDOWPOS& windowPos) -> void {
     }
 }
 
-auto WebView::show() -> void {
+auto WebView::show_controller() -> void {
     if (controller) {
         controller->put_IsVisible(true);
     }
 }
 
-auto WebView::hide() -> void {
+auto WebView::hide_controller() -> void {
     if (controller) {
         controller->put_IsVisible(false);
     }
