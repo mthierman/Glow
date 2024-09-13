@@ -43,7 +43,7 @@ struct EnvironmentOptions {
     };
 };
 
-struct WebViewSettings {
+struct Settings {
     COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
     bool AreBrowserAcceleratorKeysEnabled { true };
     bool AreDefaultContextMenusEnabled { true };
@@ -66,39 +66,52 @@ struct WebViewSettings {
     bool IsZoomControlEnabled { true };
 };
 
-struct Environment {
-    using Callback = std::function<void()>;
-
-    auto create(Callback callback = 0) -> ::HRESULT;
-    auto close() -> void;
-
+struct Config {
     EnvironmentOptions environmentOptions;
-
-    wil::com_ptr<ICoreWebView2Environment13> environment;
+    Settings settings;
 };
 
 struct WebView {
-    using Callback = std::function<void()>;
-
-    auto create(const Environment& environment, ::HWND hwnd, Callback callback = 0) -> ::HRESULT;
-    auto close() -> void;
-
-    auto put_bounds(const glow::window::Position& rect) -> void;
-    auto put_bounds(const ::RECT& rect) -> void;
-    auto put_bounds(const ::SIZE& size) -> void;
-    auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
-    template <typename T> auto put_bounds(const T& window) -> void;
-
-    auto show() -> void;
-    auto hide() -> void;
-    auto navigate(const std::string& url) -> void;
-    auto navigate(const std::wstring& url) -> void;
-    auto test() -> void;
-
-    WebViewSettings webViewSettings;
-
+    Config config;
+    wil::com_ptr<ICoreWebView2Environment13> environment;
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
+
+// struct Environment {
+//     using Callback = std::function<void()>;
+
+//     auto create(Callback callback = 0) -> ::HRESULT;
+//     auto close() -> void;
+
+//     EnvironmentOptions environmentOptions;
+
+//     wil::com_ptr<ICoreWebView2Environment13> environment;
+// };
+
+// struct WebView {
+//     using Callback = std::function<void()>;
+
+//     auto create(const Environment& environment, ::HWND hwnd, Callback callback = 0) -> ::HRESULT;
+//     auto close() -> void;
+
+//     auto put_bounds(const glow::window::Position& rect) -> void;
+//     auto put_bounds(const ::RECT& rect) -> void;
+//     auto put_bounds(const ::SIZE& size) -> void;
+//     auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
+//     template <typename T> auto put_bounds(const T& window) -> void;
+
+//     auto show() -> void;
+//     auto hide() -> void;
+//     auto navigate(const std::string& url) -> void;
+//     auto navigate(const std::wstring& url) -> void;
+//     auto test() -> void;
+
+//     WebViewSettings webViewSettings;
+
+//     wil::com_ptr<ICoreWebView2Controller4> controller;
+//     wil::com_ptr<ICoreWebView2_22> core;
+//     wil::com_ptr<ICoreWebView2Settings9> settings;
+// };
 }; // namespace glow::webview

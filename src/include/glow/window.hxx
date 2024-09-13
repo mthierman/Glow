@@ -23,6 +23,7 @@
 #include <glow/math.hxx>
 #include <glow/message.hxx>
 #include <glow/system.hxx>
+#include <glow/webview.hxx>
 
 namespace glow::window {
 struct Position {
@@ -216,9 +217,12 @@ struct Child : Window {
                                 .hIconSm { default_icon() } };
 };
 
-struct WebView : Window {
-    auto create() -> void;
-    auto create(::HWND parent) -> void;
+struct WebView : Window, glow::webview::WebView {
+    using Callback = std::function<void()>;
+
+    auto create(Callback callback = 0) -> void;
+    auto create(::HWND parent, Callback callback = 0) -> void;
+    auto create_webview(Callback callback = 0) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },

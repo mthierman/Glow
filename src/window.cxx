@@ -499,7 +499,7 @@ auto Child::create(::HWND parent) -> void {
                       this);
 }
 
-auto WebView::create() -> void {
+auto WebView::create(Callback callback) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -515,7 +515,7 @@ auto WebView::create() -> void {
                       this);
 }
 
-auto WebView::create(::HWND parent) -> void {
+auto WebView::create(::HWND parent, Callback callback) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -529,6 +529,131 @@ auto WebView::create(::HWND parent) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+}
+
+auto WebView::create_webview(Callback callback) -> void {
+    wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
+        Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
+    };
+    wil::com_ptr<ICoreWebView2EnvironmentOptions2> createdEnvironmentOptions2;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions3> createdEnvironmentOptions3;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions4> createdEnvironmentOptions4;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions5> createdEnvironmentOptions5;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions6> createdEnvironmentOptions6;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions7> createdEnvironmentOptions7;
+    wil::com_ptr<ICoreWebView2EnvironmentOptions8> createdEnvironmentOptions8;
+
+    createdEnvironmentOptions2
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions2>();
+    createdEnvironmentOptions3
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions3>();
+    createdEnvironmentOptions4
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions4>();
+    createdEnvironmentOptions5
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions5>();
+    createdEnvironmentOptions6
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions6>();
+    createdEnvironmentOptions7
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions7>();
+    createdEnvironmentOptions8
+        = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
+
+    if (!config.environmentOptions.AdditionalBrowserArguments.empty()) {
+        createdEnvironmentOptions->put_AdditionalBrowserArguments(
+            glow::text::to_wstring(config.environmentOptions.AdditionalBrowserArguments).c_str());
+    }
+
+    createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
+        config.environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
+
+    if (!config.environmentOptions.Language.empty()) {
+        createdEnvironmentOptions->put_Language(
+            glow::text::to_wstring(config.environmentOptions.Language).c_str());
+    }
+
+    if (!config.environmentOptions.TargetCompatibleBrowserVersion.empty()) {
+        createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
+            glow::text::to_wstring(config.environmentOptions.TargetCompatibleBrowserVersion)
+                .c_str());
+    }
+
+    createdEnvironmentOptions2->put_ExclusiveUserDataFolderAccess(
+        config.environmentOptions.ExclusiveUserDataFolderAccess);
+    createdEnvironmentOptions3->put_IsCustomCrashReportingEnabled(
+        config.environmentOptions.IsCustomCrashReportingEnabled);
+    // createdEnvironmentOptions4->SetCustomSchemeRegistrations();
+    createdEnvironmentOptions5->put_EnableTrackingPrevention(
+        config.environmentOptions.EnableTrackingPrevention);
+    createdEnvironmentOptions6->put_AreBrowserExtensionsEnabled(
+        config.environmentOptions.AreBrowserExtensionsEnabled);
+    createdEnvironmentOptions7->put_ChannelSearchKind(config.environmentOptions.ChannelSearchKind);
+    createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
+
+    CreateCoreWebView2EnvironmentWithOptions(
+        config.environmentOptions.browserExecutableFolder.c_str(),
+        config.environmentOptions.userDataFolder.c_str(),
+        createdEnvironmentOptions.get(),
+        wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+            [this, callback { std::move(callback) }](
+                ::HRESULT /* errorCode */,
+                ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+        environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
+                          .try_query<ICoreWebView2Environment13>();
+
+        environment->CreateCoreWebView2Controller(
+            hwnd.get(),
+            wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                [this, callback { std::move(callback) }](
+                    ::HRESULT /* errorCode */,
+                    ICoreWebView2Controller* createdController) -> ::HRESULT {
+            controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
+                             .try_query<ICoreWebView2Controller4>();
+            controller->put_DefaultBackgroundColor(config.settings.backgroundColor);
+
+            wil::com_ptr<ICoreWebView2> createdCore;
+            controller->get_CoreWebView2(createdCore.put());
+            core = createdCore.try_query<ICoreWebView2_22>();
+
+            wil::com_ptr<ICoreWebView2Settings> createdSettings;
+            core->get_Settings(createdSettings.put());
+            settings = createdSettings.try_query<ICoreWebView2Settings9>();
+
+            settings->put_AreBrowserAcceleratorKeysEnabled(
+                config.settings.AreBrowserAcceleratorKeysEnabled);
+            settings->put_AreDefaultContextMenusEnabled(
+                config.settings.AreDefaultContextMenusEnabled);
+            settings->put_AreDefaultScriptDialogsEnabled(
+                config.settings.AreDefaultScriptDialogsEnabled);
+            settings->put_AreDevToolsEnabled(config.settings.AreDevToolsEnabled);
+            settings->put_AreHostObjectsAllowed(config.settings.AreHostObjectsAllowed);
+            settings->put_HiddenPdfToolbarItems(config.settings.HiddenPdfToolbarItems);
+            settings->put_IsBuiltInErrorPageEnabled(config.settings.IsBuiltInErrorPageEnabled);
+            settings->put_IsGeneralAutofillEnabled(config.settings.IsGeneralAutofillEnabled);
+            settings->put_IsNonClientRegionSupportEnabled(
+                config.settings.IsNonClientRegionSupportEnabled);
+            settings->put_IsPasswordAutosaveEnabled(config.settings.IsPasswordAutosaveEnabled);
+            settings->put_IsPinchZoomEnabled(config.settings.IsPinchZoomEnabled);
+            settings->put_IsReputationCheckingRequired(
+                config.settings.IsReputationCheckingRequired);
+            settings->put_IsScriptEnabled(config.settings.IsScriptEnabled);
+            settings->put_IsStatusBarEnabled(config.settings.IsStatusBarEnabled);
+            settings->put_IsSwipeNavigationEnabled(config.settings.IsSwipeNavigationEnabled);
+            settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
+            settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
+
+            // ::RECT rect;
+            // ::GetClientRect(hwnd, &rect);
+            // put_bounds(rect);
+
+            if (callback) {
+                callback();
+            }
+
+            return S_OK;
+        }).Get());
+
+        return S_OK;
+    }).Get());
 }
 
 auto to_position(const ::RECT& rect) -> Position {
