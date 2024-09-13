@@ -10,8 +10,11 @@ auto main() -> int {
         return 0;
     });
 
+    webView.config.settings.backgroundColor
+        = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
+
     webView.create([]() {
-        webView.navigate("https://mthierman.pages.dev/");
+        webView.navigate("https://localhost:5173/");
         webView.activate();
     });
 

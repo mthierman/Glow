@@ -513,6 +513,10 @@ auto WebView::create(Callback callback, bool show) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
+    set_background(Background::Custom);
+    set_background_color(config.settings.backgroundColor.R,
+                         config.settings.backgroundColor.G,
+                         config.settings.backgroundColor.B);
     create_webview(callback);
 }
 
