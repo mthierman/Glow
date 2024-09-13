@@ -12,5 +12,4 @@
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 #include <glow/webview.hxx>
-#include <glow/webviewrt.hxx>
 #include <glow/window.hxx>
