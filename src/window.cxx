@@ -648,15 +648,15 @@ auto WebView::create_webview(Callback callback) -> void {
             update_bounds();
 
             derivedMessages.on(WM_WINDOWPOSCHANGED,
-                               [this](glow::message::wm::WINDOWPOSCHANGED /* msg */) {
+                               [this](glow::message::wm::WINDOWPOSCHANGED msg) {
                 update_bounds();
 
-                return 0;
-            });
-
-            derivedMessages.on(WM_SHOWWINDOW, [this](glow::message::wm::SHOWWINDOW msg) {
-                if (msg.show()) {
+                if (msg.windowPos().flags & SWP_SHOWWINDOW) {
                     show_controller();
+                }
+
+                if (msg.windowPos().flags & SWP_HIDEWINDOW) {
+                    hide_controller();
                 }
 
                 return 0;
