@@ -31,11 +31,11 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         }
     }
 
-    if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
-        if (msg == WM_NCDESTROY) {
-            ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
-        }
+    if (msg == WM_NCDESTROY) {
+        ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
+    }
 
+    if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
         if (msg == WM_SETTINGCHANGE) {
             self->brushes.system.reset(
                 glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
