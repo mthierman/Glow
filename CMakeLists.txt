@@ -77,7 +77,6 @@ target_sources(
             "src/system.cxx"
             "src/text.cxx"
             "src/webview_win32.cxx"
-            "src/webview_winrt.cxx"
             "src/window.cxx"
     PUBLIC FILE_SET
            HEADERS

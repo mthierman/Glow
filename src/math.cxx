@@ -6,4 +6,4 @@
 
 #include <glow/math.hxx>
 
-namespace glow::math { };
+namespace glow::math { }

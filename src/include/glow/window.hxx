@@ -11,6 +11,7 @@
 #include <dwmapi.h>
 
 #include <algorithm>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -19,10 +20,22 @@
 
 #include <wil/resource.h>
 
+#include <winrt/Windows.Foundation.h>
+
+#include <winrt/Windows.UI.h>
+
+#include <winrt/Microsoft.Web.WebView2.Core.h>
+
 #include <glow/color.hxx>
 #include <glow/math.hxx>
 #include <glow/message.hxx>
 #include <glow/system.hxx>
+
+namespace winrt {
+using namespace winrt::Microsoft::Web::WebView2::Core;
+using namespace winrt::Windows::Foundation;
+using namespace winrt::Windows::UI;
+}; // namespace winrt
 
 namespace glow::window {
 struct Position {
@@ -34,9 +47,17 @@ struct Position {
 
 enum struct Background { Transparent, System, Black, White, Custom };
 
+struct WebView {
+    winrt::CoreWebView2Environment environment { nullptr };
+    winrt::CoreWebView2Profile profile { nullptr };
+    winrt::CoreWebView2Controller controller { nullptr };
+    winrt::CoreWebView2 core { nullptr };
+};
+
 struct Window {
     auto create() -> void;
     auto create(::HWND parent) -> void;
+    auto create_webview() -> winrt::IAsyncAction;
 
 private:
     static auto CALLBACK procedure(::HWND hwnd,
@@ -178,6 +199,8 @@ public:
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;
+
+    WebView webView;
 
     wil::unique_hwnd hwnd;
 };

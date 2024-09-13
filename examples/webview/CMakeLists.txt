@@ -1,4 +1,4 @@
-project(example_webview_winrt)
+project(example_webview)
 
 add_executable(
     ${PROJECT_NAME}

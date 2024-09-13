@@ -6,6 +6,7 @@
 
 #include <glow/window.hxx>
 
+#include <coroutine>
 #include <stdexcept>
 #include <utility>
 
@@ -85,6 +86,43 @@ auto Window::create(::HWND parent) -> void {
                       reinterpret_cast<::HMENU>(id),
                       instance,
                       this);
+}
+
+auto Window::create_webview() -> winrt::IAsyncAction {
+    auto windowRef { winrt::CoreWebView2ControllerWindowReference::CreateFromWindowHandle(
+        reinterpret_cast<uint64_t>(hwnd.get())) };
+
+    auto environmentOptions { winrt::CoreWebView2EnvironmentOptions() };
+
+    webView.environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
+        L"", L"", environmentOptions);
+
+    // webView.controller = co_await
+    // webView.environment.CreateCoreWebView2ControllerAsync(windowRef);
+
+    // auto color { winrt::Windows::UI::Colors::Black() };
+    // webView.controller.DefaultBackgroundColor(color);
+
+    // webView.core = webView.controller.CoreWebView2();
+
+    // auto clientRect { client_rect() };
+    // winrt::Windows::Foundation::Rect rect(static_cast<float>(clientRect.left),
+    //                                       static_cast<float>(clientRect.top),
+    //                                       static_cast<float>(clientRect.right - clientRect.left),
+    //                                       static_cast<float>(clientRect.bottom -
+    //                                       clientRect.top));
+    // webView.controller.Bounds(rect);
+
+    // webView.core.Navigate(L"https://www.google.ca");
+
+    // webView.core.SourceChanged([](const winrt::CoreWebView2& /* sender */,
+    //                               const winrt::CoreWebView2SourceChangedEventArgs& args) {
+    //     glow::log::log("SourceChanged: {}", args.IsNewDocument());
+    // });
+
+    // webView.core.NavigationCompleted(
+    //     [](const winrt::CoreWebView2& /* sender */,
+    //        const winrt::CoreWebView2NavigationCompletedEventArgs& /* args */) {});
 }
 
 auto CALLBACK Window::procedure(::HWND hwnd,
