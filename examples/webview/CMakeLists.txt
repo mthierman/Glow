@@ -19,3 +19,18 @@ target_link_libraries(
             glow::glow
             glow::compile_options
     )
+
+FetchContent_GetProperties(webview2 SOURCE_DIR webview2_SOURCE_DIR)
+
+add_custom_target(
+    Microsoft.Web.WebView2.Core.dll
+    COMMAND
+        ${CMAKE_COMMAND} -E copy
+        "${webview2_SOURCE_DIR}/runtimes/win-x64/native_uap/Microsoft.Web.WebView2.Core.dll"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/Microsoft.Web.WebView2.Core.dll"
+    )
+
+add_dependencies(
+    ${PROJECT_NAME}
+    Microsoft.Web.WebView2.Core.dll
+    )

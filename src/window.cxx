@@ -97,23 +97,21 @@ auto Window::create_webview() -> winrt::IAsyncAction {
     webView.environment = co_await winrt::CoreWebView2Environment::CreateWithOptionsAsync(
         L"", L"", environmentOptions);
 
-    // webView.controller = co_await
-    // webView.environment.CreateCoreWebView2ControllerAsync(windowRef);
+    webView.controller = co_await webView.environment.CreateCoreWebView2ControllerAsync(windowRef);
 
-    // auto color { winrt::Windows::UI::Colors::Black() };
-    // webView.controller.DefaultBackgroundColor(color);
+    auto color { winrt::Windows::UI::Colors::Black() };
+    webView.controller.DefaultBackgroundColor(color);
 
-    // webView.core = webView.controller.CoreWebView2();
+    webView.core = webView.controller.CoreWebView2();
 
-    // auto clientRect { client_rect() };
-    // winrt::Windows::Foundation::Rect rect(static_cast<float>(clientRect.left),
-    //                                       static_cast<float>(clientRect.top),
-    //                                       static_cast<float>(clientRect.right - clientRect.left),
-    //                                       static_cast<float>(clientRect.bottom -
-    //                                       clientRect.top));
-    // webView.controller.Bounds(rect);
+    auto clientRect { client_rect() };
+    winrt::Windows::Foundation::Rect rect(static_cast<float>(clientRect.left),
+                                          static_cast<float>(clientRect.top),
+                                          static_cast<float>(clientRect.right - clientRect.left),
+                                          static_cast<float>(clientRect.bottom - clientRect.top));
+    webView.controller.Bounds(rect);
 
-    // webView.core.Navigate(L"https://www.google.ca");
+    webView.core.Navigate(L"https://www.google.ca");
 
     // webView.core.SourceChanged([](const winrt::CoreWebView2& /* sender */,
     //                               const winrt::CoreWebView2SourceChangedEventArgs& args) {
