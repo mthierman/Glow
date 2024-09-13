@@ -643,9 +643,7 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
-            // ::RECT rect;
-            // ::GetClientRect(hwnd, &rect);
-            // put_bounds(rect);
+            update_bounds();
 
             if (callback) {
                 callback();
