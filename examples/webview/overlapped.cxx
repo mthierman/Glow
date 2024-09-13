@@ -10,7 +10,10 @@ auto main() -> int {
         return 0;
     });
 
-    webView.create([]() { webView.navigate("https://mthierman.pages.dev/"); });
+    webView.create([]() {
+        webView.navigate("https://mthierman.pages.dev/");
+        webView.activate();
+    });
 
     return glow::app::run();
 }

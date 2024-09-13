@@ -654,6 +654,14 @@ auto WebView::create_webview(Callback callback) -> void {
                 return 0;
             });
 
+            derivedMessages.on(WM_SHOWWINDOW, [this](glow::message::wm::SHOWWINDOW msg) {
+                if (msg.show()) {
+                    show_controller();
+                }
+
+                return 0;
+            });
+
             if (callback) {
                 callback();
             }
