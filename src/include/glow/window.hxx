@@ -183,8 +183,6 @@ public:
 };
 
 struct Overlapped : Window {
-    Overlapped();
-
     auto create() -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
@@ -202,8 +200,6 @@ struct Overlapped : Window {
 };
 
 struct Child : Window {
-    Child();
-
     auto create(::HWND parent) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
