@@ -12,7 +12,13 @@ namespace glow::message {
 auto Manager::on(::UINT msg, Callback callback) -> bool {
     auto emplace { map.try_emplace(msg, callback) };
 
-    return emplace.second;
+    if (emplace.second) {
+        return emplace.second;
+    } else {
+        auto insert { map.insert_or_assign(msg, callback) };
+
+        return insert.second;
+    }
 }
 
 auto Manager::contains(::UINT msg) -> bool { return map.contains(msg); }
