@@ -536,6 +536,20 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
 auto WebView::create_webview(Callback callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
+    derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
+        update_bounds();
+
+        if (msg.windowPos().flags & SWP_SHOWWINDOW) {
+            show_controller();
+        }
+
+        if (msg.windowPos().flags & SWP_HIDEWINDOW) {
+            hide_controller();
+        }
+
+        return 0;
+    });
+
     wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
     };
@@ -646,21 +660,6 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
             update_bounds();
-
-            derivedMessages.on(WM_WINDOWPOSCHANGED,
-                               [this](glow::message::wm::WINDOWPOSCHANGED msg) {
-                update_bounds();
-
-                if (msg.windowPos().flags & SWP_SHOWWINDOW) {
-                    show_controller();
-                }
-
-                if (msg.windowPos().flags & SWP_HIDEWINDOW) {
-                    hide_controller();
-                }
-
-                return 0;
-            });
 
             if (callback) {
                 callback();
