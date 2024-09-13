@@ -21,8 +21,6 @@
 #include <functional>
 #include <string>
 
-#include <glow/window.hxx>
-
 namespace glow::webview {
 struct EnvironmentOptions {
     std::filesystem::path browserExecutableFolder;
@@ -78,40 +76,4 @@ struct WebView {
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
-
-// struct Environment {
-//     using Callback = std::function<void()>;
-
-//     auto create(Callback callback = 0) -> ::HRESULT;
-//     auto close() -> void;
-
-//     EnvironmentOptions environmentOptions;
-
-//     wil::com_ptr<ICoreWebView2Environment13> environment;
-// };
-
-// struct WebView {
-//     using Callback = std::function<void()>;
-
-//     auto create(const Environment& environment, ::HWND hwnd, Callback callback = 0) -> ::HRESULT;
-//     auto close() -> void;
-
-//     auto put_bounds(const glow::window::Position& rect) -> void;
-//     auto put_bounds(const ::RECT& rect) -> void;
-//     auto put_bounds(const ::SIZE& size) -> void;
-//     auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
-//     template <typename T> auto put_bounds(const T& window) -> void;
-
-//     auto show() -> void;
-//     auto hide() -> void;
-//     auto navigate(const std::string& url) -> void;
-//     auto navigate(const std::wstring& url) -> void;
-//     auto test() -> void;
-
-//     WebViewSettings webViewSettings;
-
-//     wil::com_ptr<ICoreWebView2Controller4> controller;
-//     wil::com_ptr<ICoreWebView2_22> core;
-//     wil::com_ptr<ICoreWebView2Settings9> settings;
-// };
 }; // namespace glow::webview

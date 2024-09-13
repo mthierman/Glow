@@ -513,6 +513,7 @@ auto WebView::create(Callback callback) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
+    activate();
     create_webview(callback);
 }
 
@@ -530,6 +531,7 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+    activate();
     create_webview(callback);
 }
 
@@ -659,6 +661,18 @@ auto WebView::create_webview(Callback callback) -> void {
 auto WebView::update_bounds() -> void {
     if (controller) {
         controller->put_Bounds(client_rect());
+    }
+}
+
+auto WebView::navigate(const std::string& url) -> void {
+    if (core) {
+        core->Navigate(glow::text::to_wstring(url).c_str());
+    }
+}
+
+auto WebView::navigate(const std::wstring& url) -> void {
+    if (core) {
+        core->Navigate(url.c_str());
     }
 }
 

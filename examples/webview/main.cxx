@@ -2,7 +2,7 @@
 
 namespace wm = glow::message::wm;
 
-struct WebView final : glow::window::Overlapped {
+struct WebView final : glow::window::WebView {
     WebView() {
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();
@@ -11,23 +11,13 @@ struct WebView final : glow::window::Overlapped {
         });
 
         messages.on(WM_WINDOWPOSCHANGED, [this](wm::WINDOWPOSCHANGED /* msg */) {
-            webView.put_bounds(client_rect());
+            update_bounds();
 
             return 0;
         });
 
-        create();
-        activate();
-
-        environment.create([this]() {
-            webView.create(environment, hwnd.get(), [this]() {
-                webView.navigate("https://mthierman.pages.dev/");
-            });
-        });
+        create([this]() { navigate("https://mthierman.pages.dev/"); });
     }
-
-    glow::webview::Environment environment;
-    glow::webview::WebView webView;
 };
 
 auto main() -> int {

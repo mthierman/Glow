@@ -4,10 +4,7 @@
 // SPDX-License-Identifier: MIT
 // clang-format on
 
-#include <glow/log.hxx>
-#include <glow/text.hxx>
 #include <glow/webview.hxx>
-#include <glow/window.hxx>
 
 namespace glow::webview {
 // auto Environment::create(Callback callback) -> ::HRESULT {

@@ -225,6 +225,8 @@ struct WebView : Window, glow::webview::WebView {
     auto create_webview(Callback callback = 0) -> void;
 
     auto update_bounds() -> void;
+    auto navigate(const std::string& url) -> void;
+    auto navigate(const std::wstring& url) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
