@@ -35,10 +35,7 @@ struct Position {
 enum struct Background { Transparent, System, Black, White, Custom };
 
 struct Window {
-    auto create() -> void;
-    auto create(::HWND parent) -> void;
-
-private:
+protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
                                    ::WPARAM wparam,
@@ -180,6 +177,14 @@ public:
     glow::message::Manager messages;
 
     wil::unique_hwnd hwnd;
+};
+
+struct Overlapped : Window {
+    auto create() -> void;
+};
+
+struct Child : Window {
+    auto create(::HWND parent) -> void;
 };
 
 template <typename T> struct Manager {

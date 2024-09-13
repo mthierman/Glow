@@ -2,7 +2,7 @@
 
 namespace wm = glow::message::wm;
 
-struct WebView final : glow::window::Window {
+struct WebView final : glow::window::Overlapped {
     WebView() {
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();

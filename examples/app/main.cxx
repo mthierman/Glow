@@ -9,7 +9,7 @@ enum struct glow::message::Code : ::UINT {
 };
 namespace wm = glow::message::wm;
 
-struct Window final : glow::window::Window {
+struct Window final : glow::window::Overlapped {
     using enum glow::message::Code;
 
     Window(std::unordered_map<char, bool>& keyMap)

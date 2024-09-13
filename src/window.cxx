@@ -17,76 +17,6 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
-auto Window::create() -> void {
-    auto instance { glow::system::instance() };
-    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Window) },
-                                .hInstance { instance },
-                                .hIcon { icon },
-                                .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"Window" },
-                                .hIconSm { icon } };
-
-    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
-
-    ::CreateWindowExW(0,
-                      windowClass.lpszClassName,
-                      L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      nullptr,
-                      nullptr,
-                      instance,
-                      this);
-}
-
-auto Window::create(::HWND parent) -> void {
-    auto instance { glow::system::instance() };
-    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Window) },
-                                .hInstance { instance },
-                                .hIcon { icon },
-                                .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"ChildWindow" },
-                                .hIconSm { icon } };
-
-    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
-
-    ::CreateWindowExW(0,
-                      windowClass.lpszClassName,
-                      L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      CW_USEDEFAULT,
-                      parent,
-                      reinterpret_cast<::HMENU>(id),
-                      instance,
-                      this);
-}
-
 auto CALLBACK Window::procedure(::HWND hwnd,
                                 ::UINT msg,
                                 ::WPARAM wparam,
@@ -525,6 +455,76 @@ auto Window::notify_app(glow::message::Code code,
                         std::string_view message,
                         ::HWND receiverHwnd) -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
+}
+
+auto Overlapped::create() -> void {
+    auto instance { glow::system::instance() };
+    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { instance },
+                                .hIcon { icon },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Overlapped" },
+                                .hIconSm { icon } };
+
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+
+    ::CreateWindowExW(0,
+                      windowClass.lpszClassName,
+                      L"",
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      nullptr,
+                      nullptr,
+                      instance,
+                      this);
+}
+
+auto Child::create(::HWND parent) -> void {
+    auto instance { glow::system::instance() };
+    auto icon { icons.app ? icons.app.get() : glow::system::system_icon() };
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { instance },
+                                .hIcon { icon },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Child" },
+                                .hIconSm { icon } };
+
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+
+    ::CreateWindowExW(0,
+                      windowClass.lpszClassName,
+                      L"",
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      parent,
+                      reinterpret_cast<::HMENU>(id),
+                      instance,
+                      this);
 }
 
 auto to_position(const ::RECT& rect) -> Position {

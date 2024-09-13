@@ -2,7 +2,7 @@
 
 namespace wm = glow::message::wm;
 
-struct Window final : glow::window::Window {
+struct Window final : glow::window::Overlapped {
     Window() {
         messages.on(WM_DESTROY, [](wm::DESTROY msg) {
             msg.quit();
