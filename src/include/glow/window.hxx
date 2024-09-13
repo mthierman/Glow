@@ -174,9 +174,11 @@ public:
     Icons icons;
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
+
     glow::message::Manager messages;
     glow::message::Manager baseMessages;
     glow::message::Manager derivedMessages;
+    glow::message::Manager defaultMessages;
 
     wil::unique_hwnd hwnd;
 };

@@ -53,6 +53,16 @@ Window::Window() {
 
         return 0;
     });
+
+    defaultMessages.on(WM_ERASEBKGND, [this](glow::message::wm::ERASEBKGND msg) {
+        return erase_background(msg.deviceContext());
+    });
+
+    defaultMessages.on(WM_CLOSE, [this](glow::message::wm::MSG /* msg */) {
+        hwnd.reset();
+
+        return 0;
+    });
 }
 
 auto CALLBACK Window::procedure(::HWND hwnd,
@@ -85,14 +95,8 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             return self->messages.invoke({ hwnd, msg, wparam, lparam });
         }
 
-        if (msg == WM_ERASEBKGND) {
-            return self->erase_background(reinterpret_cast<::HDC>(wparam));
-        }
-
-        if (msg == WM_CLOSE) {
-            self->hwnd.reset();
-
-            return 0;
+        if (self->defaultMessages.contains(msg)) {
+            return self->defaultMessages.invoke({ hwnd, msg, wparam, lparam });
         }
     }
 
