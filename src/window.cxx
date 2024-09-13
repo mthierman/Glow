@@ -572,6 +572,9 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+    set_background(Background::Custom);
+    set_background_color(
+        config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
     create_webview(callback);
 }
 
