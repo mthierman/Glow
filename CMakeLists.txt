@@ -52,15 +52,11 @@ target_compile_definitions(
 
 target_compile_options(
     ${PROJECT_NAME}
-    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:
+    PRIVATE $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
             /W4
             /WX
             >
-            $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
-            /W4
-            /WX
-            >
-            $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
+            $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
             -Wall
             -Werror
             >
@@ -72,7 +68,7 @@ target_compile_options(
            /diagnostics:caret
            /Zc:__cplusplus
            >
-           $<$<AND:$<CXX_COMPILER_ID:Clang>>:
+           $<$<CXX_COMPILER_ID:Clang>:
            -Wno-braced-scalar-init
            -Wno-nonportable-include-path
            >
@@ -80,19 +76,20 @@ target_compile_options(
 
 target_link_options(
     ${PROJECT_NAME}
+    PRIVATE
+    $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
+    /WX
+    /NOLOGO
+    >
+    $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
+    -Wl,/WX,/NOLOGO
+    >
     PUBLIC
-    $<$<CXX_COMPILER_ID:MSVC>:
+    $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
     /entry:mainCRTStartup
-    /WX
-    /NOLOGO
     >
-    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>>:
-    /entry:mainCRTStartup
-    /WX
-    /NOLOGO
-    >
-    $<$<AND:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_FRONTEND_VARIANT:GNU>>:
-    -Wl,/entry:mainCRTStartup,/WX,/NOLOGO
+    $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
+    -Wl,/entry:mainCRTStartup
     >
     )
 
