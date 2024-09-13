@@ -1,5 +1,7 @@
 #include <glow/glow.hxx>
 
+#include <WebView2.h>
+
 namespace wm = glow::message::wm;
 glow::window::WebView webView;
 
@@ -37,6 +39,20 @@ auto main() -> int {
             return S_OK;
         }).Get(),
             &token1);
+
+        auto lambda
+            = [](ICoreWebView2* sender, ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
+            glow::log::log("TEST");
+            return S_OK;
+        };
+
+        // std::function<::HRESULT(ICoreWebView2*, ICoreWebView2DOMContentLoadedEventArgs*)>
+        // callFunc;
+
+        // auto callback =
+        // wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(lambda);
+
+        // auto test { callback.Get() };
 
         ::EventRegistrationToken token2;
         webView.core->add_DOMContentLoaded(
