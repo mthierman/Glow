@@ -15,7 +15,17 @@ auto main() -> int {
 
     webView.create([]() {
         webView.navigate("https://localhost:5173/");
-        webView.activate();
+
+        ::EventRegistrationToken token;
+        webView.core->add_NavigationCompleted(
+            wil::MakeAgileCallback<ICoreWebView2NavigationCompletedEventHandler>(
+                [](ICoreWebView2* sender,
+                   ICoreWebView2NavigationCompletedEventArgs* args) -> ::HRESULT {
+            webView.activate();
+
+            return S_OK;
+        }).Get(),
+            &token);
     });
 
     return glow::app::run();
