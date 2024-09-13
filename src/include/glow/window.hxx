@@ -224,6 +224,8 @@ struct WebView : Window, glow::webview::WebView {
     auto create(::HWND parent, Callback callback = 0) -> void;
     auto create_webview(Callback callback = 0) -> void;
 
+    auto update_bounds() -> void;
+
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },

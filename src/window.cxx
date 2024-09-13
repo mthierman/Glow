@@ -513,6 +513,7 @@ auto WebView::create(Callback callback) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
+    create_webview(callback);
 }
 
 auto WebView::create(::HWND parent, Callback callback) -> void {
@@ -529,6 +530,7 @@ auto WebView::create(::HWND parent, Callback callback) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+    create_webview(callback);
 }
 
 auto WebView::create_webview(Callback callback) -> void {
@@ -654,6 +656,12 @@ auto WebView::create_webview(Callback callback) -> void {
 
         return S_OK;
     }).Get());
+}
+
+auto WebView::update_bounds() -> void {
+    if (controller) {
+        controller->put_Bounds(client_rect());
+    }
 }
 
 auto to_position(const ::RECT& rect) -> Position {
