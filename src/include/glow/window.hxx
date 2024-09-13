@@ -258,8 +258,6 @@ struct WebView : Window {
 
     struct Config {
         struct EnvironmentOptions {
-            std::filesystem::path browserExecutableFolder;
-            std::filesystem::path userDataFolder;
             std::string AdditionalBrowserArguments;
             bool AllowSingleSignOnUsingOSPrimaryAccount { false };
             std::string Language;
@@ -275,9 +273,9 @@ struct WebView : Window {
                 COREWEBVIEW2_SCROLLBAR_STYLE::COREWEBVIEW2_SCROLLBAR_STYLE_DEFAULT
             };
         };
+        EnvironmentOptions environmentOptions;
 
         struct Settings {
-            COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
             bool AreBrowserAcceleratorKeysEnabled { true };
             bool AreDefaultContextMenusEnabled { true };
             bool AreDefaultScriptDialogsEnabled { true };
@@ -298,9 +296,11 @@ struct WebView : Window {
             bool IsWebMessageEnabled { true };
             bool IsZoomControlEnabled { true };
         };
-
-        EnvironmentOptions environmentOptions;
         Settings settings;
+
+        std::filesystem::path browserExecutableFolder;
+        std::filesystem::path userDataFolder;
+        COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
     };
 
     Config config;

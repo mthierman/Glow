@@ -514,9 +514,8 @@ auto WebView::create(Callback callback, bool show) -> void {
                       glow::system::instance(),
                       this);
     set_background(Background::Custom);
-    set_background_color(config.settings.backgroundColor.R,
-                         config.settings.backgroundColor.G,
-                         config.settings.backgroundColor.B);
+    set_background_color(
+        config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
     create_webview(callback);
 }
 
@@ -612,8 +611,8 @@ auto WebView::create_webview(Callback callback) -> void {
     createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
 
     CreateCoreWebView2EnvironmentWithOptions(
-        config.environmentOptions.browserExecutableFolder.c_str(),
-        config.environmentOptions.userDataFolder.c_str(),
+        config.browserExecutableFolder.c_str(),
+        config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
@@ -630,7 +629,7 @@ auto WebView::create_webview(Callback callback) -> void {
                     ICoreWebView2Controller* createdController) -> ::HRESULT {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
-            controller->put_DefaultBackgroundColor(config.settings.backgroundColor);
+            controller->put_DefaultBackgroundColor(config.backgroundColor);
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());
