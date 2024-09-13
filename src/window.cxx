@@ -541,7 +541,7 @@ auto WebView::create_webview(Callback callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
     derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
-        update_bounds();
+        put_bounds(client_rect());
 
         if (msg.windowPos().flags & SWP_SHOWWINDOW) {
             show_controller();
@@ -663,8 +663,6 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
-            update_bounds();
-
             if (callback) {
                 callback();
             }
@@ -674,12 +672,6 @@ auto WebView::create_webview(Callback callback) -> void {
 
         return S_OK;
     }).Get());
-}
-
-auto WebView::update_bounds() -> void {
-    if (controller) {
-        controller->put_Bounds(client_rect());
-    }
 }
 
 auto WebView::put_bounds(const Position& position) -> void {

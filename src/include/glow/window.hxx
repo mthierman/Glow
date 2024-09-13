@@ -232,8 +232,6 @@ struct WebView : Window {
     auto create(::HWND parent, Callback callback = 0, bool show = false) -> void;
     auto create_webview(Callback callback = 0) -> void;
 
-    auto update_bounds() -> void;
-
     auto put_bounds(const Position& position) -> void;
     auto put_bounds(const ::RECT& rect) -> void;
     auto put_bounds(const ::SIZE& size) -> void;
