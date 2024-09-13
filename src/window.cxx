@@ -467,12 +467,12 @@ auto Window::notify_app(glow::message::Code code,
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
 
-auto Overlapped::create() -> void {
+auto Overlapped::create(bool show) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | (show ? WS_VISIBLE : 0),
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -483,12 +483,12 @@ auto Overlapped::create() -> void {
                       this);
 }
 
-auto Child::create(::HWND parent) -> void {
+auto Child::create(::HWND parent, bool show) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | (show ? WS_VISIBLE : 0),
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -499,12 +499,12 @@ auto Child::create(::HWND parent) -> void {
                       this);
 }
 
-auto WebView::create(Callback callback) -> void {
+auto WebView::create(Callback callback, bool show) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | (show ? WS_VISIBLE : 0),
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -516,12 +516,12 @@ auto WebView::create(Callback callback) -> void {
     create_webview(callback);
 }
 
-auto WebView::create(::HWND parent, Callback callback) -> void {
+auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | (show ? WS_VISIBLE : 0),
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
