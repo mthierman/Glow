@@ -43,6 +43,8 @@ struct Position {
 enum struct Background { Transparent, System, Black, White, Custom };
 
 struct Window {
+    Window();
+
 protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
@@ -102,6 +104,7 @@ public:
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
     auto set_position(Position position) -> void;
+    auto set_position(::RECT rect) -> void;
     auto set_window_placement() -> void;
     auto get_window_placement() -> void;
     auto get_monitor_info() -> void;
@@ -172,6 +175,7 @@ public:
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;
+    glow::message::Manager baseMessages;
     glow::message::Manager derivedMessages;
 
     wil::unique_hwnd hwnd;

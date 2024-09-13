@@ -17,6 +17,44 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
+Window::Window() {
+    baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
+        refresh_dpi();
+
+        return 0;
+    });
+
+    baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
+        brushes.system.reset(
+            glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
+        invalidate_rect();
+
+        return 0;
+    });
+
+    baseMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
+        auto windowPos { msg.windowPos() };
+
+        positions.window = to_position(windowPos);
+        positions.client = to_position(client_rect());
+
+        get_window_placement();
+
+        get_monitor_info();
+        positions.monitor = to_position(monitorInfo.rcMonitor);
+        positions.work = to_position(monitorInfo.rcWork);
+
+        return 0;
+    });
+
+    baseMessages.on(WM_DPICHANGED, [this](glow::message::wm::DPICHANGED msg) {
+        refresh_dpi();
+        set_position(msg.suggestedRect());
+
+        return 0;
+    });
+}
+
 auto CALLBACK Window::procedure(::HWND hwnd,
                                 ::UINT msg,
                                 ::WPARAM wparam,
@@ -27,7 +65,6 @@ auto CALLBACK Window::procedure(::HWND hwnd,
         if (auto self { static_cast<Window*>(create->lpCreateParams) }; self) {
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
             self->hwnd.reset(hwnd);
-            self->refresh_dpi();
         }
     }
 
@@ -36,28 +73,8 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     }
 
     if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
-        if (msg == WM_SETTINGCHANGE) {
-            self->brushes.system.reset(
-                glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
-            self->invalidate_rect();
-        }
-
-        if (msg == WM_WINDOWPOSCHANGED) {
-            auto windowPos { reinterpret_cast<::LPWINDOWPOS>(lparam) };
-
-            self->positions.window = to_position(*windowPos);
-            self->positions.client = to_position(self->client_rect());
-
-            self->get_window_placement();
-
-            self->get_monitor_info();
-            self->positions.monitor = to_position(self->monitorInfo.rcMonitor);
-            self->positions.work = to_position(self->monitorInfo.rcWork);
-        }
-
-        if (msg == WM_DPICHANGED) {
-            self->refresh_dpi();
-            self->set_position(to_position(*reinterpret_cast<::LPRECT>(lparam)));
+        if (self->baseMessages.contains(msg)) {
+            self->baseMessages.invoke({ hwnd, msg, wparam, lparam });
         }
 
         if (self->derivedMessages.contains(msg)) {
@@ -335,6 +352,17 @@ auto Window::set_title(const std::string& title) -> void {
 }
 
 auto Window::set_position(Position position) -> void {
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   position.x,
+                   position.y,
+                   position.width,
+                   position.height,
+                   SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+auto Window::set_position(::RECT rect) -> void {
+    auto position { to_position(rect) };
     ::SetWindowPos(hwnd.get(),
                    nullptr,
                    position.x,
