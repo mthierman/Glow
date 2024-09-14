@@ -15,15 +15,21 @@ auto main() -> int {
     webView.config.backgroundColor
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
-    webView.events.DOMContentLoaded.second
-        = [](ICoreWebView2* sender, ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
-        glow::log::log("TEST");
-        webView.activate();
+    webView.create([]() {
+        auto token = webView.eventTokens.try_emplace("DOMContentLoaded", ::EventRegistrationToken())
+                         .first->second;
+        webView.core->add_DOMContentLoaded(
+            webView
+                .event_handler([](ICoreWebView2* sender,
+                                  ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
+            webView.activate();
 
-        return S_OK;
-    };
+            return S_OK;
+        }).Get(),
+            webView.event_token("DOMContentLoaded"));
 
-    webView.create([]() { webView.navigate("https://localhost:5173/"); });
+        webView.navigate("https://localhost:5173/");
+    });
 
     return glow::app::run();
 }

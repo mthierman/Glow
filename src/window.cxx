@@ -704,11 +704,13 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
-            core->add_DOMContentLoaded(
-                wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(
-                    events.DOMContentLoaded.second)
-                    .Get(),
-                &events.DOMContentLoaded.first);
+            // if (events.DOMContentLoaded.second) {
+            //     core->add_DOMContentLoaded(
+            //         wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(
+            //             events.DOMContentLoaded.second)
+            //             .Get(),
+            //         &events.DOMContentLoaded.first);
+            // }
 
             if (callback) {
                 callback();
@@ -777,6 +779,10 @@ auto WebView::navigate(const std::wstring& url) -> void {
     if (core) {
         core->Navigate(url.c_str());
     }
+}
+
+auto WebView::event_token(std::string key) -> ::EventRegistrationToken* {
+    return &eventTokens.try_emplace(std::move(key), ::EventRegistrationToken()).first->second;
 }
 
 auto to_position(const ::RECT& rect) -> Position {

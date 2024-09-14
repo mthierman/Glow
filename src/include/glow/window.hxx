@@ -235,6 +235,12 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
+    template <typename T> auto event_handler(T eventHandler) {
+        return wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(eventHandler);
+    }
+
+    auto event_token(std::string key) -> ::EventRegistrationToken*;
+
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -300,13 +306,7 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
-
-    struct Events {
-        std::pair<::EventRegistrationToken,
-                  std::function<::HRESULT(ICoreWebView2*, ICoreWebView2DOMContentLoadedEventArgs*)>>
-            DOMContentLoaded;
-    };
-    Events events;
+    std::unordered_map<std::string, ::EventRegistrationToken> eventTokens;
 };
 
 template <typename T> struct Manager {
