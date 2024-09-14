@@ -23,6 +23,7 @@
 
 #include <wil/com.h>
 #include <wil/resource.h>
+#include <wil/windowing.h>
 #include <wil/wrl.h>
 
 #include <WebView2.h>

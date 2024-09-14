@@ -1,47 +1,61 @@
 #include <glow/glow.hxx>
 
-#include <wil/windowing.h>
+struct WebView final : glow::window::WebView { };
 
-namespace wm = glow::message::wm;
-glow::window::Overlapped overlapped;
-glow::window::WebView webView;
+struct Window final : glow::window::Overlapped {
+    Window() {
+        messages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
+            left.create(hwnd.get(), [this]() { left.navigate("https://localhost:5173/"); }, true);
+            right.create(hwnd.get(), [this]() { right.navigate("https://localhost:5173/"); }, true);
 
-auto main() -> int {
-    overlapped.messages.on(WM_DESTROY, [](wm::DESTROY msg) {
-        msg.quit();
-
-        return 0;
-    });
-
-    overlapped.messages.on(WM_WINDOWPOSCHANGED, [](wm::WINDOWPOSCHANGED /* msg */) {
-        wil::for_each_child_window(overlapped.hwnd.get(), [](::HWND hwnd) {
-            auto id { ::GetWindowLongPtrW(hwnd, GWL_ID) };
-            glow::log::log("{}", id);
-            if (id == webView.get_id()) {
-                ::SetWindowPos(hwnd,
-                               nullptr,
-                               0,
-                               0,
-                               overlapped.client_rect().right / 2,
-                               overlapped.client_rect().bottom,
-                               0);
-            }
-
-            return true;
+            return 0;
         });
 
-        return 0;
-    });
+        messages.on(WM_DESTROY, [](glow::message::wm::DESTROY msg) {
+            msg.quit();
 
-    overlapped.create();
-    overlapped.activate();
+            return 0;
+        });
 
-    webView.create(overlapped.hwnd.get(),
-                   []() { webView.navigate("https://mthierman.pages.dev/"); });
-    webView.put_bounds(overlapped.client_rect());
+        messages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED /* msg */) {
+            wil::for_each_child_window(hwnd.get(), [this](::HWND hwnd) {
+                auto id { ::GetWindowLongPtrW(hwnd, GWL_ID) };
 
-    // webView.create(overlapped.hwnd.get());
-    // webView.create();
+                if (id == left.get_id()) {
+                    ::SetWindowPos(hwnd,
+                                   nullptr,
+                                   0,
+                                   0,
+                                   client_rect().right / 2,
+                                   client_rect().bottom,
+                                   SWP_NOZORDER | SWP_NOACTIVATE);
+                }
+
+                if (id == right.get_id()) {
+                    ::SetWindowPos(hwnd,
+                                   nullptr,
+                                   client_rect().right / 2,
+                                   0,
+                                   client_rect().right / 2,
+                                   client_rect().bottom,
+                                   SWP_NOZORDER | SWP_NOACTIVATE);
+                }
+
+                return true;
+            });
+
+            return 0;
+        });
+
+        create(true);
+    }
+
+    WebView left;
+    WebView right;
+};
+
+auto main() -> int {
+    Window window;
 
     return glow::app::run();
 }
