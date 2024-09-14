@@ -89,16 +89,13 @@ protected:
                                    ::LPARAM lparam) -> ::LRESULT;
 
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
-
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
     auto caption_refresh() -> void;
     auto frame_refresh() -> void;
     auto window_refresh() -> void;
     auto dpi_refresh() -> void;
-
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
-
     auto caption_color(const glow::color::Color& color) -> void;
     auto text_color(const glow::color::Color& color) -> void;
     auto border_color(const glow::color::Color& color) -> void;
@@ -108,14 +105,12 @@ public:
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
-
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
     auto maximize() -> void;
     auto minimize() -> void;
     auto restore() -> void;
-
     auto set_overlapped_window() -> void;
     auto is_overlapped_window() -> bool;
     auto set_popup_window() -> void;
@@ -138,7 +133,6 @@ public:
     auto disable_dark_mode() -> void;
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
     auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
-
     auto focus() -> void;
     auto is_focused() -> bool;
     auto foreground() -> void;
@@ -168,10 +162,8 @@ public:
     auto stop_timer(::UINT_PTR timerId) -> bool;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-
     auto client_position() -> Position;
     auto window_position() -> Position;
-
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
