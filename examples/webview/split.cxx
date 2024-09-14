@@ -26,18 +26,18 @@ struct Window final : glow::window::Overlapped {
                                    nullptr,
                                    0,
                                    0,
-                                   client_rect().right / 2,
-                                   client_rect().bottom,
+                                   client_position().width / 2,
+                                   client_position().height,
                                    SWP_NOZORDER | SWP_NOACTIVATE);
                 }
 
                 if (id == right.get_id()) {
                     ::SetWindowPos(hwnd,
                                    nullptr,
-                                   client_rect().right / 2,
+                                   client_position().width / 2,
                                    0,
-                                   client_rect().right / 2,
-                                   client_rect().bottom,
+                                   client_position().width / 2,
+                                   client_position().height,
                                    SWP_NOZORDER | SWP_NOACTIVATE);
                 }
 

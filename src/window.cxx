@@ -64,7 +64,7 @@ Window::Window() {
         auto windowPos { msg.windowPos() };
 
         positions.window = Position(windowPos);
-        positions.client = Position(client_rect());
+        positions.client = client_position();
 
         get_window_placement();
 
@@ -165,7 +165,8 @@ auto Window::erase_background(::HDC hdc) -> int {
 }
 
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
-    auto rect { client_rect() };
+    ::RECT rect;
+    ::GetClientRect(hwnd.get(), &rect);
     ::FillRect(hdc, &rect, brush.get());
 }
 
@@ -494,22 +495,37 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::client_rect() -> ::RECT {
+auto Window::client_position() -> Position {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
 
-    return rect;
+    return Position(rect);
 }
 
-auto Window::window_rect() -> ::RECT {
+auto Window::window_position() -> Position {
     ::RECT rect;
     ::GetWindowRect(hwnd.get(), &rect);
 
-    return rect;
+    return Position(rect);
 }
 
+// auto Window::client_rect() -> ::RECT {
+//     ::RECT rect;
+//     ::GetClientRect(hwnd.get(), &rect);
+
+//     return rect;
+// }
+
+// auto Window::window_rect() -> ::RECT {
+//     ::RECT rect;
+//     ::GetWindowRect(hwnd.get(), &rect);
+
+//     return rect;
+// }
+
 auto Window::invalidate_rect() -> void {
-    auto rect { client_rect() };
+    ::RECT rect;
+    ::GetClientRect(hwnd.get(), &rect);
     ::InvalidateRect(hwnd.get(), &rect, TRUE);
 }
 
@@ -613,7 +629,7 @@ auto WebView::create_webview(Callback callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
     derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
-        put_bounds(Position(client_rect()));
+        put_bounds(client_position());
 
         if (msg.windowPos().flags & SWP_SHOWWINDOW) {
             show_controller();
@@ -703,7 +719,7 @@ auto WebView::create_webview(Callback callback) -> void {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
             controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
-            put_bounds(Position(client_rect()));
+            put_bounds(client_position());
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());

@@ -141,8 +141,8 @@ public:
     auto stop_timer(::UINT_PTR timerId) -> bool;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-    auto client_rect() -> ::RECT;
-    auto window_rect() -> ::RECT;
+    auto client_position() -> Position;
+    auto window_position() -> Position;
     auto invalidate_rect() -> void;
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
