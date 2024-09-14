@@ -253,6 +253,11 @@ struct WebView : Window {
         return wil::MakeAgileCallback<T>(handler);
     }
 
+    std::unordered_map<uint64_t, std::any> handlerMap;
+    template <typename T, typename U> auto handler_map(U handler) {
+        return wil::MakeAgileCallback<T>(handler);
+    }
+
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
