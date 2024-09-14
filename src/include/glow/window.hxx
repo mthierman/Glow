@@ -235,11 +235,11 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    template <typename T> auto event_handler(T eventHandler) {
+    template <typename T> auto make_handler(T eventHandler) {
         return wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(eventHandler);
     }
 
-    auto event_token(std::string key) -> ::EventRegistrationToken*;
+    auto token(std::string key) -> ::EventRegistrationToken*;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },

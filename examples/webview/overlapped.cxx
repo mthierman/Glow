@@ -16,17 +16,15 @@ auto main() -> int {
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
     webView.create([]() {
-        auto token = webView.eventTokens.try_emplace("DOMContentLoaded", ::EventRegistrationToken())
-                         .first->second;
         webView.core->add_DOMContentLoaded(
             webView
-                .event_handler([](ICoreWebView2* sender,
+                .make_handler([](ICoreWebView2* sender,
                                   ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
             webView.activate();
 
             return S_OK;
         }).Get(),
-            webView.event_token("DOMContentLoaded"));
+            webView.token("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
     });

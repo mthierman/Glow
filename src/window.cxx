@@ -781,8 +781,12 @@ auto WebView::navigate(const std::wstring& url) -> void {
     }
 }
 
-auto WebView::event_token(std::string key) -> ::EventRegistrationToken* {
-    return &eventTokens.try_emplace(std::move(key), ::EventRegistrationToken()).first->second;
+auto WebView::token(std::string key) -> ::EventRegistrationToken* {
+    if (eventTokens.contains(key)) {
+        return &eventTokens.at(key);
+    } else {
+        return &eventTokens.try_emplace(std::move(key), ::EventRegistrationToken()).first->second;
+    }
 }
 
 auto to_position(const ::RECT& rect) -> Position {
