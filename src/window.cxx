@@ -55,7 +55,7 @@ Window::Window() {
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
         brushes.system.reset(glow::color::Color(winrt::UIColorType::Background).brush());
-        invalidate_rect();
+        refresh_background();
 
         return 0;
     });
@@ -133,13 +133,17 @@ auto CALLBACK Window::procedure(::HWND hwnd,
 
 auto Window::set_background_style(BackgroundStyle style) -> void {
     backgroundStyle = style;
-    invalidate_rect();
+    refresh_background();
 }
 
 auto Window::set_background_color(glow::color::Color color) -> void {
     backgroundColor = color;
     brushes.custom.reset(backgroundColor.brush());
-    invalidate_rect();
+    refresh_background();
+}
+
+auto Window::refresh_background() -> void {
+    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE);
 }
 
 auto Window::erase_background(::HDC hdc) -> int {
@@ -507,26 +511,6 @@ auto Window::window_position() -> Position {
     ::GetWindowRect(hwnd.get(), &rect);
 
     return Position(rect);
-}
-
-// auto Window::client_rect() -> ::RECT {
-//     ::RECT rect;
-//     ::GetClientRect(hwnd.get(), &rect);
-
-//     return rect;
-// }
-
-// auto Window::window_rect() -> ::RECT {
-//     ::RECT rect;
-//     ::GetWindowRect(hwnd.get(), &rect);
-
-//     return rect;
-// }
-
-auto Window::invalidate_rect() -> void {
-    ::RECT rect;
-    ::GetClientRect(hwnd.get(), &rect);
-    ::InvalidateRect(hwnd.get(), &rect, TRUE);
 }
 
 auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }

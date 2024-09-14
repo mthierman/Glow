@@ -71,6 +71,7 @@ protected:
 public:
     auto set_background_style(BackgroundStyle style) -> void;
     auto set_background_color(glow::color::Color color) -> void;
+    auto refresh_background() -> void;
     auto erase_background(::HDC hdc) -> int;
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
 
@@ -141,9 +142,10 @@ public:
     auto stop_timer(::UINT_PTR timerId) -> bool;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
+
     auto client_position() -> Position;
     auto window_position() -> Position;
-    auto invalidate_rect() -> void;
+
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
