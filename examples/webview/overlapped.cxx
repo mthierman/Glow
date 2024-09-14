@@ -19,7 +19,7 @@ auto main() -> int {
         webView.core->add_DOMContentLoaded(
             webView
                 .make_handler([](ICoreWebView2* sender,
-                                  ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
+                                 ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
             webView.activate();
 
             return S_OK;
