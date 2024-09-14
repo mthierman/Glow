@@ -36,6 +36,14 @@
 
 namespace glow::window {
 struct Position {
+    Position() = default;
+    Position(int x, int y, int width, int height);
+    Position(const ::RECT& rect);
+    Position(const ::SIZE& size);
+    Position(const ::WINDOWPOS& windowPos);
+
+    auto rect() const -> ::RECT;
+
     int x { 0 };
     int y { 0 };
     int width { 0 };

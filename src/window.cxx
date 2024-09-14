@@ -17,6 +17,34 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
+Position::Position(int x, int y, int width, int height)
+    : x { x },
+      y { y },
+      width { width },
+      height { height } { }
+
+Position::Position(const ::RECT& rect)
+    : x { rect.left },
+      y { rect.top },
+      width { rect.right - rect.left },
+      height { rect.bottom - rect.top } { }
+
+Position::Position(const ::SIZE& size)
+    : x { 0 },
+      y { 0 },
+      width { size.cx },
+      height { size.cy } { }
+
+Position::Position(const ::WINDOWPOS& windowPos)
+    : x { windowPos.x },
+      y { windowPos.y },
+      width { windowPos.cx },
+      height { windowPos.cy } { }
+
+auto Position::rect() const -> ::RECT {
+    return ::RECT { .left { x }, .top { y }, .right { width }, .bottom { height } };
+}
+
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
         brushes.custom.reset(backgroundColor.brush());
@@ -791,21 +819,14 @@ auto WebView::navigate(const std::wstring& url) -> void {
 }
 
 auto to_position(const ::RECT& rect) -> Position {
-    return Position { .x { rect.left },
-                      .y { rect.top },
-                      .width { rect.right - rect.left },
-                      .height { rect.bottom - rect.top } };
+    return Position(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
 }
 
 auto to_position(const ::WINDOWPOS& windowPos) -> Position {
-    return Position {
-        .x { windowPos.x }, .y { windowPos.y }, .width { windowPos.cx }, .height { windowPos.cy }
-    };
+    return Position(windowPos.x, windowPos.y, windowPos.cx, windowPos.cy);
 }
 
-auto to_position(const ::SIZE& size) -> Position {
-    return Position { .x { 0 }, .y { 0 }, .width { size.cx }, .height { size.cy } };
-}
+auto to_position(const ::SIZE& size) -> Position { return Position(0, 0, size.cx, size.cy); }
 
 auto to_rect(const Position& position) -> ::RECT {
     return ::RECT { .left { position.x },
