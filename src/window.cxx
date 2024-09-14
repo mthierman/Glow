@@ -805,14 +805,4 @@ auto WebView::navigate(const std::wstring& url) -> void {
         core->Navigate(url.c_str());
     }
 }
-
-// auto to_position(const ::RECT& rect) -> Position {
-//     return Position(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
-// }
-
-// auto to_position(const ::WINDOWPOS& windowPos) -> Position {
-//     return Position(windowPos.x, windowPos.y, windowPos.cx, windowPos.cy);
-// }
-
-// auto to_position(const ::SIZE& size) -> Position { return Position(0, 0, size.cx, size.cy); }
 } // namespace glow::window

@@ -380,8 +380,4 @@ private:
     std::vector<uintptr_t> keys;
     std::unordered_map<uintptr_t, std::unique_ptr<T>> map;
 };
-
-// auto to_position(const ::RECT& rect) -> Position;
-// auto to_position(const ::WINDOWPOS& windowPos) -> Position;
-// auto to_position(const ::SIZE& size) -> Position;
 } // namespace glow::window
