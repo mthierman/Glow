@@ -22,6 +22,15 @@ Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
       b { b },
       a { a } { }
 
+Color::Color(winrt::UIColorType colorType) {
+    auto color { system(colorType) };
+
+    r = color.R;
+    g = color.G;
+    b = color.B;
+    a = color.A;
+}
+
 Color::Color(const winrt::Color& color)
     : r { color.R },
       g { color.G },
