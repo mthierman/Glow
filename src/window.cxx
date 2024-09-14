@@ -505,7 +505,7 @@ auto Overlapped::create(bool show) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | (show ? WS_VISIBLE : 0),
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -514,6 +514,10 @@ auto Overlapped::create(bool show) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
+
+    if (show) {
+        activate();
+    }
 }
 
 auto Child::create(::HWND parent, bool show) -> void {
@@ -521,7 +525,7 @@ auto Child::create(::HWND parent, bool show) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | (show ? WS_VISIBLE : 0),
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -530,6 +534,10 @@ auto Child::create(::HWND parent, bool show) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+
+    if (show) {
+        activate();
+    }
 }
 
 auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken& {
