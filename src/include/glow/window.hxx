@@ -223,18 +223,6 @@ struct Child : Window {
                                 .hIconSm { icons.app.get() } };
 };
 
-struct EventHandler {
-    template <typename T> auto make(auto&&... handler) {
-        auto key { map.size() };
-        map.try_emplace(key, wil::MakeAgileCallback<T>(std::forward<decltype(handler)>(handler)...));
-
-        return std::any_cast<Microsoft::WRL::ComPtr<T>>(map.at(key)).Get();
-    }
-
-private:
-    std::unordered_map<size_t, std::any> map;
-};
-
 struct EventToken {
     auto operator()(const std::string& key) -> ::EventRegistrationToken&;
 
@@ -260,9 +248,16 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    EventHandler handler;
-    EventToken token;
+    template <typename T> auto event(auto&&... handler) {
+        auto key { handlers.size() };
+        handlers.try_emplace(
+            key, wil::MakeAgileCallback<T>(std::forward<decltype(handler)>(handler)...));
 
+        return std::any_cast<Microsoft::WRL::ComPtr<T>>(handlers.at(key)).Get();
+    }
+
+protected:
+public:
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -323,11 +318,16 @@ struct WebView : Window {
         std::filesystem::path userDataFolder;
     };
 
+    EventToken token;
+
     Config config;
     wil::com_ptr<ICoreWebView2Environment13> environment;
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
+
+private:
+    std::unordered_map<size_t, std::any> handlers;
 };
 
 template <typename T> struct Manager {

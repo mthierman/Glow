@@ -16,7 +16,7 @@ auto main() -> int {
 
     webView.create([]() {
         webView.core->add_DOMContentLoaded(
-            webView.handler.make<ICoreWebView2DOMContentLoadedEventHandler>(
+            webView.event<ICoreWebView2DOMContentLoadedEventHandler>(
                 [](ICoreWebView2* /* sender */,
                    ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
             glow::log::log("DOMContentLoaded");
