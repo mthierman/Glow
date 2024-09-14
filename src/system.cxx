@@ -8,6 +8,7 @@
 
 #include <stdexcept>
 
+#include <glow/color.hxx>
 #include <glow/text.hxx>
 
 namespace glow::system {
@@ -79,6 +80,12 @@ auto resource_icon() -> ::HICON {
 }
 
 auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
+
+auto is_dark() -> bool {
+    auto fg { glow::color::system(winrt::UIColorType::Foreground) };
+
+    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) ? true : false;
+}
 
 GdiPlus::GdiPlus() {
     if (Gdiplus::GdiplusStartup(&token, &input, nullptr) != Gdiplus::Status::Ok) {

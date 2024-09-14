@@ -57,7 +57,7 @@ struct State {
     bool minimized { false };
 };
 
-enum struct BackgroundStyle { Transparent, System, Black, White, Custom };
+enum struct BackgroundStyle { Transparent, System, Custom };
 
 struct Window {
     Window();
@@ -73,9 +73,9 @@ protected:
 
 public:
     auto background_style(BackgroundStyle style) -> void;
-    auto background_custom(glow::color::Color color) -> void;
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
+    auto background_custom(glow::color::Color color) -> void;
     auto background_refresh() -> void;
 
     auto refresh_dpi() -> void;
@@ -177,10 +177,9 @@ protected:
 
     struct Brushes {
         wil::unique_hbrush transparent { glow::system::system_brush() };
-        wil::unique_hbrush black { glow::system::system_brush(BLACK_BRUSH) };
-        wil::unique_hbrush white { glow::system::system_brush(WHITE_BRUSH) };
-        wil::unique_hbrush system { glow::color::Color(winrt::UIColorType::Background).brush() };
-        wil::unique_hbrush custom;
+        wil::unique_hbrush dark { glow::system::system_brush(BLACK_BRUSH) };
+        wil::unique_hbrush light { glow::system::system_brush(WHITE_BRUSH) };
+        wil::unique_hbrush custom { glow::system::system_brush() };
     };
     Brushes brushes;
 

@@ -53,7 +53,6 @@ Window::Window() {
     });
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
-        brushes.system.reset(glow::color::Color(winrt::UIColorType::Background).brush());
         background_refresh();
 
         return 0;
@@ -89,13 +88,8 @@ Window::Window() {
                 paint_background(hdc, brushes.transparent);
             } break;
             case BackgroundStyle::System: {
-                paint_background(hdc, brushes.system);
-            } break;
-            case BackgroundStyle::Black: {
-                paint_background(hdc, brushes.black);
-            } break;
-            case BackgroundStyle::White: {
-                paint_background(hdc, brushes.white);
+                paint_background(hdc, glow::system::is_dark() ? brushes.dark : brushes.light);
+
             } break;
             case BackgroundStyle::Custom: {
                 paint_background(hdc, brushes.custom);
@@ -157,9 +151,11 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
 }
 
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
-    ::RECT rect;
-    ::GetClientRect(hwnd.get(), &rect);
-    ::FillRect(hdc, &rect, brush.get());
+    if (brush) {
+        ::RECT rect;
+        ::GetClientRect(hwnd.get(), &rect);
+        ::FillRect(hdc, &rect, brush.get());
+    }
 }
 
 auto Window::background_style(BackgroundStyle style) -> void {
@@ -167,17 +163,17 @@ auto Window::background_style(BackgroundStyle style) -> void {
     background_refresh();
 }
 
-auto Window::background_custom(glow::color::Color color) -> void {
-    brushes.custom.reset(color.brush());
-    background_refresh();
-}
-
 auto Window::background_dark(glow::color::Color color) -> void {
-    brushes.custom.reset(color.brush());
+    brushes.dark.reset(color.brush());
     background_refresh();
 }
 
 auto Window::background_light(glow::color::Color color) -> void {
+    brushes.light.reset(color.brush());
+    background_refresh();
+}
+
+auto Window::background_custom(glow::color::Color color) -> void {
     brushes.custom.reset(color.brush());
     background_refresh();
 }

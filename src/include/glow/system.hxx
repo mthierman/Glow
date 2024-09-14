@@ -39,6 +39,7 @@ auto system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto resource_icon() -> ::HICON;
 auto ui_settings() -> winrt::UISettings;
+auto is_dark() -> bool;
 
 struct GdiPlus {
     GdiPlus();
