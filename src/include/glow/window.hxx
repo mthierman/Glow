@@ -92,97 +92,99 @@ protected:
 
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
+    auto caption_refresh() -> void;
+    auto window_refresh() -> void;
 
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
 
-public:
-    auto background_style(Background::Style style) -> void;
-    auto background_dark(glow::color::Color color) -> void;
-    auto background_light(glow::color::Color color) -> void;
-    auto background_custom(glow::color::Color color) -> void;
+        auto caption_color(const glow::color::Color& color) -> void;
+        auto text_color(const glow::color::Color& color) -> void;
+        auto border_color(const glow::color::Color& color) -> void;
 
-    auto caption_color(const glow::color::Color& color) -> void;
-    auto border_color(const glow::color::Color& color) -> void;
-    auto text_color(const glow::color::Color& color) -> void;
+    public:
+        auto background_style(Background::Style style) -> void;
+        auto background_dark(glow::color::Color color) -> void;
+        auto background_light(glow::color::Color color) -> void;
+        auto background_custom(glow::color::Color color) -> void;
 
-    auto refresh_dpi() -> void;
+        auto refresh_dpi() -> void;
 
-    auto activate() -> void;
-    auto show() -> void;
-    auto hide() -> void;
-    auto maximize() -> void;
-    auto minimize() -> void;
-    auto restore() -> void;
-    auto refresh_frame() -> void;
-    auto set_overlapped_window() -> void;
-    auto is_overlapped_window() -> bool;
-    auto set_popup_window() -> void;
-    auto is_popup_window() -> bool;
-    auto set_popup() -> void;
-    auto is_popup() -> bool;
-    auto set_child() -> void;
-    auto is_child() -> bool;
-    auto center() -> void;
-    auto top() -> void;
-    auto bottom() -> void;
-    auto enable_topmost() -> void;
-    auto disable_topmost() -> void;
-    auto enable_border() -> void;
-    auto disable_border() -> void;
-    auto cloak() -> void;
-    auto uncloak() -> void;
-    auto is_cloaked() -> bool;
-    auto enable_dark_mode() -> void;
-    auto disable_dark_mode() -> void;
-    auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
-    auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
+        auto activate() -> void;
+        auto show() -> void;
+        auto hide() -> void;
+        auto maximize() -> void;
+        auto minimize() -> void;
+        auto restore() -> void;
+        auto refresh_frame() -> void;
+        auto set_overlapped_window() -> void;
+        auto is_overlapped_window() -> bool;
+        auto set_popup_window() -> void;
+        auto is_popup_window() -> bool;
+        auto set_popup() -> void;
+        auto is_popup() -> bool;
+        auto set_child() -> void;
+        auto is_child() -> bool;
+        auto center() -> void;
+        auto top() -> void;
+        auto bottom() -> void;
+        auto enable_topmost() -> void;
+        auto disable_topmost() -> void;
+        auto enable_border() -> void;
+        auto disable_border() -> void;
+        auto cloak() -> void;
+        auto uncloak() -> void;
+        auto is_cloaked() -> bool;
+        auto enable_dark_mode() -> void;
+        auto disable_dark_mode() -> void;
+        auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
+        auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
 
-    auto focus() -> void;
-    auto is_focused() -> bool;
-    auto foreground() -> void;
-    auto is_foreground() -> bool;
-    auto active() -> void;
-    auto is_active() -> bool;
-    auto set_parent(::HWND parent) -> void;
-    auto get_parent() -> ::HWND;
-    auto bring_to_top() -> void;
-    auto is_topmost() -> bool;
-    auto is_visible() -> bool;
-    auto is_maximized() -> bool;
-    auto set_title(const std::string& title) -> void;
-    auto set_position(const Position& position) -> void;
-    auto set_window_placement() -> void;
-    auto get_window_placement() -> void;
-    auto get_monitor_info() -> void;
-    auto set_style(::LONG_PTR style) -> void;
-    auto get_style() -> ::LONG_PTR;
-    auto set_ex_style(::LONG_PTR exStyle) -> void;
-    auto get_ex_style() -> ::LONG_PTR;
-    auto get_id() -> ::LONG_PTR;
-    auto set_small_icon(::HICON hicon) -> void;
-    auto set_big_icon(::HICON hicon) -> void;
-    auto flash() -> void;
-    auto start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
-    auto stop_timer(::UINT_PTR timerId) -> bool;
-    auto enable_fullscreen() -> bool;
-    auto disable_fullscreen() -> bool;
+        auto focus() -> void;
+        auto is_focused() -> bool;
+        auto foreground() -> void;
+        auto is_foreground() -> bool;
+        auto active() -> void;
+        auto is_active() -> bool;
+        auto set_parent(::HWND parent) -> void;
+        auto get_parent() -> ::HWND;
+        auto bring_to_top() -> void;
+        auto is_topmost() -> bool;
+        auto is_visible() -> bool;
+        auto is_maximized() -> bool;
+        auto set_title(const std::string& title) -> void;
+        auto set_position(const Position& position) -> void;
+        auto set_window_placement() -> void;
+        auto get_window_placement() -> void;
+        auto get_monitor_info() -> void;
+        auto set_style(::LONG_PTR style) -> void;
+        auto get_style() -> ::LONG_PTR;
+        auto set_ex_style(::LONG_PTR exStyle) -> void;
+        auto get_ex_style() -> ::LONG_PTR;
+        auto get_id() -> ::LONG_PTR;
+        auto set_small_icon(::HICON hicon) -> void;
+        auto set_big_icon(::HICON hicon) -> void;
+        auto flash() -> void;
+        auto start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
+        auto stop_timer(::UINT_PTR timerId) -> bool;
+        auto enable_fullscreen() -> bool;
+        auto disable_fullscreen() -> bool;
 
-    auto client_position() -> Position;
-    auto window_position() -> Position;
+        auto client_position() -> Position;
+        auto window_position() -> Position;
 
-    auto device_context() -> ::HDC;
-    auto notify_app(glow::message::Code code,
-                    std::string_view message = "",
-                    ::HWND receiverHwnd
-                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
+        auto device_context() -> ::HDC;
+        auto notify_app(glow::message::Code code,
+                        std::string_view message = "",
+                        ::HWND receiverHwnd
+                        = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
 
-    struct Positions {
-        Position window;
-        Position client;
-        Position monitor;
-        Position work;
-        Position restoreCentered;
-        Position restoreFullscreen;
+        struct Positions {
+            Position window;
+            Position client;
+            Position monitor;
+            Position work;
+            Position restoreCentered;
+            Position restoreFullscreen;
     };
     Positions positions;
 

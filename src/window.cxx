@@ -155,7 +155,15 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
     }
 }
 
+auto Window::theme_refresh() -> void {
+    // glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
+}
+
 auto Window::background_refresh() -> void {
+    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW);
+}
+
+auto Window::caption_refresh() -> void {
     switch (background.style) {
         case Background::Style::System: {
             glow::system::is_dark() ? caption_color(background.color.dark)
@@ -165,8 +173,11 @@ auto Window::background_refresh() -> void {
             caption_color(background.color.custom);
         }
     }
+}
 
-    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW);
+auto Window::window_refresh() -> void {
+    background_refresh();
+    caption_refresh();
 }
 
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
@@ -177,37 +188,16 @@ auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> voi
     }
 }
 
-auto Window::theme_refresh() -> void {
-    // glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
-}
-
-auto Window::background_style(Background::Style style) -> void {
-    background.style = style;
-    background_refresh();
-}
-
-auto Window::background_dark(glow::color::Color color) -> void {
-    background.brush.dark.reset(color.brush());
-    background.color.dark = color;
-    background_refresh();
-}
-
-auto Window::background_light(glow::color::Color color) -> void {
-    background.brush.light.reset(color.brush());
-    background.color.light = color;
-    background_refresh();
-}
-
-auto Window::background_custom(glow::color::Color color) -> void {
-    background.brush.custom.reset(color.brush());
-    background.color.custom = color;
-    background_refresh();
-}
-
 auto Window::caption_color(const glow::color::Color& color) -> void {
     auto colorref { color.colorref() };
     ::DwmSetWindowAttribute(
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_CAPTION_COLOR, &colorref, sizeof(colorref));
+}
+
+auto Window::text_color(const glow::color::Color& color) -> void {
+    auto colorref { color.colorref() };
+    ::DwmSetWindowAttribute(
+        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &colorref, sizeof(colorref));
 }
 
 auto Window::border_color(const glow::color::Color& color) -> void {
@@ -216,10 +206,27 @@ auto Window::border_color(const glow::color::Color& color) -> void {
         hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_BORDER_COLOR, &colorref, sizeof(colorref));
 }
 
-auto Window::text_color(const glow::color::Color& color) -> void {
-    auto colorref { color.colorref() };
-    ::DwmSetWindowAttribute(
-        hwnd.get(), ::DWMWINDOWATTRIBUTE::DWMWA_TEXT_COLOR, &colorref, sizeof(colorref));
+auto Window::background_style(Background::Style style) -> void {
+    background.style = style;
+    window_refresh();
+}
+
+auto Window::background_dark(glow::color::Color color) -> void {
+    background.brush.dark.reset(color.brush());
+    background.color.dark = color;
+    window_refresh();
+}
+
+auto Window::background_light(glow::color::Color color) -> void {
+    background.brush.light.reset(color.brush());
+    background.color.light = color;
+    window_refresh();
+}
+
+auto Window::background_custom(glow::color::Color color) -> void {
+    background.brush.custom.reset(color.brush());
+    background.color.custom = color;
+    window_refresh();
 }
 
 auto Window::refresh_dpi() -> void {
