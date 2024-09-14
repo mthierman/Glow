@@ -181,6 +181,17 @@ auto Window::caption_refresh() -> void {
     }
 }
 
+auto Window::frame_refresh() -> void {
+    ::SetWindowPos(hwnd.get(),
+                   nullptr,
+                   0,
+                   0,
+                   0,
+                   0,
+                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED
+                       | SWP_SHOWWINDOW);
+}
+
 auto Window::window_refresh() -> void {
     background_refresh();
     // caption_refresh();
@@ -256,41 +267,30 @@ auto Window::minimize() -> void { ::ShowWindow(hwnd.get(), SW_MINIMIZE); }
 
 auto Window::restore() -> void { ::ShowWindow(hwnd.get(), SW_RESTORE); }
 
-auto Window::refresh_frame() -> void {
-    ::SetWindowPos(hwnd.get(),
-                   nullptr,
-                   0,
-                   0,
-                   0,
-                   0,
-                   SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED
-                       | SWP_SHOWWINDOW);
-}
-
 auto Window::set_overlapped_window() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::is_overlapped_window() -> bool { return get_style() & WS_OVERLAPPEDWINDOW; }
 
 auto Window::set_popup_window() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_POPUPWINDOW | WS_CLIPCHILDREN);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::is_popup_window() -> bool { return get_style() & WS_POPUPWINDOW; }
 
 auto Window::set_popup() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_POPUP | WS_CLIPCHILDREN);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::is_popup() -> bool { return get_style() & WS_POPUP; }
 
 auto Window::set_child() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, WS_CHILD | WS_CLIPSIBLINGS);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::is_child() -> bool { return get_style() & WS_CHILD; }
@@ -324,12 +324,12 @@ auto Window::disable_topmost() -> void {
 
 auto Window::enable_border() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() | WS_BORDER);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::disable_border() -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, get_style() & ~WS_BORDER);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::cloak() -> void {
@@ -450,14 +450,14 @@ auto Window::get_monitor_info() -> void {
 
 auto Window::set_style(::LONG_PTR style) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_STYLE, style);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::get_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_STYLE); }
 
 auto Window::set_ex_style(::LONG_PTR exStyle) -> void {
     ::SetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE, exStyle);
-    refresh_frame();
+    frame_refresh();
 }
 
 auto Window::get_ex_style() -> ::LONG_PTR { return ::GetWindowLongPtrW(hwnd.get(), GWL_EXSTYLE); }

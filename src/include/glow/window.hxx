@@ -93,6 +93,7 @@ protected:
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
     auto caption_refresh() -> void;
+    auto frame_refresh() -> void;
     auto window_refresh() -> void;
     auto dpi_refresh() -> void;
 
@@ -114,7 +115,7 @@ public:
     auto maximize() -> void;
     auto minimize() -> void;
     auto restore() -> void;
-    auto refresh_frame() -> void;
+
     auto set_overlapped_window() -> void;
     auto is_overlapped_window() -> bool;
     auto set_popup_window() -> void;
