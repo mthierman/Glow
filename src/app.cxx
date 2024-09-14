@@ -28,11 +28,11 @@ auto CALLBACK App::procedure(::HWND hwnd,
         }
     }
 
-    if (auto self { reinterpret_cast<App*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
-        if (msg == WM_NCDESTROY) {
-            ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
-        }
+    if (msg == WM_NCDESTROY) {
+        ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
+    }
 
+    if (auto self { reinterpret_cast<App*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
         if (self->messages.contains(msg)) {
             return self->messages.invoke({ hwnd, msg, wparam, lparam });
         }
