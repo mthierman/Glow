@@ -706,6 +706,8 @@ auto WebView::create_webview(Callback callback) -> void {
 
             if (callback) {
                 callback();
+            } else {
+                navigate(config.homePage);
             }
 
             return S_OK;

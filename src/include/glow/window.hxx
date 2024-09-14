@@ -303,6 +303,7 @@ struct WebView : Window {
         };
         Settings settings;
 
+        std::string homePage { "about:blank" };
         std::filesystem::path browserExecutableFolder;
         std::filesystem::path userDataFolder;
         COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
