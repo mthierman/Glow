@@ -224,7 +224,7 @@ struct Child : Window {
 };
 
 struct EventHandler {
-    template <typename T, typename U> auto operator()(U handler) {
+    template <typename T, typename U> auto make(U handler) {
         auto key { glow::math::make_random<uint64_t>() };
         map.try_emplace(key, wil::MakeAgileCallback<T>(handler));
         return std::any_cast<Microsoft::WRL::ComPtr<T>>(map.at(key)).Get();

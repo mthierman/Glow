@@ -14,24 +14,9 @@ auto main() -> int {
     webView.set_background_color({ 227, 178, 60 });
     webView.set_background_style(glow::window::BackgroundStyle::Custom);
 
-    // webView.create();
-
-    // webView.create([]() {
-    //     webView.core->add_DOMContentLoaded(
-    //         webView
-    //             .handler<ICoreWebView2DOMContentLoadedEventHandler>(
-    //                 [](ICoreWebView2* /* sender */,
-    //                    ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
-    //         glow::log::log("DOMContentLoaded");
-    //         webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
-
-    //         return S_OK;
-    //     }).Get(),
-    //         &webView.tokens("DOMContentLoaded"));
-
     webView.create([]() {
         webView.core->add_DOMContentLoaded(
-            webView.handler.operator()<ICoreWebView2DOMContentLoadedEventHandler>(
+            webView.handler.make<ICoreWebView2DOMContentLoadedEventHandler>(
                 [](ICoreWebView2* /* sender */,
                    ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
             glow::log::log("DOMContentLoaded");
@@ -42,7 +27,6 @@ auto main() -> int {
             &webView.token("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
-        // webView.navigate("https://google.com/");
     }, true);
 
     return glow::app::run();
