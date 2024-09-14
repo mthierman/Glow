@@ -33,8 +33,6 @@
 #include <glow/message.hxx>
 #include <glow/system.hxx>
 
-#include <glow/log.hxx>
-
 namespace glow::window {
 struct Position {
     int x { 0 };
@@ -227,7 +225,6 @@ struct Child : Window {
 
 struct EventHandler {
     template <typename T, typename U> auto make(U handler) {
-        glow::log::log("{}", map.size());
         auto key { map.size() + 1 };
         map.try_emplace(key, wil::MakeAgileCallback<T>(handler));
 
