@@ -241,21 +241,20 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    struct Tokens {
+    struct Token {
         auto operator()(const std::string& key) -> ::EventRegistrationToken&;
 
     private:
         std::unordered_map<std::string, ::EventRegistrationToken> tokens;
     };
-    Tokens tokens;
+    Token token;
+
+    std::unordered_map<uint64_t, std::any> handlers;
 
     template <typename T, typename U> auto handler(U handler) {
-        return wil::MakeAgileCallback<T>(handler);
-    }
-
-    std::unordered_map<uint64_t, std::any> handlerMap;
-    template <typename T, typename U> auto handler_map(U handler) {
-        return wil::MakeAgileCallback<T>(handler);
+        auto key { glow::math::make_random<uint64_t>() };
+        handlers.try_emplace(key, wil::MakeAgileCallback<T>(handler));
+        return std::any_cast<Microsoft::WRL::ComPtr<T>>(handlers.at(key)).Get();
     }
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },

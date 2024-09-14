@@ -16,18 +16,30 @@ auto main() -> int {
 
     // webView.create();
 
+    // webView.create([]() {
+    //     webView.core->add_DOMContentLoaded(
+    //         webView
+    //             .handler<ICoreWebView2DOMContentLoadedEventHandler>(
+    //                 [](ICoreWebView2* /* sender */,
+    //                    ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
+    //         glow::log::log("DOMContentLoaded");
+    //         webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
+
+    //         return S_OK;
+    //     }).Get(),
+    //         &webView.tokens("DOMContentLoaded"));
+
     webView.create([]() {
         webView.core->add_DOMContentLoaded(
-            webView
-                .handler<ICoreWebView2DOMContentLoadedEventHandler>(
-                    [](ICoreWebView2* /* sender */,
-                       ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
+            webView.handler<ICoreWebView2DOMContentLoadedEventHandler>(
+                [](ICoreWebView2* /* sender */,
+                   ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
             glow::log::log("DOMContentLoaded");
-            webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
+            webView.core->remove_DOMContentLoaded(webView.token("DOMContentLoaded"));
 
             return S_OK;
-        }).Get(),
-            &webView.tokens("DOMContentLoaded"));
+        }),
+            &webView.token("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
         // webView.navigate("https://google.com/");

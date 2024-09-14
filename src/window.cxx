@@ -774,7 +774,7 @@ auto WebView::navigate(const std::wstring& url) -> void {
     }
 }
 
-auto WebView::Tokens::operator()(const std::string& key) -> ::EventRegistrationToken& {
+auto WebView::Token::operator()(const std::string& key) -> ::EventRegistrationToken& {
     return tokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
