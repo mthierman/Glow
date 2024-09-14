@@ -261,7 +261,6 @@ struct WebView : Window {
     auto create_webview(Callback callback = 0) -> void;
 
     auto put_bounds(const Position& position) -> void;
-    auto put_bounds(const ::RECT& rect) -> void;
 
     auto show_controller() -> void;
     auto hide_controller() -> void;

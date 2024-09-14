@@ -613,7 +613,7 @@ auto WebView::create_webview(Callback callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
     derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
-        put_bounds(client_rect());
+        put_bounds(Position(client_rect()));
 
         if (msg.windowPos().flags & SWP_SHOWWINDOW) {
             show_controller();
@@ -703,7 +703,7 @@ auto WebView::create_webview(Callback callback) -> void {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
             controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
-            put_bounds(client_rect());
+            put_bounds(Position(client_rect()));
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());
@@ -752,12 +752,6 @@ auto WebView::create_webview(Callback callback) -> void {
 auto WebView::put_bounds(const Position& position) -> void {
     if (controller) {
         controller->put_Bounds(position.rect());
-    }
-}
-
-auto WebView::put_bounds(const ::RECT& rect) -> void {
-    if (controller) {
-        controller->put_Bounds(rect);
     }
 }
 
