@@ -762,25 +762,13 @@ auto WebView::create_webview(Callback callback) -> void {
 
 auto WebView::put_bounds(const Position& position) -> void {
     if (controller) {
-        controller->put_Bounds(glow::window::to_rect(position));
+        controller->put_Bounds(position.rect());
     }
 }
 
 auto WebView::put_bounds(const ::RECT& rect) -> void {
     if (controller) {
         controller->put_Bounds(rect);
-    }
-}
-
-auto WebView::put_bounds(const ::SIZE& size) -> void {
-    if (controller) {
-        controller->put_Bounds(glow::window::to_rect(size));
-    }
-}
-
-auto WebView::put_bounds(const ::WINDOWPOS& windowPos) -> void {
-    if (controller) {
-        controller->put_Bounds(glow::window::to_rect(windowPos));
     }
 }
 
@@ -827,22 +815,4 @@ auto to_position(const ::WINDOWPOS& windowPos) -> Position {
 }
 
 auto to_position(const ::SIZE& size) -> Position { return Position(0, 0, size.cx, size.cy); }
-
-auto to_rect(const Position& position) -> ::RECT {
-    return ::RECT { .left { position.x },
-                    .top { position.y },
-                    .right { position.width },
-                    .bottom { position.height } };
-}
-
-auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT {
-    return ::RECT { .left { windowPos.x },
-                    .top { windowPos.y },
-                    .right { windowPos.cx },
-                    .bottom { windowPos.cy } };
-}
-
-auto to_rect(const ::SIZE& size) -> ::RECT {
-    return ::RECT { .left { 0 }, .top { 0 }, .right { size.cx }, .bottom { size.cy } };
-}
 } // namespace glow::window

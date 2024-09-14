@@ -263,8 +263,6 @@ struct WebView : Window {
 
     auto put_bounds(const Position& position) -> void;
     auto put_bounds(const ::RECT& rect) -> void;
-    auto put_bounds(const ::SIZE& size) -> void;
-    auto put_bounds(const ::WINDOWPOS& windowPos) -> void;
 
     auto show_controller() -> void;
     auto hide_controller() -> void;
@@ -386,8 +384,4 @@ private:
 auto to_position(const ::RECT& rect) -> Position;
 auto to_position(const ::WINDOWPOS& windowPos) -> Position;
 auto to_position(const ::SIZE& size) -> Position;
-
-auto to_rect(const Position& position) -> ::RECT;
-auto to_rect(const ::WINDOWPOS& windowPos) -> ::RECT;
-auto to_rect(const ::SIZE& size) -> ::RECT;
 } // namespace glow::window
