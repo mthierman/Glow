@@ -63,14 +63,14 @@ Window::Window() {
     baseMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
         auto windowPos { msg.windowPos() };
 
-        positions.window = to_position(windowPos);
-        positions.client = to_position(client_rect());
+        positions.window = Position(windowPos);
+        positions.client = Position(client_rect());
 
         get_window_placement();
 
         get_monitor_info();
-        positions.monitor = to_position(monitorInfo.rcMonitor);
-        positions.work = to_position(monitorInfo.rcWork);
+        positions.monitor = Position(monitorInfo.rcMonitor);
+        positions.work = Position(monitorInfo.rcWork);
 
         return 0;
     });
@@ -410,7 +410,7 @@ auto Window::set_position(Position position) -> void {
 }
 
 auto Window::set_position(::RECT rect) -> void {
-    auto position { to_position(rect) };
+    auto position { Position(rect) };
     ::SetWindowPos(hwnd.get(),
                    nullptr,
                    position.x,
@@ -806,13 +806,13 @@ auto WebView::navigate(const std::wstring& url) -> void {
     }
 }
 
-auto to_position(const ::RECT& rect) -> Position {
-    return Position(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
-}
+// auto to_position(const ::RECT& rect) -> Position {
+//     return Position(rect.left, rect.top, (rect.right - rect.left), (rect.bottom - rect.top));
+// }
 
-auto to_position(const ::WINDOWPOS& windowPos) -> Position {
-    return Position(windowPos.x, windowPos.y, windowPos.cx, windowPos.cy);
-}
+// auto to_position(const ::WINDOWPOS& windowPos) -> Position {
+//     return Position(windowPos.x, windowPos.y, windowPos.cx, windowPos.cy);
+// }
 
-auto to_position(const ::SIZE& size) -> Position { return Position(0, 0, size.cx, size.cy); }
+// auto to_position(const ::SIZE& size) -> Position { return Position(0, 0, size.cx, size.cy); }
 } // namespace glow::window
