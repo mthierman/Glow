@@ -225,7 +225,7 @@ struct Child : Window {
 
 struct EventHandler {
     template <typename T, typename U> auto make(U handler) {
-        auto key { map.size() + 1 };
+        auto key { map.size() };
         map.try_emplace(key, wil::MakeAgileCallback<T>(handler));
 
         return std::any_cast<Microsoft::WRL::ComPtr<T>>(map.at(key)).Get();
