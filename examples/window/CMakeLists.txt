@@ -1,14 +1,14 @@
 project(example_window)
 
 add_executable(
-    ${PROJECT_NAME}
+    ${PROJECT_NAME}_overlapped
     WIN32
     )
 
 target_sources(
-    ${PROJECT_NAME}
-    PRIVATE "main.cxx"
+    ${PROJECT_NAME}_overlapped
+    PRIVATE "overlapped.cxx"
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_overlapped PRIVATE glow::glow)

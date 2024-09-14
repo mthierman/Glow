@@ -1,11 +1,8 @@
 #include <glow/glow.hxx>
 
-#include <WebView2.h>
-
 namespace wm = glow::message::wm;
 
 glow::window::WebView webView;
-std::unordered_map<std::string, ::EventRegistrationToken> tokens;
 
 auto main() -> int {
     webView.messages.on(WM_DESTROY, [](wm::DESTROY msg) {
@@ -13,9 +10,6 @@ auto main() -> int {
 
         return 0;
     });
-
-    webView.config.backgroundColor
-        = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
     webView.create([]() { webView.navigate("https://localhost:5173/"); });
 
