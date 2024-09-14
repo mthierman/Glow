@@ -34,6 +34,12 @@ Color::Color(const ::COLORREF& colorRef)
       b { GetBValue(colorRef) },
       a { 255 } { }
 
+Color::Color(const COREWEBVIEW2_COLOR& coreWebView2Color)
+    : r { coreWebView2Color.R },
+      g { coreWebView2Color.G },
+      b { coreWebView2Color.B },
+      a { coreWebView2Color.A } { }
+
 // auto Color::brush() -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
 
 // auto Color::string() -> std::string {
