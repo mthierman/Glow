@@ -704,6 +704,17 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
+            core->add_DOMContentLoaded(
+                handler<ICoreWebView2DOMContentLoadedEventHandler>(
+                    [this](ICoreWebView2* /* sender */,
+                           ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
+                activate();
+                core->remove_DOMContentLoaded(tokens("DOMContentLoaded"));
+
+                return S_OK;
+            }).Get(),
+                &tokens("DOMContentLoaded"));
+
             if (callback) {
                 callback();
             } else {

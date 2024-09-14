@@ -17,21 +17,8 @@ auto main() -> int {
     webView.config.backgroundColor
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
-    webView.create([]() {
-        webView.core->add_DOMContentLoaded(
-            webView
-                .handler<ICoreWebView2DOMContentLoadedEventHandler>(
-                    [](ICoreWebView2* sender,
-                       ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
-            webView.activate();
-            webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
-
-            return S_OK;
-        }).Get(),
-            &webView.tokens("DOMContentLoaded"));
-
-        webView.navigate("https://localhost:5173/");
-    });
+    webView.create([]() { webView.navigate("https://localhost:5173/"); });
+    // webView.activate();
 
     return glow::app::run();
 }
