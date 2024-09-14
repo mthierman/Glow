@@ -14,8 +14,5 @@ auto main() -> int {
     window.create();
     window.activate();
 
-    window.set_background_color({ 255, 255, 0 });
-    window.set_background_style(glow::window::BackgroundStyle::Custom);
-
     return glow::app::run();
 }
