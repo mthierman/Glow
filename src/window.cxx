@@ -175,7 +175,7 @@ auto Window::background_color(glow::color::Color color) -> void {
 }
 
 auto Window::background_refresh() -> void {
-    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE);
+    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW);
 }
 
 auto Window::refresh_dpi() -> void {
