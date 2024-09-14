@@ -537,7 +537,7 @@ auto WebView::create(Callback callback, bool show) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | (show ? WS_VISIBLE : 0),
+                      WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -546,6 +546,11 @@ auto WebView::create(Callback callback, bool show) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
+
+    if (show) {
+        activate();
+    }
+
     create_webview(callback);
 }
 
@@ -554,7 +559,7 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
-                      WS_CHILDWINDOW | WS_CLIPSIBLINGS | (show ? WS_VISIBLE : 0),
+                      WS_CHILDWINDOW | WS_CLIPSIBLINGS,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
                       CW_USEDEFAULT,
@@ -563,6 +568,11 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
+
+    if (show) {
+        activate();
+    }
+
     create_webview(callback);
 }
 
@@ -660,6 +670,7 @@ auto WebView::create_webview(Callback callback) -> void {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
             controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
+            put_bounds(client_rect());
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());
@@ -691,17 +702,6 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsSwipeNavigationEnabled(config.settings.IsSwipeNavigationEnabled);
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
-
-            core->add_DOMContentLoaded(
-                handler<ICoreWebView2DOMContentLoadedEventHandler>(
-                    [this](ICoreWebView2* /* sender */,
-                           ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
-                activate();
-                core->remove_DOMContentLoaded(tokens("DOMContentLoaded"));
-
-                return S_OK;
-            }).Get(),
-                &tokens("DOMContentLoaded"));
 
             if (callback) {
                 callback();
