@@ -94,6 +94,7 @@ protected:
     auto background_refresh() -> void;
     auto caption_refresh() -> void;
     auto window_refresh() -> void;
+    auto dpi_refresh() -> void;
 
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
 
@@ -106,8 +107,6 @@ public:
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
-
-    auto refresh_dpi() -> void;
 
     auto activate() -> void;
     auto show() -> void;

@@ -48,14 +48,14 @@ auto Position::rect() const -> ::RECT {
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
         theme_refresh();
-        refresh_dpi();
+        dpi_refresh();
 
         return 0;
     });
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
         theme_refresh();
-        background_refresh();
+        window_refresh();
 
         return 0;
     });
@@ -76,7 +76,7 @@ Window::Window() {
     });
 
     baseMessages.on(WM_DPICHANGED, [this](glow::message::wm::DPICHANGED msg) {
-        refresh_dpi();
+        dpi_refresh();
         set_position(msg.suggestedRect());
 
         return 0;
@@ -180,6 +180,11 @@ auto Window::window_refresh() -> void {
     caption_refresh();
 }
 
+auto Window::dpi_refresh() -> void {
+    dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
+    scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
+}
+
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
     if (brush) {
         ::RECT rect;
@@ -227,11 +232,6 @@ auto Window::background_custom(glow::color::Color color) -> void {
     background.brush.custom.reset(color.brush());
     background.color.custom = color;
     window_refresh();
-}
-
-auto Window::refresh_dpi() -> void {
-    dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
-    scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
 }
 
 auto Window::activate() -> void {
