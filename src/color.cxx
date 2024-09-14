@@ -10,6 +10,12 @@
 #include <glow/text.hxx>
 
 namespace glow::color {
+// auto Color::brush() -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
+
+// auto Color::string() -> std::string {
+//     return std::format("0x{:0>2x}{:0>2x}{:0>2x}{:0>2x}", r, g, b, a);
+// }
+
 auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
     return ::CreateSolidBrush(RGB(r, g, b));
 }
