@@ -223,6 +223,17 @@ struct Child : Window {
                                 .hIconSm { icons.app.get() } };
 };
 
+struct EventHandler {
+    template <typename T, typename U> auto operator()(U handler) {
+        auto key { glow::math::make_random<uint64_t>() };
+        map.try_emplace(key, wil::MakeAgileCallback<T>(handler));
+        return std::any_cast<Microsoft::WRL::ComPtr<T>>(map.at(key)).Get();
+    }
+
+private:
+    std::unordered_map<uint64_t, std::any> map;
+};
+
 struct EventToken {
     auto operator()(const std::string& key) -> ::EventRegistrationToken&;
 
@@ -248,15 +259,8 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
+    EventHandler handler;
     EventToken token;
-
-    std::unordered_map<uint64_t, std::any> handlers;
-
-    template <typename T, typename U> auto handler(U handler) {
-        auto key { glow::math::make_random<uint64_t>() };
-        handlers.try_emplace(key, wil::MakeAgileCallback<T>(handler));
-        return std::any_cast<Microsoft::WRL::ComPtr<T>>(handlers.at(key)).Get();
-    }
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
