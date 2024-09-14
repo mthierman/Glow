@@ -235,8 +235,8 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    template <typename T> auto make_handler(T eventHandler) {
-        return wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(eventHandler);
+    template <typename T, typename U> auto handler(U eventHandler) {
+        return wil::MakeAgileCallback<T>(eventHandler);
     }
 
     auto token(std::string key) -> ::EventRegistrationToken*;
