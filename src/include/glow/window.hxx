@@ -236,25 +236,17 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    // template <typename T, typename U> auto handler(std::string key, U eventHandler) {
-    //     // token(key);
-    //     eventHandlers.try_emplace(std::move(key), wil::MakeAgileCallback<T>(eventHandler));
-    //     auto handler = eventHandlers.at(key);
-    //     return std::any_cast<T>(eventHandlers[key]);
-    // }
+    struct Token {
+        std::string key;
+        ::EventRegistrationToken token;
+    };
 
     template <typename T, typename U> auto handler(const std::string& key, U eventHandler) {
         eventHandlers.try_emplace(key, wil::MakeAgileCallback<T>(eventHandler));
         return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
     }
 
-    struct Token {
-        std::string key;
-        ::EventRegistrationToken token;
-    };
-
-    auto token(std::string key) -> ::EventRegistrationToken*;
-    auto make_token(std::string key) -> Token;
+    auto token(std::string key) -> Token;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -321,7 +313,6 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
-    std::unordered_map<std::string, ::EventRegistrationToken> eventTokens;
     std::unordered_map<std::string, std::any> eventHandlers;
 };
 
