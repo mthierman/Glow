@@ -36,11 +36,9 @@ struct Color {
     uint8_t b { 0 };
     uint8_t a { 0 };
 
-    // auto brush() -> ::HBRUSH;
-    // auto string() -> std::string;
-    // auto wstring() -> std::wstring;
-    // auto hex() -> std::string;
-    // auto colorref() -> ::COLORREF;
+    auto brush() -> ::HBRUSH;
+    auto hex() -> std::string;
+    auto colorref() -> ::COLORREF;
 };
 
 auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;
