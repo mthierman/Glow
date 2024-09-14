@@ -399,18 +399,7 @@ auto Window::set_title(const std::string& title) -> void {
     ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
 }
 
-auto Window::set_position(Position position) -> void {
-    ::SetWindowPos(hwnd.get(),
-                   nullptr,
-                   position.x,
-                   position.y,
-                   position.width,
-                   position.height,
-                   SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
-auto Window::set_position(::RECT rect) -> void {
-    auto position { Position(rect) };
+auto Window::set_position(const Position& position) -> void {
     ::SetWindowPos(hwnd.get(),
                    nullptr,
                    position.x,

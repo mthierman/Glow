@@ -125,8 +125,7 @@ public:
     auto is_visible() -> bool;
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
-    auto set_position(Position position) -> void;
-    auto set_position(::RECT rect) -> void;
+    auto set_position(const Position& position) -> void;
     auto set_window_placement() -> void;
     auto get_window_placement() -> void;
     auto get_monitor_info() -> void;
