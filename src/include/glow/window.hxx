@@ -241,12 +241,9 @@ struct WebView : Window {
         ::EventRegistrationToken token;
     };
 
-    template <typename T, typename U> auto handler(const std::string& key, U eventHandler) {
-        eventHandlers.try_emplace(key, wil::MakeAgileCallback<T>(eventHandler));
-        return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
+    template <typename T, typename U> auto handler(U handler) {
+        return wil::MakeAgileCallback<T>(handler);
     }
-
-    auto token(std::string key) -> Token;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -313,7 +310,6 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
-    std::unordered_map<std::string, std::any> eventHandlers;
 };
 
 template <typename T> struct Manager {
