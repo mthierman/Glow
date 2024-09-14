@@ -69,6 +69,10 @@ protected:
                                    ::LPARAM lparam) -> ::LRESULT;
 
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
+    
+    auto theme_refresh() -> void;
+    auto background_refresh() -> void;
+    
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
 
 public:
@@ -76,7 +80,6 @@ public:
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
-    auto background_refresh() -> void;
 
     auto refresh_dpi() -> void;
 

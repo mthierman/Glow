@@ -47,12 +47,14 @@ auto Position::rect() const -> ::RECT {
 
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
+        theme_refresh();
         refresh_dpi();
 
         return 0;
     });
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
+        theme_refresh();
         background_refresh();
 
         return 0;
@@ -150,12 +152,20 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
     }
 }
 
+auto Window::background_refresh() -> void {
+    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW);
+}
+
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
     if (brush) {
         ::RECT rect;
         ::GetClientRect(hwnd.get(), &rect);
         ::FillRect(hdc, &rect, brush.get());
     }
+}
+
+auto Window::theme_refresh() -> void {
+    glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
 }
 
 auto Window::background_style(BackgroundStyle style) -> void {
@@ -176,10 +186,6 @@ auto Window::background_light(glow::color::Color color) -> void {
 auto Window::background_custom(glow::color::Color color) -> void {
     brushes.custom.reset(color.brush());
     background_refresh();
-}
-
-auto Window::background_refresh() -> void {
-    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW);
 }
 
 auto Window::refresh_dpi() -> void {
