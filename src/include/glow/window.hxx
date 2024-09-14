@@ -41,7 +41,14 @@ struct Position {
     int height { 0 };
 };
 
-enum struct Background { Transparent, System, Black, White, Custom };
+struct State {
+    bool centered { false };
+    bool fullscreen { false };
+    bool maximized { false };
+    bool minimized { false };
+};
+
+enum struct BackgroundStyle { Transparent, System, Black, White, Custom };
 
 struct Window {
     Window();
@@ -53,9 +60,14 @@ protected:
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
+    auto set_background_style(BackgroundStyle style) -> void;
+    auto set_background_color(glow::color::Color color) -> void;
+    auto erase_background(::HDC hdc) -> int;
+    auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
+
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
     auto refresh_dpi() -> void;
-    auto erase_background(::HDC hdc) -> int;
+
     auto activate() -> void;
     auto show() -> void;
     auto hide() -> void;
@@ -121,10 +133,6 @@ public:
     auto stop_timer(::UINT_PTR timerId) -> bool;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
-    auto set_background(Background background) -> void;
-    auto set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto set_background_color(const winrt::Color& color) -> void;
-    auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
     auto client_rect() -> ::RECT;
     auto window_rect() -> ::RECT;
     auto invalidate_rect() -> void;
@@ -144,15 +152,13 @@ public:
     };
     Positions positions;
 
-    struct States {
-        Background background { Background::System };
-        bool centered { false };
-        bool fullscreen { false };
-        bool maximized { false };
-        bool minimized { false };
-    };
-    States states;
+    State state;
 
+protected:
+    BackgroundStyle backgroundStyle { BackgroundStyle::System };
+    glow::color::Color backgroundColor;
+
+public:
     ::WINDOWPLACEMENT windowPlacement {};
     ::MONITORINFO monitorInfo {};
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
@@ -162,8 +168,7 @@ public:
         wil::unique_hbrush transparent { glow::system::system_brush() };
         wil::unique_hbrush black { glow::system::system_brush(BLACK_BRUSH) };
         wil::unique_hbrush white { glow::system::system_brush(WHITE_BRUSH) };
-        wil::unique_hbrush system { glow::color::create_brush(
-            glow::color::system(winrt::UIColorType::Background)) };
+        wil::unique_hbrush system { glow::color::Color(winrt::UIColorType::Background).brush() };
         wil::unique_hbrush custom;
     };
     Brushes brushes;
@@ -306,7 +311,6 @@ struct WebView : Window {
         std::string homePage { "about:blank" };
         std::filesystem::path browserExecutableFolder;
         std::filesystem::path userDataFolder;
-        COREWEBVIEW2_COLOR backgroundColor { 0, 0, 0, 0 };
     };
 
     Config config;

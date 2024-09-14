@@ -19,14 +19,14 @@
 namespace glow::window {
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
+        brushes.custom.reset(backgroundColor.brush());
         refresh_dpi();
 
         return 0;
     });
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
-        brushes.system.reset(
-            glow::color::create_brush(glow::color::system(winrt::UIColorType::Background)));
+        brushes.system.reset(glow::color::Color(winrt::UIColorType::Background).brush());
         invalidate_rect();
 
         return 0;
@@ -103,6 +103,44 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
+auto Window::set_background_style(BackgroundStyle style) -> void {
+    backgroundStyle = style;
+    invalidate_rect();
+}
+
+auto Window::set_background_color(glow::color::Color color) -> void {
+    backgroundColor = color;
+    brushes.custom.reset(backgroundColor.brush());
+    invalidate_rect();
+}
+
+auto Window::erase_background(::HDC hdc) -> int {
+    switch (backgroundStyle) {
+        case BackgroundStyle::Transparent: {
+            paint_background(hdc, brushes.transparent);
+        } break;
+        case BackgroundStyle::System: {
+            paint_background(hdc, brushes.system);
+        } break;
+        case BackgroundStyle::Black: {
+            paint_background(hdc, brushes.black);
+        } break;
+        case BackgroundStyle::White: {
+            paint_background(hdc, brushes.white);
+        } break;
+        case BackgroundStyle::Custom: {
+            paint_background(hdc, brushes.custom);
+        } break;
+    }
+
+    return 1;
+}
+
+auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
+    auto rect { client_rect() };
+    ::FillRect(hdc, &rect, brush.get());
+}
+
 auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
     if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
         ::RegisterClassExW(&windowClass);
@@ -112,32 +150,6 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
 auto Window::refresh_dpi() -> void {
     dpi = static_cast<size_t>(::GetDpiForWindow(hwnd.get()));
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
-}
-
-auto Window::erase_background(::HDC hdc) -> int {
-    switch (states.background) {
-        case Background::Transparent: {
-            paint_background(hdc, brushes.transparent);
-        } break;
-        case Background::System: {
-            paint_background(hdc, brushes.system);
-        } break;
-        case Background::Black: {
-            paint_background(hdc, brushes.black);
-        } break;
-        case Background::White: {
-            paint_background(hdc, brushes.white);
-        } break;
-        case Background::Custom: {
-            if (brushes.custom) {
-                paint_background(hdc, brushes.custom);
-            } else {
-                paint_background(hdc, brushes.system);
-            }
-        } break;
-    }
-
-    return 1;
 }
 
 auto Window::activate() -> void { ::ShowWindow(hwnd.get(), SW_NORMAL); }
@@ -461,24 +473,6 @@ auto Window::disable_fullscreen() -> bool {
     return false;
 }
 
-auto Window::set_background(Background background) -> void {
-    states.background = background;
-    invalidate_rect();
-}
-
-auto Window::set_background_color(uint8_t r, uint8_t g, uint8_t b) -> void {
-    brushes.custom.reset(glow::color::create_brush(r, g, b));
-}
-
-auto Window::set_background_color(const winrt::Color& color) -> void {
-    brushes.custom.reset(glow::color::create_brush(color));
-}
-
-auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
-    auto rect { client_rect() };
-    ::FillRect(hdc, &rect, brush.get());
-}
-
 auto Window::client_rect() -> ::RECT {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
@@ -552,9 +546,9 @@ auto WebView::create(Callback callback, bool show) -> void {
                       nullptr,
                       glow::system::instance(),
                       this);
-    set_background(Background::Custom);
-    set_background_color(
-        config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
+    // set_background(Background::Custom);
+    // set_background_color(
+    //     config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
     create_webview(callback);
 }
 
@@ -572,9 +566,9 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
                       reinterpret_cast<::HMENU>(id),
                       glow::system::instance(),
                       this);
-    set_background(Background::Custom);
-    set_background_color(
-        config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
+    // set_background(Background::Custom);
+    // set_background_color(
+    //     config.backgroundColor.R, config.backgroundColor.G, config.backgroundColor.B);
     create_webview(callback);
 }
 
@@ -671,7 +665,7 @@ auto WebView::create_webview(Callback callback) -> void {
                     ICoreWebView2Controller* createdController) -> ::HRESULT {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
-            controller->put_DefaultBackgroundColor(config.backgroundColor);
+            // controller->put_DefaultBackgroundColor(config.backgroundColor);
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());
