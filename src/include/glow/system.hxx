@@ -30,8 +30,6 @@ using namespace winrt::Windows::UI::ViewManagement;
 namespace glow::system {
 auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
                        | COINIT_DISABLE_OLE1DDE) -> wil::unique_couninitialize_call;
-auto gdi_plus_startup() -> ::ULONG_PTR;
-auto gdi_plus_shutdown(::ULONG_PTR token) -> void;
 auto create_process(const std::filesystem::path& path) -> int;
 auto instance() -> ::HMODULE;
 auto abort(::UINT exitCode = EXIT_FAILURE) -> void;
@@ -41,6 +39,14 @@ auto system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
 auto system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto resource_icon() -> ::HICON;
 auto ui_settings() -> winrt::UISettings;
+
+struct GdiPlus {
+    GdiPlus();
+    ~GdiPlus();
+
+    Gdiplus::GdiplusStartupInput input;
+    ::ULONG_PTR token;
+};
 
 struct Event {
     auto create(const std::string& name, std::function<void()>&& callback = 0) -> bool;

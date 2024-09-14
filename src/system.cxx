@@ -15,20 +15,6 @@ auto co_initialize(::DWORD coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit);
 }
 
-auto gdi_plus_startup() -> ::ULONG_PTR {
-    ::ULONG_PTR token;
-    Gdiplus::GdiplusStartupInput input;
-
-    if (auto status { Gdiplus::GdiplusStartup(&token, &input, nullptr) };
-        status != Gdiplus::Status::Ok) {
-        throw std::runtime_error("GDI+ startup failure");
-    }
-
-    return token;
-}
-
-auto gdi_plus_shutdown(::ULONG_PTR token) -> void { Gdiplus::GdiplusShutdown(token); }
-
 auto create_process(const std::filesystem::path& path) -> int {
     ::STARTUPINFOW si { .cb { sizeof(::STARTUPINFOW) },
                         .lpReserved { nullptr },
@@ -93,6 +79,14 @@ auto resource_icon() -> ::HICON {
 }
 
 auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
+
+GdiPlus::GdiPlus() {
+    if (Gdiplus::GdiplusStartup(&token, &input, nullptr) != Gdiplus::Status::Ok) {
+        throw std::runtime_error("GDI+ startup failure");
+    }
+}
+
+GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(token); }
 
 auto Event::create(const std::string& eventName, std::function<void()>&& callback) -> bool {
     m_callback = std::move(callback);
