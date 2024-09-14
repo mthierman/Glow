@@ -57,7 +57,27 @@ struct State {
     bool minimized { false };
 };
 
-enum struct BackgroundStyle { Transparent, System, Custom };
+struct Background {
+    enum struct Style { Transparent, System, Custom };
+
+    struct Brush {
+        wil::unique_hbrush transparent { glow::system::system_brush() };
+        wil::unique_hbrush dark { glow::system::system_brush(BLACK_BRUSH) };
+        wil::unique_hbrush light { glow::system::system_brush(WHITE_BRUSH) };
+        wil::unique_hbrush custom { glow::system::system_brush() };
+    };
+
+    struct Color {
+        glow::color::Color transparent;
+        glow::color::Color dark { 0, 0, 0, 255 };
+        glow::color::Color light { 255, 255, 255, 255 };
+        glow::color::Color custom;
+    };
+
+    Style style { Style::System };
+    Brush brush;
+    Color color;
+};
 
 struct Window {
     Window();
@@ -69,14 +89,14 @@ protected:
                                    ::LPARAM lparam) -> ::LRESULT;
 
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
-    
+
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
-    
+
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
 
 public:
-    auto background_style(BackgroundStyle style) -> void;
+    auto background_style(Background::Style style) -> void;
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
@@ -176,15 +196,7 @@ protected:
     ::WINDOWPLACEMENT windowPlacement {};
     ::MONITORINFO monitorInfo {};
 
-    BackgroundStyle backgroundStyle { BackgroundStyle::System };
-
-    struct Brushes {
-        wil::unique_hbrush transparent { glow::system::system_brush() };
-        wil::unique_hbrush dark { glow::system::system_brush(BLACK_BRUSH) };
-        wil::unique_hbrush light { glow::system::system_brush(WHITE_BRUSH) };
-        wil::unique_hbrush custom { glow::system::system_brush() };
-    };
-    Brushes brushes;
+    Background background;
 
     struct Icons {
         wil::unique_hicon app { glow::system::resource_icon() ? glow::system::resource_icon()

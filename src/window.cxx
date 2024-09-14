@@ -85,16 +85,19 @@ Window::Window() {
     defaultMessages.on(WM_ERASEBKGND, [this](glow::message::wm::ERASEBKGND msg) {
         auto hdc { msg.deviceContext() };
 
-        switch (backgroundStyle) {
-            case BackgroundStyle::Transparent: {
-                paint_background(hdc, brushes.transparent);
+        using enum Background::Style;
+
+        switch (background.style) {
+            case Transparent: {
+                paint_background(hdc, background.brush.transparent);
             } break;
-            case BackgroundStyle::System: {
-                paint_background(hdc, glow::system::is_dark() ? brushes.dark : brushes.light);
+            case System: {
+                paint_background(
+                    hdc, glow::system::is_dark() ? background.brush.dark : background.brush.light);
 
             } break;
-            case BackgroundStyle::Custom: {
-                paint_background(hdc, brushes.custom);
+            case Custom: {
+                paint_background(hdc, background.brush.custom);
             } break;
         }
 
@@ -168,23 +171,23 @@ auto Window::theme_refresh() -> void {
     glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
 }
 
-auto Window::background_style(BackgroundStyle style) -> void {
-    backgroundStyle = style;
+auto Window::background_style(Background::Style style) -> void {
+    background.style = style;
     background_refresh();
 }
 
 auto Window::background_dark(glow::color::Color color) -> void {
-    brushes.dark.reset(color.brush());
+    background.brush.dark.reset(color.brush());
     background_refresh();
 }
 
 auto Window::background_light(glow::color::Color color) -> void {
-    brushes.light.reset(color.brush());
+    background.brush.light.reset(color.brush());
     background_refresh();
 }
 
 auto Window::background_custom(glow::color::Color color) -> void {
-    brushes.custom.reset(color.brush());
+    background.brush.custom.reset(color.brush());
     background_refresh();
 }
 
