@@ -16,15 +16,15 @@ auto main() -> int {
 
     webView.create([]() {
         webView.core->add_DOMContentLoaded(
-            webView.event<ICoreWebView2DOMContentLoadedEventHandler>(
+            webView.event.handler<ICoreWebView2DOMContentLoadedEventHandler>(
                 [](ICoreWebView2* /* sender */,
                    ICoreWebView2DOMContentLoadedEventArgs* /* args */) -> ::HRESULT {
             glow::log::log("DOMContentLoaded");
-            webView.core->remove_DOMContentLoaded(webView.token("DOMContentLoaded"));
+            webView.core->remove_DOMContentLoaded(webView.event.token("DOMContentLoaded"));
 
             return S_OK;
         }),
-            &webView.token("DOMContentLoaded"));
+            &webView.event.token("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
     }, true);

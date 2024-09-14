@@ -533,7 +533,7 @@ auto Child::create(::HWND parent, bool show) -> void {
 }
 
 auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken& {
-    return map.try_emplace(key, ::EventRegistrationToken()).first->second;
+    return eventRegistrationTokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
 auto WebView::create(Callback callback, bool show) -> void {

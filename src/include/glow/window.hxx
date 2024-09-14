@@ -227,7 +227,22 @@ struct EventToken {
     auto operator()(const std::string& key) -> ::EventRegistrationToken&;
 
 private:
-    std::unordered_map<std::string, ::EventRegistrationToken> map;
+    std::unordered_map<std::string, ::EventRegistrationToken> eventRegistrationTokens;
+};
+
+struct Event {
+    template <typename T> auto handler(auto&&... eventHandler) {
+        auto key { eventHandlers.size() };
+        eventHandlers.try_emplace(
+            key, wil::MakeAgileCallback<T>(std::forward<decltype(eventHandler)>(eventHandler)...));
+
+        return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
+    }
+
+    EventToken token;
+
+private:
+    std::unordered_map<size_t, std::any> eventHandlers;
 };
 
 struct WebView : Window {
@@ -248,16 +263,6 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    template <typename T> auto event(auto&&... handler) {
-        auto key { handlers.size() };
-        handlers.try_emplace(
-            key, wil::MakeAgileCallback<T>(std::forward<decltype(handler)>(handler)...));
-
-        return std::any_cast<Microsoft::WRL::ComPtr<T>>(handlers.at(key)).Get();
-    }
-
-protected:
-public:
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -318,16 +323,12 @@ public:
         std::filesystem::path userDataFolder;
     };
 
-    EventToken token;
-
+    Event event;
     Config config;
     wil::com_ptr<ICoreWebView2Environment13> environment;
     wil::com_ptr<ICoreWebView2Controller4> controller;
     wil::com_ptr<ICoreWebView2_22> core;
     wil::com_ptr<ICoreWebView2Settings9> settings;
-
-private:
-    std::unordered_map<size_t, std::any> handlers;
 };
 
 template <typename T> struct Manager {
