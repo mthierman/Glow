@@ -532,6 +532,10 @@ auto Child::create(::HWND parent, bool show) -> void {
                       this);
 }
 
+auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken& {
+    return map.try_emplace(key, ::EventRegistrationToken()).first->second;
+}
+
 auto WebView::create(Callback callback, bool show) -> void {
     register_class(windowClass);
     ::CreateWindowExW(0,
@@ -772,10 +776,6 @@ auto WebView::navigate(const std::wstring& url) -> void {
     if (core) {
         core->Navigate(url.c_str());
     }
-}
-
-auto WebView::Token::operator()(const std::string& key) -> ::EventRegistrationToken& {
-    return tokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
 auto to_position(const ::RECT& rect) -> Position {

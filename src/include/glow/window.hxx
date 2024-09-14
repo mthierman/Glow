@@ -223,6 +223,13 @@ struct Child : Window {
                                 .hIconSm { icons.app.get() } };
 };
 
+struct EventToken {
+    auto operator()(const std::string& key) -> ::EventRegistrationToken&;
+
+private:
+    std::unordered_map<std::string, ::EventRegistrationToken> map;
+};
+
 struct WebView : Window {
     using Callback = std::function<void()>;
 
@@ -241,13 +248,7 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    struct Token {
-        auto operator()(const std::string& key) -> ::EventRegistrationToken&;
-
-    private:
-        std::unordered_map<std::string, ::EventRegistrationToken> tokens;
-    };
-    Token token;
+    EventToken token;
 
     std::unordered_map<uint64_t, std::any> handlers;
 
