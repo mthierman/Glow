@@ -3,7 +3,9 @@
 #include <WebView2.h>
 
 namespace wm = glow::message::wm;
+
 glow::window::WebView webView;
+std::unordered_map<std::string, ::EventRegistrationToken> tokens;
 
 auto main() -> int {
     webView.messages.on(WM_DESTROY, [](wm::DESTROY msg) {
@@ -16,8 +18,6 @@ auto main() -> int {
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
     webView.create([]() {
-        ::EventRegistrationToken DOMContentLoaded;
-
         webView.core->add_DOMContentLoaded(
             webView
                 .handler<ICoreWebView2DOMContentLoadedEventHandler>(
@@ -27,9 +27,9 @@ auto main() -> int {
 
             return S_OK;
         }).Get(),
-            &DOMContentLoaded);
+            &webView.tokens("DOMContentLoaded"));
 
-        webView.core->remove_DOMContentLoaded(DOMContentLoaded);
+        // webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
     });

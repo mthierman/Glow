@@ -236,10 +236,13 @@ struct WebView : Window {
     auto navigate(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
-    struct Token {
-        std::string key;
-        ::EventRegistrationToken token;
+    struct Tokens {
+        auto operator()(const std::string& key) -> ::EventRegistrationToken&;
+
+    private:
+        std::unordered_map<std::string, ::EventRegistrationToken> tokens;
     };
+    Tokens tokens;
 
     template <typename T, typename U> auto handler(U handler) {
         return wil::MakeAgileCallback<T>(handler);
