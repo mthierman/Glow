@@ -82,9 +82,9 @@ auto resource_icon() -> ::HICON {
 auto ui_settings() -> winrt::UISettings { return winrt::UISettings(); }
 
 auto is_dark() -> bool {
-    auto fg { glow::color::system(winrt::UIColorType::Foreground) };
+    auto bg { glow::color::system(winrt::UIColorType::Background) };
 
-    return (((5 * fg.G) + (2 * fg.R) + fg.B) > (8 * 128)) ? true : false;
+    return (((5 * bg.G) + (2 * bg.R) + bg.B) < (8 * 128)) ? true : false;
 }
 
 GdiPlus::GdiPlus() {

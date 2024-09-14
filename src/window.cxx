@@ -171,6 +171,9 @@ auto Window::caption_refresh() -> void {
         } break;
         case Background::Style::Custom: {
             caption_color(background.color.custom);
+
+            background.color.custom.is_dark() ? text_color(glow::color::Color(255, 255, 255))
+                                              : text_color(glow::color::Color(0, 0, 0));
         }
     }
 }
