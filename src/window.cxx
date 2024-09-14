@@ -152,7 +152,11 @@ auto Window::refresh_dpi() -> void {
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
 }
 
-auto Window::activate() -> void { ::ShowWindow(hwnd.get(), SW_NORMAL); }
+auto Window::activate() -> void {
+    cloak();
+    ::ShowWindow(hwnd.get(), SW_NORMAL);
+    uncloak();
+}
 
 auto Window::show() -> void { ::ShowWindow(hwnd.get(), SW_SHOW); }
 
