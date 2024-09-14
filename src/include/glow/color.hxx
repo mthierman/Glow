@@ -29,7 +29,7 @@ struct Color {
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
     Color(const winrt::Color& color);
     Color(const ::COLORREF& colorRef);
-    // Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
+    Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
 
     uint8_t r { 0 };
     uint8_t g { 0 };
@@ -40,6 +40,7 @@ struct Color {
     auto hex() -> std::string;
     auto colorref() -> ::COLORREF;
     auto winrt_color() -> winrt::Color;
+    auto webview2_color() -> COREWEBVIEW2_COLOR;
 };
 
 auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;

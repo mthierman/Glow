@@ -34,11 +34,11 @@ Color::Color(const ::COLORREF& colorRef)
       b { GetBValue(colorRef) },
       a { 255 } { }
 
-// Color::Color(const COREWEBVIEW2_COLOR& coreWebView2Color)
-//     : r { coreWebView2Color.R },
-//       g { coreWebView2Color.G },
-//       b { coreWebView2Color.B },
-//       a { coreWebView2Color.A } { }
+Color::Color(const COREWEBVIEW2_COLOR& coreWebView2Color)
+    : r { coreWebView2Color.R },
+      g { coreWebView2Color.G },
+      b { coreWebView2Color.B },
+      a { coreWebView2Color.A } { }
 
 auto Color::brush() -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
 
@@ -50,6 +50,10 @@ auto Color::colorref() -> ::COLORREF { return RGB(r, g, b); }
 
 auto Color::winrt_color() -> winrt::Color {
     return winrt::Color { .A { a }, .R { r }, .G { g }, .B { b } };
+}
+
+auto Color::webview2_color() -> COREWEBVIEW2_COLOR {
+    return COREWEBVIEW2_COLOR { .A { a }, .R { r }, .G { g }, .B { b } };
 }
 
 auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
