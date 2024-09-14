@@ -45,9 +45,6 @@ struct Color {
     auto is_dark() const -> bool;
 };
 
-// auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;
-// auto create_brush(const winrt::Color& color) -> ::HBRUSH;
-
 auto system(winrt::UIColorType colorType) -> winrt::Color;
 auto element(winrt::UIElementType elementType) -> winrt::Color;
 auto to_string(const winrt::Color& color) -> std::string;

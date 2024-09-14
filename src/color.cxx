@@ -67,14 +67,6 @@ auto Color::webview2_color() const -> COREWEBVIEW2_COLOR {
 
 auto Color::is_dark() const -> bool { return (((5 * g) + (2 * r) + b) < (8 * 128)) ? true : false; }
 
-// auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
-//     return ::CreateSolidBrush(RGB(r, g, b));
-// }
-
-// auto create_brush(const winrt::Color& color) -> ::HBRUSH {
-//     return ::CreateSolidBrush(RGB(color.R, color.G, color.B));
-// }
-
 auto system(winrt::UIColorType colorType) -> winrt::Color {
     auto uiSettings { glow::system::ui_settings() };
     return uiSettings.GetColorValue(colorType);
