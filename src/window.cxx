@@ -704,14 +704,6 @@ auto WebView::create_webview(Callback callback) -> void {
             settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
             settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
 
-            // if (events.DOMContentLoaded.second) {
-            //     core->add_DOMContentLoaded(
-            //         wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(
-            //             events.DOMContentLoaded.second)
-            //             .Get(),
-            //         &events.DOMContentLoaded.first);
-            // }
-
             if (callback) {
                 callback();
             }
