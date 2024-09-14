@@ -151,6 +151,12 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
+auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+}
+
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
@@ -170,12 +176,6 @@ auto Window::background_color(glow::color::Color color) -> void {
 
 auto Window::background_refresh() -> void {
     ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE);
-}
-
-auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
-    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
 }
 
 auto Window::refresh_dpi() -> void {
