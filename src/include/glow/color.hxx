@@ -42,6 +42,7 @@ struct Color {
     auto colorref() const -> ::COLORREF;
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
+    auto is_dark() const -> bool;
 };
 
 // auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;

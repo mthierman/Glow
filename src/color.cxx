@@ -65,6 +65,8 @@ auto Color::webview2_color() const -> COREWEBVIEW2_COLOR {
     return COREWEBVIEW2_COLOR { .A { a }, .R { r }, .G { g }, .B { b } };
 }
 
+auto Color::is_dark() const -> bool { return (((5 * g) + (2 * r) + b) > (8 * 128)) ? true : false; }
+
 // auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
 //     return ::CreateSolidBrush(RGB(r, g, b));
 // }
