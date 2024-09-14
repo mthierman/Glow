@@ -166,14 +166,19 @@ auto Window::background_refresh() -> void {
 auto Window::caption_refresh() -> void {
     switch (background.style) {
         case Background::Style::System: {
-            glow::system::is_dark() ? caption_color(background.color.dark)
-                                    : caption_color(background.color.light);
+            auto dark { glow::system::is_dark() };
+            dark ? caption_color(background.color.dark) : caption_color(background.color.light);
+
+            dark ? text_color(glow::color::Color(255, 255, 255))
+                 : text_color(glow::color::Color(0, 0, 0));
         } break;
         case Background::Style::Custom: {
+            auto dark { background.color.custom.is_dark() };
+
             caption_color(background.color.custom);
 
-            background.color.custom.is_dark() ? text_color(glow::color::Color(255, 255, 255))
-                                              : text_color(glow::color::Color(0, 0, 0));
+            dark ? text_color(glow::color::Color(255, 255, 255))
+                 : text_color(glow::color::Color(0, 0, 0));
         }
     }
 }
