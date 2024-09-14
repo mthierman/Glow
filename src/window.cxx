@@ -156,7 +156,7 @@ auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
 }
 
 auto Window::theme_refresh() -> void {
-    // glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
+    glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
 }
 
 auto Window::background_refresh() -> void {
@@ -167,16 +167,14 @@ auto Window::caption_refresh() -> void {
     switch (background.style) {
         case Background::Style::System: {
             auto dark { glow::system::is_dark() };
-            dark ? caption_color(background.color.dark) : caption_color(background.color.light);
-
-            dark ? text_color(glow::color::Color(255, 255, 255))
-                 : text_color(glow::color::Color(0, 0, 0));
+            caption_color(dark ? background.color.dark : background.color.light);
+            border_color(dark ? background.color.dark : background.color.light);
+            text_color(dark ? background.color.light : background.color.dark);
         } break;
         case Background::Style::Custom: {
             auto dark { background.color.custom.is_dark() };
-
             caption_color(background.color.custom);
-
+            border_color(background.color.custom);
             dark ? text_color(glow::color::Color(255, 255, 255))
                  : text_color(glow::color::Color(0, 0, 0));
         }
@@ -185,7 +183,7 @@ auto Window::caption_refresh() -> void {
 
 auto Window::window_refresh() -> void {
     background_refresh();
-    caption_refresh();
+    // caption_refresh();
 }
 
 auto Window::dpi_refresh() -> void {
