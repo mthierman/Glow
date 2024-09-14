@@ -55,7 +55,7 @@ Window::Window() {
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
         brushes.system.reset(glow::color::Color(winrt::UIColorType::Background).brush());
-        refresh_background();
+        background_refresh();
 
         return 0;
     });
@@ -83,7 +83,27 @@ Window::Window() {
     });
 
     defaultMessages.on(WM_ERASEBKGND, [this](glow::message::wm::ERASEBKGND msg) {
-        return erase_background(msg.deviceContext());
+        auto hdc { msg.deviceContext() };
+
+        switch (backgroundStyle) {
+            case BackgroundStyle::Transparent: {
+                paint_background(hdc, brushes.transparent);
+            } break;
+            case BackgroundStyle::System: {
+                paint_background(hdc, brushes.system);
+            } break;
+            case BackgroundStyle::Black: {
+                paint_background(hdc, brushes.black);
+            } break;
+            case BackgroundStyle::White: {
+                paint_background(hdc, brushes.white);
+            } break;
+            case BackgroundStyle::Custom: {
+                paint_background(hdc, brushes.custom);
+            } break;
+        }
+
+        return 1;
     });
 
     defaultMessages.on(WM_CLOSE, [this](glow::message::wm::MSG /* msg */) {
@@ -131,47 +151,25 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
 }
 
-auto Window::set_background_style(BackgroundStyle style) -> void {
-    backgroundStyle = style;
-    refresh_background();
-}
-
-auto Window::set_background_color(glow::color::Color color) -> void {
-    backgroundColor = color;
-    brushes.custom.reset(backgroundColor.brush());
-    refresh_background();
-}
-
-auto Window::refresh_background() -> void {
-    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE);
-}
-
-auto Window::erase_background(::HDC hdc) -> int {
-    switch (backgroundStyle) {
-        case BackgroundStyle::Transparent: {
-            paint_background(hdc, brushes.transparent);
-        } break;
-        case BackgroundStyle::System: {
-            paint_background(hdc, brushes.system);
-        } break;
-        case BackgroundStyle::Black: {
-            paint_background(hdc, brushes.black);
-        } break;
-        case BackgroundStyle::White: {
-            paint_background(hdc, brushes.white);
-        } break;
-        case BackgroundStyle::Custom: {
-            paint_background(hdc, brushes.custom);
-        } break;
-    }
-
-    return 1;
-}
-
 auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
     ::RECT rect;
     ::GetClientRect(hwnd.get(), &rect);
     ::FillRect(hdc, &rect, brush.get());
+}
+
+auto Window::background_style(BackgroundStyle style) -> void {
+    backgroundStyle = style;
+    background_refresh();
+}
+
+auto Window::background_color(glow::color::Color color) -> void {
+    backgroundColor = color;
+    brushes.custom.reset(backgroundColor.brush());
+    background_refresh();
+}
+
+auto Window::background_refresh() -> void {
+    ::RedrawWindow(hwnd.get(), nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE);
 }
 
 auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {

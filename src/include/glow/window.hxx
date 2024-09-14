@@ -68,12 +68,12 @@ protected:
                                    ::WPARAM wparam,
                                    ::LPARAM lparam) -> ::LRESULT;
 
-public:
-    auto set_background_style(BackgroundStyle style) -> void;
-    auto set_background_color(glow::color::Color color) -> void;
-    auto refresh_background() -> void;
-    auto erase_background(::HDC hdc) -> int;
     auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
+
+public:
+    auto background_style(BackgroundStyle style) -> void;
+    auto background_color(glow::color::Color color) -> void;
+    auto background_refresh() -> void;
 
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
     auto refresh_dpi() -> void;
