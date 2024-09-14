@@ -1,7 +1,5 @@
 #include <glow/glow.hxx>
 
-namespace wm = glow::message::wm;
-
 glow::window::Overlapped window;
 
 auto main() -> int {
