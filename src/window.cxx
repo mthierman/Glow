@@ -47,7 +47,6 @@ auto Position::rect() const -> ::RECT {
 
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
-        brushes.custom.reset(backgroundColor.brush());
         refresh_dpi();
 
         return 0;
@@ -168,9 +167,18 @@ auto Window::background_style(BackgroundStyle style) -> void {
     background_refresh();
 }
 
-auto Window::background_color(glow::color::Color color) -> void {
-    backgroundColor = color;
-    brushes.custom.reset(backgroundColor.brush());
+auto Window::background_custom(glow::color::Color color) -> void {
+    brushes.custom.reset(color.brush());
+    background_refresh();
+}
+
+auto Window::background_dark(glow::color::Color color) -> void {
+    brushes.custom.reset(color.brush());
+    background_refresh();
+}
+
+auto Window::background_light(glow::color::Color color) -> void {
+    brushes.custom.reset(color.brush());
     background_refresh();
 }
 

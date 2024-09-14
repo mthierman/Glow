@@ -73,7 +73,9 @@ protected:
 
 public:
     auto background_style(BackgroundStyle style) -> void;
-    auto background_color(glow::color::Color color) -> void;
+    auto background_custom(glow::color::Color color) -> void;
+    auto background_dark(glow::color::Color color) -> void;
+    auto background_light(glow::color::Color color) -> void;
     auto background_refresh() -> void;
 
     auto refresh_dpi() -> void;
@@ -164,15 +166,14 @@ public:
 
     State state;
 
-protected:
-    BackgroundStyle backgroundStyle { BackgroundStyle::System };
-    glow::color::Color backgroundColor;
-
-public:
-    ::WINDOWPLACEMENT windowPlacement {};
-    ::MONITORINFO monitorInfo {};
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
+
+protected:
+    ::WINDOWPLACEMENT windowPlacement {};
+    ::MONITORINFO monitorInfo {};
+
+    BackgroundStyle backgroundStyle { BackgroundStyle::System };
 
     struct Brushes {
         wil::unique_hbrush transparent { glow::system::system_brush() };
@@ -189,13 +190,13 @@ public:
     };
     Icons icons;
 
-    uintptr_t id { glow::math::make_random<uintptr_t>() };
-
-    glow::message::Manager messages;
     glow::message::Manager baseMessages;
     glow::message::Manager derivedMessages;
     glow::message::Manager defaultMessages;
 
+public:
+    glow::message::Manager messages;
+    uintptr_t id { glow::math::make_random<uintptr_t>() };
     wil::unique_hwnd hwnd;
 };
 
