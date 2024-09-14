@@ -46,16 +46,17 @@ auto main() -> int {
         //     return S_OK;
         // });
 
+        auto DOMContentLoaded { webView.make_token("DOMContentLoaded") };
         webView.core->add_DOMContentLoaded(
             webView.handler<ICoreWebView2DOMContentLoadedEventHandler>(
-                "DOMContentLoaded",
+                DOMContentLoaded.key,
                 [](ICoreWebView2* sender,
                    ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
             webView.activate();
 
             return S_OK;
         }),
-            webView.token("DOMContentLoaded"));
+            &DOMContentLoaded.token);
 
         webView.navigate("https://localhost:5173/");
     });

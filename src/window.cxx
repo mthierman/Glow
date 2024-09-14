@@ -789,6 +789,10 @@ auto WebView::token(std::string key) -> ::EventRegistrationToken* {
     }
 }
 
+auto WebView::make_token(std::string key) -> Token {
+    return Token { .key { key }, .token { ::EventRegistrationToken() } };
+}
+
 auto to_position(const ::RECT& rect) -> Position {
     return Position { .x { rect.left },
                       .y { rect.top },

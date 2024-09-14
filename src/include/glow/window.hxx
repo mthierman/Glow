@@ -248,7 +248,13 @@ struct WebView : Window {
         return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
     }
 
+    struct Token {
+        std::string key;
+        ::EventRegistrationToken token;
+    };
+
     auto token(std::string key) -> ::EventRegistrationToken*;
+    auto make_token(std::string key) -> Token;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
