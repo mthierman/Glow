@@ -101,6 +101,10 @@ public:
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
 
+    auto caption_color(const glow::color::Color& color) -> void;
+    auto border_color(const glow::color::Color& color) -> void;
+    auto text_color(const glow::color::Color& color) -> void;
+
     auto refresh_dpi() -> void;
 
     auto activate() -> void;
@@ -132,12 +136,7 @@ public:
     auto disable_dark_mode() -> void;
     auto set_backdrop(::DWM_SYSTEMBACKDROP_TYPE backdrop) -> void;
     auto set_round_corners(::DWM_WINDOW_CORNER_PREFERENCE corner) -> void;
-    auto set_caption_color(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto set_caption_color(const winrt::Color& color) -> void;
-    auto set_border_color(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto set_border_color(const winrt::Color& color) -> void;
-    auto set_text_color(uint8_t r, uint8_t g, uint8_t b) -> void;
-    auto set_text_color(const winrt::Color& color) -> void;
+
     auto focus() -> void;
     auto is_focused() -> bool;
     auto foreground() -> void;

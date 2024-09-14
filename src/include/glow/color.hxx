@@ -37,15 +37,15 @@ struct Color {
     uint8_t b { 0 };
     uint8_t a { 0 };
 
-    auto brush() -> ::HBRUSH;
-    auto hex() -> std::string;
-    auto colorref() -> ::COLORREF;
-    auto winrt_color() -> winrt::Color;
-    auto webview2_color() -> COREWEBVIEW2_COLOR;
+    auto brush() const -> ::HBRUSH;
+    auto hex() const -> std::string;
+    auto colorref() const -> ::COLORREF;
+    auto winrt_color() const -> winrt::Color;
+    auto webview2_color() const -> COREWEBVIEW2_COLOR;
 };
 
-auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;
-auto create_brush(const winrt::Color& color) -> ::HBRUSH;
+// auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH;
+// auto create_brush(const winrt::Color& color) -> ::HBRUSH;
 
 auto system(winrt::UIColorType colorType) -> winrt::Color;
 auto element(winrt::UIElementType elementType) -> winrt::Color;

@@ -15,12 +15,12 @@ auto main() -> int {
 
     // window.background_style(glow::window::Background::Style::Transparent);
 
-    // window.background_style(glow::window::Background::Style::System);
-    // window.background_dark(glow::color::Color(50, 50, 50));
-    // window.background_light(glow::color::Color(200, 200, 200));
+    window.background_style(glow::window::Background::Style::System);
+    window.background_dark(glow::color::Color(50, 50, 50));
+    window.background_light(glow::color::Color(200, 200, 200));
 
     // window.background_style(glow::window::Background::Style::Custom);
-    // window.background_custom(glow::color::Color(255, 0, 0));
+    // window.background_custom(glow::color::Color(50, 50, 50));
 
     return glow::app::run();
 }

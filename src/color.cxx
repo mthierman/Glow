@@ -49,29 +49,29 @@ Color::Color(const COREWEBVIEW2_COLOR& coreWebView2Color)
       b { coreWebView2Color.B },
       a { coreWebView2Color.A } { }
 
-auto Color::brush() -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
+auto Color::brush() const -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
 
-auto Color::hex() -> std::string {
+auto Color::hex() const -> std::string {
     return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", r, g, b, a);
 }
 
-auto Color::colorref() -> ::COLORREF { return RGB(r, g, b); }
+auto Color::colorref() const -> ::COLORREF { return RGB(r, g, b); }
 
-auto Color::winrt_color() -> winrt::Color {
+auto Color::winrt_color() const -> winrt::Color {
     return winrt::Color { .A { a }, .R { r }, .G { g }, .B { b } };
 }
 
-auto Color::webview2_color() -> COREWEBVIEW2_COLOR {
+auto Color::webview2_color() const -> COREWEBVIEW2_COLOR {
     return COREWEBVIEW2_COLOR { .A { a }, .R { r }, .G { g }, .B { b } };
 }
 
-auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
-    return ::CreateSolidBrush(RGB(r, g, b));
-}
+// auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
+//     return ::CreateSolidBrush(RGB(r, g, b));
+// }
 
-auto create_brush(const winrt::Color& color) -> ::HBRUSH {
-    return ::CreateSolidBrush(RGB(color.R, color.G, color.B));
-}
+// auto create_brush(const winrt::Color& color) -> ::HBRUSH {
+//     return ::CreateSolidBrush(RGB(color.R, color.G, color.B));
+// }
 
 auto system(winrt::UIColorType colorType) -> winrt::Color {
     auto uiSettings { glow::system::ui_settings() };
