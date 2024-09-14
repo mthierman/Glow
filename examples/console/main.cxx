@@ -2,4 +2,8 @@
 
 #include <glow/glow.hxx>
 
-auto main() -> int { return EXIT_SUCCESS; }
+auto main() -> int {
+    //
+
+    return EXIT_SUCCESS;
+}

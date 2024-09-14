@@ -8,6 +8,8 @@
 
 #include <Windows.h>
 
+#include <gdipluscolor.h>
+
 #include <format>
 #include <string>
 
