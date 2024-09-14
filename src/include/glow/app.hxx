@@ -15,15 +15,18 @@
 
 namespace glow::app {
 struct App {
-    auto create() -> void;
 
-private:
+protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
                                    ::WPARAM wparam,
                                    ::LPARAM lparam) -> ::LRESULT;
 
 public:
+    auto create() -> void;
+
+    auto operator()() -> int;
+
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
                     ::HWND receiverHwnd
