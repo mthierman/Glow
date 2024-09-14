@@ -48,6 +48,10 @@ auto Color::hex() -> std::string {
 
 auto Color::colorref() -> ::COLORREF { return RGB(r, g, b); }
 
+auto Color::winrt_color() -> winrt::Color {
+    return winrt::Color { .A { a }, .R { r }, .G { g }, .B { b } };
+}
+
 auto create_brush(uint8_t r, uint8_t g, uint8_t b) -> ::HBRUSH {
     return ::CreateSolidBrush(RGB(r, g, b));
 }
