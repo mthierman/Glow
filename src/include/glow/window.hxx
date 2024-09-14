@@ -190,7 +190,7 @@ public:
 };
 
 struct Overlapped : Window {
-    auto create(bool show = false) -> void;
+    auto create(bool show = true) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -207,7 +207,7 @@ struct Overlapped : Window {
 };
 
 struct Child : Window {
-    auto create(::HWND parent, bool show = false) -> void;
+    auto create(::HWND parent, bool show = true) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
@@ -248,8 +248,8 @@ private:
 struct WebView : Window {
     using Callback = std::function<void()>;
 
-    auto create(Callback callback = 0, bool show = false) -> void;
-    auto create(::HWND parent, Callback callback = 0, bool show = false) -> void;
+    auto create(Callback callback = 0, bool show = true) -> void;
+    auto create(::HWND parent, Callback callback = 0, bool show = true) -> void;
     auto create_webview(Callback callback = 0) -> void;
 
     auto put_bounds(const Position& position) -> void;
