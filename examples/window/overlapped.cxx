@@ -10,6 +10,8 @@ auto main() -> int {
     });
 
     window.create();
+    window.background_style(glow::window::BackgroundStyle::Custom);
+    window.background_custom(glow::color::Color(255, 0, 0));
 
     return glow::app::run();
 }
