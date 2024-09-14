@@ -32,7 +32,7 @@ auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
                        | COINIT_DISABLE_OLE1DDE) -> wil::unique_couninitialize_call;
 auto create_process(const std::filesystem::path& path) -> int;
 auto instance() -> ::HMODULE;
-auto abort(::UINT exitCode = EXIT_FAILURE) -> void;
+auto exit_process(::UINT exitCode = EXIT_SUCCESS) -> void;
 auto quit(int exitCode = EXIT_SUCCESS) -> void;
 auto system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
 auto system_cursor(LPSTR name = IDC_ARROW) -> ::HCURSOR;
