@@ -24,12 +24,11 @@ auto main() -> int {
                     [](ICoreWebView2* sender,
                        ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
             webView.activate();
+            webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
 
             return S_OK;
         }).Get(),
             &webView.tokens("DOMContentLoaded"));
-
-        // webView.core->remove_DOMContentLoaded(webView.tokens("DOMContentLoaded"));
 
         webView.navigate("https://localhost:5173/");
     });

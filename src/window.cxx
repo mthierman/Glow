@@ -782,11 +782,7 @@ auto WebView::navigate(const std::wstring& url) -> void {
 }
 
 auto WebView::Tokens::operator()(const std::string& key) -> ::EventRegistrationToken& {
-    if (tokens.contains(key)) {
-        return tokens.at(key);
-    } else {
-        return tokens.try_emplace(key, ::EventRegistrationToken()).first->second;
-    }
+    return tokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
 auto to_position(const ::RECT& rect) -> Position {
