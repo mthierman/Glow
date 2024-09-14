@@ -10,6 +10,30 @@
 #include <glow/text.hxx>
 
 namespace glow::color {
+Color::Color(uint8_t r, uint8_t g, uint8_t b)
+    : r { r },
+      g { g },
+      b { b },
+      a { 255 } { }
+
+Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+    : r { r },
+      g { g },
+      b { b },
+      a { a } { }
+
+Color::Color(const winrt::Color& color)
+    : r { color.R },
+      g { color.G },
+      b { color.B },
+      a { color.A } { }
+
+Color::Color(const ::COLORREF& colorRef)
+    : r { GetRValue(colorRef) },
+      g { GetGValue(colorRef) },
+      b { GetBValue(colorRef) },
+      a { 255 } { }
+
 // auto Color::brush() -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
 
 // auto Color::string() -> std::string {
