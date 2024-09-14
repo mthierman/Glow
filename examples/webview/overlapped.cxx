@@ -15,7 +15,7 @@ auto main() -> int {
     webView.config.backgroundColor
         = COREWEBVIEW2_COLOR { .A { 255 }, .R { 227 }, .G { 178 }, .B { 60 } };
 
-    webView.events.DOMContentLoaded.handler
+    webView.events.DOMContentLoaded.second
         = [](ICoreWebView2* sender, ICoreWebView2DOMContentLoadedEventArgs* args) -> ::HRESULT {
         glow::log::log("TEST");
         webView.activate();

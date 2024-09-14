@@ -706,9 +706,9 @@ auto WebView::create_webview(Callback callback) -> void {
 
             core->add_DOMContentLoaded(
                 wil::MakeAgileCallback<ICoreWebView2DOMContentLoadedEventHandler>(
-                    events.DOMContentLoaded.handler)
+                    events.DOMContentLoaded.second)
                     .Get(),
-                &events.DOMContentLoaded.token);
+                &events.DOMContentLoaded.first);
 
             if (callback) {
                 callback();
