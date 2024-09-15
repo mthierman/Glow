@@ -10,8 +10,10 @@
 #include <string>
 
 namespace glow::text {
-auto utf16_to_utf8(const wchar_t* input, size_t length) -> std::string;
-auto utf8_to_utf16(const char* input, size_t length) -> std::wstring;
+auto whcar_to_string(const wchar_t* input, size_t length) -> std::string;
+auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string;
+auto char_to_wstring(const char* input, size_t length) -> std::wstring;
+auto char_to_u16string(const char* input, size_t length) -> std::u16string;
 
 auto to_string(std::string_view input) -> std::string;
 auto to_wstring(std::wstring_view input) -> std::wstring;
@@ -36,17 +38,18 @@ auto to_u8string(std::wstring_view input) -> std::u8string;
 auto to_u8string(std::u16string_view input) -> std::u8string;
 auto to_u16string(std::u8string_view input) -> std::u16string;
 
-// template <typename T> struct String {
-//     String() = default;
-//     String(T string)
-//         : storage { to_u8string(string) } { }
+struct String {
+    String() = default;
+    String(std::u8string string);
 
-//     // auto operator()(std::u8string_view string) -> std::u8string&;
-//     auto operator()() -> std::u8string& { return storage; }
+    auto operator()(std::u8string string) -> std::u8string&;
+    auto operator()() const -> const std::u8string&;
 
-// protected:
-//     std::u8string storage;
-// };
+    auto string() -> std::string;
+
+protected:
+    std::u8string storage;
+};
 }; // namespace glow::text
 
 namespace std {
