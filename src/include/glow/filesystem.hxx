@@ -30,7 +30,7 @@ struct Path {
 
 protected:
     std::filesystem::path storage;
-}
+};
 }; // namespace glow::filesystem
 
 namespace std {
