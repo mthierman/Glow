@@ -11,14 +11,22 @@
 
 namespace glow::text {
 auto to_string(std::u8string_view input) -> std::string;
+auto to_wstring(std::u16string_view input) -> std::wstring;
+
+auto to_string(const wchar_t* input, size_t length) -> std::string;
+auto to_wstring(const char* input, size_t length) -> std::wstring;
+
+auto to_string(std::u16string_view input) -> std::string;
 auto to_string(std::wstring_view input) -> std::string;
 
-auto to_wstring(const wchar_t* input) -> std::wstring;
 auto to_wstring(std::u8string_view input) -> std::wstring;
 auto to_wstring(std::string_view input) -> std::wstring;
 
 auto to_u8string(std::string_view input) -> std::u8string;
 auto to_u8string(std::wstring_view input) -> std::u8string;
+
+auto to_u16string(std::string_view input) -> std::u16string;
+auto to_u16string(std::wstring_view input) -> std::u16string;
 }; // namespace glow::text
 
 namespace std {
