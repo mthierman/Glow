@@ -87,6 +87,16 @@ auto is_dark() -> bool {
     return (((5 * bg.g) + (2 * bg.r) + bg.b) < (8 * 128)) ? true : false;
 }
 
+auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string> {
+    std::vector<std::u8string> args;
+
+    for (int i = 0; i < argc; i++) {
+        args.push_back(glow::text::to_u8string(argv[i]));
+    }
+
+    return args;
+}
+
 GdiPlus::GdiPlus() {
     if (Gdiplus::GdiplusStartup(&token, &input, nullptr) != Gdiplus::Status::Ok) {
         throw std::runtime_error("GDI+ startup failure");

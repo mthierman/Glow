@@ -16,6 +16,7 @@
 #include <filesystem>
 #include <functional>
 #include <string>
+#include <vector>
 
 #include <wil/resource.h>
 
@@ -40,6 +41,7 @@ auto system_icon(LPSTR name = IDI_APPLICATION) -> ::HICON;
 auto resource_icon() -> ::HICON;
 auto ui_settings() -> winrt::UISettings;
 auto is_dark() -> bool;
+auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string>;
 
 struct GdiPlus {
     GdiPlus();
