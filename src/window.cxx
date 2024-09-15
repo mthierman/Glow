@@ -45,6 +45,12 @@ auto Position::rect() const -> ::RECT {
     return ::RECT { .left { x }, .top { y }, .right { width }, .bottom { height } };
 }
 
+auto Hwnd::register_class(::WNDCLASSEXW& windowClass) -> void {
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+}
+
 Window::Window() {
     baseMessages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
         theme_refresh();
@@ -147,12 +153,6 @@ auto CALLBACK Window::procedure(::HWND hwnd,
     }
 
     return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
-}
-
-auto Window::register_class(::WNDCLASSEXW& windowClass) -> void {
-    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
 }
 
 auto Window::theme_refresh() -> void {

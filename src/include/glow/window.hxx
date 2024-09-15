@@ -81,7 +81,11 @@ struct Background {
     Color color;
 };
 
-struct Window {
+struct Hwnd {
+    auto register_class(::WNDCLASSEXW& windowClass) -> void;
+};
+
+struct Window : Hwnd {
     Window();
 
 protected:
@@ -90,7 +94,6 @@ protected:
                                    ::WPARAM wparam,
                                    ::LPARAM lparam) -> ::LRESULT;
 
-    auto register_class(::WNDCLASSEXW& windowClass) -> void;
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
     auto caption_refresh() -> void;
@@ -348,7 +351,7 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
 
-struct Message {
+struct Message : Hwnd {
 protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
