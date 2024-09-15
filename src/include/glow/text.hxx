@@ -46,7 +46,6 @@ struct String {
     explicit String(const std::u8string& u8string);
     explicit String(std::u8string&& u8string);
     explicit String(const std::filesystem::path& path);
-    explicit String(std::filesystem::path&& path);
 
     auto operator()(std::u8string string) -> const std::u8string&;
     auto operator()() const -> const std::u8string&;
