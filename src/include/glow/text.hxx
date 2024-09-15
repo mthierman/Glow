@@ -41,4 +41,16 @@ template <> struct formatter<std::u8string, wchar_t> : formatter<wstring_view, w
         return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(u8string), context);
     }
 };
+
+template <> struct formatter<std::u16string> : formatter<string_view> {
+    auto format(const std::u16string& u16string, format_context& context) const noexcept {
+        return formatter<string_view>::format(glow::text::to_string(u16string), context);
+    }
+};
+
+template <> struct formatter<std::u16string, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const std::u16string& u16string, wformat_context& context) const noexcept {
+        return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(u16string), context);
+    }
+};
 } // namespace std
