@@ -33,6 +33,9 @@ struct Path {
     explicit Path(std::filesystem::path&& path);
     explicit Path(const std::u8string& u8string);
 
+    auto operator=(const Path& path) -> Path& = default;
+    auto operator=(Path&& path) -> Path& = default;
+
     auto operator()(const std::u8string& string) -> const std::u8string&;
     auto operator()(std::u8string&& string) -> const std::u8string&;
     auto operator()() const -> const std::u8string&;
