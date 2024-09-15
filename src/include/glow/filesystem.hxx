@@ -23,6 +23,14 @@ auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   = {}) -> std::filesystem::path;
 auto temp_folder(std::initializer_list<std::u8string_view> subfolders
                  = {}) -> std::filesystem::path;
+
+struct Path {
+    Path() = default;
+    ~Path() = default;
+
+protected:
+    std::filesystem::path storage;
+}
 }; // namespace glow::filesystem
 
 namespace std {
