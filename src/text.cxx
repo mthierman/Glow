@@ -182,9 +182,19 @@ String::String(const std::u8string& string)
 String::String(std::u8string&& string)
     : storage { std::move(string) } { }
 
-auto String::operator()(std::u8string string) -> std::u8string& {
+auto String::operator()(std::u8string string) -> const std::u8string& {
     storage = std::move(string);
 
     return storage;
 }
+
+auto String::operator()() const -> const std::u8string& { return storage; }
+
+auto String::u8string() const -> std::u8string { return storage; }
+
+auto String::u16string() const -> std::u16string { return to_u16string(storage); }
+
+auto String::string() const -> std::string { return to_string(storage); }
+
+auto String::wstring() const -> std::wstring { return to_wstring(storage); }
 }; // namespace glow::text
