@@ -542,6 +542,7 @@ auto Window::notify_app(glow::message::Code code,
 
 auto Overlapped::create(bool show) -> void {
     register_class(windowClass);
+
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
@@ -562,6 +563,7 @@ auto Overlapped::create(bool show) -> void {
 
 auto Child::create(::HWND parent, bool show) -> void {
     register_class(windowClass);
+
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
@@ -586,6 +588,7 @@ auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken&
 
 auto WebView::create(Callback callback, bool show) -> void {
     register_class(windowClass);
+
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
@@ -608,6 +611,7 @@ auto WebView::create(Callback callback, bool show) -> void {
 
 auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
     register_class(windowClass);
+
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
                       L"",
@@ -835,24 +839,7 @@ auto CALLBACK Message::procedure(::HWND hwnd,
 }
 
 auto Message::create() -> void {
-    auto instance { glow::system::instance() };
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Message) },
-                                .hInstance { instance },
-                                .hIcon { nullptr },
-                                .hCursor { nullptr },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"Message" },
-                                .hIconSm { nullptr } };
-
-    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
+    register_class(windowClass);
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -864,7 +851,7 @@ auto Message::create() -> void {
                       CW_USEDEFAULT,
                       HWND_MESSAGE,
                       nullptr,
-                      instance,
+                      glow::system::instance(),
                       this);
 }
 

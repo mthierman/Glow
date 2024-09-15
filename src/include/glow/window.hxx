@@ -361,12 +361,25 @@ protected:
 public:
     auto create() -> void;
 
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Message) },
+                                .hInstance { glow::system::instance() },
+                                .hIcon { nullptr },
+                                .hCursor { nullptr },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Message" },
+                                .hIconSm { nullptr } };
+
     auto operator()() -> int;
 
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
                     ::HWND receiverHwnd
-                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
+                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"Message", nullptr)) -> void;
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;
