@@ -25,3 +25,16 @@ target_sources(
     )
 
 target_link_libraries(${PROJECT_NAME}_derived PRIVATE glow::glow)
+
+add_executable(
+    ${PROJECT_NAME}_message
+    WIN32
+    )
+
+target_sources(
+    ${PROJECT_NAME}_message
+    PRIVATE "message.cxx"
+            "../../data/glow.manifest"
+    )
+
+target_link_libraries(${PROJECT_NAME}_message PRIVATE glow::glow)
