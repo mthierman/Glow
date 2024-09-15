@@ -173,7 +173,7 @@ public:
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
                     ::HWND receiverHwnd
-                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
+                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"MessageWindow", nullptr)) -> void;
 
     struct Positions {
         Position window;
