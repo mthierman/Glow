@@ -1,0 +1,4 @@
+{
+    "files": [],
+    "references": [{ "path": "./examples/webview/vite" }, { "path": "./tsconfig.node.json" }]
+}

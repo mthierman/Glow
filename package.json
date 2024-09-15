@@ -5,6 +5,15 @@
     "version": "0.0.8",
     "private": true,
     "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "host": "vite --host",
+        "check": "tsc",
+        "lint": "eslint .",
+        "build": "tsc && vite build",
+        "watch": "tsc && vite build --watch",
+        "preview": "vite preview"
+    },
     "devDependencies": {
         "@types/node": "^22.5.5",
         "prettier": "^3.3.3",
