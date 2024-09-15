@@ -9,8 +9,6 @@ enum struct glow::message::Code : ::UINT {
 };
 
 struct Window final : glow::window::Overlapped {
-    using enum glow::message::Code;
-
     Window(std::unordered_map<char, bool>& keyMap)
         : keys { keyMap } {
         messages.on(WM_KEYDOWN, [this](glow::message::wm::KEYDOWN message) {
@@ -19,7 +17,7 @@ struct Window final : glow::window::Overlapped {
                     case 'N': {
                         if (!keys.at(key)) {
                             keys.at(key) = true;
-                            notify_app(CREATE_WINDOW);
+                            notify_app(glow::message::Code::CREATE_WINDOW);
                         }
                         break;
                     }
@@ -27,7 +25,7 @@ struct Window final : glow::window::Overlapped {
                     case 'W': {
                         if (!keys.at(key)) {
                             keys.at(key) = true;
-                            notify_app(CLOSE_WINDOW);
+                            notify_app(glow::message::Code::CLOSE_WINDOW);
                         }
                         break;
                     }
@@ -55,8 +53,6 @@ struct Window final : glow::window::Overlapped {
 };
 
 struct App final : glow::window::Message {
-    using enum glow::message::Code;
-
     App(glow::system::Event& singleInstance)
         : singleInstance { singleInstance } {
         messages.on(WM_NOTIFY, [this](glow::message::wm::NOTIFY msg) {
@@ -64,17 +60,17 @@ struct App final : glow::window::Message {
             auto& code { msg.notification().code };
 
             switch (code) {
-                case CREATE_WINDOW: {
+                case glow::message::Code::CREATE_WINDOW: {
                     windows.add(std::make_unique<::Window>(keys));
                 } break;
-                case CREATE_FOREGROUND_WINDOW: {
-                    notify_app(CREATE_WINDOW);
+                case glow::message::Code::CREATE_FOREGROUND_WINDOW: {
+                    notify_app(glow::message::Code::CREATE_WINDOW);
 
                     if (auto last { windows.last() }; last) {
                         last->bring_to_top();
                     }
                 } break;
-                case CLOSE_WINDOW: {
+                case glow::message::Code::CLOSE_WINDOW: {
                     windows.remove(idFrom);
                 } break;
             }
@@ -84,9 +80,10 @@ struct App final : glow::window::Message {
 
         create();
 
-        singleInstance.m_callback = [this]() { notify_app(CREATE_FOREGROUND_WINDOW); };
+        singleInstance.m_callback
+            = [this]() { notify_app(glow::message::Code::CREATE_FOREGROUND_WINDOW); };
 
-        notify_app(CREATE_WINDOW);
+        notify_app(glow::message::Code::CREATE_WINDOW);
     }
 
     glow::system::Event& singleInstance;
