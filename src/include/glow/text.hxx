@@ -10,7 +10,7 @@
 #include <string>
 
 namespace glow::text {
-auto whcar_to_string(const wchar_t* input, size_t length) -> std::string;
+auto wchar_to_string(const wchar_t* input, size_t length) -> std::string;
 auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string;
 auto char_to_wstring(const char* input, size_t length) -> std::wstring;
 auto char_to_u16string(const char* input, size_t length) -> std::u16string;
@@ -32,10 +32,9 @@ auto to_u8string(std::string_view input) -> std::u8string;
 auto to_u16string(std::u16string_view input) -> std::u16string;
 auto to_u16string(std::wstring_view input) -> std::u16string;
 
-auto to_u16string(std::string_view input) -> std::u16string;
 auto to_u8string(std::wstring_view input) -> std::u8string;
-
 auto to_u8string(std::u16string_view input) -> std::u8string;
+auto to_u16string(std::string_view input) -> std::u16string;
 auto to_u16string(std::u8string_view input) -> std::u16string;
 
 struct String {

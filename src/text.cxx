@@ -16,7 +16,7 @@
 #include <glow/math.hxx>
 
 namespace glow::text {
-auto whcar_to_string(const wchar_t* input, size_t length) -> std::string {
+auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
     std::string output;
 
     if (length > 0) {
@@ -120,11 +120,11 @@ auto to_string(std::string_view input) -> std::string { return input.data(); }
 auto to_wstring(std::wstring_view input) -> std::wstring { return input.data(); }
 
 auto to_string(std::wstring_view input) -> std::string {
-    return utf16_to_utf8(input.data(), input.length());
+    return wchar_to_string(input.data(), input.length());
 }
 
 auto to_wstring(std::string_view input) -> std::wstring {
-    return utf8_to_utf16(input.data(), input.length());
+    return char_to_wstring(input.data(), input.length());
 }
 
 auto to_string(std::u8string_view input) -> std::string {
@@ -136,11 +136,11 @@ auto to_wstring(std::u16string_view input) -> std::wstring {
 }
 
 auto to_string(std::u16string_view input) -> std::string {
-    return utf16_to_utf8(reinterpret_cast<const wchar_t*>(input.data()), input.length());
+    return wchar_to_string(reinterpret_cast<const wchar_t*>(input.data()), input.length());
 }
 
 auto to_wstring(std::u8string_view input) -> std::wstring {
-    return utf8_to_utf16(reinterpret_cast<const char*>(input.data()), input.length());
+    return char_to_wstring(reinterpret_cast<const char*>(input.data()), input.length());
 }
 
 // u8string & u16string
@@ -159,24 +159,20 @@ auto to_u16string(std::wstring_view input) -> std::u16string {
 
 // u8string & u16string convert
 
-auto to_u16string(std::string_view input) -> std::u16string {
-    auto converted { utf8_to_utf16(input.data(), input.length()) };
-    return std::u16string(converted.begin(), converted.end());
-}
-
 auto to_u8string(std::wstring_view input) -> std::u8string {
-    auto converted { utf16_to_utf8(input.data(), input.length()) };
-    return std::u8string(converted.begin(), converted.end());
+    return wchar_to_u8string(input.data(), input.length());
 }
 
 auto to_u8string(std::u16string_view input) -> std::u8string {
-    auto converted { to_string(input) };
-    return to_u8string(converted);
+    return wchar_to_u8string(reinterpret_cast<const wchar_t*>(input.data()), input.length());
+}
+
+auto to_u16string(std::string_view input) -> std::u16string {
+    return char_to_u16string(input.data(), input.length());
 }
 
 auto to_u16string(std::u8string_view input) -> std::u16string {
-    auto converted { to_wstring(input) };
-    return to_u16string(converted);
+    return char_to_u16string(reinterpret_cast<const char*>(input.data()), input.length());
 }
 
 // String
