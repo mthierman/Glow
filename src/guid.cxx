@@ -13,12 +13,15 @@
 #include <wil/result.h>
 #include <wil/win32_helpers.h>
 
+#include <glow/log.hxx>
 #include <glow/text.hxx>
 
 namespace glow::guid {
 auto create() -> ::GUID {
     ::GUID guid;
-    THROW_IF_FAILED(::CoCreateGuid(&guid));
+    if (auto hr { ::CoCreateGuid(&guid) }; hr != S_OK) {
+        throw std::runtime_error(glow::log::format_message(hr));
+    }
 
     return guid;
 }
