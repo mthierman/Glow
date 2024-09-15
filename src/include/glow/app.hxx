@@ -15,7 +15,6 @@
 
 namespace glow::app {
 struct App {
-
 protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
