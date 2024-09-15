@@ -17,6 +17,8 @@
 
 #include <WebView2.h>
 
+#include <glow/system.hxx>
+
 namespace winrt {
 using namespace winrt::Windows::UI;
 using namespace winrt::Windows::UI::ViewManagement;
@@ -28,6 +30,7 @@ struct Color {
     Color(uint8_t r, uint8_t g, uint8_t b);
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
     Color(winrt::UIColorType colorType);
+    Color(winrt::UIElementType elementType);
     Color(const winrt::Color& color);
     Color(const ::COLORREF& colorRef);
     Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
@@ -43,26 +46,24 @@ struct Color {
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
     auto is_dark() const -> bool;
-};
+    auto string() const -> std::string;
+    auto wstring() const -> std::wstring;
 
-auto system(winrt::UIColorType colorType) -> winrt::Color;
-auto element(winrt::UIElementType elementType) -> winrt::Color;
-auto to_string(const winrt::Color& color) -> std::string;
-auto to_wstring(const winrt::Color& color) -> std::wstring;
-auto to_hex(const winrt::Color& color) -> std::string;
-auto to_colorref(const winrt::Color& color) -> ::COLORREF;
+protected:
+    winrt::UISettings uiSettings { glow::system::ui_settings() };
+};
 }; // namespace glow::color
 
 namespace std {
-template <> struct formatter<winrt::Color> : formatter<string_view> {
-    auto format(const winrt::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::color::to_string(color), context);
+template <> struct formatter<glow::color::Color> : formatter<string_view> {
+    auto format(const glow::color::Color& color, format_context& context) const noexcept {
+        return formatter<string_view>::format(color.string(), context);
     }
 };
 
-template <> struct formatter<winrt::Color, wchar_t> : formatter<wstring_view, wchar_t> {
-    auto format(const winrt::Color& color, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::color::to_wstring(color), context);
+template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
+        return formatter<wstring_view, wchar_t>::format(color.wstring(), context);
     }
 };
 } // namespace std

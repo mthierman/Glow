@@ -6,7 +6,6 @@
 
 #include <glow/color.hxx>
 
-#include <glow/system.hxx>
 #include <glow/text.hxx>
 
 namespace glow::color {
@@ -23,7 +22,16 @@ Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
       a { a } { }
 
 Color::Color(winrt::UIColorType colorType) {
-    auto color { system(colorType) };
+    auto color { uiSettings.GetColorValue(colorType) };
+
+    r = color.R;
+    g = color.G;
+    b = color.B;
+    a = color.A;
+}
+
+Color::Color(winrt::UIElementType elementType) {
+    auto color { uiSettings.UIElementColor(elementType) };
 
     r = color.R;
     g = color.G;
@@ -67,27 +75,9 @@ auto Color::webview2_color() const -> COREWEBVIEW2_COLOR {
 
 auto Color::is_dark() const -> bool { return (((5 * g) + (2 * r) + b) < (8 * 128)) ? true : false; }
 
-auto system(winrt::UIColorType colorType) -> winrt::Color {
-    auto uiSettings { glow::system::ui_settings() };
-    return uiSettings.GetColorValue(colorType);
+auto Color::string() const -> std::string {
+    return std::format("R: {} G: {} B: {} A: {}", r, g, b, a);
 }
 
-auto element(winrt::UIElementType elementType) -> winrt::Color {
-    auto uiSettings { glow::system::ui_settings() };
-    return uiSettings.UIElementColor(elementType);
-}
-
-auto to_string(const winrt::Color& color) -> std::string {
-    return std::format("R: {} G: {} B: {} A: {}", color.R, color.G, color.B, color.A);
-}
-
-auto to_wstring(const winrt::Color& color) -> std::wstring {
-    return glow::text::to_wstring(to_string(color));
-}
-
-auto to_hex(const winrt::Color& color) -> std::string {
-    return std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", color.R, color.G, color.B, color.A);
-}
-
-auto to_colorref(const winrt::Color& color) -> ::COLORREF { return RGB(color.R, color.G, color.B); }
+auto Color::wstring() const -> std::wstring { return glow::text::to_wstring(string()); }
 }; // namespace glow::color
