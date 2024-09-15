@@ -176,14 +176,20 @@ auto to_u16string(std::u8string_view input) -> std::u16string {
 }
 
 // String
-String::String(const std::u8string& string)
-    : storage { string } { }
+String::String(const std::u8string& u8string)
+    : storage { u8string } { }
 
-String::String(std::u8string&& string)
-    : storage { std::move(string) } { }
+String::String(std::u8string&& u8string)
+    : storage { std::move(u8string) } { }
 
-auto String::operator()(std::u8string string) -> const std::u8string& {
-    storage = std::move(string);
+String::String(const std::filesystem::path& path)
+    : storage { path.u8string() } { }
+
+String::String(std::filesystem::path&& path)
+    : storage { std::move(path.u8string()) } { }
+
+auto String::operator()(std::u8string u8string) -> const std::u8string& {
+    storage = std::move(u8string);
 
     return storage;
 }
