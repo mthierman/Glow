@@ -5,8 +5,8 @@ struct WebView final : glow::window::WebView { };
 struct Window final : glow::window::Overlapped {
     Window() {
         messages.on(WM_CREATE, [this](glow::message::wm::CREATE /* msg */) {
-            left.create(hwnd.get(), [this]() { left.navigate("https://localhost:5173/"); }, true);
-            right.create(hwnd.get(), [this]() { right.navigate("https://localhost:5173/"); }, true);
+            left.create(hwnd.get(), [this]() { left.navigate("http://localhost:5173/"); }, true);
+            right.create(hwnd.get(), [this]() { right.navigate("http://localhost:5173/"); }, true);
 
             return 0;
         });
