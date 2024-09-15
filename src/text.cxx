@@ -120,11 +120,11 @@ auto to_u8string(std::wstring_view input) -> std::u8string {
 
 auto to_u8string(std::u16string_view input) -> std::u8string {
     auto converted { to_string(input) };
-    return to_u8string(to_string(input));
+    return to_u8string(converted);
 }
 
 auto to_u16string(std::u8string_view input) -> std::u16string {
     auto converted { to_wstring(input) };
-    return to_u16string(to_wstring(input));
+    return to_u16string(converted);
 }
 }; // namespace glow::text
