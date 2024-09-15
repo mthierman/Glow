@@ -10,11 +10,12 @@
 auto main(int argc, char* argv[]) -> int {
     auto args { glow::system::parse_args(argc, argv) };
 
-    // {
-    //     auto test { glow::text::String(u"Test") };
-
-    //     auto storage { test() };
-    // }
+    {
+        auto string { glow::text::String(u8"test") };
+        std::println("{}", string.string());
+        string(u8"test2");
+        std::println("{}", string.string());
+    }
 
     std::string string { "ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ" };
     std::wstring wstring { L"ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ" };
