@@ -16,6 +16,10 @@
 #include <glow/math.hxx>
 
 namespace glow::text {
+auto to_string(std::u8string_view input) -> std::string {
+    return std::string(input.begin(), input.end());
+}
+
 auto to_string(std::wstring_view input) -> std::string {
     std::string output;
 
@@ -49,19 +53,17 @@ auto to_string(std::wstring_view input) -> std::string {
     return output;
 }
 
-auto to_wstring(std::string_view input) -> std::wstring {
+auto to_wstring(const char* input, size_t length) -> std::wstring {
     std::wstring output;
 
-    if (input.length() > 0) {
-        int inputLength { glow::math::check_safe_size<int>(input.length()) };
+    if (length > 0) {
+        int inputLength { glow::math::check_safe_size<int>(length) };
 
-        auto outputLength { ::MultiByteToWideChar(
-            CP_UTF8, 0, input.data(), inputLength, nullptr, 0) };
+        auto outputLength { ::MultiByteToWideChar(CP_UTF8, 0, input, inputLength, nullptr, 0) };
 
         output.resize(outputLength);
 
-        if (::MultiByteToWideChar(
-                CP_UTF8, 0, input.data(), inputLength, output.data(), outputLength)
+        if (::MultiByteToWideChar(CP_UTF8, 0, input, inputLength, output.data(), outputLength)
             == 0) {
             throw std::runtime_error(glow::log::get_last_error());
         }
@@ -70,11 +72,13 @@ auto to_wstring(std::string_view input) -> std::wstring {
     return output;
 }
 
-auto to_string(std::u8string_view input) -> std::string {
-    return std::string(input.begin(), input.end());
+auto to_wstring(std::u8string_view input) -> std::wstring {
+    return to_wstring(reinterpret_cast<const char*>(input.data()), input.length());
 }
 
-auto to_wstring(std::u8string_view input) -> std::wstring { return to_wstring(to_string(input)); }
+auto to_wstring(std::string_view input) -> std::wstring {
+    return to_wstring(input.data(), input.length());
+}
 
 auto to_u8string(std::string_view input) -> std::u8string {
     return std::u8string(input.begin(), input.end());
