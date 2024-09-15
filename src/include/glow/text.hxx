@@ -47,6 +47,10 @@ struct String {
     explicit String(std::u8string&& u8string);
     explicit String(const std::filesystem::path& path);
 
+    explicit String(const std::u16string& u16string);
+    explicit String(const std::string& string);
+    explicit String(const std::wstring& wstring);
+
     auto operator=(const String& string) -> String& = default;
     auto operator=(String&& string) -> String& = default;
 

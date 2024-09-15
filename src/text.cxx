@@ -185,6 +185,15 @@ String::String(std::u8string&& u8string)
 String::String(const std::filesystem::path& path)
     : storage { path.u8string() } { }
 
+String::String(const std::u16string& u16string)
+    : storage { to_u8string(u16string) } { }
+
+String::String(const std::string& string)
+    : storage { to_u8string(string) } { }
+
+String::String(const std::wstring& wstring)
+    : storage { to_u8string(wstring) } { }
+
 auto String::operator()(const std::u8string& u8string) -> const std::u8string& {
     storage = u8string;
 
