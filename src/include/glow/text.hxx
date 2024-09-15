@@ -42,7 +42,8 @@ struct String {
     ~String() = default;
     String(const String& string) = default;
     String(String&& string) = default;
-    explicit String(std::u8string string);
+    explicit String(const std::u8string& string);
+    explicit String(std::u8string&& string);
 
     auto operator()(std::u8string string) -> std::u8string&;
 
