@@ -8,6 +8,8 @@
 
 #include <Windows.h>
 
+#include <combaseapi.h>
+
 #include <dwmapi.h>
 #include <wrl.h>
 
