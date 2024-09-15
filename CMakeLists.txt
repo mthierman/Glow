@@ -8,7 +8,7 @@ option(
     OFF
     )
 
-include(cmake/deps.cmake)
+include(cmake/dependencies.cmake)
 
 add_library(${PROJECT_NAME})
 
