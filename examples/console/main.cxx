@@ -18,5 +18,9 @@ auto main() -> int {
     std::println("{}", u8);
     std::println("{}", u16);
 
+    auto path { glow::filesystem::known_folder() };
+    std::println("{}", path);
+    std::println("{}", glow::text::to_string(path.u8string()));
+
     return EXIT_SUCCESS;
 }
