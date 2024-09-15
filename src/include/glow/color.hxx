@@ -48,8 +48,6 @@ struct Color {
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
     auto is_dark() const -> bool;
-    auto string() const -> std::string;
-    auto wstring() const -> std::wstring;
 
 protected:
     winrt::UISettings uiSettings { glow::system::ui_settings() };
@@ -59,13 +57,13 @@ protected:
 namespace std {
 template <> struct formatter<glow::color::Color> : formatter<string_view> {
     auto format(const glow::color::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(color.string(), context);
+        return formatter<string_view>::format(color.hex(), context);
     }
 };
 
 template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(color.wstring(), context);
+        return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(color.hex()), context);
     }
 };
 } // namespace std

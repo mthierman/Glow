@@ -74,10 +74,4 @@ auto Color::webview2_color() const -> COREWEBVIEW2_COLOR {
 }
 
 auto Color::is_dark() const -> bool { return (((5 * g) + (2 * r) + b) < (8 * 128)) ? true : false; }
-
-auto Color::string() const -> std::string {
-    return std::format("R: {} G: {} B: {} A: {}", r, g, b, a);
-}
-
-auto Color::wstring() const -> std::wstring { return glow::text::to_wstring(string()); }
 }; // namespace glow::color
