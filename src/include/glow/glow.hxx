@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glow/app.hxx>
 #include <glow/color.hxx>
 #include <glow/config.hxx>
 #include <glow/filesystem.hxx>

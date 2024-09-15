@@ -15,5 +15,5 @@ struct WebView final : glow::window::WebView {
 auto main() -> int {
     WebView webView;
 
-    return glow::app::run();
+    return glow::message::run_loop();
 }

@@ -346,6 +346,29 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
 
+struct Message {
+protected:
+    static auto CALLBACK procedure(::HWND hwnd,
+                                   ::UINT msg,
+                                   ::WPARAM wparam,
+                                   ::LPARAM lparam) -> ::LRESULT;
+
+public:
+    auto create() -> void;
+
+    auto operator()() -> int;
+
+    auto notify_app(glow::message::Code code,
+                    std::string_view message = "",
+                    ::HWND receiverHwnd
+                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"App", nullptr)) -> void;
+
+    uintptr_t id { glow::math::make_random<uintptr_t>() };
+    glow::message::Manager messages;
+
+    wil::unique_hwnd hwnd;
+};
+
 template <typename T> struct Manager {
     auto add(std::unique_ptr<T> window) -> void {
         keys.push_back(window->id);

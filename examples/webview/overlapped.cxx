@@ -11,5 +11,5 @@ auto main() -> int {
 
     webView.create([]() { webView.navigate("http://localhost:5173/"); });
 
-    return glow::app::run();
+    return glow::message::run_loop();
 }

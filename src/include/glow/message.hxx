@@ -56,6 +56,7 @@ private:
 };
 
 auto default_procedure(Message message) -> ::LRESULT;
+auto run_loop() -> int;
 
 namespace wm {
     struct MSG : public Message {

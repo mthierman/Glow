@@ -807,4 +807,72 @@ auto WebView::navigate(const std::wstring& url) -> void {
         core->Navigate(url.c_str());
     }
 }
+
+auto CALLBACK Message::procedure(::HWND hwnd,
+                                 ::UINT msg,
+                                 ::WPARAM wparam,
+                                 ::LPARAM lparam) -> ::LRESULT {
+    if (msg == WM_NCCREATE) {
+        auto create { reinterpret_cast<::CREATESTRUCTW*>(lparam) };
+
+        if (auto self { static_cast<Message*>(create->lpCreateParams) }; self) {
+            ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
+            self->hwnd.reset(hwnd);
+        }
+    }
+
+    if (msg == WM_NCDESTROY) {
+        ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
+    }
+
+    if (auto self { reinterpret_cast<Message*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
+        if (self->messages.contains(msg)) {
+            return self->messages.invoke({ hwnd, msg, wparam, lparam });
+        }
+    }
+
+    return glow::message::default_procedure({ hwnd, msg, wparam, lparam });
+}
+
+auto Message::create() -> void {
+    auto instance { glow::system::instance() };
+
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Message) },
+                                .hInstance { instance },
+                                .hIcon { nullptr },
+                                .hCursor { nullptr },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"Message" },
+                                .hIconSm { nullptr } };
+
+    if (::GetClassInfoExW(instance, windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+
+    ::CreateWindowExW(0,
+                      windowClass.lpszClassName,
+                      L"",
+                      0,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      CW_USEDEFAULT,
+                      HWND_MESSAGE,
+                      nullptr,
+                      instance,
+                      this);
+}
+
+auto Message::operator()() -> int { return glow::message::run_loop(); }
+
+auto Message::notify_app(glow::message::Code code,
+                         std::string_view message,
+                         ::HWND receiverHwnd) -> void {
+    messages.notify(code, message, hwnd.get(), id, receiverHwnd);
+}
 } // namespace glow::window

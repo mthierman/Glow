@@ -57,5 +57,5 @@ struct Window final : glow::window::Overlapped {
 auto main() -> int {
     Window window;
 
-    return glow::app::run();
+    return glow::message::run_loop();
 }

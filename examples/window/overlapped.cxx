@@ -11,5 +11,5 @@ auto main() -> int {
 
     window.create();
 
-    return glow::app::run();
+    return glow::message::run_loop();
 }
