@@ -10,8 +10,8 @@
 #include <string>
 
 namespace glow::text {
-auto to_string(const wchar_t* input, size_t length) -> std::string;
-auto to_wstring(const char* input, size_t length) -> std::wstring;
+auto utf16_to_utf8(const wchar_t* input, size_t length) -> std::string;
+auto utf8_to_utf16(const char* input, size_t length) -> std::wstring;
 
 auto to_string(std::string_view input) -> std::string;
 auto to_wstring(std::wstring_view input) -> std::wstring;
@@ -25,13 +25,16 @@ auto to_wstring(std::u16string_view input) -> std::wstring;
 auto to_string(std::u16string_view input) -> std::string;
 auto to_wstring(std::u8string_view input) -> std::wstring;
 
-auto to_u8string(std::string_view input) -> std::u8string;
-auto to_u8string(std::wstring_view input) -> std::u8string;
 auto to_u8string(std::u8string_view input) -> std::u8string;
-auto to_u8string(std::u16string_view input) -> std::u8string;
+auto to_u8string(std::string_view input) -> std::u8string;
+auto to_u16string(std::u16string_view input) -> std::u16string;
+auto to_u16string(std::wstring_view input) -> std::u16string;
 
 auto to_u16string(std::string_view input) -> std::u16string;
-auto to_u16string(std::wstring_view input) -> std::u16string;
+auto to_u8string(std::wstring_view input) -> std::u8string;
+
+auto to_u8string(std::u16string_view input) -> std::u8string;
+auto to_u16string(std::u8string_view input) -> std::u16string;
 
 // template <typename T> struct String {
 //     String() = default;
