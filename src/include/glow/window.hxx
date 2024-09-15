@@ -225,7 +225,7 @@ struct Overlapped : Window {
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { L"Overlapped" },
+                                .lpszClassName { L"OverlappedWindow" },
                                 .hIconSm { icons.app.get() } };
 };
 
@@ -242,7 +242,7 @@ struct Child : Window {
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { L"Child" },
+                                .lpszClassName { L"ChildWindow" },
                                 .hIconSm { icons.app.get() } };
 };
 
@@ -293,7 +293,7 @@ struct WebView : Window {
                                 .hCursor { glow::system::system_cursor() },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { L"WebView" },
+                                .lpszClassName { L"WebViewWindow" },
                                 .hIconSm { icons.app.get() } };
 
     struct Config {
@@ -371,7 +371,7 @@ public:
                                 .hCursor { nullptr },
                                 .hbrBackground { nullptr },
                                 .lpszMenuName { nullptr },
-                                .lpszClassName { L"Message" },
+                                .lpszClassName { L"MessageWindow" },
                                 .hIconSm { nullptr } };
 
     auto operator()() -> int;
@@ -379,7 +379,7 @@ public:
     auto notify_app(glow::message::Code code,
                     std::string_view message = "",
                     ::HWND receiverHwnd
-                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"Message", nullptr)) -> void;
+                    = ::FindWindowExW(HWND_MESSAGE, nullptr, L"MessageWindow", nullptr)) -> void;
 
     uintptr_t id { glow::math::make_random<uintptr_t>() };
     glow::message::Manager messages;

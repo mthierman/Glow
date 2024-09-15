@@ -56,7 +56,6 @@ struct App final : glow::window::Message {
     App(glow::system::Event& singleInstance)
         : singleInstance { singleInstance } {
         messages.on(WM_NOTIFY, [this](glow::message::wm::NOTIFY msg) {
-            glow::log::log("WM_NOTIFY");
             auto& idFrom { msg.notification().nmhdr.idFrom };
             auto& code { msg.notification().code };
 
