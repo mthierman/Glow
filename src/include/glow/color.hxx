@@ -20,6 +20,7 @@
 #include <WebView2.h>
 
 #include <glow/system.hxx>
+#include <glow/text.hxx>
 
 namespace winrt {
 using namespace winrt::Windows::UI;
@@ -63,7 +64,8 @@ template <> struct formatter<glow::color::Color> : formatter<string_view> {
 
 template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(color.hex()), context);
+        return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(color.hex()),
+                                                        context);
     }
 };
 } // namespace std

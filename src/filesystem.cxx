@@ -9,13 +9,15 @@
 #include <wil/win32_helpers.h>
 
 #include <glow/log.hxx>
-#include <glow/text.hxx>
 
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId,
-                  std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
+                  std::initializer_list<std::u8string_view> subfolders) -> std::filesystem::path {
     wil::unique_cotaskmem_string buffer;
-    ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer);
+
+    if (auto hr { ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) }; hr != S_OK) {
+        throw std::runtime_error(glow::log::format_message(hr));
+    }
 
     auto knownFolder { std::filesystem::path(buffer.get()) };
 
@@ -26,7 +28,7 @@ auto known_folder(::KNOWNFOLDERID folderId,
     return knownFolder;
 }
 
-auto temp_folder(std::initializer_list<std::string_view> subfolders) -> std::filesystem::path {
+auto temp_folder(std::initializer_list<std::u8string_view> subfolders) -> std::filesystem::path {
     std::wstring buffer;
     auto length { ::GetTempPathW(0, buffer.data()) };
     buffer.resize(length);
