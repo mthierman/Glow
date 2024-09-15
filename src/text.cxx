@@ -177,20 +177,14 @@ auto to_u16string(std::u8string_view input) -> std::u16string {
 
 // String
 String::String(std::u8string string)
+    : storage { string } { }
+
+String::String(std::u8string&& string)
     : storage { std::move(string) } { }
 
 auto String::operator()(std::u8string string) -> std::u8string& {
     storage = std::move(string);
 
     return storage;
-}
-
-auto String::operator()() const -> const std::u8string& { return storage; }
-
-auto String::string() -> std::string {
-    std::u8string output;
-    auto data = output.data();
-
-    return to_string(storage);
 }
 }; // namespace glow::text

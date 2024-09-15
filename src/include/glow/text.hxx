@@ -39,12 +39,18 @@ auto to_u16string(std::u8string_view input) -> std::u16string;
 
 struct String {
     String() = default;
-    String(std::u8string string);
+    ~String() = default;
+    String(const String& string) = default;
+    String(String&& string) = default;
+    explicit String(std::u8string string);
+    explicit String(std::u8string&& string);
 
     auto operator()(std::u8string string) -> std::u8string&;
-    auto operator()() const -> const std::u8string&;
 
-    auto string() -> std::string;
+    auto u8string() const -> std::u8string&;
+    auto u16string() const -> std::u16string;
+    auto string() const -> std::string;
+    auto wstring() const -> std::wstring;
 
 protected:
     std::u8string storage;
