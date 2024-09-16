@@ -31,8 +31,8 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 auto Config::save() -> void {
     std::basic_ofstream<char8_t> file(
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-    auto string { glow::text::to_u8string(json.ToString()) };
-    file.write(string.c_str(), string.size());
+    auto stringify { glow::text::to_u8string(json.Stringify()) };
+    file.write(stringify.c_str(), stringify.size());
 }
 
 auto Config::load() -> void {
