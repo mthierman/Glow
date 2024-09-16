@@ -14,7 +14,7 @@ auto main(/* int argc, char* argv[] */) -> int {
     config(glow::filesystem::known_folder() / glow::text::String(u8"ini").wstring()
            / glow::text::String(u8"ini.json").wstring());
 
-    // config.save();
+    config.save();
 
     config.load();
 

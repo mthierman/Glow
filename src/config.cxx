@@ -47,9 +47,20 @@ auto Config::load() -> void {
         file.read(string.data(), string.size());
         auto parse { json.TryParse(glow::text::to_wstring(string), json) };
 
-        // std::basic_ostringstream<char8_t> buffer;
-        // buffer << file.rdbuf();
-        // auto parse { json.TryParse(glow::text::to_wstring(buffer.str()), json) };
+        if (parse) {
+            glow::log::log("parsed!");
+        }
+    }
+}
+
+auto Config::load_stringstream() -> void {
+    std::basic_ifstream<char8_t> file(
+        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
+
+    if (file.is_open()) {
+        std::basic_ostringstream<char8_t> buffer;
+        buffer << file.rdbuf();
+        auto parse { json.TryParse(glow::text::to_wstring(buffer.str()), json) };
 
         if (parse) {
             glow::log::log("parsed!");
