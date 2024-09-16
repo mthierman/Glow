@@ -19,10 +19,10 @@ auto known_folder(::KNOWNFOLDERID folderId,
         throw std::runtime_error(glow::log::format_message(hr));
     }
 
-    auto knownFolder { std::filesystem::path(glow::text::to_u8string(buffer.get())) };
+    auto knownFolder { std::filesystem::path(buffer.get()) };
 
     for (auto subfolder : subfolders) {
-        knownFolder /= subfolder;
+        knownFolder /= glow::text::to_wstring(subfolder);
     }
 
     return knownFolder;
@@ -39,10 +39,10 @@ auto temp_folder(std::initializer_list<std::u8string_view> subfolders) -> std::f
 
     buffer.resize(length - 2);
 
-    auto tempFolder { std::filesystem::path(glow::text::to_u8string(buffer)) };
+    auto tempFolder { std::filesystem::path(buffer) };
 
     for (auto subfolder : subfolders) {
-        tempFolder /= subfolder;
+        tempFolder /= glow::text::to_wstring(subfolder);
     }
 
     return tempFolder;
