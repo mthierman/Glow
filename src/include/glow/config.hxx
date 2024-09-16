@@ -31,5 +31,7 @@ protected:
         std::filesystem::path file;
     };
     Paths paths;
+
+    winrt::JsonObject json;
 };
 }; // namespace glow::config

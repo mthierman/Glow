@@ -6,6 +6,9 @@
 
 #include <glow/config.hxx>
 
+#include <fstream>
+#include <sstream>
+
 #include <glow/filesystem.hxx>
 #include <glow/log.hxx>
 #include <glow/text.hxx>
@@ -17,10 +20,10 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 }
 
 auto Config::save() -> void {
-    winrt::JsonObject json;
-
-    auto string { winrt::JsonValue::CreateStringValue(L"TestValue") };
-    json.SetNamedValue(L"TestKey", string);
+    auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
+    auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
+    json.SetNamedValue(L"TestKey", testValue1);
+    json.SetNamedValue(L"TestKey2", testValue2);
 
     // if (json.HasKey(L"TestKey")) {
     //     auto value { json.GetNamedValue(L"TestKey") };
@@ -37,9 +40,29 @@ auto Config::save() -> void {
     }
 
     glow::log::log("{}", glow::text::to_string(json.Stringify()));
+    glow::log::log("{}", glow::text::to_string(json.ToString()));
+
+    std::ofstream f(paths.file);
+    f << glow::text::to_string(json.ToString()) << std::endl;
+    f.close();
 }
 
 auto Config::load() -> void {
-    //
+    std::ifstream f(paths.file);
+    std::stringstream buffer;
+    buffer << f.rdbuf();
+
+    auto parse = json.TryParse(glow::text::to_wstring(buffer.str()), json);
+    if (parse) {
+        glow::log::log("parsed!");
+    }
+
+    auto value = json.GetNamedValue(L"TestKey", nullptr);
+    if (value && value.ValueType() == winrt::JsonValueType::String) {
+        auto name { value.GetString() };
+        glow::log::log("{}", glow::text::to_string(name));
+    }
+
+    glow::log::log("{}", buffer.str());
 }
 }; // namespace glow::config
