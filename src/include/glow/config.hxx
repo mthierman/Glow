@@ -15,8 +15,13 @@ struct Config {
     auto operator()(const std::filesystem::path& path) -> void;
 
     auto save() -> void;
+    auto load() -> void;
 
 protected:
-    std::filesystem::path path;
+    struct Paths {
+        std::filesystem::path root;
+        std::filesystem::path file;
+    };
+    Paths paths;
 };
 }; // namespace glow::config

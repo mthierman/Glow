@@ -16,5 +16,7 @@ auto main(/* int argc, char* argv[] */) -> int {
 
     config.save();
 
+    config.load();
+
     return EXIT_SUCCESS;
 }
