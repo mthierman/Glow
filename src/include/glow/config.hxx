@@ -18,12 +18,14 @@ using namespace winrt::Windows::Data::Json;
 
 namespace glow::config {
 struct Config {
-    Config() = default;
+    // Config() = default;
+    Config();
 
     auto operator()(const std::filesystem::path& path) -> void;
 
     auto save() -> void;
     auto load() -> void;
+    auto print() -> void;
 
 protected:
     struct Paths {

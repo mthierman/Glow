@@ -14,6 +14,13 @@
 #include <glow/text.hxx>
 
 namespace glow::config {
+Config::Config() {
+    auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
+    auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
+    json.SetNamedValue(L"TestKey", testValue1);
+    json.SetNamedValue(L"TestKey2", testValue2);
+}
+
 auto Config::operator()(const std::filesystem::path& path) -> void {
     paths.file = path;
     paths.root = path.parent_path();
@@ -22,50 +29,38 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 // https://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring
 // https://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 auto Config::save() -> void {
-    auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
-    auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
-    json.SetNamedValue(L"TestKey", testValue1);
-    json.SetNamedValue(L"TestKey2", testValue2);
-
-    // if (json.HasKey(L"TestKey")) {
-    //     auto value { json.GetNamedValue(L"TestKey") };
-    //     if (value.ValueType() == winrt::JsonValueType::String) {
-    //         auto name = value.GetString();
-    //         glow::log::log("{}", glow::text::to_string(name));
-    //     }
-    // }
-
-    auto value = json.GetNamedValue(L"TestKey", nullptr);
-    if (value && value.ValueType() == winrt::JsonValueType::String) {
-        auto name { value.GetString() };
-        glow::log::log("{}", glow::text::to_string(name));
-    }
-
-    glow::log::log("{}", glow::text::to_string(json.Stringify()));
-    glow::log::log("{}", glow::text::to_string(json.ToString()));
-
-    std::ofstream f(paths.file);
-    f << glow::text::to_string(json.ToString()) << std::endl;
+    std::basic_ofstream<char8_t> f(paths.file, std::ios::binary | std::ios::out);
+    auto string { glow::text::to_u8string(json.ToString()) };
+    f.write(string.c_str(), string.size());
 }
 
 auto Config::load() -> void {
-    std::ifstream file(paths.file);
-    if (file.is_open()) {
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-    }
+    // std::ifstream file(paths.file);
+    // if (file.is_open()) {
+    //     std::ostringstream buffer;
+    //     buffer << file.rdbuf();
 
-    auto parse = json.TryParse(glow::text::to_wstring(buffer.str()), json);
-    if (parse) {
-        glow::log::log("parsed!");
-    }
+    //     auto parse { json.TryParse(glow::text::to_wstring(buffer.str()), json) };
 
-    auto value = json.GetNamedValue(L"TestKey", nullptr);
+    //     if (parse) {
+    //         glow::log::log("parsed!");
+    //     }
+
+    //     auto value = json.GetNamedValue(L"TestKey", nullptr);
+    //     if (value && value.ValueType() == winrt::JsonValueType::String) {
+    //         auto name { value.GetString() };
+    //         glow::log::log("{}", glow::text::to_string(name));
+    //     }
+
+    //     glow::log::log("{}", buffer.str());
+    // }
+}
+
+auto Config::print() -> void {
+    auto value { json.GetNamedValue(L"TestKey", nullptr) };
     if (value && value.ValueType() == winrt::JsonValueType::String) {
         auto name { value.GetString() };
         glow::log::log("{}", glow::text::to_string(name));
     }
-
-    glow::log::log("{}", buffer.str());
 }
 }; // namespace glow::config
