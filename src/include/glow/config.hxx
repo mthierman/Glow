@@ -8,6 +8,14 @@
 
 #include <filesystem>
 
+#include <winrt/Windows.Foundation.h>
+
+#include <winrt/Windows.Data.Json.h>
+
+namespace winrt {
+using namespace winrt::Windows::Data::Json;
+}; // namespace winrt
+
 namespace glow::config {
 struct Config {
     Config() = default;

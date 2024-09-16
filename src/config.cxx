@@ -17,20 +17,29 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 }
 
 auto Config::save() -> void {
-    ::WritePrivateProfileStringW(
-        L"TEST", L"TEST", L"ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ", paths.file.c_str());
+    winrt::JsonObject json;
+
+    auto string { winrt::JsonValue::CreateStringValue(L"TestValue") };
+    json.SetNamedValue(L"TestKey", string);
+
+    // if (json.HasKey(L"TestKey")) {
+    //     auto value { json.GetNamedValue(L"TestKey") };
+    //     if (value.ValueType() == winrt::JsonValueType::String) {
+    //         auto name = value.GetString();
+    //         glow::log::log("{}", glow::text::to_string(name));
+    //     }
+    // }
+
+    auto value = json.GetNamedValue(L"TestKey", nullptr);
+    if (value && value.ValueType() == winrt::JsonValueType::String) {
+        auto name { value.GetString() };
+        glow::log::log("{}", glow::text::to_string(name));
+    }
+
+    glow::log::log("{}", glow::text::to_string(json.Stringify()));
 }
 
 auto Config::load() -> void {
-    // ::WritePrivateProfileStringW(L"TEST", L"TEST", L"TEST", paths.file.c_str());
-    std::wstring buffer;
-    auto length { ::GetPrivateProfileStringW(
-        L"TEST", L"TEST", L"TEST", buffer.data(), 0, paths.file.c_str()) };
-    glow::log::log("length: {}", length);
-    buffer.resize(length);
-    ::GetPrivateProfileStringW(
-        L"TEST", L"TEST", L"TEST", buffer.data(), length, paths.file.c_str());
-
-    glow::log::log(L"{}", buffer);
+    //
 }
 }; // namespace glow::config
