@@ -49,9 +49,11 @@ auto Config::save() -> void {
 }
 
 auto Config::load() -> void {
-    std::ifstream f(paths.file);
-    std::stringstream buffer;
-    buffer << f.rdbuf();
+    std::ifstream file(paths.file);
+    if (file.is_open()) {
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+    }
 
     auto parse = json.TryParse(glow::text::to_wstring(buffer.str()), json);
     if (parse) {
