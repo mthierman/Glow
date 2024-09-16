@@ -119,7 +119,10 @@ auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string> {
 }
 
 CoInit::CoInit(::COINIT coInit) {
-    ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
+    if (auto hr { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) };
+        hr != S_OK) {
+        throw std::runtime_error(glow::log::format_message(hr));
+    }
 }
 
 CoInit::~CoInit() { ::CoUninitialize(); }
