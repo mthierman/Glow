@@ -53,21 +53,19 @@ struct Config {
 
         if constexpr (std::is_same_v<T, bool>) {
             if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
-                return glow::text::to_u8string(value.GetString());
+                return value.GetBoolean();
             }
         }
 
         if constexpr (std::is_same_v<T, double>) {
             if (value && value.ValueType() == winrt::JsonValueType::Number) {
-                return glow::text::to_u8string(value.GetString());
+                return value.GetNumber();
             }
         }
     }
 
     auto save() -> void;
     auto load() -> void;
-
-    // auto print() -> void;
 
 protected:
     struct Paths {

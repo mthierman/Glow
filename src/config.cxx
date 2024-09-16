@@ -52,18 +52,4 @@ auto Config::load() -> void {
         }
     }
 }
-
-// auto Config::print() -> void {
-//     if (auto value { json.GetNamedValue(L"Key1", nullptr) };
-//         value && value.ValueType() == winrt::JsonValueType::String) {
-//         auto name { value.GetString() };
-//         glow::log::log("{}", glow::text::to_string(name));
-//     }
-
-//     if (auto value { json.GetNamedValue(L"Key2", nullptr) };
-//         value && value.ValueType() == winrt::JsonValueType::String) {
-//         auto name { value.GetString() };
-//         glow::log::log("{}", glow::text::to_string(name));
-//     }
-// }
 }; // namespace glow::config

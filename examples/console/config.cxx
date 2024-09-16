@@ -15,6 +15,8 @@ auto main(/* int argc, char* argv[] */) -> int {
     auto config { glow::config::Config(filePath) };
 
     config.set<std::u8string>(u8"string", u8"wrapper");
+    config.set<bool>(u8"bool", true);
+    config.set<double>(u8"number", 24);
 
     auto value { config.get<std::u8string>(u8"string") };
 
@@ -23,8 +25,6 @@ auto main(/* int argc, char* argv[] */) -> int {
     config.save();
 
     // config.load();
-
-    // config.print();
 
     return EXIT_SUCCESS;
 }
