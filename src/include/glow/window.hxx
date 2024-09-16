@@ -388,7 +388,8 @@ public:
 };
 
 template <typename T> struct Manager {
-    auto add(std::unique_ptr<T> window) -> void {
+    auto add(auto&& factory) -> void {
+        auto window { std::forward<decltype(factory)>(factory)() };
         keys.push_back(window->id);
         map.try_emplace(window->id, std::move(window));
     }

@@ -9,6 +9,7 @@ enum struct glow::message::Code : ::UINT {
 };
 
 struct Window final : glow::window::Overlapped {
+private:
     Window(std::unordered_map<char, bool>& keyMap)
         : keys { keyMap } {
         messages.on(WM_KEYDOWN, [this](glow::message::wm::KEYDOWN message) {
@@ -49,6 +50,12 @@ struct Window final : glow::window::Overlapped {
         activate();
     }
 
+public:
+    static auto make(std::unordered_map<char, bool>& keyMap) -> std::unique_ptr<::Window> {
+        return std::unique_ptr<::Window>(new ::Window(keyMap));
+    }
+
+private:
     std::unordered_map<char, bool>& keys;
 };
 
@@ -61,7 +68,7 @@ struct App final : glow::window::Message {
 
             switch (code) {
                 case glow::message::Code::CREATE_WINDOW: {
-                    windows.add(std::make_unique<::Window>(keys));
+                    windows.add([this]() { return Window::make(keys); });
                 } break;
                 case glow::message::Code::CREATE_FOREGROUND_WINDOW: {
                     notify_app(glow::message::Code::CREATE_WINDOW);
