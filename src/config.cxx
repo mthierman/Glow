@@ -30,14 +30,14 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 // https://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 auto Config::save() -> void {
     std::basic_ofstream<char8_t> file(
-        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
+        paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
     auto string { glow::text::to_u8string(json.ToString()) };
     file.write(string.c_str(), string.size());
 }
 
 auto Config::load() -> void {
     std::basic_ifstream<char8_t> file(
-        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
+        paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
     if (file.is_open()) {
         std::u8string string;
