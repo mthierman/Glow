@@ -40,12 +40,12 @@ auto Config::load() -> void {
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
     if (file.is_open()) {
-        std::u8string string;
+        std::u8string buffer;
         file.seekg(0, std::basic_ios<char8_t>::end);
-        string.resize(file.tellg());
+        buffer.resize(file.tellg());
         file.seekg(0, std::basic_ios<char8_t>::beg);
-        file.read(string.data(), string.size());
-        auto parse { json.TryParse(glow::text::to_wstring(string), json) };
+        file.read(buffer.data(), buffer.size());
+        auto parse { json.TryParse(glow::text::to_wstring(buffer), json) };
 
         if (parse) {
             glow::log::log("parsed!");
