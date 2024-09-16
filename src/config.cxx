@@ -52,16 +52,11 @@ auto Config::load() -> void {
 
         file.ignore(std::numeric_limits<std::streamsize>::max());
         buffer.resize(file.gcount());
-        glow::log::log("{}", file.gcount());
         file.clear();
         file.seekg(0, std::basic_ios<char8_t>::beg);
         file.read(buffer.data(), buffer.size());
 
-        auto parse { json.TryParse(glow::text::to_wstring(buffer), json) };
-
-        if (parse) {
-            glow::log::log("parsed!");
-        }
+        deserialize(buffer);
     }
 }
 }; // namespace glow::config
