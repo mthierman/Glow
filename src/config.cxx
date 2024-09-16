@@ -12,24 +12,14 @@
 
 #include <glow/filesystem.hxx>
 #include <glow/log.hxx>
-#include <glow/text.hxx>
 
 // https://learn.microsoft.com/en-us/uwp/api/windows.data.json
 // https://devblogs.microsoft.com/oldnewthing/20230102-00/?p=107632
 
 namespace glow::config {
-Config::Config() {
-    auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
-    auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
-    json.SetNamedValue(L"Key1", value1);
-    json.SetNamedValue(L"Key2", value2);
-    // winrt::JsonValue::CreateBooleanValue();
-    // winrt::JsonValue::CreateNumberValue();
-    // winrt::JsonValue::CreateStringValue();
-    // json.Insert(L"KEY", )
-}
+Config::Config(const std::filesystem::path& path) { file_path(path); }
 
-auto Config::operator()(const std::filesystem::path& path) -> void {
+auto Config::file_path(const std::filesystem::path& path) -> void {
     paths.file = path;
     paths.root = path.parent_path();
 }
@@ -63,17 +53,17 @@ auto Config::load() -> void {
     }
 }
 
-auto Config::print() -> void {
-    if (auto value { json.GetNamedValue(L"Key1", nullptr) };
-        value && value.ValueType() == winrt::JsonValueType::String) {
-        auto name { value.GetString() };
-        glow::log::log("{}", glow::text::to_string(name));
-    }
+// auto Config::print() -> void {
+//     if (auto value { json.GetNamedValue(L"Key1", nullptr) };
+//         value && value.ValueType() == winrt::JsonValueType::String) {
+//         auto name { value.GetString() };
+//         glow::log::log("{}", glow::text::to_string(name));
+//     }
 
-    if (auto value { json.GetNamedValue(L"Key2", nullptr) };
-        value && value.ValueType() == winrt::JsonValueType::String) {
-        auto name { value.GetString() };
-        glow::log::log("{}", glow::text::to_string(name));
-    }
-}
+//     if (auto value { json.GetNamedValue(L"Key2", nullptr) };
+//         value && value.ValueType() == winrt::JsonValueType::String) {
+//         auto name { value.GetString() };
+//         glow::log::log("{}", glow::text::to_string(name));
+//     }
+// }
 }; // namespace glow::config

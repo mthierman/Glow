@@ -9,16 +9,22 @@
 #include <glow/glow.hxx>
 
 auto main(/* int argc, char* argv[] */) -> int {
-    glow::config::Config config;
+    auto filePath { glow::filesystem::known_folder() / glow::text::String(u8"ini").wstring()
+                    / glow::text::String(u8"ini.json").wstring() };
 
-    config(glow::filesystem::known_folder() / glow::text::String(u8"ini").wstring()
-           / glow::text::String(u8"ini.json").wstring());
+    auto config { glow::config::Config(filePath) };
+
+    config.set<std::u8string>(u8"string", u8"wrapper");
+
+    auto value { config.get<std::u8string>(u8"string") };
+
+    glow::log::log("{}", glow::text::to_string(value));
 
     config.save();
 
-    config.load();
+    // config.load();
 
-    config.print();
+    // config.print();
 
     return EXIT_SUCCESS;
 }
