@@ -20,6 +20,7 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 }
 
 // https://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring
+// https://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 auto Config::save() -> void {
     auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
     auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
