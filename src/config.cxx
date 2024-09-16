@@ -19,6 +19,7 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
     paths.root = path.parent_path();
 }
 
+// https://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring
 auto Config::save() -> void {
     auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
     auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
@@ -44,7 +45,6 @@ auto Config::save() -> void {
 
     std::ofstream f(paths.file);
     f << glow::text::to_string(json.ToString()) << std::endl;
-    f.close();
 }
 
 auto Config::load() -> void {
