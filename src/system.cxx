@@ -15,8 +15,8 @@
 #include <glow/text.hxx>
 
 namespace glow::system {
-auto co_initialize(::DWORD coInit) -> wil::unique_couninitialize_call {
-    return wil::CoInitializeEx(coInit);
+auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
+    return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
 auto create_process(const std::filesystem::path& path) -> int {
@@ -117,6 +117,12 @@ auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string> {
 
     return args;
 }
+
+CoInit::CoInit(::COINIT coInit) {
+    ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
+}
+
+CoInit::~CoInit() { ::CoUninitialize(); }
 
 GdiPlus::GdiPlus() {
     if (Gdiplus::GdiplusStartup(&token, &input, nullptr) != Gdiplus::Status::Ok) {

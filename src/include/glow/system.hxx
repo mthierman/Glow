@@ -15,6 +15,7 @@
 
 #include <filesystem>
 #include <functional>
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -29,8 +30,8 @@ using namespace winrt::Windows::UI::ViewManagement;
 }; // namespace winrt
 
 namespace glow::system {
-auto co_initialize(::DWORD coInit = COINIT_APARTMENTTHREADED
-                       | COINIT_DISABLE_OLE1DDE) -> wil::unique_couninitialize_call;
+auto co_initialize(::COINIT coInit
+                   = ::COINIT::COINIT_APARTMENTTHREADED) -> wil::unique_couninitialize_call;
 auto create_process(const std::filesystem::path& path) -> int;
 auto instance() -> ::HMODULE;
 auto exit_process(::UINT exitCode = EXIT_SUCCESS) -> void;
@@ -43,6 +44,11 @@ auto ui_settings() -> winrt::UISettings;
 auto is_dark() -> bool;
 auto parse_args() -> std::vector<std::u8string>;
 auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string>;
+
+struct CoInit final {
+    CoInit(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED);
+    ~CoInit();
+};
 
 struct GdiPlus final {
     GdiPlus();
