@@ -37,7 +37,7 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
-struct Position {
+struct Position final {
     Position() = default;
     Position(int x, int y, int width, int height);
     Position(const ::RECT& rect);
@@ -52,14 +52,14 @@ struct Position {
     int height { 0 };
 };
 
-struct State {
+struct State final {
     bool centered { false };
     bool fullscreen { false };
     bool maximized { false };
     bool minimized { false };
 };
 
-struct Background {
+struct Background final {
     enum struct Style { Transparent, System, Custom };
 
     struct Brush {
@@ -82,11 +82,15 @@ struct Background {
 };
 
 struct Hwnd {
+    Hwnd() = default;
+    virtual ~Hwnd() = default;
+
     auto register_class(::WNDCLASSEXW& windowClass) -> void;
 };
 
 struct Window : Hwnd {
     Window();
+    virtual ~Window() = default;
 
 protected:
     static auto CALLBACK procedure(::HWND hwnd,
@@ -213,6 +217,9 @@ public:
 };
 
 struct Overlapped : Window {
+    Overlapped() = default;
+    virtual ~Overlapped() = default;
+
     auto create(bool show = true) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
@@ -230,6 +237,9 @@ struct Overlapped : Window {
 };
 
 struct Child : Window {
+    Child() = default;
+    virtual ~Child() = default;
+
     auto create(::HWND parent, bool show = true) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
@@ -269,6 +279,9 @@ private:
 };
 
 struct WebView : Window {
+    WebView() = default;
+    virtual ~WebView() = default;
+
     using Callback = std::function<void()>;
 
     auto create(Callback callback = 0, bool show = true) -> void;
@@ -352,6 +365,9 @@ struct WebView : Window {
 };
 
 struct Message : Hwnd {
+    Message() = default;
+    virtual ~Message() = default;
+
 protected:
     static auto CALLBACK procedure(::HWND hwnd,
                                    ::UINT msg,
@@ -387,7 +403,7 @@ public:
     wil::unique_hwnd hwnd;
 };
 
-template <typename T> struct Manager {
+template <typename T> struct Manager final {
     auto add(auto&& factory) -> void {
         auto window { std::forward<decltype(factory)>(factory)() };
         keys.push_back(window->id);
