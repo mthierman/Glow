@@ -15,10 +15,10 @@
 
 namespace glow::config {
 Config::Config() {
-    auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
-    auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
-    json.SetNamedValue(L"Key1", value1);
-    json.SetNamedValue(L"Key2", value2);
+    // auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
+    // auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
+    // json.SetNamedValue(L"Key1", value1);
+    // json.SetNamedValue(L"Key2", value2);
 }
 
 auto Config::operator()(const std::filesystem::path& path) -> void {
@@ -29,23 +29,31 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
 // https://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring
 // https://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 auto Config::save() -> void {
-    std::basic_ofstream<char8_t> file(paths.file, std::ios::binary | std::ios::out);
+    std::basic_ofstream<char8_t> file(
+        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
     auto string { glow::text::to_u8string(json.ToString()) };
     file.write(string.c_str(), string.size());
 }
 
 auto Config::load() -> void {
-    std::ifstream file(paths.file, std::ios::binary | std::ios::in);
-    if (file.is_open()) {
-        std::u8string buffer;
-        // std::ostringstream buffer;
-        // buffer << file.rdbuf();
+    std::basic_ifstream<char8_t> file(
+        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
+    if (file.is_open()) {
+        std::u8string string;
+        file.seekg(0, std::basic_ios<char8_t>::end);
+        string.resize(file.tellg());
+        file.seekg(0, std::basic_ios<char8_t>::beg);
+        file.read(string.data(), string.size());
+        auto parse { json.TryParse(glow::text::to_wstring(string), json) };
+
+        // std::basic_ostringstream<char8_t> buffer;
+        // buffer << file.rdbuf();
         // auto parse { json.TryParse(glow::text::to_wstring(buffer.str()), json) };
 
-        // if (parse) {
-        //     glow::log::log("parsed!");
-        // }
+        if (parse) {
+            glow::log::log("parsed!");
+        }
     }
 }
 
