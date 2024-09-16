@@ -38,5 +38,4 @@ auto to_wstring(const ::GUID& guid) -> std::wstring {
 
     return buffer;
 }
-
 }; // namespace glow::guid

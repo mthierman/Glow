@@ -9,3 +9,13 @@ target_sources(
     )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glow::glow)
+
+add_executable(${PROJECT_NAME}_string)
+
+target_sources(
+    ${PROJECT_NAME}_string
+    PRIVATE "string.cxx"
+            "../../data/glow.manifest"
+    )
+
+target_link_libraries(${PROJECT_NAME}_string PRIVATE glow::glow)
