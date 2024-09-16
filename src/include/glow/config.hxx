@@ -70,6 +70,9 @@ struct Config {
         }
     }
 
+    auto serialize() -> std::u8string;
+    auto deserialize(std::u8string_view buffer) -> winrt::JsonObject;
+
     auto save() -> void;
     auto load() -> void;
 

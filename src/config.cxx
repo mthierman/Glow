@@ -24,11 +24,23 @@ auto Config::file_path(const std::filesystem::path& path) -> void {
     paths.root = path.parent_path();
 }
 
+auto Config::serialize() -> std::u8string { return glow::text::to_u8string(json.Stringify()); }
+
+auto Config::deserialize(std::u8string_view buffer) -> winrt::JsonObject {
+    winrt::JsonObject deserialized;
+
+    if (auto parsed { json.TryParse(glow::text::to_wstring(buffer), deserialized) }; parsed) {
+        return deserialized;
+    } else {
+        throw std::runtime_error("Config deserialization failure");
+    }
+}
+
 auto Config::save() -> void {
     std::basic_ofstream<char8_t> file(
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-    auto stringify { glow::text::to_u8string(json.Stringify()) };
-    file.write(stringify.c_str(), stringify.size());
+    auto serialized { serialize() };
+    file.write(serialized.c_str(), serialized.size());
 }
 
 auto Config::load() -> void {
