@@ -23,18 +23,12 @@ auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
         int inputLength { glow::math::check_safe_size<int>(length) };
 
         auto outputLength { ::WideCharToMultiByte(
-            CP_UTF8, WC_NO_BEST_FIT_CHARS, input, inputLength, nullptr, 0, nullptr, nullptr) };
+            CP_UTF8, 0, input, inputLength, nullptr, 0, nullptr, nullptr) };
 
         output.resize(outputLength);
 
-        if (::WideCharToMultiByte(CP_UTF8,
-                                  WC_NO_BEST_FIT_CHARS,
-                                  input,
-                                  inputLength,
-                                  output.data(),
-                                  outputLength,
-                                  nullptr,
-                                  nullptr)
+        if (::WideCharToMultiByte(
+                CP_UTF8, 0, input, inputLength, output.data(), outputLength, nullptr, nullptr)
             == 0) {
             throw std::runtime_error(glow::log::get_last_error());
         }
@@ -50,12 +44,12 @@ auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string {
         int inputLength { glow::math::check_safe_size<int>(length) };
 
         auto outputLength { ::WideCharToMultiByte(
-            CP_UTF8, WC_NO_BEST_FIT_CHARS, input, inputLength, nullptr, 0, nullptr, nullptr) };
+            CP_UTF8, 0, input, inputLength, nullptr, 0, nullptr, nullptr) };
 
         output.resize(outputLength);
 
         if (::WideCharToMultiByte(CP_UTF8,
-                                  WC_NO_BEST_FIT_CHARS,
+                                  0,
                                   input,
                                   inputLength,
                                   reinterpret_cast<char*>(output.data()),
