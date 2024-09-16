@@ -45,6 +45,7 @@ auto Config::load() -> void {
         buffer.resize(file.tellg());
         file.seekg(0, std::basic_ios<char8_t>::beg);
         file.read(buffer.data(), buffer.size());
+
         auto parse { json.TryParse(glow::text::to_wstring(buffer), json) };
 
         if (parse) {
