@@ -23,31 +23,6 @@ auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   = {}) -> std::filesystem::path;
 auto temp_folder(std::initializer_list<std::u8string_view> subfolders
                  = {}) -> std::filesystem::path;
-
-struct Path {
-    Path() = default;
-    ~Path() = default;
-    Path(const Path& path) = default;
-    Path(Path&& path) = default;
-    explicit Path(const std::filesystem::path& path);
-    explicit Path(std::filesystem::path&& path);
-    explicit Path(const std::u8string& u8string);
-
-    auto operator=(const Path& path) -> Path& = default;
-    auto operator=(Path&& path) -> Path& = default;
-
-    auto operator()(const std::u8string& string) -> const std::u8string&;
-    auto operator()(std::u8string&& string) -> const std::u8string&;
-    auto operator()() const -> const std::u8string&;
-
-    auto u8string() const -> std::u8string;
-    auto u16string() const -> std::u16string;
-    auto string() const -> std::string;
-    auto wstring() const -> std::wstring;
-
-protected:
-    std::filesystem::path storage;
-};
 }; // namespace glow::filesystem
 
 namespace std {
