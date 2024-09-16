@@ -7,18 +7,26 @@
 #include <glow/config.hxx>
 
 #include <fstream>
+#include <limits>
 #include <sstream>
 
 #include <glow/filesystem.hxx>
 #include <glow/log.hxx>
 #include <glow/text.hxx>
 
+// https://learn.microsoft.com/en-us/uwp/api/windows.data.json
+// https://devblogs.microsoft.com/oldnewthing/20230102-00/?p=107632
+
 namespace glow::config {
 Config::Config() {
-    // auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
-    // auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
-    // json.SetNamedValue(L"Key1", value1);
-    // json.SetNamedValue(L"Key2", value2);
+    auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
+    auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
+    json.SetNamedValue(L"Key1", value1);
+    json.SetNamedValue(L"Key2", value2);
+    // winrt::JsonValue::CreateBooleanValue();
+    // winrt::JsonValue::CreateNumberValue();
+    // winrt::JsonValue::CreateStringValue();
+    // json.Insert(L"KEY", )
 }
 
 auto Config::operator()(const std::filesystem::path& path) -> void {
@@ -26,8 +34,6 @@ auto Config::operator()(const std::filesystem::path& path) -> void {
     paths.root = path.parent_path();
 }
 
-// https://stackoverflow.com/questions/2602013/read-whole-ascii-file-into-c-stdstring
-// https://insanecoding.blogspot.com/2011/11/how-to-read-in-file-in-c.html
 auto Config::save() -> void {
     std::basic_ofstream<char8_t> file(
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
@@ -41,27 +47,15 @@ auto Config::load() -> void {
 
     if (file.is_open()) {
         std::u8string buffer;
-        file.seekg(0, std::basic_ios<char8_t>::end);
-        buffer.resize(file.tellg());
+
+        file.ignore(std::numeric_limits<std::streamsize>::max());
+        buffer.resize(file.gcount());
+        glow::log::log("{}", file.gcount());
+        file.clear();
         file.seekg(0, std::basic_ios<char8_t>::beg);
         file.read(buffer.data(), buffer.size());
 
         auto parse { json.TryParse(glow::text::to_wstring(buffer), json) };
-
-        if (parse) {
-            glow::log::log("parsed!");
-        }
-    }
-}
-
-auto Config::load_stringstream() -> void {
-    std::basic_ifstream<char8_t> file(
-        paths.file, std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
-
-    if (file.is_open()) {
-        std::basic_ostringstream<char8_t> buffer;
-        buffer << file.rdbuf();
-        auto parse { json.TryParse(glow::text::to_wstring(buffer.str()), json) };
 
         if (parse) {
             glow::log::log("parsed!");

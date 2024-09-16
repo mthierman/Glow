@@ -25,7 +25,7 @@ struct Config {
 
     auto save() -> void;
     auto load() -> void;
-    auto load_stringstream() -> void;
+
     auto print() -> void;
 
 protected:
