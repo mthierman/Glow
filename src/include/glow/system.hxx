@@ -44,7 +44,7 @@ auto is_dark() -> bool;
 auto parse_args() -> std::vector<std::u8string>;
 auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string>;
 
-struct GdiPlus {
+struct GdiPlus final {
     GdiPlus();
     ~GdiPlus();
 
@@ -52,7 +52,7 @@ struct GdiPlus {
     ::ULONG_PTR token;
 };
 
-struct Event {
+struct Event final {
     auto create(const std::string& name, std::function<void()>&& callback = 0) -> bool;
 
     wil::unique_event_nothrow event;

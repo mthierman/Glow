@@ -38,7 +38,7 @@ auto to_u8string(std::u16string_view input) -> std::u8string;
 auto to_u16string(std::string_view input) -> std::u16string;
 auto to_u16string(std::u8string_view input) -> std::u16string;
 
-struct String {
+struct String final {
     String() = default;
     ~String() = default;
     String(const String& string) = default;

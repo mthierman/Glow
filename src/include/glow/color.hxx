@@ -28,7 +28,7 @@ using namespace winrt::Windows::UI::ViewManagement;
 }; // namespace winrt
 
 namespace glow::color {
-struct Color {
+struct Color final {
     Color() = default;
     ~Color() = default;
     Color(const Color& color) = default;

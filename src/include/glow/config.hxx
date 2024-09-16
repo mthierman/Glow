@@ -19,9 +19,16 @@ using namespace winrt::Windows::Data::Json;
 }; // namespace winrt
 
 namespace glow::config {
-struct Config {
+struct Config final {
     Config() = default;
+    ~Config() = default;
+    Config(const Config& config) = default;
+    Config(Config&& config) = default;
+
     explicit Config(const std::filesystem::path& path);
+
+    auto operator=(const Config& config) -> Config& = default;
+    auto operator=(Config&& config) -> Config& = default;
 
     auto file_path(const std::filesystem::path& path) -> void;
 

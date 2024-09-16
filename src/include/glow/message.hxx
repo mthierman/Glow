@@ -29,6 +29,9 @@ struct Notification {
 };
 
 struct Manager {
+    Manager() = default;
+    virtual ~Manager() = default;
+
     using Callback = std::function<::LRESULT(glow::message::Message)>;
 
     auto on(::UINT msg, Callback callback) -> bool;
