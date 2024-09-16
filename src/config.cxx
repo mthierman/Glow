@@ -15,10 +15,10 @@
 
 namespace glow::config {
 Config::Config() {
-    auto testValue1 { winrt::JsonValue::CreateStringValue(L"TestValue1") };
-    auto testValue2 { winrt::JsonValue::CreateStringValue(L"TestValue2") };
-    json.SetNamedValue(L"TestKey", testValue1);
-    json.SetNamedValue(L"TestKey2", testValue2);
+    auto value1 { winrt::JsonValue::CreateStringValue(L"Value1") };
+    auto value2 { winrt::JsonValue::CreateStringValue(L"Value2") };
+    json.SetNamedValue(L"Key1", value1);
+    json.SetNamedValue(L"Key2", value2);
 }
 
 auto Config::operator()(const std::filesystem::path& path) -> void {
@@ -57,8 +57,14 @@ auto Config::load() -> void {
 }
 
 auto Config::print() -> void {
-    auto value { json.GetNamedValue(L"TestKey", nullptr) };
-    if (value && value.ValueType() == winrt::JsonValueType::String) {
+    if (auto value { json.GetNamedValue(L"Key1", nullptr) };
+        value && value.ValueType() == winrt::JsonValueType::String) {
+        auto name { value.GetString() };
+        glow::log::log("{}", glow::text::to_string(name));
+    }
+
+    if (auto value { json.GetNamedValue(L"Key2", nullptr) };
+        value && value.ValueType() == winrt::JsonValueType::String) {
         auto name { value.GetString() };
         glow::log::log("{}", glow::text::to_string(name));
     }
