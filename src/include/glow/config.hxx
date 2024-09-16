@@ -49,7 +49,7 @@ struct Config {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
                 return glow::text::to_u8string(value.GetString());
             } else {
-                return u8"invalid";
+                throw std::runtime_error("Key does not exist!");
             }
         }
 
@@ -57,7 +57,7 @@ struct Config {
             if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
                 return value.GetBoolean();
             } else {
-                return false;
+                throw std::runtime_error("Key does not exist!");
             }
         }
 
@@ -65,7 +65,7 @@ struct Config {
             if (value && value.ValueType() == winrt::JsonValueType::Number) {
                 return value.GetNumber();
             } else {
-                return 0;
+                throw std::runtime_error("Key does not exist!");
             }
         }
     }

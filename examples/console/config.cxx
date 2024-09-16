@@ -26,7 +26,7 @@ auto main(/* int argc, char* argv[] */) -> int {
     glow::log::log("{}, {}, {}",
                    config.get<std::u8string>(u8"string"),
                    config.get<bool>(u8"bool"),
-                   config.get<double>(u8"asdasd"));
+                   config.get<double>(u8"number"));
 
     config.save();
 
