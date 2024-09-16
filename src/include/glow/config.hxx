@@ -48,18 +48,24 @@ struct Config {
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
                 return glow::text::to_u8string(value.GetString());
+            } else {
+                return u8"invalid";
             }
         }
 
         if constexpr (std::is_same_v<T, bool>) {
             if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
                 return value.GetBoolean();
+            } else {
+                return false;
             }
         }
 
         if constexpr (std::is_same_v<T, double>) {
             if (value && value.ValueType() == winrt::JsonValueType::Number) {
                 return value.GetNumber();
+            } else {
+                return 0;
             }
         }
     }
