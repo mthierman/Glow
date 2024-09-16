@@ -46,9 +46,7 @@ struct String {
 
     explicit String(const std::u8string& u8string);
     explicit String(std::u8string&& u8string);
-
     explicit String(const std::filesystem::path& path);
-
     explicit String(const std::u16string& u16string);
     explicit String(const std::string& string);
     explicit String(const std::wstring& wstring);

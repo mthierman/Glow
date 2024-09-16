@@ -30,13 +30,20 @@ using namespace winrt::Windows::UI::ViewManagement;
 namespace glow::color {
 struct Color {
     Color() = default;
-    Color(uint8_t r, uint8_t g, uint8_t b);
-    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
-    Color(winrt::UIColorType colorType);
-    Color(winrt::UIElementType elementType);
-    Color(const winrt::Color& color);
-    Color(const ::COLORREF& colorRef);
-    Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
+    ~Color() = default;
+    Color(const Color& color) = default;
+    Color(Color&& color) = default;
+
+    explicit Color(uint8_t r, uint8_t g, uint8_t b);
+    explicit Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    explicit Color(winrt::UIColorType colorType);
+    explicit Color(winrt::UIElementType elementType);
+    explicit Color(const winrt::Color& color);
+    explicit Color(const ::COLORREF& colorRef);
+    explicit Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
+
+    auto operator=(const Color& color) -> Color& = default;
+    auto operator=(Color&& color) -> Color& = default;
 
     uint8_t r { 0 };
     uint8_t g { 0 };
