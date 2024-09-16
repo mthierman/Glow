@@ -10,11 +10,9 @@
 #include <glow/text.hxx>
 
 namespace glow::config {
-auto Config::save() -> void {
-    auto folder { glow::filesystem::known_folder() };
-    auto dir { folder / glow::text::String(u8"ini").wstring()
-               / glow::text::String(u8"ini.txt").wstring() };
+auto Config::operator()(const std::filesystem::path& path) -> void { this->path = path; }
 
+auto Config::save() -> void {
     ::WritePrivateProfileStringW(L"TEST", L"TEST", L"TEST", dir.c_str());
 }
 }; // namespace glow::config

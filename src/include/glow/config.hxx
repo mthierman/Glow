@@ -6,10 +6,17 @@
 
 #pragma once
 
+#include <filesystem>
+
 namespace glow::config {
 struct Config {
     Config() = default;
 
+    auto operator()(const std::filesystem::path& path) -> void;
+
     auto save() -> void;
+
+protected:
+    std::filesystem::path path;
 };
 }; // namespace glow::config
