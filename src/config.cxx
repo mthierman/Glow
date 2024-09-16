@@ -57,6 +57,8 @@ auto Config::load() -> void {
         file.read(buffer.data(), buffer.size());
 
         deserialize(buffer);
+    } else {
+        throw std::runtime_error("Config file open failure");
     }
 }
 }; // namespace glow::config
