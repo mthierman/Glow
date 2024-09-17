@@ -8,7 +8,13 @@ option(
     OFF
     )
 
-include(cmake/dependencies.cmake)
+list(
+    APPEND
+    CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
+    )
+
+include(dependencies)
 
 add_library(${PROJECT_NAME})
 
