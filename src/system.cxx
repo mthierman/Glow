@@ -10,6 +10,8 @@
 
 #include <stdexcept>
 
+#include <wil/win32_helpers.h>
+
 #include <glow/color.hxx>
 #include <glow/log.hxx>
 #include <glow/text.hxx>
@@ -77,14 +79,12 @@ auto instance() -> ::HMODULE {
     // auto exe { instance_exe() };
     auto dll { instance_dll() };
 
+    // auto size { ::GetModuleFileNameW(dll, nullptr, 0) };
+    // glow::log::log("{}", size);
+
     std::wstring buffer;
-
-    auto size { ::GetModuleFileNameW(dll, nullptr, 0) };
-    glow::log::log("{}", size);
-
-    buffer.resize(size);
-    ::GetModuleFileNameW(dll, buffer.data(), (DWORD)buffer.size());
-
+    buffer.resize(wil::max_extended_path_length);
+    ::GetModuleFileNameW(dll, buffer.data(), wil::max_extended_path_length);
     glow::log::log("{}", glow::text::to_string(buffer));
 
     return dll;
