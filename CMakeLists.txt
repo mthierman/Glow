@@ -2,12 +2,6 @@ cmake_minimum_required(VERSION 3.30)
 
 project(Glow VERSION 0.1.0)
 
-option(
-    BUILD_EXAMPLES
-    "Build examples"
-    OFF
-    )
-
 list(
     APPEND
     CMAKE_MODULE_PATH
@@ -100,6 +94,6 @@ target_link_libraries(
            gdiplus.lib
     )
 
-if(BUILD_EXAMPLES)
+if(PROJECT_IS_TOP_LEVEL)
     add_subdirectory(examples)
 endif()
