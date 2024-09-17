@@ -9,11 +9,16 @@ macro(
        MATCHES
        "^(Microsoft.Web.WebView2|Microsoft.Windows.CppWinRT|Microsoft.Windows.ImplementationLibrary)$"
         )
+        if(EXISTS
+           "${CMAKE_BINARY_DIR}/_nuget/${dep_name}"
+            )
+            return()
+        endif()
         message(STATUS "Installing ${dep_name}...")
         execute_process(
             COMMAND
                 nuget install ${dep_name} -OutputDirectory "${CMAKE_BINARY_DIR}/_nuget" -Verbosity
-                quiet
+                quiet -ExcludeVersion
             )
         fetchcontent_setpopulated(
             ${dep_name}
