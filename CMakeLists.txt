@@ -9,9 +9,9 @@ list(
     )
 
 include(FetchContent)
-include(Microsoft.Windows.ImplementationLibrary)
-include(Microsoft.Windows.CppWinRT)
 include(Microsoft.Web.WebView2)
+include(Microsoft.Windows.CppWinRT)
+include(Microsoft.Windows.ImplementationLibrary)
 
 add_library(${PROJECT_NAME})
 
