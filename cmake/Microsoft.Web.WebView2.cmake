@@ -25,7 +25,6 @@ target_sources(
               HEADERS
               BASE_DIRS
               "${microsoft_webview2_SOURCE_DIR}/build/native/include"
-              "${microsoft_webview2_SOURCE_DIR}/build/native/include-winrt"
     )
 
 target_link_directories(
