@@ -56,16 +56,7 @@ auto create_process(const std::filesystem::path& path) -> int {
     return 0;
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain
-// https://devblogs.microsoft.com/oldnewthing/20041025-00/?p=37483
-auto instance_exe() -> ::HMODULE {
-    ::HMODULE module;
-    ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, nullptr, &module);
-
-    return module;
-}
-
-auto instance_dll() -> ::HMODULE {
+auto instance() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT
                              | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
@@ -73,21 +64,6 @@ auto instance_dll() -> ::HMODULE {
                          &module);
 
     return module;
-}
-
-auto instance() -> ::HMODULE {
-    // auto exe { instance_exe() };
-    auto dll { instance_dll() };
-
-    // auto size { ::GetModuleFileNameW(dll, nullptr, 0) };
-    // glow::log::log("{}", size);
-
-    std::wstring buffer;
-    buffer.resize(wil::max_extended_path_length);
-    ::GetModuleFileNameW(dll, buffer.data(), wil::max_extended_path_length);
-    glow::log::log("{}", glow::text::to_string(buffer));
-
-    return dll;
 }
 
 auto exit_process(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
