@@ -18,11 +18,11 @@ struct Window final : glow::window::Overlapped {
         });
 
         messages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED /* msg */) {
-            wil::for_each_child_window(hwnd.get(), [this](::HWND hwnd) {
-                auto id { ::GetWindowLongPtrW(hwnd, GWL_ID) };
+            wil::for_each_child_window(hwnd.get(), [this](::HWND childHwnd) {
+                auto id { ::GetWindowLongPtrW(childHwnd, GWL_ID) };
 
                 if (id == left.get_id()) {
-                    ::SetWindowPos(hwnd,
+                    ::SetWindowPos(childHwnd,
                                    nullptr,
                                    0,
                                    0,
@@ -32,7 +32,7 @@ struct Window final : glow::window::Overlapped {
                 }
 
                 if (id == right.get_id()) {
-                    ::SetWindowPos(hwnd,
+                    ::SetWindowPos(childHwnd,
                                    nullptr,
                                    client_position().width / 2,
                                    0,
