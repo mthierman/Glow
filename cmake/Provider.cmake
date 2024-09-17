@@ -7,5 +7,5 @@ set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WINDOWS.CPPWINRT
     )
 
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WINDOWS.IMPLEMENTATIONLIBRARY
-    "$ENV{Libs}/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240803.1"
+    "$ENV{LIBS}/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240803.1"
     )
