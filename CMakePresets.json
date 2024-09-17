@@ -27,7 +27,7 @@
             "inherits": ["Visual Studio 17 2022"],
             "toolset": {
                 "strategy": "set",
-                "value": "v143,host=x64"
+                "value": "host=x64"
             },
             "binaryDir": "${sourceDir}/build/MSBuild/MSVC"
         },
