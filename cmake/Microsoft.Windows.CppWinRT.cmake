@@ -1,12 +1,12 @@
 FetchContent_Declare(
-    microsoft_cppwinrt
+    Microsoft.Windows.CppWinRT
     URL "https://www.nuget.org/api/v2/package/Microsoft.Windows.CppWinRT/2.0.240405.15"
     DOWNLOAD_NO_PROGRESS TRUE
     SOURCE_SUBDIR
     "NULL"
     )
 
-FetchContent_MakeAvailable(microsoft_cppwinrt)
+FetchContent_MakeAvailable(Microsoft.Windows.CppWinRT)
 
 execute_process(
     COMMAND

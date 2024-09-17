@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.30)
+
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT_WIL "$ENV{NUGET}/Microsoft.Windows.ImplementationLibrary")
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT_CPPWINRT "$ENV{NUGET}/Microsoft.Windows.CppWinRT")
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT_WEBVIEW2 "$ENV{NUGET}/Microsoft.Web.WebView2")

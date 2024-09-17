@@ -1,12 +1,12 @@
 FetchContent_Declare(
-    microsoft_webview2
+    Microsoft.Web.WebView2
     URL "https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.2739.15"
     DOWNLOAD_NO_PROGRESS TRUE
     SOURCE_SUBDIR
     "NULL"
     )
 
-FetchContent_MakeAvailable(microsoft_webview2)
+FetchContent_MakeAvailable(Microsoft.Web.WebView2)
 
 add_library(
     microsoft_webview2
