@@ -55,10 +55,6 @@ target_compile_options(
     PRIVATE $<$<CXX_COMPILER_ID:MSVC>:
             /MP
             >
-            $<$<CXX_COMPILER_ID:Clang>:
-            -Wno-braced-scalar-init
-            -Wno-nonportable-include-path
-            >
             $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
             /W4
             /WX
@@ -72,6 +68,10 @@ target_compile_options(
             -Wall
             -Werror
             >
+    PUBLIC $<$<CXX_COMPILER_ID:Clang>:
+           -Wno-braced-scalar-init
+           -Wno-nonportable-include-path
+           >
     )
 
 target_link_options(
