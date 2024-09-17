@@ -3,6 +3,12 @@ add_library(
     INTERFACE
     )
 
+add_library(
+    glow::examples
+    ALIAS
+    ${PROJECT_NAME}_examples
+    )
+
 target_compile_options(
     ${PROJECT_NAME}_examples
     INTERFACE $<$<CXX_COMPILER_ID:MSVC>:
@@ -39,6 +45,8 @@ target_link_options(
     -Wl,/WX,/NOLOGO,/entry:mainCRTStartup
     >
     )
+
+target_link_libraries(${PROJECT_NAME}_examples INTERFACE glow::glow)
 
 add_subdirectory("console")
 add_subdirectory("webview")

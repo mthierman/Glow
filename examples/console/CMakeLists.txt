@@ -8,7 +8,7 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME} PRIVATE glow::examples)
 
 add_executable(${PROJECT_NAME}_string)
 
@@ -18,7 +18,7 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME}_string PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_string PRIVATE glow::examples)
 
 add_executable(${PROJECT_NAME}_config)
 
@@ -28,4 +28,4 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME}_config PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_config PRIVATE glow::examples)

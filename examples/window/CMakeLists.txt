@@ -11,7 +11,7 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME}_overlapped PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_overlapped PRIVATE glow::examples)
 
 add_executable(
     ${PROJECT_NAME}_derived
@@ -24,7 +24,7 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME}_derived PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_derived PRIVATE glow::examples)
 
 add_executable(
     ${PROJECT_NAME}_message
@@ -37,4 +37,4 @@ target_sources(
             "../../data/glow.manifest"
     )
 
-target_link_libraries(${PROJECT_NAME}_message PRIVATE glow::glow)
+target_link_libraries(${PROJECT_NAME}_message PRIVATE glow::examples)
