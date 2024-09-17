@@ -52,10 +52,16 @@ target_compile_definitions(
 
 target_compile_options(
     ${PROJECT_NAME}
-    PRIVATE $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
+    PRIVATE $<$<CXX_COMPILER_ID:MSVC>:
+            /MP
+            >
+            $<$<CXX_COMPILER_ID:Clang>:
+            -Wno-braced-scalar-init
+            -Wno-nonportable-include-path
+            >
+            $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
             /W4
             /WX
-            /MP
             /nologo
             /utf-8
             /bigobj
@@ -65,8 +71,6 @@ target_compile_options(
             $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
             -Wall
             -Werror
-            -Wno-braced-scalar-init
-            -Wno-nonportable-include-path
             >
     )
 
