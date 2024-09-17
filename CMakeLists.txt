@@ -8,7 +8,10 @@ list(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
     )
 
-include(dependencies)
+include(FetchContent)
+include(Microsoft.Windows.ImplementationLibrary)
+include(Microsoft.Windows.CppWinRT)
+include(Microsoft.Web.WebView2)
 
 add_library(${PROJECT_NAME})
 

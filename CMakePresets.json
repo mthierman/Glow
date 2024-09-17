@@ -14,14 +14,13 @@
             "architecture": {
                 "strategy": "set",
                 "value": "x64"
-            },
-            "binaryDir": "${sourceDir}/build"
+            }
         },
         {
             "name": "Ninja Multi-Config",
             "hidden": true,
             "generator": "Ninja Multi-Config",
-            "binaryDir": "${sourceDir}/build"
+            "binaryDir": "${sourceDir}/build/Ninja"
         },
         {
             "name": "MSVC",
@@ -29,7 +28,8 @@
             "toolset": {
                 "strategy": "set",
                 "value": "v143,host=x64"
-            }
+            },
+            "binaryDir": "${sourceDir}/build/MSBuild/MSVC"
         },
         {
             "name": "ClangCL",
@@ -37,7 +37,8 @@
             "toolset": {
                 "strategy": "set",
                 "value": "ClangCL,host=x64"
-            }
+            },
+            "binaryDir": "${sourceDir}/build/MSBuild/ClangCL"
         },
         {
             "name": "Ninja MSVC",
@@ -45,7 +46,8 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cl",
                 "CMAKE_CXX_COMPILER": "cl"
-            }
+            },
+            "binaryDir": "${sourceDir}/build/Ninja/MSVC"
         },
         {
             "name": "Ninja ClangCL",
@@ -53,7 +55,8 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang-cl",
                 "CMAKE_CXX_COMPILER": "clang-cl"
-            }
+            },
+            "binaryDir": "${sourceDir}/build/Ninja/ClangCL"
         },
         {
             "name": "Ninja Clang",
@@ -61,7 +64,8 @@
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "clang",
                 "CMAKE_CXX_COMPILER": "clang++"
-            }
+            },
+            "binaryDir": "${sourceDir}/build/Ninja/Clang"
         },
         {
             "name": "Unity Build",
