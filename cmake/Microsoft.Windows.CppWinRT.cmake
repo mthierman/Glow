@@ -11,8 +11,8 @@ FetchContent_MakeAvailable(Microsoft.Windows.CppWinRT)
 execute_process(
     COMMAND
         cppwinrt -input sdk -output
-        "${CMAKE_BINARY_DIR}/include/microsoft/Microsoft.Windows.CppWinRT"
-    WORKING_DIRECTORY "${microsoft_cppwinrt_SOURCE_DIR}/bin"
+        "${CMAKE_BINARY_DIR}/include/Microsoft/Microsoft.Windows.CppWinRT"
+    WORKING_DIRECTORY "${microsoft.windows.cppwinrt_SOURCE_DIR}/bin"
     )
 
 add_library(
@@ -31,5 +31,5 @@ target_sources(
     INTERFACE FILE_SET
               HEADERS
               BASE_DIRS
-              "${CMAKE_BINARY_DIR}/include/microsoft/Microsoft.Windows.CppWinRT"
+              "${CMAKE_BINARY_DIR}/include/Microsoft/Microsoft.Windows.CppWinRT"
     )

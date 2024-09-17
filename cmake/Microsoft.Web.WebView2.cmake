@@ -24,13 +24,13 @@ target_sources(
     INTERFACE FILE_SET
               HEADERS
               BASE_DIRS
-              "${microsoft_webview2_SOURCE_DIR}/build/native/include"
+              "${microsoft.web.webview2_SOURCE_DIR}/build/native/include"
     )
 
 target_link_directories(
     microsoft_webview2
     INTERFACE
-    "${microsoft_webview2_SOURCE_DIR}/build/native/x64"
+    "${microsoft.web.webview2_SOURCE_DIR}/build/native/x64"
     )
 
 target_link_libraries(microsoft_webview2 INTERFACE WebView2LoaderStatic.lib)

@@ -24,5 +24,5 @@ target_sources(
     INTERFACE FILE_SET
               HEADERS
               BASE_DIRS
-              "${microsoft_wil_SOURCE_DIR}/include"
+              "${microsoft.windows.implementationlibrary_SOURCE_DIR}/include"
     )
