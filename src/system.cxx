@@ -63,7 +63,7 @@ auto instance_exe() -> ::HMODULE {
     return module;
 }
 
-auto instance() -> ::HMODULE {
+auto instance_dll() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT
                              | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
