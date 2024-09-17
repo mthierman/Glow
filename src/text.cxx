@@ -170,6 +170,9 @@ auto to_u16string(std::u8string_view input) -> std::u16string {
 }
 
 // String
+String::String(const char8_t* u8string)
+    : storage { u8string } { }
+
 String::String(const std::u8string& u8string)
     : storage { u8string } { }
 

@@ -1,4 +1,7 @@
-add_library(${PROJECT_NAME}_examples)
+add_library(
+    ${PROJECT_NAME}_examples
+    INTERFACE
+    )
 
 target_link_options(
     ${PROJECT_NAME}_examples

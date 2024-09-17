@@ -44,6 +44,7 @@ struct String final {
     String(const String& string) = default;
     String(String&& string) = default;
 
+    explicit String(const char8_t* u8string);
     explicit String(const std::u8string& u8string);
     explicit String(std::u8string&& u8string);
     explicit String(const std::filesystem::path& path);
