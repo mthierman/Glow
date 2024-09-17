@@ -21,24 +21,18 @@ struct Window final : glow::window::Overlapped {
             wil::for_each_child_window(hwnd.get(), [this](::HWND childHwnd) {
                 auto id { ::GetWindowLongPtrW(childHwnd, GWL_ID) };
 
+                auto clientPosition { client_position() };
+
                 if (id == left.get_id()) {
-                    ::SetWindowPos(childHwnd,
-                                   nullptr,
-                                   0,
-                                   0,
-                                   client_position().width / 2,
-                                   client_position().height,
-                                   SWP_NOZORDER | SWP_NOACTIVATE);
+                    left.set_position(glow::window::Position(
+                        0, 0, clientPosition.width / 2, clientPosition.height));
                 }
 
                 if (id == right.get_id()) {
-                    ::SetWindowPos(childHwnd,
-                                   nullptr,
-                                   client_position().width / 2,
-                                   0,
-                                   client_position().width / 2,
-                                   client_position().height,
-                                   SWP_NOZORDER | SWP_NOACTIVATE);
+                    right.set_position(glow::window::Position(clientPosition.width / 2,
+                                                              0,
+                                                              clientPosition.width / 2,
+                                                              clientPosition.height));
                 }
 
                 return true;
