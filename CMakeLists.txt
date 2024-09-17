@@ -64,7 +64,6 @@ target_compile_options(
            /MP
            >
            $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
-           /nologo
            /utf-8
            /bigobj
            /diagnostics:caret
@@ -81,10 +80,9 @@ target_link_options(
     PRIVATE
     $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
     /WX
-    /NOLOGO
     >
     $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
-    -Wl,/WX,/NOLOGO
+    -Wl,/WX
     >
     )
 
