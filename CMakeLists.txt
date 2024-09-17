@@ -46,8 +46,8 @@ target_compile_features(
 target_compile_definitions(
     ${PROJECT_NAME}
     PRIVATE WIN32_LEAN_AND_MEAN
-            NOMINMAX
-            GDIPVER=0x0110
+    PUBLIC NOMINMAX
+           GDIPVER=0x0110
     )
 
 target_compile_options(
