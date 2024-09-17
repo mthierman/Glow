@@ -46,8 +46,8 @@ target_compile_features(
 target_compile_definitions(
     ${PROJECT_NAME}
     PRIVATE WIN32_LEAN_AND_MEAN
-    PUBLIC NOMINMAX
-           GDIPVER=0x0110
+            NOMINMAX
+            GDIPVER=0x0110
     )
 
 target_compile_options(
@@ -55,23 +55,19 @@ target_compile_options(
     PRIVATE $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
             /W4
             /WX
+            /MP
+            /nologo
+            /utf-8
+            /bigobj
+            /diagnostics:caret
+            /Zc:__cplusplus
             >
             $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
             -Wall
             -Werror
+            -Wno-braced-scalar-init
+            -Wno-nonportable-include-path
             >
-    PUBLIC $<$<CXX_COMPILER_ID:MSVC>:
-           /MP
-           /nologo
-           /utf-8
-           /bigobj
-           /diagnostics:caret
-           /Zc:__cplusplus
-           >
-           $<$<CXX_COMPILER_ID:Clang>:
-           -Wno-braced-scalar-init
-           -Wno-nonportable-include-path
-           >
     )
 
 target_link_options(
@@ -83,13 +79,6 @@ target_link_options(
     >
     $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
     -Wl,/WX,/NOLOGO
-    >
-    PUBLIC
-    $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
-    /entry:mainCRTStartup
-    >
-    $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
-    -Wl,/entry:mainCRTStartup
     >
     )
 

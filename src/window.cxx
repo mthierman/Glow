@@ -177,7 +177,9 @@ auto Window::caption_refresh() -> void {
             border_color(background.color.custom);
             dark ? text_color(glow::color::Color(255, 255, 255))
                  : text_color(glow::color::Color(0, 0, 0));
-        }
+        } break;
+        case Background::Style::Transparent: {
+        } break;
     }
 }
 
