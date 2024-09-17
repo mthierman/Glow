@@ -54,11 +54,29 @@ auto create_process(const std::filesystem::path& path) -> int {
     return 0;
 }
 
-auto instance() -> ::HMODULE {
+// https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain
+auto instance_exe() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, nullptr, &module);
 
     return module;
+}
+
+auto instance_dll() -> ::HMODULE {
+    ::HMODULE module;
+    ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT
+                             | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+                         (LPCWSTR)&instance_dll,
+                         &module);
+
+    return module;
+}
+
+auto instance() -> ::HMODULE {
+    auto exe { instance_exe() };
+    auto dll { instance_dll() };
+
+    return dll;
 }
 
 auto exit_process(::UINT exitCode) -> void { ::ExitProcess(exitCode); }

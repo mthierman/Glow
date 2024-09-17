@@ -33,6 +33,8 @@ namespace glow::system {
 auto co_initialize(::COINIT coInit
                    = ::COINIT::COINIT_APARTMENTTHREADED) -> wil::unique_couninitialize_call;
 auto create_process(const std::filesystem::path& path) -> int;
+auto instance_exe() -> ::HMODULE;
+auto instance_dll() -> ::HMODULE;
 auto instance() -> ::HMODULE;
 auto exit_process(::UINT exitCode = EXIT_SUCCESS) -> void;
 auto quit(int exitCode = EXIT_SUCCESS) -> void;
