@@ -132,6 +132,8 @@ CoInit::~CoInit() {
     }
 }
 
+CoInit::operator ::HRESULT() const { return result; }
+
 GdiPlus::GdiPlus()
     : status { Gdiplus::GdiplusStartup(&token, &input, nullptr) } { }
 

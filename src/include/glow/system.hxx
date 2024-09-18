@@ -49,7 +49,7 @@ struct CoInit final {
     CoInit(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED);
     ~CoInit();
 
-    operator HRESULT() const { return result };
+    operator ::HRESULT() const;
 
 private:
     ::HRESULT result;
