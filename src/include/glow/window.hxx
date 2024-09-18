@@ -110,6 +110,7 @@ public:
     auto background_light(glow::color::Color color) -> void;
     auto background_custom(glow::color::Color color) -> void;
     auto activate() -> void;
+    auto close() -> void;
     auto show() -> void;
     auto hide() -> void;
     auto maximize() -> void;
@@ -411,6 +412,8 @@ template <typename T> struct Manager final {
         if (pos != keys.end()) {
             keys.erase(pos);
         }
+
+        map.at(id)->close();
 
         map.erase(id);
 

@@ -111,8 +111,7 @@ Window::Window() {
     });
 
     defaultMessages.on(WM_CLOSE, [this](glow::message::wm::MSG /* msg */) {
-        ::SetWindowLongPtrW(hwnd.get(), 0, reinterpret_cast<::LONG_PTR>(nullptr));
-        hwnd.reset();
+        close();
 
         return 0;
     });
@@ -254,6 +253,11 @@ auto Window::activate() -> void {
     cloak();
     ::ShowWindow(hwnd.get(), SW_NORMAL);
     uncloak();
+}
+
+auto Window::close() -> void {
+    ::SetWindowLongPtrW(hwnd.get(), 0, reinterpret_cast<::LONG_PTR>(nullptr));
+    hwnd.reset();
 }
 
 auto Window::show() -> void { ::ShowWindow(hwnd.get(), SW_SHOW); }
