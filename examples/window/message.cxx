@@ -46,6 +46,12 @@ private:
             return 0;
         });
 
+        messages.on(WM_CLOSE, [this](glow::message::wm::MSG /* message */) {
+            notify_app(glow::message::Code::CLOSE_WINDOW);
+
+            return 0;
+        });
+
         create();
         activate();
     }
