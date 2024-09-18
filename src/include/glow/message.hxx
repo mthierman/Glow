@@ -11,6 +11,7 @@
 #include <functional>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace glow::message {
 auto default_procedure(Message message) -> ::LRESULT;
@@ -67,8 +68,11 @@ struct Hook final {
 
     static auto CALLBACK procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
 
+    static Manager messages;
+
 private:
     ::HHOOK hook;
+    std::unordered_set<::HWND> windows;
 };
 
 namespace wm {

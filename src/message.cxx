@@ -73,14 +73,13 @@ Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
 
 auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
     auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
-    // auto fromCurrentThread { wparam != 0 };
 
     if (code < 0) {
         return ::CallNextHookEx(nullptr, code, wparam, lparam);
     } else {
         if (cwp) {
-            if (cwp->message == WM_SETTINGCHANGE) {
-                //
+            if (messages.contains(cwp->message)) {
+                messages.invoke({ cwp->hwnd, cwp->message, cwp->wParam, cwp->lParam });
             }
         }
 
