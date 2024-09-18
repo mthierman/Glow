@@ -123,14 +123,14 @@ auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string> {
     return args;
 }
 
-CoInit::CoInit(::COINIT coInit) {
-    if (auto hr { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) };
-        hr != S_OK) {
-        throw std::runtime_error(glow::log::format_message(hr));
+CoInit::CoInit(::COINIT coInit)
+    : result { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) } { }
+
+CoInit::~CoInit() {
+    if (result == S_OK) {
+        ::CoUninitialize();
     }
 }
-
-CoInit::~CoInit() { ::CoUninitialize(); }
 
 GdiPlus::GdiPlus()
     : status { Gdiplus::GdiplusStartup(&token, &input, nullptr) } { }

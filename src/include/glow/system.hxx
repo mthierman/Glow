@@ -48,6 +48,11 @@ auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string>;
 struct CoInit final {
     CoInit(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED);
     ~CoInit();
+
+    operator HRESULT() const { return result };
+
+private:
+    ::HRESULT result;
 };
 
 struct GdiPlus final {
