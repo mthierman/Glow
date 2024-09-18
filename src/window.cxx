@@ -19,29 +19,6 @@
 #include <iostream>
 
 namespace glow::window {
-Hook::Hook()
-    : hook { ::SetWindowsHookExW(
-          WH_CALLWNDPROC, procedure, glow::system::instance(), ::GetCurrentThreadId()) } { }
-
-Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
-
-auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
-    auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
-    // auto fromCurrentThread { wparam != 0 };
-
-    if (code < 0) {
-        return ::CallNextHookEx(nullptr, code, wparam, lparam);
-    } else {
-        if (cwp) {
-            if (cwp->message == WM_SETTINGCHANGE) {
-                std::cout << "WM_SETTINGCHANGE" << std::endl;
-            }
-        }
-
-        return ::CallNextHookEx(nullptr, code, wparam, lparam);
-    }
-}
-
 Position::Position(int x, int y, int width, int height)
     : x { x },
       y { y },

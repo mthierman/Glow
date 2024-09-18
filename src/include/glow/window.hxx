@@ -37,16 +37,6 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
-struct Hook final {
-    Hook();
-    ~Hook();
-
-    static auto CALLBACK procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
-
-private:
-    ::HHOOK hook;
-};
-
 struct Position final {
     Position() = default;
     Position(int x, int y, int width, int height);
