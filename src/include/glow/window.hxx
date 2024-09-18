@@ -280,8 +280,11 @@ struct WebView : Window {
 
     auto create(Callback callback = 0, bool show = true) -> void;
     auto create(::HWND parent, Callback callback = 0, bool show = true) -> void;
+
+protected:
     auto create_webview(Callback callback = 0) -> void;
 
+public:
     auto put_bounds(const Position& position) -> void;
 
     auto show_controller() -> void;
