@@ -164,6 +164,13 @@ namespace wm {
         auto otherUnzoom() -> bool;
     };
 
+    struct SETTINGCHANGE : public Message {
+        SETTINGCHANGE(const Message& message)
+            : Message(message) { }
+        auto uiAction() -> ::UINT;
+        auto parameter() -> wchar_t*;
+    };
+
     struct SIZE : public Message {
         SIZE(const Message& message)
             : Message(message) { }

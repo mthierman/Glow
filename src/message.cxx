@@ -133,6 +133,9 @@ namespace wm {
     auto SHOWWINDOW::parentOpening() -> bool { return lparam == 3; }
     auto SHOWWINDOW::otherUnzoom() -> bool { return lparam == 4; }
 
+    auto SETTINGCHANGE::uiAction() -> ::UINT { return static_cast<::UINT>(wparam); }
+    auto SETTINGCHANGE::parameter() -> wchar_t* { return reinterpret_cast<wchar_t*>(lparam); }
+
     auto SIZE::sizeRestored() -> bool { return wparam == 0; }
     auto SIZE::sizeMinimized() -> bool { return wparam == 1; }
     auto SIZE::sizeOtherRestored() -> bool { return wparam == 2; }
