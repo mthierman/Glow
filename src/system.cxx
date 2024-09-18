@@ -132,13 +132,14 @@ CoInit::CoInit(::COINIT coInit) {
 
 CoInit::~CoInit() { ::CoUninitialize(); }
 
-GdiPlus::GdiPlus() {
-    if (Gdiplus::GdiplusStartup(&token, &input, nullptr) != Gdiplus::Status::Ok) {
-        throw std::runtime_error("GDI+ startup failure");
+GdiPlus::GdiPlus()
+    : status { Gdiplus::GdiplusStartup(&token, &input, nullptr) } { }
+
+GdiPlus::~GdiPlus() {
+    if (status == Gdiplus::Status::Ok) {
+        Gdiplus::GdiplusShutdown(token);
     }
 }
-
-GdiPlus::~GdiPlus() { Gdiplus::GdiplusShutdown(token); }
 
 auto Event::create(const std::string& eventName, std::function<void()>&& callback) -> bool {
     m_callback = std::move(callback);

@@ -54,8 +54,10 @@ struct GdiPlus final {
     GdiPlus();
     ~GdiPlus();
 
+private:
     Gdiplus::GdiplusStartupInput input;
     ::ULONG_PTR token;
+    Gdiplus::Status status;
 };
 
 struct Event final {
