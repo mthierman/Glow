@@ -17,12 +17,6 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
-auto register_class(::WNDCLASSEXW& windowClass) -> void {
-    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
-}
-
 Position::Position(int x, int y, int width, int height)
     : x { x },
       y { y },
@@ -544,7 +538,9 @@ auto Window::notify_app(glow::message::Code code,
 }
 
 auto Overlapped::create(bool show) -> void {
-    register_class(windowClass);
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -565,7 +561,9 @@ auto Overlapped::create(bool show) -> void {
 }
 
 auto Child::create(::HWND parent, bool show) -> void {
-    register_class(windowClass);
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -590,7 +588,9 @@ auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken&
 }
 
 auto WebView::create(Callback callback, bool show) -> void {
-    register_class(windowClass);
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -613,7 +613,9 @@ auto WebView::create(Callback callback, bool show) -> void {
 }
 
 auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
-    register_class(windowClass);
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,
@@ -842,7 +844,9 @@ auto CALLBACK Message::procedure(::HWND hwnd,
 }
 
 auto Message::create() -> void {
-    register_class(windowClass);
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
 
     ::CreateWindowExW(0,
                       windowClass.lpszClassName,

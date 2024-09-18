@@ -37,8 +37,6 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
-auto register_class(::WNDCLASSEXW& windowClass) -> void;
-
 struct Position final {
     Position() = default;
     Position(int x, int y, int width, int height);
