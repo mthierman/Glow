@@ -251,7 +251,7 @@ struct Child : Window {
 };
 
 struct EventToken {
-    auto operator()(const std::string& key) -> ::EventRegistrationToken&;
+    auto operator()(const std::string& key) -> ::EventRegistrationToken*;
 
 private:
     std::unordered_map<std::string, ::EventRegistrationToken> eventRegistrationTokens;

@@ -585,8 +585,8 @@ auto Child::create(::HWND parent, bool show) -> void {
     }
 }
 
-auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken& {
-    return eventRegistrationTokens.try_emplace(key, ::EventRegistrationToken()).first->second;
+auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken* {
+    return &eventRegistrationTokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
 auto WebView::create(Callback callback, bool show) -> void {
@@ -642,19 +642,19 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
 auto WebView::create_webview(Callback callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
-    derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
-        put_bounds(client_position());
+    // derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
+    //     put_bounds(client_position());
 
-        if (msg.windowPos().flags & SWP_SHOWWINDOW) {
-            show_controller();
-        }
+    //     if (msg.windowPos().flags & SWP_SHOWWINDOW) {
+    //         show_controller();
+    //     }
 
-        if (msg.windowPos().flags & SWP_HIDEWINDOW) {
-            hide_controller();
-        }
+    //     if (msg.windowPos().flags & SWP_HIDEWINDOW) {
+    //         hide_controller();
+    //     }
 
-        return 0;
-    });
+    //     return 0;
+    // });
 
     wil::com_ptr<ICoreWebView2EnvironmentOptions> createdEnvironmentOptions {
         Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>()
@@ -733,7 +733,7 @@ auto WebView::create_webview(Callback callback) -> void {
             controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                              .try_query<ICoreWebView2Controller4>();
             controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
-            put_bounds(client_position());
+            // put_bounds(client_position());
 
             wil::com_ptr<ICoreWebView2> createdCore;
             controller->get_CoreWebView2(createdCore.put());
