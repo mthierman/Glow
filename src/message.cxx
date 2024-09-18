@@ -11,28 +11,6 @@
 #include <glow/system.hxx>
 
 namespace glow::message {
-auto default_procedure(Message message) -> ::LRESULT {
-    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
-}
-
-auto run_loop() -> int {
-    ::MSG msg {};
-    int r {};
-
-    while ((r = ::GetMessageW(&msg, nullptr, 0, 0)) != 0) {
-        if (r == -1) {
-            return EXIT_FAILURE;
-        }
-
-        else {
-            ::TranslateMessage(&msg);
-            ::DispatchMessageW(&msg);
-        }
-    }
-
-    return static_cast<int>(msg.wParam);
-}
-
 auto Manager::on(::UINT msg, Callback callback) -> bool {
     auto emplace { map.try_emplace(msg, callback) };
 
@@ -79,12 +57,34 @@ auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::L
     } else {
         if (cwp) {
             if (messages.contains(cwp->message)) {
-                messages.invoke({ cwp->hwnd, cwp->message, cwp->wParam, cwp->lParam });
+                return messages.invoke({ cwp->hwnd, cwp->message, cwp->wParam, cwp->lParam });
             }
         }
 
         return ::CallNextHookEx(nullptr, code, wparam, lparam);
     }
+}
+
+auto default_procedure(Message message) -> ::LRESULT {
+    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
+}
+
+auto run_loop() -> int {
+    ::MSG msg {};
+    int r {};
+
+    while ((r = ::GetMessageW(&msg, nullptr, 0, 0)) != 0) {
+        if (r == -1) {
+            return EXIT_FAILURE;
+        }
+
+        else {
+            ::TranslateMessage(&msg);
+            ::DispatchMessageW(&msg);
+        }
+    }
+
+    return static_cast<int>(msg.wParam);
 }
 
 namespace wm {

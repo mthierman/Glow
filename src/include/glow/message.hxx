@@ -14,9 +14,6 @@
 #include <unordered_set>
 
 namespace glow::message {
-auto default_procedure(Message message) -> ::LRESULT;
-auto run_loop() -> int;
-
 struct Message {
     ::HWND hwnd;
     ::UINT msg;
@@ -68,12 +65,15 @@ struct Hook final {
 
     static auto CALLBACK procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
 
-    static Manager messages;
+    static inline Manager messages;
+    static inline std::unordered_set<::HWND> windows;
 
 private:
     ::HHOOK hook;
-    std::unordered_set<::HWND> windows;
 };
+
+auto default_procedure(Message message) -> ::LRESULT;
+auto run_loop() -> int;
 
 namespace wm {
     struct MSG : public Message {
