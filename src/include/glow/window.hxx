@@ -91,6 +91,7 @@ protected:
                                    ::WPARAM wparam,
                                    ::LPARAM lparam) -> ::LRESULT;
 
+public:
     auto theme_refresh() -> void;
     auto background_refresh() -> void;
     auto caption_refresh() -> void;
@@ -102,7 +103,6 @@ protected:
     auto text_color(const glow::color::Color& color) -> void;
     auto border_color(const glow::color::Color& color) -> void;
 
-public:
     auto background_style(Background::Style style) -> void;
     auto background_dark(glow::color::Color color) -> void;
     auto background_light(glow::color::Color color) -> void;
