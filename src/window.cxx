@@ -16,6 +16,8 @@
 #include <glow/log.hxx>
 #include <glow/system.hxx>
 
+#include <iostream>
+
 namespace glow::window {
 Hook::Hook()
     : hook { ::SetWindowsHookExW(
@@ -24,15 +26,15 @@ Hook::Hook()
 Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
 
 auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
+    auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
+    // auto fromCurrentThread { wparam != 0 };
+
     if (code < 0) {
         return ::CallNextHookEx(nullptr, code, wparam, lparam);
     } else {
-        auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
-        auto fromCurrentThread { wparam != 0 };
-
-        if (cwp && fromCurrentThread) {
+        if (cwp) {
             if (cwp->message == WM_SETTINGCHANGE) {
-                glow::log::log("WM_SETTINGCHANGE");
+                std::cout << "WM_SETTINGCHANGE" << std::endl;
             }
         }
 
