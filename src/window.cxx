@@ -17,6 +17,12 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
+auto register_class(::WNDCLASSEXW& windowClass) -> void {
+    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
+        ::RegisterClassExW(&windowClass);
+    }
+}
+
 Position::Position(int x, int y, int width, int height)
     : x { x },
       y { y },
@@ -43,12 +49,6 @@ Position::Position(const ::WINDOWPOS& windowPos)
 
 auto Position::rect() const -> ::RECT {
     return ::RECT { .left { x }, .top { y }, .right { width }, .bottom { height } };
-}
-
-auto Hwnd::register_class(::WNDCLASSEXW& windowClass) -> void {
-    if (::GetClassInfoExW(glow::system::instance(), windowClass.lpszClassName, &windowClass) == 0) {
-        ::RegisterClassExW(&windowClass);
-    }
 }
 
 Window::Window() {

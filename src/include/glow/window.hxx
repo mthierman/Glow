@@ -37,6 +37,8 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
+auto register_class(::WNDCLASSEXW& windowClass) -> void;
+
 struct Position final {
     Position() = default;
     Position(int x, int y, int width, int height);
@@ -81,14 +83,7 @@ struct Background final {
     Color color;
 };
 
-struct Hwnd {
-    Hwnd() = default;
-    virtual ~Hwnd() = default;
-
-    auto register_class(::WNDCLASSEXW& windowClass) -> void;
-};
-
-struct Window : Hwnd {
+struct Window {
     Window();
     virtual ~Window() = default;
 
@@ -364,7 +359,7 @@ struct WebView : Window {
     wil::com_ptr<ICoreWebView2Settings9> settings;
 };
 
-struct Message : Hwnd {
+struct Message {
     Message() = default;
     virtual ~Message() = default;
 
