@@ -17,6 +17,12 @@
 #include <glow/system.hxx>
 
 namespace glow::window {
+Hook::Hook()
+    : hook { ::SetWindowsHookExW(
+          WH_CALLWNDPROC, procedure, glow::system::instance(), ::GetCurrentThreadId()) } { }
+
+Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
+
 Position::Position(int x, int y, int width, int height)
     : x { x },
       y { y },
