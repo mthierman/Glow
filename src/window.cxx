@@ -23,6 +23,23 @@ Hook::Hook()
 
 Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
 
+auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
+    if (code < 0) {
+        return ::CallNextHookEx(nullptr, code, wparam, lparam);
+    } else {
+        auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
+        auto fromCurrentThread { wparam != 0 };
+
+        if (cwp && fromCurrentThread) {
+            if (cwp->message == WM_SETTINGCHANGE) {
+                glow::log::log("WM_SETTINGCHANGE");
+            }
+        }
+
+        return ::CallNextHookEx(nullptr, code, wparam, lparam);
+    }
+}
+
 Position::Position(int x, int y, int width, int height)
     : x { x },
       y { y },
