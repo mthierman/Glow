@@ -111,6 +111,7 @@ Window::Window() {
     });
 
     defaultMessages.on(WM_CLOSE, [this](glow::message::wm::MSG /* msg */) {
+        ::SetWindowLongPtrW(hwnd.get(), 0, reinterpret_cast<::LONG_PTR>(nullptr));
         hwnd.reset();
 
         return 0;
@@ -128,10 +129,6 @@ auto CALLBACK Window::procedure(::HWND hwnd,
             ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(self));
             self->hwnd.reset(hwnd);
         }
-    }
-
-    if (msg == WM_NCDESTROY) {
-        ::SetWindowLongPtrW(hwnd, 0, reinterpret_cast<::LONG_PTR>(nullptr));
     }
 
     if (auto self { reinterpret_cast<Window*>(::GetWindowLongPtrW(hwnd, 0)) }; self) {
