@@ -13,6 +13,9 @@
 #include <unordered_map>
 
 namespace glow::message {
+auto default_procedure(Message message) -> ::LRESULT;
+auto run_loop() -> int;
+
 struct Message {
     ::HWND hwnd;
     ::UINT msg;
@@ -58,8 +61,15 @@ private:
     std::unordered_map<::UINT, Callback> map;
 };
 
-auto default_procedure(Message message) -> ::LRESULT;
-auto run_loop() -> int;
+struct Hook final {
+    Hook();
+    ~Hook();
+
+    static auto CALLBACK procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT;
+
+private:
+    ::HHOOK hook;
+};
 
 namespace wm {
     struct MSG : public Message {

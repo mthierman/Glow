@@ -11,6 +11,28 @@
 #include <glow/system.hxx>
 
 namespace glow::message {
+auto default_procedure(Message message) -> ::LRESULT {
+    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
+}
+
+auto run_loop() -> int {
+    ::MSG msg {};
+    int r {};
+
+    while ((r = ::GetMessageW(&msg, nullptr, 0, 0)) != 0) {
+        if (r == -1) {
+            return EXIT_FAILURE;
+        }
+
+        else {
+            ::TranslateMessage(&msg);
+            ::DispatchMessageW(&msg);
+        }
+    }
+
+    return static_cast<int>(msg.wParam);
+}
+
 auto Manager::on(::UINT msg, Callback callback) -> bool {
     auto emplace { map.try_emplace(msg, callback) };
 
@@ -43,26 +65,27 @@ auto Manager::notify(Code code,
     send(receiverHwnd, WM_NOTIFY, senderId, &notification);
 }
 
-auto default_procedure(Message message) -> ::LRESULT {
-    return ::DefWindowProcW(message.hwnd, message.msg, message.wparam, message.lparam);
-}
+Hook::Hook()
+    : hook { ::SetWindowsHookExW(
+          WH_CALLWNDPROC, procedure, glow::system::instance(), ::GetCurrentThreadId()) } { }
 
-auto run_loop() -> int {
-    ::MSG msg {};
-    int r {};
+Hook::~Hook() { ::UnhookWindowsHookEx(hook); }
 
-    while ((r = ::GetMessageW(&msg, nullptr, 0, 0)) != 0) {
-        if (r == -1) {
-            return EXIT_FAILURE;
+auto CALLBACK Hook::procedure(int code, ::WPARAM wparam, ::LPARAM lparam) -> ::LRESULT {
+    auto cwp { reinterpret_cast<::CWPSTRUCT*>(lparam) };
+    // auto fromCurrentThread { wparam != 0 };
+
+    if (code < 0) {
+        return ::CallNextHookEx(nullptr, code, wparam, lparam);
+    } else {
+        if (cwp) {
+            if (cwp->message == WM_SETTINGCHANGE) {
+                //
+            }
         }
 
-        else {
-            ::TranslateMessage(&msg);
-            ::DispatchMessageW(&msg);
-        }
+        return ::CallNextHookEx(nullptr, code, wparam, lparam);
     }
-
-    return static_cast<int>(msg.wParam);
 }
 
 namespace wm {
