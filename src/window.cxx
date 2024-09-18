@@ -57,7 +57,7 @@ Window::Window() {
 
     baseMessages.on(WM_SETTINGCHANGE, [this](glow::message::wm::MSG /* msg */) {
         theme_refresh();
-        window_refresh();
+        background_refresh();
 
         return 0;
     });
@@ -94,9 +94,8 @@ Window::Window() {
                 paint_background(hdc, background.brush.transparent);
             } break;
             case System: {
-                paint_background(
-                    hdc, glow::system::is_dark() ? background.brush.dark : background.brush.light);
-
+                paint_background(hdc,
+                                 state.darkMode ? background.brush.dark : background.brush.light);
             } break;
             case Custom: {
                 paint_background(hdc, background.brush.custom);
@@ -148,7 +147,8 @@ auto CALLBACK Window::procedure(::HWND hwnd,
 }
 
 auto Window::theme_refresh() -> void {
-    glow::system::is_dark() ? enable_dark_mode() : disable_dark_mode();
+    state.darkMode = glow::system::is_dark();
+    state.darkMode ? enable_dark_mode() : disable_dark_mode();
 }
 
 auto Window::background_refresh() -> void {
@@ -188,7 +188,7 @@ auto Window::frame_refresh() -> void {
 
 auto Window::window_refresh() -> void {
     background_refresh();
-    // caption_refresh();
+    caption_refresh();
 }
 
 auto Window::dpi_refresh() -> void {
@@ -224,25 +224,25 @@ auto Window::border_color(const glow::color::Color& color) -> void {
 
 auto Window::background_style(Background::Style style) -> void {
     background.style = style;
-    window_refresh();
+    background_refresh();
 }
 
 auto Window::background_dark(glow::color::Color color) -> void {
     background.brush.dark.reset(color.brush());
     background.color.dark = color;
-    window_refresh();
+    background_refresh();
 }
 
 auto Window::background_light(glow::color::Color color) -> void {
     background.brush.light.reset(color.brush());
     background.color.light = color;
-    window_refresh();
+    background_refresh();
 }
 
 auto Window::background_custom(glow::color::Color color) -> void {
     background.brush.custom.reset(color.brush());
     background.color.custom = color;
-    window_refresh();
+    background_refresh();
 }
 
 auto Window::activate() -> void {

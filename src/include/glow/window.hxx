@@ -57,6 +57,7 @@ struct State final {
     bool fullscreen { false };
     bool maximized { false };
     bool minimized { false };
+    bool darkMode { glow::system::is_dark() };
 };
 
 struct Background final {
