@@ -72,14 +72,14 @@ auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
 
 auto system_brush(int name) -> ::HBRUSH { return static_cast<::HBRUSH>(::GetStockObject(name)); }
 
-auto system_cursor(LPSTR name) -> ::HCURSOR {
+auto system_cursor(LPWSTR name) -> ::HCURSOR {
     return static_cast<::HCURSOR>(
-        ::LoadImageA(nullptr, name, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+        ::LoadImageW(nullptr, name, IMAGE_CURSOR, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
-auto system_icon(LPSTR name) -> ::HICON {
+auto system_icon(LPWSTR name) -> ::HICON {
     return static_cast<::HICON>(
-        ::LoadImageA(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
+        ::LoadImageW(nullptr, name, IMAGE_ICON, 0, 0, LR_SHARED | LR_DEFAULTSIZE));
 }
 
 auto resource_icon() -> ::HICON {
