@@ -9,6 +9,9 @@ auto main() -> int {
         return 0;
     });
 
+    window.min_size(200, 200);
+    // window.max_size(400, 400);
+
     window.create();
 
     return glow::message::run_loop();

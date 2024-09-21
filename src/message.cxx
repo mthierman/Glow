@@ -148,8 +148,8 @@ namespace wm {
     auto DPICHANGED::suggestedRect() -> const ::RECT& { return *reinterpret_cast<::RECT*>(lparam); }
     auto DPICHANGED::userDefaultScreenDpi() -> int { return USER_DEFAULT_SCREEN_DPI; }
 
-    auto GETMINMAXINFO::minMaxInfo() -> ::MINMAXINFO& {
-        return *reinterpret_cast<::MINMAXINFO*>(lparam);
+    auto GETMINMAXINFO::minMaxInfo() -> ::LPMINMAXINFO {
+        return reinterpret_cast<::LPMINMAXINFO>(lparam);
     }
 
     auto WINDOWPOSCHANGING::windowPos() -> ::WINDOWPOS& {

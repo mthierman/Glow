@@ -62,13 +62,24 @@ Window::Window() {
         return 0;
     });
 
-    baseMessages.on(WM_GETMINMAXINFO, [this](glow::message::wm::GETMINMAXINFO msg) {
+    defaultMessages.on(WM_GETMINMAXINFO, [this](glow::message::wm::GETMINMAXINFO msg) {
         auto minMaxInfo { msg.minMaxInfo() };
 
-        minMaxInfo.ptMinTrackSize.x = minTrackSize.x;
-        minMaxInfo.ptMinTrackSize.y = minTrackSize.y;
-        minMaxInfo.ptMaxTrackSize.x = minTrackSize.x;
-        minMaxInfo.ptMaxTrackSize.y = minTrackSize.y;
+        if (minTrackSize.x != 0) {
+            minMaxInfo->ptMinTrackSize.x = minTrackSize.x;
+        }
+
+        if (minTrackSize.y != 0) {
+            minMaxInfo->ptMinTrackSize.y = minTrackSize.y;
+        }
+
+        if (maxTrackSize.x != 0) {
+            minMaxInfo->ptMaxTrackSize.x = maxTrackSize.x;
+        }
+
+        if (maxTrackSize.y != 0) {
+            minMaxInfo->ptMaxTrackSize.y = maxTrackSize.y;
+        }
 
         return 0;
     });

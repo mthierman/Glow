@@ -194,7 +194,7 @@ namespace wm {
     struct GETMINMAXINFO : public Message {
         GETMINMAXINFO(const Message& message)
             : Message(message) { }
-        auto minMaxInfo() -> ::MINMAXINFO&;
+        auto minMaxInfo() -> ::LPMINMAXINFO;
     };
 
     struct WINDOWPOSCHANGING : public Message {
