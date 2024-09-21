@@ -88,13 +88,13 @@ auto run_loop() -> int {
 }
 
 namespace wm {
-    auto NOTIFY::nmhdr() -> const ::NMHDR& { return *reinterpret_cast<::NMHDR*>(lparam); }
-    auto NOTIFY::notification() -> const Notification& {
-        return *reinterpret_cast<Notification*>(lparam);
+    auto NOTIFY::nmhdr() -> const ::LPNMHDR { return reinterpret_cast<::LPNMHDR>(lparam); }
+    auto NOTIFY::notification() -> const Notification* {
+        return reinterpret_cast<Notification*>(lparam);
     }
 
-    auto NCCREATE::createStruct() -> const ::CREATESTRUCTW& {
-        return *reinterpret_cast<::CREATESTRUCTW*>(lparam);
+    auto NCCREATE::createStruct() -> const ::LPCREATESTRUCTW {
+        return reinterpret_cast<::LPCREATESTRUCTW>(lparam);
     }
 
     auto DESTROY::quit(int exitCode) -> void { glow::system::quit(exitCode); }
@@ -145,15 +145,17 @@ namespace wm {
 
     auto DPICHANGED::y() -> ::WORD { return HIWORD(wparam); }
     auto DPICHANGED::x() -> ::WORD { return LOWORD(wparam); }
-    auto DPICHANGED::suggestedRect() -> const ::RECT& { return *reinterpret_cast<::RECT*>(lparam); }
+    auto DPICHANGED::suggestedRect() -> const ::LPRECT {
+        return reinterpret_cast<::LPRECT>(lparam);
+    }
     auto DPICHANGED::userDefaultScreenDpi() -> int { return USER_DEFAULT_SCREEN_DPI; }
 
     auto GETMINMAXINFO::minMaxInfo() -> ::LPMINMAXINFO {
         return reinterpret_cast<::LPMINMAXINFO>(lparam);
     }
 
-    auto WINDOWPOSCHANGING::windowPos() -> ::WINDOWPOS& {
-        return *reinterpret_cast<::WINDOWPOS*>(lparam);
+    auto WINDOWPOSCHANGING::windowPos() -> ::LPWINDOWPOS {
+        return reinterpret_cast<::LPWINDOWPOS>(lparam);
     }
 } // namespace wm
 }; // namespace glow::message

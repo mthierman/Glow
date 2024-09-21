@@ -84,14 +84,14 @@ namespace wm {
     struct NOTIFY : public Message {
         NOTIFY(const Message& message)
             : Message(message) { }
-        auto nmhdr() -> const ::NMHDR&;
-        auto notification() -> const Notification&;
+        auto nmhdr() -> const ::LPNMHDR;
+        auto notification() -> const Notification*;
     };
 
     struct NCCREATE : public Message {
         NCCREATE(const Message& message)
             : Message(message) { }
-        auto createStruct() -> const ::CREATESTRUCTW&;
+        auto createStruct() -> const ::LPCREATESTRUCTW;
     };
 
     struct CREATE : public NCCREATE {
@@ -187,7 +187,7 @@ namespace wm {
             : Message(message) { }
         auto y() -> ::WORD;
         auto x() -> ::WORD;
-        auto suggestedRect() -> const ::RECT&;
+        auto suggestedRect() -> const ::LPRECT;
         auto userDefaultScreenDpi() -> int;
     };
 
@@ -200,7 +200,7 @@ namespace wm {
     struct WINDOWPOSCHANGING : public Message {
         WINDOWPOSCHANGING(const Message& message)
             : Message(message) { }
-        auto windowPos() -> ::WINDOWPOS&;
+        auto windowPos() -> ::LPWINDOWPOS;
     };
 
     struct WINDOWPOSCHANGED : public WINDOWPOSCHANGING {

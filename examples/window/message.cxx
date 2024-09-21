@@ -69,8 +69,8 @@ struct App final : glow::window::Message {
     App(glow::system::Event& singleInstance)
         : singleInstance { singleInstance } {
         messages.on(WM_NOTIFY, [this](glow::message::wm::NOTIFY msg) {
-            auto& idFrom { msg.notification().nmhdr.idFrom };
-            auto& code { msg.notification().code };
+            auto& idFrom { msg.notification()->nmhdr.idFrom };
+            auto& code { msg.notification()->code };
 
             switch (code) {
                 case glow::message::Code::CREATE_WINDOW: {

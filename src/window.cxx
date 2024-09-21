@@ -87,7 +87,7 @@ Window::Window() {
     baseMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
         auto windowPos { msg.windowPos() };
 
-        positions.window = Position(windowPos);
+        positions.window = Position(*windowPos);
         positions.client = client_position();
 
         get_window_placement();
@@ -101,7 +101,7 @@ Window::Window() {
 
     baseMessages.on(WM_DPICHANGED, [this](glow::message::wm::DPICHANGED msg) {
         dpi_refresh();
-        set_position(msg.suggestedRect());
+        set_position(*msg.suggestedRect());
 
         return 0;
     });
@@ -677,11 +677,11 @@ auto WebView::create_webview(Callback callback) -> void {
     derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
         put_bounds(client_position());
 
-        if (msg.windowPos().flags & SWP_SHOWWINDOW) {
+        if (msg.windowPos()->flags & SWP_SHOWWINDOW) {
             show_controller();
         }
 
-        if (msg.windowPos().flags & SWP_HIDEWINDOW) {
+        if (msg.windowPos()->flags & SWP_HIDEWINDOW) {
             hide_controller();
         }
 
