@@ -62,6 +62,17 @@ Window::Window() {
         return 0;
     });
 
+    baseMessages.on(WM_GETMINMAXINFO, [this](glow::message::wm::GETMINMAXINFO msg) {
+        auto minMaxInfo { msg.minMaxInfo() };
+
+        minMaxInfo.ptMinTrackSize.x = minTrackSize.x;
+        minMaxInfo.ptMinTrackSize.y = minTrackSize.y;
+        minMaxInfo.ptMaxTrackSize.x = minTrackSize.x;
+        minMaxInfo.ptMaxTrackSize.y = minTrackSize.y;
+
+        return 0;
+    });
+
     baseMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
         auto windowPos { msg.windowPos() };
 
@@ -430,6 +441,16 @@ auto Window::set_position(const Position& position) -> void {
                    position.width,
                    position.height,
                    SWP_NOZORDER | SWP_NOACTIVATE);
+}
+
+auto Window::min_size(int x, int y) -> void {
+    minTrackSize.x = x;
+    minTrackSize.y = y;
+}
+
+auto Window::max_size(int x, int y) -> void {
+    maxTrackSize.x = x;
+    maxTrackSize.y = y;
 }
 
 auto Window::set_window_placement() -> void {

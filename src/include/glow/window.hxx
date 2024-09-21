@@ -52,6 +52,11 @@ struct Position final {
     int height { 0 };
 };
 
+struct Size final {
+    int x { 0 };
+    int y { 0 };
+};
+
 struct State final {
     bool centered { false };
     bool fullscreen { false };
@@ -151,6 +156,8 @@ public:
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
     auto set_position(const Position& position) -> void;
+    auto min_size(int x, int y) -> void;
+    auto max_size(int x, int y) -> void;
     auto set_window_placement() -> void;
     auto get_window_placement() -> void;
     auto get_monitor_info() -> void;
@@ -188,6 +195,8 @@ public:
 
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
+    Size minTrackSize {};
+    Size maxTrackSize {};
 
 protected:
     ::WINDOWPLACEMENT windowPlacement {};
