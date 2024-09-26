@@ -88,6 +88,20 @@ struct Background final {
 };
 
 struct Window {
+    struct Positions {
+        Position window;
+        Position client;
+        Position monitor;
+        Position work;
+        Position restoreCentered;
+        Position restoreFullscreen;
+    };
+
+    struct Icons {
+        wil::unique_hicon app { glow::system::resource_icon() ? glow::system::resource_icon()
+                                                              : glow::system::system_icon() };
+    };
+
     Window();
     virtual ~Window() = default;
 
@@ -180,18 +194,8 @@ public:
                     ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"MessageWindow", nullptr)) -> void;
 
-    struct Positions {
-        Position window;
-        Position client;
-        Position monitor;
-        Position work;
-        Position restoreCentered;
-        Position restoreFullscreen;
-    };
     Positions positions;
-
     State state;
-
     size_t dpi { USER_DEFAULT_SCREEN_DPI };
     double scale { 1.0 };
     Size minTrackSize {};
@@ -200,15 +204,8 @@ public:
 protected:
     ::WINDOWPLACEMENT windowPlacement {};
     ::MONITORINFO monitorInfo {};
-
     Background background;
-
-    struct Icons {
-        wil::unique_hicon app { glow::system::resource_icon() ? glow::system::resource_icon()
-                                                              : glow::system::system_icon() };
-    };
     Icons icons;
-
     glow::message::Manager baseMessages;
     glow::message::Manager derivedMessages;
     glow::message::Manager defaultMessages;
