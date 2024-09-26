@@ -644,7 +644,7 @@ auto WebView::create(Callback callback, bool show) -> void {
         activate();
     }
 
-    create_webview(callback);
+    create_webview(std::move(callback));
 }
 
 auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
@@ -669,10 +669,10 @@ auto WebView::create(::HWND parent, Callback callback, bool show) -> void {
         activate();
     }
 
-    create_webview(callback);
+    create_webview(std::move(callback));
 }
 
-auto WebView::create_webview(Callback callback) -> void {
+auto WebView::create_webview(Callback&& callback) -> void {
     auto coInit { glow::system::co_initialize() };
 
     derivedMessages.on(WM_WINDOWPOSCHANGED, [this](glow::message::wm::WINDOWPOSCHANGED msg) {
@@ -746,7 +746,7 @@ auto WebView::create_webview(Callback callback) -> void {
     createdEnvironmentOptions7->put_ChannelSearchKind(config.environmentOptions.ChannelSearchKind);
     createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
 
-    CreateCoreWebView2EnvironmentWithOptions(
+    ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
         config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
