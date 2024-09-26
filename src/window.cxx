@@ -715,36 +715,60 @@ auto WebView::create_webview(Callback&& callback) -> void {
     createdEnvironmentOptions8
         = createdEnvironmentOptions.try_query<ICoreWebView2EnvironmentOptions8>();
 
-    if (!config.environmentOptions.AdditionalBrowserArguments.empty()) {
-        createdEnvironmentOptions->put_AdditionalBrowserArguments(
-            glow::text::to_wstring(config.environmentOptions.AdditionalBrowserArguments).c_str());
+    if (createdEnvironmentOptions) {
+        if (!config.environmentOptions.AdditionalBrowserArguments.empty()) {
+            createdEnvironmentOptions->put_AdditionalBrowserArguments(
+                glow::text::to_wstring(config.environmentOptions.AdditionalBrowserArguments)
+                    .c_str());
+        }
+
+        createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
+            config.environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
+
+        if (!config.environmentOptions.Language.empty()) {
+            createdEnvironmentOptions->put_Language(
+                glow::text::to_wstring(config.environmentOptions.Language).c_str());
+        }
+
+        if (!config.environmentOptions.TargetCompatibleBrowserVersion.empty()) {
+            createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
+                glow::text::to_wstring(config.environmentOptions.TargetCompatibleBrowserVersion)
+                    .c_str());
+        }
     }
 
-    createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
-        config.environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
-
-    if (!config.environmentOptions.Language.empty()) {
-        createdEnvironmentOptions->put_Language(
-            glow::text::to_wstring(config.environmentOptions.Language).c_str());
+    if (createdEnvironmentOptions2) {
+        createdEnvironmentOptions2->put_ExclusiveUserDataFolderAccess(
+            config.environmentOptions.ExclusiveUserDataFolderAccess);
     }
 
-    if (!config.environmentOptions.TargetCompatibleBrowserVersion.empty()) {
-        createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
-            glow::text::to_wstring(config.environmentOptions.TargetCompatibleBrowserVersion)
-                .c_str());
+    if (createdEnvironmentOptions3) {
+        createdEnvironmentOptions3->put_IsCustomCrashReportingEnabled(
+            config.environmentOptions.IsCustomCrashReportingEnabled);
     }
 
-    createdEnvironmentOptions2->put_ExclusiveUserDataFolderAccess(
-        config.environmentOptions.ExclusiveUserDataFolderAccess);
-    createdEnvironmentOptions3->put_IsCustomCrashReportingEnabled(
-        config.environmentOptions.IsCustomCrashReportingEnabled);
-    // createdEnvironmentOptions4->SetCustomSchemeRegistrations();
-    createdEnvironmentOptions5->put_EnableTrackingPrevention(
-        config.environmentOptions.EnableTrackingPrevention);
-    createdEnvironmentOptions6->put_AreBrowserExtensionsEnabled(
-        config.environmentOptions.AreBrowserExtensionsEnabled);
-    createdEnvironmentOptions7->put_ChannelSearchKind(config.environmentOptions.ChannelSearchKind);
-    createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
+    // if (createdEnvironmentOptions4) {
+    //     createdEnvironmentOptions4->SetCustomSchemeRegistrations();
+    // }
+
+    if (createdEnvironmentOptions5) {
+        createdEnvironmentOptions5->put_EnableTrackingPrevention(
+            config.environmentOptions.EnableTrackingPrevention);
+    }
+
+    if (createdEnvironmentOptions6) {
+        createdEnvironmentOptions6->put_AreBrowserExtensionsEnabled(
+            config.environmentOptions.AreBrowserExtensionsEnabled);
+    }
+
+    if (createdEnvironmentOptions7) {
+        createdEnvironmentOptions7->put_ChannelSearchKind(
+            config.environmentOptions.ChannelSearchKind);
+    }
+
+    if (createdEnvironmentOptions8) {
+        createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
+    }
 
     ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
