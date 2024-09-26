@@ -972,6 +972,20 @@ auto WebView::suspend(Callback callback) -> void {
     }
 }
 
+auto WebView::is_suspended() -> bool {
+    ::BOOL isSuspended { false };
+
+    if (core) {
+        auto result { core->get_IsSuspended(&isSuspended) };
+
+        if (result != S_OK) {
+            glow::log::log(glow::log::format_message<std::string>(result));
+        }
+    }
+
+    return isSuspended;
+}
+
 auto WebView::resume() -> void {
     if (core) {
         core->Resume();
