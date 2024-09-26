@@ -863,15 +863,19 @@ auto WebView::create_webview(Callback&& callback) -> void {
                 return S_OK;
             }).Get()) };
 
-            glow::log::log("CreateCoreWebView2Controller: {}",
-                           glow::log::format_message(controllerResult));
+            if (controllerResult != S_OK) {
+                glow::log::log("CreateCoreWebView2Controller: {}",
+                               glow::log::format_message(controllerResult));
+            }
         }
 
         return S_OK;
     }).Get()) };
 
-    glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
-                   glow::log::format_message(environmentResult));
+    if (environmentResult != S_OK) {
+        glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
+                       glow::log::format_message(environmentResult));
+    }
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
