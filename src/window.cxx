@@ -777,11 +777,11 @@ auto WebView::create_webview(Callback&& callback) -> void {
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
                 ::HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
-        glow::log::log(glow::log::format_message(errorCode));
-
         if (createdEnvironment) {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                               .try_query<ICoreWebView2Environment13>();
+        } else {
+            glow::log::log(glow::log::format_message(errorCode));
         }
 
         if (environment) {
@@ -791,11 +791,11 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     [this, callback { std::move(callback) }](
                         ::HRESULT errorCode,
                         ICoreWebView2Controller* createdController) -> ::HRESULT {
-                glow::log::log(glow::log::format_message(errorCode));
-
                 if (createdController) {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                                      .try_query<ICoreWebView2Controller4>();
+                } else {
+                    glow::log::log(glow::log::format_message(errorCode));
                 }
 
                 if (controller) {
@@ -863,13 +863,15 @@ auto WebView::create_webview(Callback&& callback) -> void {
                 return S_OK;
             }).Get()) };
 
-            glow::log::log(glow::log::format_message(controllerResult));
+            glow::log::log("CreateCoreWebView2Controller: {}",
+                           glow::log::format_message(controllerResult));
         }
 
         return S_OK;
     }).Get()) };
 
-    glow::log::log(glow::log::format_message(environmentResult));
+    glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
+                   glow::log::format_message(environmentResult));
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
