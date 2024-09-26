@@ -300,6 +300,8 @@ public:
     auto hide_controller() -> void;
     auto navigate(const std::string& url) -> void;
     auto navigate(const std::wstring& url) -> void;
+    auto navigate_to_string(const std::string& url) -> void;
+    auto navigate_to_string(const std::wstring& url) -> void;
     auto get_document_title() -> std::string;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },

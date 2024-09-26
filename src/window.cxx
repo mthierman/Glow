@@ -918,6 +918,18 @@ auto WebView::navigate(const std::wstring& url) -> void {
     }
 }
 
+auto WebView::navigate_to_string(const std::string& url) -> void {
+    if (core) {
+        core->NavigateToString(glow::text::to_wstring(url).c_str());
+    }
+}
+
+auto WebView::navigate_to_string(const std::wstring& url) -> void {
+    if (core) {
+        core->NavigateToString(url.c_str());
+    }
+}
+
 auto CALLBACK Message::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
     -> ::LRESULT {
     if (msg == WM_NCCREATE) {
