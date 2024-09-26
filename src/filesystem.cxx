@@ -34,7 +34,7 @@ auto temp_folder(std::initializer_list<std::u8string_view> subfolders) -> std::f
     buffer.resize(length);
 
     if (::GetTempPathW(length, buffer.data()) == 0) {
-        throw std::runtime_error(glow::log::get_last_error());
+        throw std::runtime_error(glow::log::get_last_error<std::string>());
     }
 
     buffer.resize(length - 2);

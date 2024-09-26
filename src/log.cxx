@@ -7,7 +7,6 @@
 #include <glow/log.hxx>
 
 namespace glow::log {
-auto get_last_error() -> std::string { return format_message<std::string>(::GetLastError()); }
 
 auto log(const std::string& message) -> void {
     ::OutputDebugStringW(glow::text::to_wstring(message).c_str());

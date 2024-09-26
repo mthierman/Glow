@@ -30,7 +30,7 @@ auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
         if (::WideCharToMultiByte(
                 CP_UTF8, 0, input, inputLength, output.data(), outputLength, nullptr, nullptr)
             == 0) {
-            throw std::runtime_error(glow::log::get_last_error());
+            throw std::runtime_error(glow::log::get_last_error<std::string>());
         }
     }
 
@@ -57,7 +57,7 @@ auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string {
                                   nullptr,
                                   nullptr)
             == 0) {
-            throw std::runtime_error(glow::log::get_last_error());
+            throw std::runtime_error(glow::log::get_last_error<std::string>());
         }
     }
 
@@ -76,7 +76,7 @@ auto char_to_wstring(const char* input, size_t length) -> std::wstring {
 
         if (::MultiByteToWideChar(CP_UTF8, 0, input, inputLength, output.data(), outputLength)
             == 0) {
-            throw std::runtime_error(glow::log::get_last_error());
+            throw std::runtime_error(glow::log::get_last_error<std::string>());
         }
     }
 
@@ -100,7 +100,7 @@ auto char_to_u16string(const char* input, size_t length) -> std::u16string {
                                   reinterpret_cast<wchar_t*>(output.data()),
                                   outputLength)
             == 0) {
-            throw std::runtime_error(glow::log::get_last_error());
+            throw std::runtime_error(glow::log::get_last_error<std::string>());
         }
     }
 

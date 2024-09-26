@@ -101,7 +101,7 @@ auto parse_args() -> std::vector<std::u8string> {
     argv.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
 
     if (!argv) {
-        glow::log::log(glow::log::get_last_error());
+        glow::log::log(glow::log::get_last_error<std::string>());
     }
 
     std::vector<std::u8string> args;

@@ -16,8 +16,6 @@
 #include <glow/text.hxx>
 
 namespace glow::log {
-auto get_last_error() -> std::string;
-
 auto log(const std::string& message) -> void;
 auto log(const std::wstring& message) -> void;
 auto log(::HRESULT errorCode) -> void;
@@ -95,4 +93,6 @@ template <typename T> auto format_message(::HRESULT errorCode) -> T {
         return buffer.get();
     }
 }
+
+template <typename T> auto get_last_error() -> T { return format_message<T>(::GetLastError()); }
 }; // namespace glow::log
