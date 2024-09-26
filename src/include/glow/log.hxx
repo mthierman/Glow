@@ -87,7 +87,6 @@ template <typename T> auto format_message(::HRESULT errorCode) -> T {
                      0,
                      nullptr);
 
-    //  if constexpr (std::is_same_v())
     if constexpr (std::is_same_v<T, std::string>) {
         return glow::text::to_string(buffer.get());
     }
@@ -95,7 +94,5 @@ template <typename T> auto format_message(::HRESULT errorCode) -> T {
     if constexpr (std::is_same_v<T, std::wstring>) {
         return buffer.get();
     }
-
-    // return glow::text::to_string(buffer.get());
 }
 }; // namespace glow::log
