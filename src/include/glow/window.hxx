@@ -319,6 +319,7 @@ public:
         -> void;
 
     auto suspend(Callback callback = 0) -> void;
+    auto resume() -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },

@@ -972,6 +972,12 @@ auto WebView::suspend(Callback callback) -> void {
     }
 }
 
+auto WebView::resume() -> void {
+    if (core) {
+        core->Resume();
+    }
+}
+
 auto CALLBACK Message::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
     -> ::LRESULT {
     if (msg == WM_NCCREATE) {
