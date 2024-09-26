@@ -391,16 +391,6 @@ public:
 };
 
 struct Message {
-    Message() = default;
-    virtual ~Message() = default;
-
-protected:
-    static auto CALLBACK procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
-        -> ::LRESULT;
-
-public:
-    auto create() -> void;
-
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -413,6 +403,16 @@ public:
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"MessageWindow" },
                                 .hIconSm { nullptr } };
+
+    Message() = default;
+    virtual ~Message() = default;
+
+protected:
+    static auto CALLBACK procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
+        -> ::LRESULT;
+
+public:
+    auto create() -> void;
 
     auto operator()() -> int;
 
