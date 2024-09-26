@@ -11,12 +11,12 @@
 #include <glow/log.hxx>
 
 namespace glow::filesystem {
-auto known_folder(::KNOWNFOLDERID folderId,
-                  std::initializer_list<std::u8string_view> subfolders) -> std::filesystem::path {
+auto known_folder(::KNOWNFOLDERID folderId, std::initializer_list<std::u8string_view> subfolders)
+    -> std::filesystem::path {
     wil::unique_cotaskmem_string buffer;
 
     if (auto hr { ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) }; hr != S_OK) {
-        throw std::runtime_error(glow::log::format_message(hr));
+        throw std::runtime_error(glow::log::format_message<std::string>(hr));
     }
 
     auto knownFolder { std::filesystem::path(buffer.get()) };

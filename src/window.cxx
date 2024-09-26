@@ -781,7 +781,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                               .try_query<ICoreWebView2Environment13>();
         } else {
-            glow::log::log(glow::log::format_message(errorCode));
+            glow::log::log(glow::log::format_message<std::string>(errorCode));
         }
 
         if (environment) {
@@ -795,7 +795,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                                      .try_query<ICoreWebView2Controller4>();
                 } else {
-                    glow::log::log(glow::log::format_message(errorCode));
+                    glow::log::log(glow::log::format_message<std::string>(errorCode));
                 }
 
                 if (controller) {
@@ -865,7 +865,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
 
             if (controllerResult != S_OK) {
                 glow::log::log("CreateCoreWebView2Controller: {}",
-                               glow::log::format_message(controllerResult));
+                               glow::log::format_message<std::string>(controllerResult));
             }
         }
 
@@ -874,7 +874,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
 
     if (environmentResult != S_OK) {
         glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
-                       glow::log::format_message(environmentResult));
+                       glow::log::format_message<std::string>(environmentResult));
     }
 }
 
