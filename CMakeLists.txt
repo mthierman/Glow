@@ -9,6 +9,7 @@ list(
     )
 
 include(FetchContent)
+include(ada-url.ada)
 include(Microsoft.Web.WebView2)
 include(Microsoft.Windows.CppWinRT)
 include(Microsoft.Windows.ImplementationLibrary)
@@ -93,6 +94,7 @@ target_link_libraries(
     PUBLIC microsoft::wil
            microsoft::cppwinrt
            microsoft::webview2
+           ada-url::ada
            WindowsApp.lib
            dwmapi.lib
            gdiplus.lib
