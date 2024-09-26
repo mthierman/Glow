@@ -770,70 +770,106 @@ auto WebView::create_webview(Callback&& callback) -> void {
         createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
     }
 
-    ::CreateCoreWebView2EnvironmentWithOptions(
+    auto result { ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
         config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
-                ::HRESULT /* errorCode */,
-                ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
-        environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
-                          .try_query<ICoreWebView2Environment13>();
+                ::HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+        glow::log::log(glow::log::format_message(errorCode));
 
-        environment->CreateCoreWebView2Controller(
-            hwnd.get(),
-            wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                [this, callback { std::move(callback) }](
-                    ::HRESULT /* errorCode */,
-                    ICoreWebView2Controller* createdController) -> ::HRESULT {
-            controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
-                             .try_query<ICoreWebView2Controller4>();
-            controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
-            put_bounds(client_position());
+        if (createdEnvironment) {
+            environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
+                              .try_query<ICoreWebView2Environment13>();
+        }
 
-            wil::com_ptr<ICoreWebView2> createdCore;
-            controller->get_CoreWebView2(createdCore.put());
-            core = createdCore.try_query<ICoreWebView2_22>();
+        if (environment) {
+            auto result { environment->CreateCoreWebView2Controller(
+                hwnd.get(),
+                wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                    [this, callback { std::move(callback) }](
+                        ::HRESULT errorCode,
+                        ICoreWebView2Controller* createdController) -> ::HRESULT {
+                glow::log::log(glow::log::format_message(errorCode));
 
-            wil::com_ptr<ICoreWebView2Settings> createdSettings;
-            core->get_Settings(createdSettings.put());
-            settings = createdSettings.try_query<ICoreWebView2Settings9>();
+                if (createdController) {
+                    controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
+                                     .try_query<ICoreWebView2Controller4>();
+                }
 
-            settings->put_AreBrowserAcceleratorKeysEnabled(
-                config.settings.AreBrowserAcceleratorKeysEnabled);
-            settings->put_AreDefaultContextMenusEnabled(
-                config.settings.AreDefaultContextMenusEnabled);
-            settings->put_AreDefaultScriptDialogsEnabled(
-                config.settings.AreDefaultScriptDialogsEnabled);
-            settings->put_AreDevToolsEnabled(config.settings.AreDevToolsEnabled);
-            settings->put_AreHostObjectsAllowed(config.settings.AreHostObjectsAllowed);
-            settings->put_HiddenPdfToolbarItems(config.settings.HiddenPdfToolbarItems);
-            settings->put_IsBuiltInErrorPageEnabled(config.settings.IsBuiltInErrorPageEnabled);
-            settings->put_IsGeneralAutofillEnabled(config.settings.IsGeneralAutofillEnabled);
-            settings->put_IsNonClientRegionSupportEnabled(
-                config.settings.IsNonClientRegionSupportEnabled);
-            settings->put_IsPasswordAutosaveEnabled(config.settings.IsPasswordAutosaveEnabled);
-            settings->put_IsPinchZoomEnabled(config.settings.IsPinchZoomEnabled);
-            settings->put_IsReputationCheckingRequired(
-                config.settings.IsReputationCheckingRequired);
-            settings->put_IsScriptEnabled(config.settings.IsScriptEnabled);
-            settings->put_IsStatusBarEnabled(config.settings.IsStatusBarEnabled);
-            settings->put_IsSwipeNavigationEnabled(config.settings.IsSwipeNavigationEnabled);
-            settings->put_IsWebMessageEnabled(config.settings.IsWebMessageEnabled);
-            settings->put_IsZoomControlEnabled(config.settings.IsZoomControlEnabled);
+                if (controller) {
+                    controller->put_DefaultBackgroundColor({ 0, 0, 0, 0 });
+                    put_bounds(client_position());
 
-            if (callback) {
-                callback();
-            } else {
-                navigate(config.homePage);
-            }
+                    wil::com_ptr<ICoreWebView2> createdCore;
+                    controller->get_CoreWebView2(createdCore.put());
 
-            return S_OK;
-        }).Get());
+                    if (createdCore) {
+                        core = createdCore.try_query<ICoreWebView2_22>();
+                    }
+
+                    if (core) {
+                        wil::com_ptr<ICoreWebView2Settings> createdSettings;
+                        core->get_Settings(createdSettings.put());
+                        if (createdSettings) {
+                            settings = createdSettings.try_query<ICoreWebView2Settings9>();
+
+                            if (settings) {
+                                settings->put_AreBrowserAcceleratorKeysEnabled(
+                                    config.settings.AreBrowserAcceleratorKeysEnabled);
+                                settings->put_AreDefaultContextMenusEnabled(
+                                    config.settings.AreDefaultContextMenusEnabled);
+                                settings->put_AreDefaultScriptDialogsEnabled(
+                                    config.settings.AreDefaultScriptDialogsEnabled);
+                                settings->put_AreDevToolsEnabled(
+                                    config.settings.AreDevToolsEnabled);
+                                settings->put_AreHostObjectsAllowed(
+                                    config.settings.AreHostObjectsAllowed);
+                                settings->put_HiddenPdfToolbarItems(
+                                    config.settings.HiddenPdfToolbarItems);
+                                settings->put_IsBuiltInErrorPageEnabled(
+                                    config.settings.IsBuiltInErrorPageEnabled);
+                                settings->put_IsGeneralAutofillEnabled(
+                                    config.settings.IsGeneralAutofillEnabled);
+                                settings->put_IsNonClientRegionSupportEnabled(
+                                    config.settings.IsNonClientRegionSupportEnabled);
+                                settings->put_IsPasswordAutosaveEnabled(
+                                    config.settings.IsPasswordAutosaveEnabled);
+                                settings->put_IsPinchZoomEnabled(
+                                    config.settings.IsPinchZoomEnabled);
+                                settings->put_IsReputationCheckingRequired(
+                                    config.settings.IsReputationCheckingRequired);
+                                settings->put_IsScriptEnabled(config.settings.IsScriptEnabled);
+                                settings->put_IsStatusBarEnabled(
+                                    config.settings.IsStatusBarEnabled);
+                                settings->put_IsSwipeNavigationEnabled(
+                                    config.settings.IsSwipeNavigationEnabled);
+                                settings->put_IsWebMessageEnabled(
+                                    config.settings.IsWebMessageEnabled);
+                                settings->put_IsZoomControlEnabled(
+                                    config.settings.IsZoomControlEnabled);
+
+                                if (callback) {
+                                    callback();
+                                } else {
+                                    navigate(config.homePage);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return S_OK;
+            }).Get()) };
+
+            glow::log::log(glow::log::format_message(result));
+        }
 
         return S_OK;
-    }).Get());
+    }).Get()) };
+
+    glow::log::log(glow::log::format_message(result));
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
