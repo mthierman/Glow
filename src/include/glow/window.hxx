@@ -298,6 +298,9 @@ public:
 
     auto show_controller() -> void;
     auto hide_controller() -> void;
+
+    auto get_document_title() -> std::string;
+
     auto navigate(const std::string& url) -> void;
     auto navigate(const std::wstring& url) -> void;
     auto navigate_to_string(const std::string& url) -> void;
@@ -314,7 +317,8 @@ public:
         COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
         = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
         -> void;
-    auto get_document_title() -> std::string;
+
+    auto suspend(Callback callback = 0) -> void;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },

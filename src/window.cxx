@@ -947,6 +947,31 @@ auto WebView::virtual_host_name_mapping(const std::wstring& hostName,
     }
 }
 
+auto WebView::suspend(Callback callback) -> void {
+    if (controller) {
+        ::BOOL isVisible { false };
+        controller->get_IsVisible(&isVisible);
+
+        if (!isVisible) {
+            if (core) {
+                auto result { core->TrySuspend(event.make<ICoreWebView2TrySuspendCompletedHandler>(
+                    [callback { std::move(callback) }](::HRESULT errorCode [[maybe_unused]],
+                                                       BOOL result [[maybe_unused]]) {
+                    if (callback) {
+                        callback();
+                    }
+
+                    return S_OK;
+                })) };
+
+                if (result != S_OK) {
+                    glow::log::log(glow::log::format_message<std::string>(result));
+                }
+            }
+        }
+    }
+}
+
 auto CALLBACK Message::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
     -> ::LRESULT {
     if (msg == WM_NCCREATE) {
