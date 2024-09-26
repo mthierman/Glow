@@ -153,6 +153,7 @@ public:
     auto is_visible() -> bool;
     auto is_maximized() -> bool;
     auto set_title(const std::string& title) -> void;
+    auto set_title(const std::wstring& title) -> void;
     auto set_position(const Position& position) -> void;
     auto min_size(int x, int y) -> void;
     auto max_size(int x, int y) -> void;

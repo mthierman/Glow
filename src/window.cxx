@@ -442,6 +442,10 @@ auto Window::set_title(const std::string& title) -> void {
     ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
 }
 
+auto Window::set_title(const std::wstring& title) -> void {
+    ::SetWindowTextW(hwnd.get(), title.c_str());
+}
+
 auto Window::set_position(const Position& position) -> void {
     ::SetWindowPos(hwnd.get(),
                    nullptr,
