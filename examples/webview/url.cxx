@@ -23,7 +23,8 @@ struct WebView final : glow::window::WebView {
                     event.token("SourceChanged"));
             }
 
-            navigate("http://localhost:5173/");
+            // navigate("http://localhost:5173/");
+            navigate("file:///D:/Repos/mthierman/Glow/data/test.html");
         });
     }
 };
