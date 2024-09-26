@@ -930,6 +930,23 @@ auto WebView::navigate_to_string(const std::wstring& url) -> void {
     }
 }
 
+auto WebView::virtual_host_name_mapping(const std::string& hostName,
+                                        const std::filesystem::path& folder,
+                                        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind) -> void {
+    if (core) {
+        core->SetVirtualHostNameToFolderMapping(
+            glow::text::to_wstring(hostName).c_str(), folder.c_str(), accessKind);
+    }
+}
+
+auto WebView::virtual_host_name_mapping(const std::wstring& hostName,
+                                        const std::filesystem::path& folder,
+                                        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind) -> void {
+    if (core) {
+        core->SetVirtualHostNameToFolderMapping(hostName.c_str(), folder.c_str(), accessKind);
+    }
+}
+
 auto CALLBACK Message::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
     -> ::LRESULT {
     if (msg == WM_NCCREATE) {

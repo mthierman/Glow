@@ -302,6 +302,18 @@ public:
     auto navigate(const std::wstring& url) -> void;
     auto navigate_to_string(const std::string& url) -> void;
     auto navigate_to_string(const std::wstring& url) -> void;
+    auto virtual_host_name_mapping(
+        const std::string& hostName,
+        const std::filesystem::path& folder,
+        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
+        = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
+        -> void;
+    auto virtual_host_name_mapping(
+        const std::wstring& hostName,
+        const std::filesystem::path& folder,
+        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
+        = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
+        -> void;
     auto get_document_title() -> std::string;
 
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
