@@ -217,11 +217,6 @@ public:
 };
 
 struct Overlapped : Window {
-    Overlapped() = default;
-    virtual ~Overlapped() = default;
-
-    auto create(bool show = true) -> void;
-
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -234,14 +229,14 @@ struct Overlapped : Window {
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"OverlappedWindow" },
                                 .hIconSm { icons.app.get() } };
+
+    Overlapped() = default;
+    virtual ~Overlapped() = default;
+
+    auto create(bool show = true) -> void;
 };
 
 struct Child : Window {
-    Child() = default;
-    virtual ~Child() = default;
-
-    auto create(::HWND parent, bool show = true) -> void;
-
     ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
                                 .style { 0 },
                                 .lpfnWndProc { procedure },
@@ -254,9 +249,27 @@ struct Child : Window {
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"ChildWindow" },
                                 .hIconSm { icons.app.get() } };
+
+    Child() = default;
+    virtual ~Child() = default;
+
+    auto create(::HWND parent, bool show = true) -> void;
 };
 
 struct WebView : Window {
+    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
+                                .style { 0 },
+                                .lpfnWndProc { procedure },
+                                .cbClsExtra { 0 },
+                                .cbWndExtra { sizeof(Window) },
+                                .hInstance { glow::system::instance() },
+                                .hIcon { icons.app.get() },
+                                .hCursor { glow::system::system_cursor() },
+                                .hbrBackground { nullptr },
+                                .lpszMenuName { nullptr },
+                                .lpszClassName { L"WebViewWindow" },
+                                .hIconSm { icons.app.get() } };
+
     struct Config {
         struct EnvironmentOptions {
             std::string AdditionalBrowserArguments;
@@ -368,19 +381,6 @@ public:
     auto suspend(Callback callback = 0) -> void;
     auto is_suspended() -> bool;
     auto resume() -> void;
-
-    ::WNDCLASSEXW windowClass { .cbSize { sizeof(::WNDCLASSEXW) },
-                                .style { 0 },
-                                .lpfnWndProc { procedure },
-                                .cbClsExtra { 0 },
-                                .cbWndExtra { sizeof(Window) },
-                                .hInstance { glow::system::instance() },
-                                .hIcon { icons.app.get() },
-                                .hCursor { glow::system::system_cursor() },
-                                .hbrBackground { nullptr },
-                                .lpszMenuName { nullptr },
-                                .lpszClassName { L"WebViewWindow" },
-                                .hIconSm { icons.app.get() } };
 
     Event event;
     Config config;
