@@ -9,8 +9,6 @@ struct WebView final : glow::window::WebView {
         });
 
         create([this]() {
-            // event.make([]() { return S_OK; }, event.token(""));
-
             core->add_DocumentTitleChanged(
                 event.make<ICoreWebView2DocumentTitleChangedEventHandler>(
                     [this](ICoreWebView2* sender, IUnknown* args [[maybe_unused]]) {
