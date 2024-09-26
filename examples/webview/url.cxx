@@ -41,6 +41,9 @@ struct WebView final : glow::window::WebView {
             // </html>
             // )" };
             //             navigate_to_string(testHtml);
+
+            virtual_host_name_mapping("glow", glow::filesystem::known_folder());
+            navigate("https://glow/Glow/test.html");
         });
     }
 };
