@@ -770,7 +770,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
         createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
     }
 
-    auto result { ::CreateCoreWebView2EnvironmentWithOptions(
+    auto environmentResult { ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
         config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
@@ -785,7 +785,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
         }
 
         if (environment) {
-            auto result { environment->CreateCoreWebView2Controller(
+            auto controllerResult { environment->CreateCoreWebView2Controller(
                 hwnd.get(),
                 wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                     [this, callback { std::move(callback) }](
@@ -863,13 +863,13 @@ auto WebView::create_webview(Callback&& callback) -> void {
                 return S_OK;
             }).Get()) };
 
-            glow::log::log(glow::log::format_message(result));
+            glow::log::log(glow::log::format_message(controllerResult));
         }
 
         return S_OK;
     }).Get()) };
 
-    glow::log::log(glow::log::format_message(result));
+    glow::log::log(glow::log::format_message(environmentResult));
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
