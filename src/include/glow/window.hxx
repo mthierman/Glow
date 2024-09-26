@@ -317,6 +317,8 @@ public:
         COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
         = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
         -> void;
+    auto clear_virtual_host_name_mapping(const std::string& hostName) -> void;
+    auto clear_virtual_host_name_mapping(const std::wstring& hostName) -> void;
 
     auto suspend(Callback callback = 0) -> void;
     auto is_suspended() -> bool;

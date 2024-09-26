@@ -947,6 +947,18 @@ auto WebView::virtual_host_name_mapping(const std::wstring& hostName,
     }
 }
 
+auto WebView::clear_virtual_host_name_mapping(const std::string& hostName) -> void {
+    if (core) {
+        core->ClearVirtualHostNameToFolderMapping(glow::text::to_wstring(hostName).c_str());
+    }
+}
+
+auto WebView::clear_virtual_host_name_mapping(const std::wstring& hostName) -> void {
+    if (core) {
+        core->ClearVirtualHostNameToFolderMapping(hostName.c_str());
+    }
+}
+
 auto WebView::suspend(Callback callback) -> void {
     if (controller) {
         ::BOOL isVisible { false };
