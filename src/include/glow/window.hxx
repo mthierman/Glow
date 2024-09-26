@@ -259,29 +259,77 @@ struct Child : Window {
                                 .hIconSm { icons.app.get() } };
 };
 
-struct EventToken {
-    auto operator()(const std::string& key) -> ::EventRegistrationToken*;
-
-private:
-    std::unordered_map<std::string, ::EventRegistrationToken> eventRegistrationTokens;
-};
-
-struct Event {
-    template <typename T> auto make(auto&&... eventHandler) {
-        auto key { eventHandlers.size() };
-        eventHandlers.try_emplace(
-            key, wil::MakeAgileCallback<T>(std::forward<decltype(eventHandler)>(eventHandler)...));
-
-        return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
-    }
-
-    EventToken token;
-
-private:
-    std::unordered_map<size_t, std::any> eventHandlers;
-};
-
 struct WebView : Window {
+    struct Config {
+        struct EnvironmentOptions {
+            std::string AdditionalBrowserArguments;
+            bool AllowSingleSignOnUsingOSPrimaryAccount { false };
+            std::string Language;
+            std::string TargetCompatibleBrowserVersion;
+            bool ExclusiveUserDataFolderAccess { false };
+            bool IsCustomCrashReportingEnabled { false };
+            bool EnableTrackingPrevention { true };
+            bool AreBrowserExtensionsEnabled { false };
+            COREWEBVIEW2_CHANNEL_SEARCH_KIND ChannelSearchKind {
+                COREWEBVIEW2_CHANNEL_SEARCH_KIND::COREWEBVIEW2_CHANNEL_SEARCH_KIND_MOST_STABLE
+            };
+            COREWEBVIEW2_SCROLLBAR_STYLE ScrollBarStyle {
+                COREWEBVIEW2_SCROLLBAR_STYLE::COREWEBVIEW2_SCROLLBAR_STYLE_DEFAULT
+            };
+        };
+
+        struct Settings {
+            bool AreBrowserAcceleratorKeysEnabled { true };
+            bool AreDefaultContextMenusEnabled { true };
+            bool AreDefaultScriptDialogsEnabled { true };
+            bool AreDevToolsEnabled { true };
+            bool AreHostObjectsAllowed { true };
+            COREWEBVIEW2_PDF_TOOLBAR_ITEMS HiddenPdfToolbarItems {
+                COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE
+            };
+            bool IsBuiltInErrorPageEnabled { true };
+            bool IsGeneralAutofillEnabled { true };
+            bool IsNonClientRegionSupportEnabled { true };
+            bool IsPasswordAutosaveEnabled { true };
+            bool IsPinchZoomEnabled { true };
+            bool IsReputationCheckingRequired { true };
+            bool IsScriptEnabled { true };
+            bool IsStatusBarEnabled { true };
+            bool IsSwipeNavigationEnabled { true };
+            bool IsWebMessageEnabled { true };
+            bool IsZoomControlEnabled { true };
+        };
+
+        EnvironmentOptions environmentOptions;
+        Settings settings;
+        std::string homePage { "about:blank" };
+        std::filesystem::path browserExecutableFolder;
+        std::filesystem::path userDataFolder;
+    };
+
+    struct Event {
+        struct Token {
+            auto operator()(const std::string& key) -> ::EventRegistrationToken*;
+
+        private:
+            std::unordered_map<std::string, ::EventRegistrationToken> eventRegistrationTokens;
+        };
+
+        template <typename T> auto make(auto&&... eventHandler) {
+            auto key { eventHandlers.size() };
+            eventHandlers.try_emplace(
+                key,
+                wil::MakeAgileCallback<T>(std::forward<decltype(eventHandler)>(eventHandler)...));
+
+            return std::any_cast<Microsoft::WRL::ComPtr<T>>(eventHandlers.at(key)).Get();
+        }
+
+        Token token;
+
+    private:
+        std::unordered_map<size_t, std::any> eventHandlers;
+    };
+
     WebView() = default;
     virtual ~WebView() = default;
 
@@ -336,53 +384,6 @@ public:
                                 .lpszMenuName { nullptr },
                                 .lpszClassName { L"WebViewWindow" },
                                 .hIconSm { icons.app.get() } };
-
-    struct Config {
-        struct EnvironmentOptions {
-            std::string AdditionalBrowserArguments;
-            bool AllowSingleSignOnUsingOSPrimaryAccount { false };
-            std::string Language;
-            std::string TargetCompatibleBrowserVersion;
-            bool ExclusiveUserDataFolderAccess { false };
-            bool IsCustomCrashReportingEnabled { false };
-            bool EnableTrackingPrevention { true };
-            bool AreBrowserExtensionsEnabled { false };
-            COREWEBVIEW2_CHANNEL_SEARCH_KIND ChannelSearchKind {
-                COREWEBVIEW2_CHANNEL_SEARCH_KIND::COREWEBVIEW2_CHANNEL_SEARCH_KIND_MOST_STABLE
-            };
-            COREWEBVIEW2_SCROLLBAR_STYLE ScrollBarStyle {
-                COREWEBVIEW2_SCROLLBAR_STYLE::COREWEBVIEW2_SCROLLBAR_STYLE_DEFAULT
-            };
-        };
-        EnvironmentOptions environmentOptions;
-
-        struct Settings {
-            bool AreBrowserAcceleratorKeysEnabled { true };
-            bool AreDefaultContextMenusEnabled { true };
-            bool AreDefaultScriptDialogsEnabled { true };
-            bool AreDevToolsEnabled { true };
-            bool AreHostObjectsAllowed { true };
-            COREWEBVIEW2_PDF_TOOLBAR_ITEMS HiddenPdfToolbarItems {
-                COREWEBVIEW2_PDF_TOOLBAR_ITEMS::COREWEBVIEW2_PDF_TOOLBAR_ITEMS_NONE
-            };
-            bool IsBuiltInErrorPageEnabled { true };
-            bool IsGeneralAutofillEnabled { true };
-            bool IsNonClientRegionSupportEnabled { true };
-            bool IsPasswordAutosaveEnabled { true };
-            bool IsPinchZoomEnabled { true };
-            bool IsReputationCheckingRequired { true };
-            bool IsScriptEnabled { true };
-            bool IsStatusBarEnabled { true };
-            bool IsSwipeNavigationEnabled { true };
-            bool IsWebMessageEnabled { true };
-            bool IsZoomControlEnabled { true };
-        };
-        Settings settings;
-
-        std::string homePage { "about:blank" };
-        std::filesystem::path browserExecutableFolder;
-        std::filesystem::path userDataFolder;
-    };
 
     Event event;
     Config config;

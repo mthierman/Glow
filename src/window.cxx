@@ -618,7 +618,7 @@ auto Child::create(::HWND parent, bool show) -> void {
     }
 }
 
-auto EventToken::operator()(const std::string& key) -> ::EventRegistrationToken* {
+auto WebView::Event::Token::operator()(const std::string& key) -> ::EventRegistrationToken* {
     return &eventRegistrationTokens.try_emplace(key, ::EventRegistrationToken()).first->second;
 }
 
