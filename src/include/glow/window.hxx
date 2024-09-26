@@ -92,10 +92,8 @@ struct Window {
     virtual ~Window() = default;
 
 protected:
-    static auto CALLBACK procedure(::HWND hwnd,
-                                   ::UINT msg,
-                                   ::WPARAM wparam,
-                                   ::LPARAM lparam) -> ::LRESULT;
+    static auto CALLBACK procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
+        -> ::LRESULT;
 
 public:
     auto theme_refresh() -> void;
@@ -268,7 +266,7 @@ private:
 };
 
 struct Event {
-    template <typename T> auto handler(auto&&... eventHandler) {
+    template <typename T> auto make(auto&&... eventHandler) {
         auto key { eventHandlers.size() };
         eventHandlers.try_emplace(
             key, wil::MakeAgileCallback<T>(std::forward<decltype(eventHandler)>(eventHandler)...));
@@ -376,10 +374,8 @@ struct Message {
     virtual ~Message() = default;
 
 protected:
-    static auto CALLBACK procedure(::HWND hwnd,
-                                   ::UINT msg,
-                                   ::WPARAM wparam,
-                                   ::LPARAM lparam) -> ::LRESULT;
+    static auto CALLBACK procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
+        -> ::LRESULT;
 
 public:
     auto create() -> void;

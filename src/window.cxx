@@ -134,10 +134,8 @@ Window::Window() {
     });
 }
 
-auto CALLBACK Window::procedure(::HWND hwnd,
-                                ::UINT msg,
-                                ::WPARAM wparam,
-                                ::LPARAM lparam) -> ::LRESULT {
+auto CALLBACK Window::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
+    -> ::LRESULT {
     if (msg == WM_NCCREATE) {
         auto create { reinterpret_cast<::CREATESTRUCTW*>(lparam) };
 
@@ -274,8 +272,8 @@ auto Window::activate() -> void {
 }
 
 auto Window::close() -> void {
-    ::SetWindowLongPtrW(hwnd.get(), 0, reinterpret_cast<::LONG_PTR>(nullptr));
     hwnd.reset();
+    ::SetWindowLongPtrW(hwnd.get(), 0, reinterpret_cast<::LONG_PTR>(nullptr));
 }
 
 auto Window::show() -> void { ::ShowWindow(hwnd.get(), SW_SHOW); }
@@ -565,9 +563,8 @@ auto Window::window_position() -> Position {
 
 auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }
 
-auto Window::notify_app(glow::message::Code code,
-                        std::string_view message,
-                        ::HWND receiverHwnd) -> void {
+auto Window::notify_app(glow::message::Code code, std::string_view message, ::HWND receiverHwnd)
+    -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
 
@@ -851,10 +848,8 @@ auto WebView::navigate(const std::wstring& url) -> void {
     }
 }
 
-auto CALLBACK Message::procedure(::HWND hwnd,
-                                 ::UINT msg,
-                                 ::WPARAM wparam,
-                                 ::LPARAM lparam) -> ::LRESULT {
+auto CALLBACK Message::procedure(::HWND hwnd, ::UINT msg, ::WPARAM wparam, ::LPARAM lparam)
+    -> ::LRESULT {
     if (msg == WM_NCCREATE) {
         auto create { reinterpret_cast<::CREATESTRUCTW*>(lparam) };
 
@@ -898,9 +893,8 @@ auto Message::create() -> void {
 
 auto Message::operator()() -> int { return glow::message::run_loop(); }
 
-auto Message::notify_app(glow::message::Code code,
-                         std::string_view message,
-                         ::HWND receiverHwnd) -> void {
+auto Message::notify_app(glow::message::Code code, std::string_view message, ::HWND receiverHwnd)
+    -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
 } // namespace glow::window
