@@ -51,3 +51,16 @@ target_sources(
     )
 
 target_link_libraries(${PROJECT_NAME}_event PRIVATE glow::examples)
+
+add_executable(
+    ${PROJECT_NAME}_url
+    WIN32
+    )
+
+target_sources(
+    ${PROJECT_NAME}_url
+    PRIVATE "url.cxx"
+            "../../data/glow.manifest"
+    )
+
+target_link_libraries(${PROJECT_NAME}_url PRIVATE glow::examples)
