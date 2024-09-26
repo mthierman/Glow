@@ -9,16 +9,18 @@ struct WebView final : glow::window::WebView {
         });
 
         create([this]() {
-            core->add_DocumentTitleChanged(
-                event.make<ICoreWebView2DocumentTitleChangedEventHandler>(
-                    [this](ICoreWebView2* sender, IUnknown* args [[maybe_unused]]) {
-                wil::unique_cotaskmem_string title;
-                sender->get_DocumentTitle(&title);
-                set_title(title.get());
+            if (core) {
+                core->add_DocumentTitleChanged(
+                    event.make<ICoreWebView2DocumentTitleChangedEventHandler>(
+                        [this](ICoreWebView2* sender, IUnknown* args [[maybe_unused]]) {
+                    wil::unique_cotaskmem_string title;
+                    sender->get_DocumentTitle(&title);
+                    set_title(title.get());
 
-                return S_OK;
-            }),
-                event.token("DocumentTitleChanged"));
+                    return S_OK;
+                }),
+                    event.token("DocumentTitleChanged"));
+            }
 
             navigate("http://localhost:5173/");
         });
