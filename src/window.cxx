@@ -615,8 +615,9 @@ auto Child::create(::HWND parent, bool show) -> void {
     }
 }
 
-auto WebView::Event::Token::operator()(const std::string& key) -> ::EventRegistrationToken* {
-    return &eventRegistrationTokens.try_emplace(key, ::EventRegistrationToken()).first->second;
+auto WebView::Event::Token::operator()(std::u8string_view key) -> ::EventRegistrationToken* {
+    return &eventRegistrationTokens.try_emplace(std::u8string(key), ::EventRegistrationToken())
+                .first->second;
 }
 
 auto WebView::create(Callback callback, bool show) -> void {

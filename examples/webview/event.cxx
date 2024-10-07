@@ -19,7 +19,7 @@ struct WebView final : glow::window::WebView {
 
                     return S_OK;
                 }),
-                    event.token("DocumentTitleChanged"));
+                    event.token(u8"DocumentTitleChanged"));
             }
 
             navigate(u8"http://localhost:5173/");

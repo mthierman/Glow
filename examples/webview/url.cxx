@@ -20,7 +20,7 @@ struct WebView final : glow::window::WebView {
 
                     return S_OK;
                 }),
-                    event.token("SourceChanged"));
+                    event.token(u8"SourceChanged"));
             }
 
             // navigate("http://localhost:5173/");

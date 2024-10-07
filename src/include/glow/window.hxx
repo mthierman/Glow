@@ -271,10 +271,10 @@ struct WebView : Window {
 
     struct Config {
         struct EnvironmentOptions {
-            std::string AdditionalBrowserArguments;
+            std::u8string AdditionalBrowserArguments;
             bool AllowSingleSignOnUsingOSPrimaryAccount { false };
-            std::string Language;
-            std::string TargetCompatibleBrowserVersion;
+            std::u8string Language;
+            std::u8string TargetCompatibleBrowserVersion;
             bool ExclusiveUserDataFolderAccess { false };
             bool IsCustomCrashReportingEnabled { false };
             bool EnableTrackingPrevention { true };
@@ -318,10 +318,10 @@ struct WebView : Window {
 
     struct Event {
         struct Token {
-            auto operator()(const std::string& key) -> ::EventRegistrationToken*;
+            auto operator()(std::u8string_view key) -> ::EventRegistrationToken*;
 
         private:
-            std::unordered_map<std::string, ::EventRegistrationToken> eventRegistrationTokens;
+            std::unordered_map<std::u8string, ::EventRegistrationToken> eventRegistrationTokens;
         };
 
         template <typename T> auto make(auto&&... eventHandler) {
