@@ -21,7 +21,7 @@ auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
-auto create_process(const std::filesystem::path& path, std::string_view commandLine) -> int {
+auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> int {
     ::STARTUPINFOW si {};
     si.cb = sizeof(::STARTUPINFOW);
 
