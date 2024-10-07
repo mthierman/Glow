@@ -18,12 +18,8 @@
 namespace glow::log {
 auto log(std::u8string_view message) -> void;
 auto log(::HRESULT errorCode) -> void;
-
-auto msg(const std::string& message) -> void;
-auto msg(const std::wstring& message) -> void;
-
-auto err(const std::string& message) -> void;
-auto err(const std::wstring& message) -> void;
+auto message(std::u8string_view message) -> void;
+auto error(std::u8string_view message) -> void;
 
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {

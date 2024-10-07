@@ -17,20 +17,12 @@ auto log(::HRESULT errorCode) -> void {
     ::OutputDebugStringW(L"\n");
 }
 
-auto msg(const std::string& message) -> void {
+auto message(std::u8string_view message) -> void {
     ::MessageBoxW(
         nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
 }
 
-auto msg(const std::wstring& message) -> void {
-    ::MessageBoxW(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONASTERISK);
-}
-
-auto err(const std::string& message) -> void {
+auto error(std::u8string_view message) -> void {
     ::MessageBoxW(nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
-}
-
-auto err(const std::wstring& message) -> void {
-    ::MessageBoxW(nullptr, message.c_str(), nullptr, MB_OK | MB_ICONHAND);
 }
 }; // namespace glow::log
