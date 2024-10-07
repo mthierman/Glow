@@ -13,6 +13,7 @@
 
 namespace glow::text {
 auto convert(std::u8string_view input) -> std::optional<std::u16string>;
+auto convert(std::u16string_view input) -> std::optional<std::u8string>;
 
 auto wchar_to_string(const wchar_t* input, size_t length) -> std::string;
 auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string;
