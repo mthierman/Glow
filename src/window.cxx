@@ -248,19 +248,19 @@ auto Window::background_style(Background::Style style) -> void {
     background_refresh();
 }
 
-auto Window::background_dark(glow::color::Color color) -> void {
+auto Window::background_dark(const glow::color::Color& color) -> void {
     background.brush.dark.reset(color.brush());
     background.color.dark = color;
     background_refresh();
 }
 
-auto Window::background_light(glow::color::Color color) -> void {
+auto Window::background_light(const glow::color::Color& color) -> void {
     background.brush.light.reset(color.brush());
     background.color.light = color;
     background_refresh();
 }
 
-auto Window::background_custom(glow::color::Color color) -> void {
+auto Window::background_custom(const glow::color::Color& color) -> void {
     background.brush.custom.reset(color.brush());
     background.color.custom = color;
     background_refresh();

@@ -122,9 +122,9 @@ public:
     auto border_color(const glow::color::Color& color) -> void;
 
     auto background_style(Background::Style style) -> void;
-    auto background_dark(glow::color::Color color) -> void;
-    auto background_light(glow::color::Color color) -> void;
-    auto background_custom(glow::color::Color color) -> void;
+    auto background_dark(const glow::color::Color& color) -> void;
+    auto background_light(const glow::color::Color& color) -> void;
+    auto background_custom(const glow::color::Color& color) -> void;
     auto activate() -> void;
     auto close() -> void;
     auto show() -> void;
