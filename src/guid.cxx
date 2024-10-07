@@ -22,10 +22,11 @@ auto create() -> ::GUID {
 auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
-    ::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
 
-    if (auto stringified { glow::text::u8string(buffer) }; stringified.has_value()) {
-        return stringified.value();
+    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) != 0) {
+        if (auto stringified { glow::text::u8string(buffer) }; stringified.has_value()) {
+            return stringified.value();
+        }
     }
 
     return std::nullopt;
