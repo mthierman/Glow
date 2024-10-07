@@ -181,8 +181,8 @@ public:
     auto set_small_icon(::HICON hicon) -> void;
     auto set_big_icon(::HICON hicon) -> void;
     auto flash() -> void;
-    auto start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool;
-    auto stop_timer(::UINT_PTR timerId) -> bool;
+    auto start_timer(uintptr_t timerId, unsigned int intervalMs) -> bool;
+    auto stop_timer(uintptr_t timerId) -> bool;
     auto enable_fullscreen() -> bool;
     auto disable_fullscreen() -> bool;
     auto client_position() -> Position;

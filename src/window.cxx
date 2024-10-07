@@ -511,11 +511,11 @@ auto Window::flash() -> void {
     ::FlashWindowEx(&fwi);
 }
 
-auto Window::start_timer(::UINT_PTR timerId, ::UINT intervalMs) -> bool {
+auto Window::start_timer(uintptr_t timerId, unsigned int intervalMs) -> bool {
     return ::SetTimer(hwnd.get(), timerId, intervalMs, nullptr) != 0 ? true : false;
 }
 
-auto Window::stop_timer(::UINT_PTR timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
+auto Window::stop_timer(uintptr_t timerId) -> bool { return ::KillTimer(hwnd.get(), timerId); }
 
 auto Window::enable_fullscreen() -> bool {
     if (get_style() & WS_OVERLAPPEDWINDOW) {
