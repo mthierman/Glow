@@ -67,6 +67,26 @@ auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
     return std::nullopt;
 }
 
+auto u16string(std::string_view input) -> std::optional<std::u16string> {
+    auto converted { u16string(reinterpret_cast<const char8_t*>(input.data())) };
+
+    if (!converted.has_value()) {
+        return std::nullopt;
+    }
+
+    return converted.value();
+}
+
+auto u8string(std::wstring_view input) -> std::optional<std::u8string> {
+    auto converted { u8string(reinterpret_cast<const char16_t*>(input.data())) };
+
+    if (!converted.has_value()) {
+        return std::nullopt;
+    }
+
+    return converted.value();
+}
+
 auto c_str(std::u8string_view input) -> const char* {
     return reinterpret_cast<const char*>(input.data());
 }

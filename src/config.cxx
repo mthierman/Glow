@@ -23,9 +23,7 @@ Config::Config(const std::filesystem::path& path)
 }
 
 auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8string> {
-    if (auto converted {
-            glow::text::u8string(reinterpret_cast<const char16_t*>(input.Stringify().data())) };
-        converted.has_value()) {
+    if (auto converted { glow::text::u8string(input.Stringify()) }; converted.has_value()) {
         return converted.value();
     }
 
@@ -36,8 +34,7 @@ auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonO
     winrt::JsonObject output;
 
     if (auto converted { glow::text::u16string(input) }; converted.has_value()) {
-        if (output.TryParse(
-                std::wstring(converted.value().begin(), converted.value().end()).c_str(), output)) {
+        if (output.TryParse(glow::text::c_str(converted.value()), output)) {
             return output;
         }
     }
