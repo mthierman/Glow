@@ -20,9 +20,9 @@ using namespace winrt::Windows::Data::Json;
 }; // namespace winrt
 
 namespace glow::config {
-struct Config {
+struct Config final {
     Config() = delete;
-    virtual ~Config() = default;
+    ~Config() = default;
     Config(const Config& config) = default;
     Config(Config&& config) = default;
 
@@ -76,10 +76,10 @@ struct Config {
         }
     }
 
-    auto serialize() -> std::u8string;
+    auto serialize(const winrt::JsonObject& input) -> std::u8string;
     auto deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject>;
 
-    auto save() -> void;
+    auto save() -> bool;
     auto load() -> bool;
 
 protected:

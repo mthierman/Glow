@@ -22,22 +22,35 @@ Config::Config(const std::filesystem::path& path)
     std::filesystem::create_directories(path.parent_path());
 }
 
-auto Config::serialize() -> std::u8string { return glow::text::to_u8string(json.Stringify()); }
+auto Config::serialize(const winrt::JsonObject& input) -> std::u8string {
+    return glow::text::to_u8string(input.Stringify());
+}
 
 auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject> {
-    if (json.TryParse(glow::text::to_wstring(input), json)) {
-        return json;
+    winrt::JsonObject output;
+
+    if (output.TryParse(glow::text::to_wstring(input), output)) {
+        return output;
     } else {
         return std::nullopt;
     }
 }
 
-auto Config::save() -> void {
-    auto serialized { serialize() };
+auto Config::save() -> bool {
+    if (path.empty()) {
+        return false;
+    } else {
+        auto serialized { serialize(json) };
 
-    std::basic_ofstream<char8_t> file(
-        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-    file.write(serialized.c_str(), serialized.size());
+        std::basic_ofstream<char8_t> file(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
+
+        if (file.write(serialized.c_str(), serialized.size())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
 auto Config::load() -> bool {
@@ -51,12 +64,10 @@ auto Config::load() -> bool {
         buffer.resize(file.gcount());
         file.clear();
         file.seekg(0, std::basic_ios<char8_t>::beg);
-        file.read(buffer.data(), buffer.size());
-
-        if (deserialize(buffer).has_value()) {
-            return true;
-        } else {
-            return false;
+        if (file.read(buffer.data(), buffer.size())) {
+            if (deserialize(buffer).has_value()) {
+                return true;
+            }
         }
     } else {
         return false;
