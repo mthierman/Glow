@@ -75,6 +75,7 @@ struct Config final {
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
                 auto converted { glow::text::u8string(value.GetString()) };
+
                 if (!converted.has_value()) {
                     return std::nullopt;
                 }
