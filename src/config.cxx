@@ -23,10 +23,8 @@ Config::Config(const std::filesystem::path& path)
 }
 
 auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8string> {
-    auto stringified { input.Stringify() };
-
     if (auto converted {
-            glow::text::u8string(reinterpret_cast<const char16_t*>(stringified.data())) };
+            glow::text::u8string(reinterpret_cast<const char16_t*>(input.Stringify().data())) };
         converted.has_value()) {
         return converted.value();
     }
