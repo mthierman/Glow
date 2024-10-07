@@ -38,9 +38,9 @@ struct Config final {
 
             if (convertedKey.has_value() && convertedValue.has_value()) {
                 json.SetNamedValue(
-                    { convertedKey.value().begin(), convertedKey.value().end() },
+                    reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
                     winrt::JsonValue::CreateStringValue(
-                        { convertedValue.value().begin(), convertedValue.value().end() }));
+                        reinterpret_cast<const wchar_t*>(convertedValue.value().data())));
             }
         }
 
@@ -48,7 +48,7 @@ struct Config final {
             auto convertedKey { glow::text::convert(key) };
 
             if (convertedKey.has_value()) {
-                json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
                                    winrt::JsonValue::CreateBooleanValue(value));
             }
         }
@@ -57,7 +57,7 @@ struct Config final {
             auto convertedKey { glow::text::convert(key) };
 
             if (convertedKey.has_value()) {
-                json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
                                    winrt::JsonValue::CreateNumberValue(value));
             }
         }
