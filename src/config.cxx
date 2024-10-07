@@ -37,9 +37,10 @@ auto Config::deserialize(std::u8string_view jsonString) -> std::optional<winrt::
 }
 
 auto Config::save() -> void {
+    auto serialized { serialize() };
+
     std::basic_ofstream<char8_t> file(
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-    auto serialized { serialize() };
     file.write(serialized.c_str(), serialized.size());
 }
 
