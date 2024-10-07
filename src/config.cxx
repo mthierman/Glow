@@ -43,21 +43,13 @@ auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonO
 }
 
 auto Config::save() -> bool {
-    if (path.empty()) {
-        return false;
-    }
+    if (auto serialized { serialize(json) }; !path.empty() && serialized.has_value()) {
+        std::basic_ofstream<char8_t> file(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
 
-    auto serialized { serialize(json) };
-
-    if (!serialized.has_value()) {
-        return false;
-    }
-
-    std::basic_ofstream<char8_t> file(
-        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-
-    if (file.write(serialized.value().c_str(), serialized.value().size())) {
-        return true;
+        if (file.write(serialized.value().c_str(), serialized.value().size())) {
+            return true;
+        }
     }
 
     return false;
