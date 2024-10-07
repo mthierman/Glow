@@ -357,7 +357,8 @@ public:
     auto show_controller() -> void;
     auto hide_controller() -> void;
 
-    auto get_document_title() -> std::optional<std::u8string>;
+    auto document_title() -> std::optional<std::u8string>;
+    auto source() -> std::optional<std::u8string>;
 
     auto navigate(std::u8string_view url) -> void;
     auto navigate_to_string(std::u8string_view url) -> void;

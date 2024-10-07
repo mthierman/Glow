@@ -894,12 +894,23 @@ auto WebView::hide_controller() -> void {
     }
 }
 
-auto WebView::get_document_title() -> std::optional<std::u8string> {
+auto WebView::document_title() -> std::optional<std::u8string> {
     if (core) {
         wil::unique_cotaskmem_string buffer;
         core->get_DocumentTitle(&buffer);
 
         return glow::text::to_u8string(buffer.get());
+    } else {
+        return std::nullopt;
+    }
+}
+
+auto WebView::source() -> std::optional<std::u8string> {
+    if (core) {
+        wil::unique_cotaskmem_string uri;
+        core->get_Source(&uri);
+
+        return glow::text::to_u8string(uri.get());
     } else {
         return std::nullopt;
     }

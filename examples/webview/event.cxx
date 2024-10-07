@@ -12,10 +12,11 @@ struct WebView final : glow::window::WebView {
             if (core) {
                 core->add_DocumentTitleChanged(
                     event.make<ICoreWebView2DocumentTitleChangedEventHandler>(
-                        [this](ICoreWebView2* sender, IUnknown* args [[maybe_unused]]) {
-                    wil::unique_cotaskmem_string title;
-                    sender->get_DocumentTitle(&title);
-                    set_title(glow::text::to_u8string(title.get()));
+                        [this](ICoreWebView2* sender [[maybe_unused]],
+                               IUnknown* args [[maybe_unused]]) {
+                    if (document_title().has_value()) {
+                        set_title(document_title().value());
+                    }
 
                     return S_OK;
                 }),

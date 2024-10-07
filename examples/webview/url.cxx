@@ -12,11 +12,11 @@ struct WebView final : glow::window::WebView {
             if (core) {
                 core->add_SourceChanged(
                     event.make<ICoreWebView2SourceChangedEventHandler>(
-                        [this](ICoreWebView2* sender,
+                        [this](ICoreWebView2* sender [[maybe_unused]],
                                ICoreWebView2SourceChangedEventArgs* args [[maybe_unused]]) {
-                    wil::unique_cotaskmem_string uri;
-                    sender->get_Source(&uri);
-                    set_title(glow::text::to_u8string(uri.get()));
+                    if (source().has_value()) {
+                        set_title(source().value());
+                    }
 
                     return S_OK;
                 }),
