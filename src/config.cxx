@@ -56,33 +56,24 @@ auto Config::save() -> bool {
 }
 
 auto Config::load() -> bool {
-    if (path.empty()) {
-        return false;
-    }
+    if (auto file { std::basic_ifstream<char8_t>(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in) };
+        !path.empty() && file.is_open()) {
+        file.ignore(std::numeric_limits<std::streamsize>::max());
 
-    std::basic_ifstream<char8_t> file(
-        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
+        std::u8string buffer;
+        buffer.resize(file.gcount());
 
-    if (!file.is_open()) {
-        return false;
-    }
+        file.clear();
+        file.seekg(0, std::basic_ios<char8_t>::beg);
 
-    file.ignore(std::numeric_limits<std::streamsize>::max());
+        if (file.read(buffer.data(), buffer.size())) {
+            if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
+                json = deserialized.value();
 
-    std::u8string buffer;
-    buffer.resize(file.gcount());
-
-    file.clear();
-    file.seekg(0, std::basic_ios<char8_t>::beg);
-
-    if (!file.read(buffer.data(), buffer.size())) {
-        return false;
-    }
-
-    if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
-        json = deserialized.value();
-
-        return true;
+                return true;
+            }
+        }
     }
 
     return false;
