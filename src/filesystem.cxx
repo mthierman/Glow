@@ -11,20 +11,20 @@
 #include <glow/log.hxx>
 
 namespace glow::filesystem {
-auto create_directory(const std::filesystem::path& path) -> bool {
-    if (::CreateDirectoryW(path.c_str(), nullptr) != 0) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 auto create_directory(const std::filesystem::path& path, const std::filesystem::path& templatePath)
     -> bool {
-    if (::CreateDirectoryExW(templatePath.c_str(), path.c_str(), nullptr) != 0) {
-        return true;
+    if (templatePath.empty()) {
+        if (::CreateDirectoryW(path.c_str(), nullptr) != 0) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        return false;
+        if (::CreateDirectoryExW(templatePath.c_str(), path.c_str(), nullptr) != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

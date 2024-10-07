@@ -19,9 +19,8 @@
 #include <glow/text.hxx>
 
 namespace glow::filesystem {
-auto create_directory(const std::filesystem::path& path) -> bool;
-auto create_directory(const std::filesystem::path& path, const std::filesystem::path& templatePath)
-    -> bool;
+auto create_directory(const std::filesystem::path& path,
+                      const std::filesystem::path& templatePath = "") -> bool;
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::u8string_view> subfolders = {})
     -> std::filesystem::path;
