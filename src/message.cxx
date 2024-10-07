@@ -39,7 +39,7 @@ auto Manager::notify(Code code,
                                          .idFrom { senderId },
                                          .code { std::to_underlying(code) } },
                                 .code { code },
-                                .message { message } };
+                                .message { std::u8string(message) } };
     send(receiverHwnd, WM_NOTIFY, senderId, &notification);
 }
 
