@@ -46,10 +46,8 @@ auto message(std::u8string_view message) -> void {
     auto converted { glow::text::u16string(message) };
 
     if (converted.has_value()) {
-        ::MessageBoxW(nullptr,
-                      reinterpret_cast<wchar_t*>(converted.value().data()),
-                      nullptr,
-                      MB_OK | MB_ICONASTERISK);
+        ::MessageBoxW(
+            nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONASTERISK);
     }
 }
 
@@ -57,10 +55,7 @@ auto error(std::u8string_view message) -> void {
     auto converted { glow::text::u16string(message) };
 
     if (converted.has_value()) {
-        ::MessageBoxW(nullptr,
-                      reinterpret_cast<wchar_t*>(converted.value().data()),
-                      nullptr,
-                      MB_OK | MB_ICONHAND);
+        ::MessageBoxW(nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONHAND);
     }
 }
 
@@ -72,12 +67,11 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      nullptr,
                      errorCode,
                      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                     wil::out_param_ptr<::LPWSTR>(buffer),
+                     wil::out_param_ptr<wchar_t*>(buffer),
                      0,
                      nullptr);
 
-    if (auto converted { glow::text::u8string(reinterpret_cast<char16_t*>(buffer.get())) };
-        converted.has_value()) {
+    if (auto converted { glow::text::u8string(buffer.get()) }; converted.has_value()) {
         return converted.value();
     }
 
