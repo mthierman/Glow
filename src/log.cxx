@@ -43,18 +43,14 @@ auto log(::HRESULT errorCode) -> void {
 }
 
 auto message(std::u8string_view message) -> void {
-    auto converted { glow::text::u16string(message) };
-
-    if (converted.has_value()) {
+    if (auto converted { glow::text::u16string(message) }; converted.has_value()) {
         ::MessageBoxW(
             nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONASTERISK);
     }
 }
 
 auto error(std::u8string_view message) -> void {
-    auto converted { glow::text::u16string(message) };
-
-    if (converted.has_value()) {
+    if (auto converted { glow::text::u16string(message) }; converted.has_value()) {
         ::MessageBoxW(nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONHAND);
     }
 }
