@@ -36,9 +36,9 @@ struct Config final {
             if (auto convertedKey { glow::text::u16string(key) }; convertedKey.has_value()) {
                 if (auto convertedValue { glow::text::u16string(value) };
                     convertedValue.has_value()) {
-                    json.SetNamedValue(
-                        glow::text::c_str(convertedKey.value()),
-                        winrt::JsonValue::CreateStringValue(glow::text::c_str(convertedValue.value()));
+                    json.SetNamedValue(glow::text::c_str(convertedKey.value()),
+                                       winrt::JsonValue::CreateStringValue(
+                                           glow::text::c_str(convertedValue.value())));
                 }
             }
         }
