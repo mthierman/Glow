@@ -34,7 +34,7 @@ auto co_initialize(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED)
     -> wil::unique_couninitialize_call;
 auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> int;
 auto instance() -> ::HMODULE;
-auto exit_process(::UINT exitCode = EXIT_SUCCESS) -> void;
+auto exit_process(unsigned int exitCode = EXIT_SUCCESS) -> void;
 auto quit(int exitCode = EXIT_SUCCESS) -> void;
 auto system_brush(int name = NULL_BRUSH) -> ::HBRUSH;
 auto system_cursor(LPWSTR name = IDC_ARROW) -> ::HCURSOR;

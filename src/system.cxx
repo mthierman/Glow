@@ -57,7 +57,7 @@ auto instance() -> ::HMODULE {
     return module;
 }
 
-auto exit_process(::UINT exitCode) -> void { ::ExitProcess(exitCode); }
+auto exit_process(unsigned int exitCode) -> void { ::ExitProcess(exitCode); }
 
 auto quit(int exitCode) -> void { ::PostQuitMessage(exitCode); }
 
