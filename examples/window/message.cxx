@@ -109,7 +109,7 @@ auto main() -> int {
 
     glow::system::Event singleInstance;
 
-    if (singleInstance.create("SingleInstance")) {
+    if (singleInstance.create(u8"SingleInstance")) {
         return EXIT_SUCCESS;
     }
 

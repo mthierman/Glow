@@ -66,7 +66,7 @@ private:
 };
 
 struct Event final {
-    auto create(const std::string& name, std::function<void()>&& callback = 0) -> bool;
+    auto create(std::u8string_view name, std::function<void()>&& callback = 0) -> bool;
 
     wil::unique_event_nothrow event;
     wil::unique_event_watcher_nothrow watcher;

@@ -130,7 +130,7 @@ GdiPlus::~GdiPlus() {
     }
 }
 
-auto Event::create(const std::string& eventName, std::function<void()>&& callback) -> bool {
+auto Event::create(std::u8string_view eventName, std::function<void()>&& callback) -> bool {
     m_callback = std::move(callback);
     watcher.create(event.get(), [this]() { m_callback(); });
 
