@@ -360,15 +360,15 @@ public:
     auto document_title() -> std::optional<std::u8string>;
     auto source() -> std::optional<std::u8string>;
 
-    auto navigate(std::u8string_view url) -> void;
-    auto navigate_to_string(std::u8string_view url) -> void;
+    auto navigate(std::u8string_view url) -> bool;
+    auto navigate_to_string(std::u8string_view url) -> bool;
     auto virtual_host(
         std::u8string_view hostName,
         const std::filesystem::path& folder,
         COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
         = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
-        -> void;
-    auto clear_virtual_host(std::u8string_view hostName) -> void;
+        -> bool;
+    auto clear_virtual_host(std::u8string_view hostName) -> bool;
 
     auto suspend(Callback callback = 0) -> void;
     auto is_suspended() -> bool;

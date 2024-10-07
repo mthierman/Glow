@@ -440,7 +440,11 @@ auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
 
 auto Window::set_title(std::u8string_view title) -> void {
-    ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
+    auto converted { glow::text::convert(title) };
+
+    if (converted.has_value()) {
+        ::SetWindowTextW(hwnd.get(), reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+    }
 }
 
 auto Window::set_position(const Position& position) -> void {
@@ -715,23 +719,32 @@ auto WebView::create_webview(Callback&& callback) -> void {
 
     if (createdEnvironmentOptions) {
         if (!config.environmentOptions.AdditionalBrowserArguments.empty()) {
-            createdEnvironmentOptions->put_AdditionalBrowserArguments(
-                glow::text::to_wstring(config.environmentOptions.AdditionalBrowserArguments)
-                    .c_str());
+            if (auto converted {
+                    glow::text::convert(config.environmentOptions.AdditionalBrowserArguments) };
+                converted.has_value()) {
+                createdEnvironmentOptions->put_AdditionalBrowserArguments(
+                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+            }
         }
 
         createdEnvironmentOptions->put_AllowSingleSignOnUsingOSPrimaryAccount(
             config.environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
 
         if (!config.environmentOptions.Language.empty()) {
-            createdEnvironmentOptions->put_Language(
-                glow::text::to_wstring(config.environmentOptions.Language).c_str());
+            if (auto converted { glow::text::convert(config.environmentOptions.Language) };
+                converted.has_value()) {
+                createdEnvironmentOptions->put_Language(
+                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+            }
         }
 
         if (!config.environmentOptions.TargetCompatibleBrowserVersion.empty()) {
-            createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
-                glow::text::to_wstring(config.environmentOptions.TargetCompatibleBrowserVersion)
-                    .c_str());
+            if (auto converted {
+                    glow::text::convert(config.environmentOptions.TargetCompatibleBrowserVersion) };
+                converted.has_value()) {
+                createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
+                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+            }
         }
     }
 
@@ -896,52 +909,97 @@ auto WebView::hide_controller() -> void {
 }
 
 auto WebView::document_title() -> std::optional<std::u8string> {
-    if (core) {
-        wil::unique_cotaskmem_string buffer;
-        core->get_DocumentTitle(&buffer);
-
-        return glow::text::to_u8string(buffer.get());
-    } else {
+    if (!core) {
         return std::nullopt;
     }
+
+    wil::unique_cotaskmem_string buffer;
+    core->get_DocumentTitle(&buffer);
+
+    auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(buffer.get())) };
+
+    if (!converted.has_value()) {
+        return std::nullopt;
+    }
+
+    return converted.value();
 }
 
 auto WebView::source() -> std::optional<std::u8string> {
-    if (core) {
-        wil::unique_cotaskmem_string uri;
-        core->get_Source(&uri);
-
-        return glow::text::to_u8string(uri.get());
-    } else {
+    if (!core) {
         return std::nullopt;
     }
+
+    wil::unique_cotaskmem_string buffer;
+    core->get_Source(&buffer);
+
+    auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(buffer.get())) };
+
+    if (!converted.has_value()) {
+        return std::nullopt;
+    }
+
+    return converted.value();
 }
 
-auto WebView::navigate(std::u8string_view url) -> void {
-    if (core) {
-        core->Navigate(glow::text::to_wstring(url).c_str());
+auto WebView::navigate(std::u8string_view url) -> bool {
+    if (!core) {
+        return false;
     }
+
+    auto converted { glow::text::convert(url) };
+
+    if (!converted.has_value()) {
+        return false;
+    }
+
+    core->Navigate(reinterpret_cast<const wchar_t*>(converted.value().c_str()));
 }
 
-auto WebView::navigate_to_string(std::u8string_view url) -> void {
-    if (core) {
-        core->NavigateToString(glow::text::to_wstring(url).c_str());
+auto WebView::navigate_to_string(std::u8string_view url) -> bool {
+    if (!core) {
+        return false;
     }
+
+    auto converted { glow::text::convert(url) };
+
+    if (!converted.has_value()) {
+        return false;
+    }
+
+    core->NavigateToString(reinterpret_cast<const wchar_t*>(converted.value().c_str()));
 }
 
 auto WebView::virtual_host(std::u8string_view hostName,
                            const std::filesystem::path& folder,
-                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind) -> void {
-    if (core) {
-        core->SetVirtualHostNameToFolderMapping(
-            glow::text::to_wstring(hostName).c_str(), folder.c_str(), accessKind);
+                           COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind) -> bool {
+    if (!core) {
+        return false;
     }
+
+    auto converted { glow::text::convert(url) };
+
+    if (!converted.has_value()) {
+        return false;
+    }
+
+    core->SetVirtualHostNameToFolderMapping(
+        reinterpret_cast<const wchar_t*>(converted.value().c_str()), folder.c_str(), accessKind);
 }
 
-auto WebView::clear_virtual_host(std::u8string_view hostName) -> void {
-    if (core) {
-        core->ClearVirtualHostNameToFolderMapping(glow::text::to_wstring(hostName).c_str());
+auto WebView::clear_virtual_host(std::u8string_view hostName) -> bool {
+    if (!core) {
+        return false;
     }
+
+    auto converted { glow::text::convert(hostName) };
+
+    if (!converted.has_value()) {
+        return false;
+    }
+
+    core->ClearVirtualHostNameToFolderMapping(
+        reinterpret_cast<const wchar_t*>(converted.value().c_str()));
 }
 
 auto WebView::suspend(Callback callback) -> void {
