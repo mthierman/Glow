@@ -26,13 +26,13 @@ auto Config::file_path(const std::filesystem::path& path) -> void {
 
 auto Config::serialize() -> std::u8string { return glow::text::to_u8string(json.Stringify()); }
 
-auto Config::deserialize(std::u8string_view buffer) -> winrt::JsonObject {
+auto Config::deserialize(std::u8string_view jsonString) -> std::optional<winrt::JsonObject> {
     winrt::JsonObject deserialized;
 
-    if (auto parsed { json.TryParse(glow::text::to_wstring(buffer), deserialized) }; parsed) {
+    if (json.TryParse(glow::text::to_wstring(jsonString), deserialized)) {
         return deserialized;
     } else {
-        throw std::runtime_error("Config deserialization failure");
+        return std::nullopt;
     }
 }
 
