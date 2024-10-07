@@ -51,7 +51,7 @@ struct Color final {
     uint8_t a { 0 };
 
     auto brush() const -> ::HBRUSH;
-    auto hex() const -> std::string;
+    auto hex() const -> std::u8string;
     auto colorref() const -> ::COLORREF;
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
@@ -65,7 +65,7 @@ protected:
 namespace std {
 template <> struct formatter<glow::color::Color> : formatter<string_view> {
     auto format(const glow::color::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(color.hex(), context);
+        return formatter<string_view>::format(glow::text::to_string(color.hex()), context);
     }
 };
 
