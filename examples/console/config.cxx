@@ -8,7 +8,7 @@
 
 #include <glow/glow.hxx>
 
-auto main(/* int argc, char* argv[] */) -> int {
+auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
     if (glow::filesystem::known_folder().has_value()) {
         auto filePath { glow::filesystem::known_folder().value() / u"ini" / u"ini.json" };
 

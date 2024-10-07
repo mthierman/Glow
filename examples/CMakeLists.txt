@@ -33,10 +33,9 @@ target_link_options(
     INTERFACE
     $<$<CXX_COMPILER_FRONTEND_VARIANT:MSVC>:
     /WX
-    /entry:mainCRTStartup
     >
     $<$<CXX_COMPILER_FRONTEND_VARIANT:GNU>:
-    -Wl,/WX,/entry:mainCRTStartup
+    -Wl,/WX
     >
     )
 

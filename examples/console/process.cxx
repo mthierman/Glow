@@ -8,7 +8,7 @@
 
 #include <glow/glow.hxx>
 
-auto main(/* int argc, char* argv[] */) -> int {
+auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
     std::println("Console example:");
 
     return EXIT_SUCCESS;
