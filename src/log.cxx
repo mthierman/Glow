@@ -59,9 +59,12 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      0,
                      nullptr);
 
-    auto converted { glow::text::convert(reinterpret_cast<char16_t*>(buffer.get())) };
+    if (auto converted { glow::text::convert(reinterpret_cast<char16_t*>(buffer.get())) };
+        converted.has_value()) {
+        return converted.value();
+    }
 
-    // return glow::text::to_u8string(buffer.get());
+    return {};
 }
 
 auto get_last_error() -> std::u8string { return format_message(::GetLastError()); }

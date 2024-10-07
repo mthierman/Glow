@@ -21,7 +21,7 @@ auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
-auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> int {
+auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> void {
     ::STARTUPINFOW si {};
     si.cb = sizeof(::STARTUPINFOW);
 
@@ -32,19 +32,21 @@ auto create_process(const std::filesystem::path& path, std::u8string_view comman
     pi.hProcess = hProcess.get();
     pi.hThread = hThread.get();
 
-    ::CreateProcessW(path.c_str(),
-                     glow::text::to_wstring(commandLine).data(),
-                     nullptr,
-                     nullptr,
-                     FALSE,
-                     0,
-                     nullptr,
-                     nullptr,
-                     &si,
-                     &pi);
-    ::WaitForSingleObject(pi.hProcess, INFINITE);
+    auto converted { glow::text::convert(commandLine) };
 
-    return 0;
+    if (converted.has_value()) {
+        ::CreateProcessW(path.c_str(),
+                         reinterpret_cast<wchar_t*>(converted.value().data()),
+                         nullptr,
+                         nullptr,
+                         FALSE,
+                         0,
+                         nullptr,
+                         nullptr,
+                         &si,
+                         &pi);
+        ::WaitForSingleObject(pi.hProcess, INFINITE);
+    }
 }
 
 auto instance() -> ::HMODULE {
@@ -94,7 +96,11 @@ auto args() -> std::vector<std::u8string> {
     std::vector<std::u8string> args;
 
     for (int i = 0; i < argc; i++) {
-        args.emplace_back(glow::text::to_u8string(argv[i]));
+        auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(argv[i])) };
+
+        if (converted.has_value()) {
+            args.emplace_back(converted.value());
+        }
     }
 
     return args;
@@ -124,9 +130,16 @@ auto Event::create(std::u8string_view eventName, std::function<void()>&& callbac
     m_callback = std::move(callback);
     watcher.create(event.get(), [this]() { m_callback(); });
 
-    bool exists;
-    event.try_create(
-        wil::EventOptions::None, glow::text::to_wstring(eventName).c_str(), nullptr, &exists);
+    bool exists { false };
+
+    auto converted { glow::text::convert(eventName) };
+
+    if (converted.has_value()) {
+        event.try_create(wil::EventOptions::None,
+                         reinterpret_cast<const wchar_t*>(converted.value().data()),
+                         nullptr,
+                         &exists);
+    }
 
     if (exists) {
         event.SetEvent();

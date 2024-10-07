@@ -32,7 +32,7 @@ using namespace winrt::Windows::UI::ViewManagement;
 namespace glow::system {
 auto co_initialize(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED)
     -> wil::unique_couninitialize_call;
-auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> int;
+auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> void;
 auto instance() -> ::HMODULE;
 auto exit_process(unsigned int exitCode = EXIT_SUCCESS) -> void;
 auto quit(int exitCode = EXIT_SUCCESS) -> void;
