@@ -11,6 +11,23 @@
 #include <glow/log.hxx>
 
 namespace glow::filesystem {
+auto create_directory(const std::filesystem::path& path) -> bool {
+    if (::CreateDirectoryW(path.c_str(), nullptr) != 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+auto create_directory(const std::filesystem::path& path, const std::filesystem::path& templatePath)
+    -> bool {
+    if (::CreateDirectoryExW(templatePath.c_str(), path.c_str(), nullptr) != 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 auto known_folder(::KNOWNFOLDERID folderId, std::initializer_list<std::u8string_view> subfolders)
     -> std::filesystem::path {
     wil::unique_cotaskmem_string buffer;
