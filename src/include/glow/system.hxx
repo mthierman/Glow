@@ -42,8 +42,7 @@ auto system_icon(::LPWSTR name = IDI_APPLICATION) -> ::HICON;
 auto resource_icon() -> ::HICON;
 auto ui_settings() -> winrt::UISettings;
 auto is_dark() -> bool;
-auto parse_args() -> std::vector<std::u8string>;
-auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string>;
+auto args() -> std::vector<std::u8string>;
 
 struct CoInit final {
     CoInit(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED);

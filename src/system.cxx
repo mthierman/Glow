@@ -86,21 +86,11 @@ auto is_dark() -> bool {
     return (((5 * bg.g) + (2 * bg.r) + bg.b) < (8 * 128)) ? true : false;
 }
 
-auto parse_args() -> std::vector<std::u8string> {
+auto args() -> std::vector<std::u8string> {
     int argc { 0 };
     wil::unique_hlocal_ptr<wchar_t*[]> argv;
     argv.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
 
-    std::vector<std::u8string> args;
-
-    for (int i = 0; i < argc; i++) {
-        args.emplace_back(glow::text::to_u8string(argv[i]));
-    }
-
-    return args;
-}
-
-auto parse_args(int argc, char* argv[]) -> std::vector<std::u8string> {
     std::vector<std::u8string> args;
 
     for (int i = 0; i < argc; i++) {
