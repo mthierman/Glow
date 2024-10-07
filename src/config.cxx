@@ -26,7 +26,7 @@ auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8s
     auto stringified { input.Stringify() };
 
     if (auto converted {
-            glow::text::u8string(std::u16string(stringified.begin(), stringified.end())) };
+            glow::text::u8string(reinterpret_cast<const char16_t*>(stringified.data())) };
         converted.has_value()) {
         return converted.value();
     }
