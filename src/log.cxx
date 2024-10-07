@@ -6,23 +6,40 @@
 
 #include <glow/log.hxx>
 
+#include <source_location>
+
 namespace glow::log {
 auto log(std::u8string_view message) -> void {
-    auto converted { glow::text::u16string(message) };
-
-    if (converted.has_value()) {
-        ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
-        ::OutputDebugStringW(L"\n");
+    if (auto functionName {
+            glow::text::u16string(std::source_location::current().function_name()) };
+        functionName.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
     }
+
+    ::OutputDebugStringW(L": ");
+
+    if (auto convertedMessage { glow::text::u16string(message) }; convertedMessage.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(convertedMessage.value()));
+    }
+
+    ::OutputDebugStringW(L"\n");
 }
 
 auto log(::HRESULT errorCode) -> void {
-    auto converted { glow::text::u16string(format_message(errorCode)) };
-
-    if (converted.has_value()) {
-        ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
-        ::OutputDebugStringW(L"\n");
+    if (auto functionName {
+            glow::text::u16string(std::source_location::current().function_name()) };
+        functionName.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
     }
+
+    ::OutputDebugStringW(L": ");
+
+    if (auto formattedMessage { glow::text::u16string(format_message(errorCode)) };
+        formattedMessage.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(formattedMessage.value()));
+    }
+
+    ::OutputDebugStringW(L"\n");
 }
 
 auto message(std::u8string_view message) -> void {
