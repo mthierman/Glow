@@ -29,24 +29,23 @@ auto create_directory(const std::filesystem::path& path, const std::filesystem::
 auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
     wil::unique_cotaskmem_string buffer;
 
-    if (::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) != S_OK) {
-        return std::nullopt;
+    if (::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) == S_OK) {
+        return buffer.get();
     }
 
-    return std::filesystem::path(buffer.get());
+    return std::nullopt;
 }
 
 auto temp_folder() -> std::optional<std::filesystem::path> {
     std::wstring buffer;
-    auto length { ::GetTempPathW(0, buffer.data()) };
-    buffer.resize(length);
+    buffer.resize(::GetTempPathW(0, buffer.data()));
 
-    if (::GetTempPathW(length, buffer.data()) == 0) {
-        return std::nullopt;
+    if (::GetTempPathW(static_cast<::DWORD>(buffer.size()), buffer.data()) != 0) {
+        buffer.resize(buffer.size() - 2);
+
+        return buffer;
     }
 
-    buffer.resize(length - 2);
-
-    return std::filesystem::path(buffer);
+    return std::nullopt;
 }
 }; // namespace glow::filesystem
