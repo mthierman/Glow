@@ -992,8 +992,13 @@ auto WebView::virtual_host(std::u8string_view hostName,
         return false;
     }
 
-    core->SetVirtualHostNameToFolderMapping(
-        reinterpret_cast<const wchar_t*>(converted.value().c_str()), folder.c_str(), accessKind);
+    if (core->SetVirtualHostNameToFolderMapping(
+            reinterpret_cast<const wchar_t*>(converted.value().c_str()), folder.c_str(), accessKind)
+        == S_OK) {
+        return true;
+    }
+
+    return false;
 }
 
 auto WebView::clear_virtual_host(std::u8string_view hostName) -> bool {
@@ -1007,8 +1012,13 @@ auto WebView::clear_virtual_host(std::u8string_view hostName) -> bool {
         return false;
     }
 
-    core->ClearVirtualHostNameToFolderMapping(
-        reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+    if (core->ClearVirtualHostNameToFolderMapping(
+            reinterpret_cast<const wchar_t*>(converted.value().c_str()))
+        == S_OK) {
+        return true;
+    }
+
+    return false;
 }
 
 auto WebView::suspend(Callback callback) -> void {
