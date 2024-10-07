@@ -29,3 +29,13 @@ target_sources(
     )
 
 target_link_libraries(${PROJECT_NAME}_config PRIVATE glow::examples)
+
+add_executable(${PROJECT_NAME}_process)
+
+target_sources(
+    ${PROJECT_NAME}_process
+    PRIVATE "process.cxx"
+            "../../data/glow.manifest"
+    )
+
+target_link_libraries(${PROJECT_NAME}_process PRIVATE glow::examples)

@@ -21,38 +21,27 @@ auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
-auto create_process(const std::filesystem::path& path) -> int {
-    ::STARTUPINFOW si { .cb { sizeof(::STARTUPINFOW) },
-                        .lpReserved { nullptr },
-                        .lpDesktop { nullptr },
-                        .lpTitle { nullptr },
-                        .dwX { 0 },
-                        .dwY { 0 },
-                        .dwXSize { 0 },
-                        .dwYSize { 0 },
-                        .dwXCountChars { 0 },
-                        .dwYCountChars { 0 },
-                        .dwFillAttribute { 0 },
-                        .dwFlags { 0 },
-                        .wShowWindow { 0 },
-                        .cbReserved2 { 0 },
-                        .lpReserved2 { 0 },
-                        .hStdInput { nullptr },
-                        .hStdOutput { nullptr },
-                        .hStdError { nullptr } };
+auto create_process(const std::filesystem::path& path, std::string commandLine) -> int {
+    ::STARTUPINFOW si {};
+    si.cb = sizeof(::STARTUPINFOW);
 
+    ::PROCESS_INFORMATION pi {};
     wil::unique_handle hProcess;
     wil::unique_handle hThread;
 
-    ::PROCESS_INFORMATION pi { .hProcess { hProcess.get() },
-                               .hThread { hThread.get() },
-                               .dwProcessId { 0 },
-                               .dwThreadId { 0 } };
+    pi.hProcess = hProcess.get();
+    pi.hThread = hThread.get();
 
-    auto process { path.wstring() };
-    auto pProcess { process.data() };
-
-    ::CreateProcessW(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+    ::CreateProcessW(path.c_str(),
+                     glow::text::to_wstring(commandLine).data(),
+                     nullptr,
+                     nullptr,
+                     FALSE,
+                     0,
+                     nullptr,
+                     nullptr,
+                     &si,
+                     &pi);
     ::WaitForSingleObject(pi.hProcess, INFINITE);
 
     return 0;
