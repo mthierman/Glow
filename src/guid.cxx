@@ -6,8 +6,6 @@
 
 #include <glow/guid.hxx>
 
-#include <stdexcept>
-
 #include <wil/win32_helpers.h>
 
 #include <glow/log.hxx>
