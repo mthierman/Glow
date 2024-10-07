@@ -438,12 +438,8 @@ auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
 
-auto Window::set_title(const std::string& title) -> void {
+auto Window::set_title(std::u8string_view title) -> void {
     ::SetWindowTextW(hwnd.get(), glow::text::to_wstring(title).c_str());
-}
-
-auto Window::set_title(const std::wstring& title) -> void {
-    ::SetWindowTextW(hwnd.get(), title.c_str());
 }
 
 auto Window::set_position(const Position& position) -> void {

@@ -16,7 +16,7 @@ struct WebView final : glow::window::WebView {
                                ICoreWebView2SourceChangedEventArgs* args [[maybe_unused]]) {
                     wil::unique_cotaskmem_string uri;
                     sender->get_Source(&uri);
-                    set_title(uri.get());
+                    set_title(glow::text::to_u8string(uri.get()));
 
                     return S_OK;
                 }),

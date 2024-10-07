@@ -15,7 +15,7 @@ struct WebView final : glow::window::WebView {
                         [this](ICoreWebView2* sender, IUnknown* args [[maybe_unused]]) {
                     wil::unique_cotaskmem_string title;
                     sender->get_DocumentTitle(&title);
-                    set_title(title.get());
+                    set_title(glow::text::to_u8string(title.get()));
 
                     return S_OK;
                 }),
