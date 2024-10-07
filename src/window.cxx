@@ -953,7 +953,11 @@ auto WebView::navigate(std::u8string_view url) -> bool {
         return false;
     }
 
-    core->Navigate(reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+    if (core->Navigate(reinterpret_cast<const wchar_t*>(converted.value().c_str())) == S_OK) {
+        return true;
+    }
+
+    return false;
 }
 
 auto WebView::navigate_to_string(std::u8string_view url) -> bool {
@@ -967,7 +971,12 @@ auto WebView::navigate_to_string(std::u8string_view url) -> bool {
         return false;
     }
 
-    core->NavigateToString(reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+    if (core->NavigateToString(reinterpret_cast<const wchar_t*>(converted.value().c_str()))
+        == S_OK) {
+        return true;
+    }
+
+    return false;
 }
 
 auto WebView::virtual_host(std::u8string_view hostName,
@@ -977,7 +986,7 @@ auto WebView::virtual_host(std::u8string_view hostName,
         return false;
     }
 
-    auto converted { glow::text::convert(url) };
+    auto converted { glow::text::convert(hostName) };
 
     if (!converted.has_value()) {
         return false;
