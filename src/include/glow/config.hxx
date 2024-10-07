@@ -59,43 +59,35 @@ struct Config final {
     }
 
     template <typename T> auto get(std::u8string_view key) -> std::optional<T> {
-        auto convertedKey { glow::text::u16string(key) };
+        if (auto convertedKey { glow::text::u16string(key) }; convertedKey.has_value()) {
+            auto value { json.GetNamedValue(glow::text::c_str(convertedKey.value()), nullptr) };
 
-        if (!convertedKey.has_value()) {
-            return std::nullopt;
-        }
+            if constexpr (std::is_same_v<T, std::u8string>) {
+                if (value && value.ValueType() == winrt::JsonValueType::String) {
+                    auto converted { glow::text::u8string(value.GetString()) };
 
-        auto value { json.GetNamedValue(glow::text::c_str(convertedKey.value()), nullptr) };
+                    if (!converted.has_value()) {
+                        return std::nullopt;
+                    }
 
-        if constexpr (std::is_same_v<T, std::u8string>) {
-            if (value && value.ValueType() == winrt::JsonValueType::String) {
-                auto converted { glow::text::u8string(value.GetString()) };
-
-                if (!converted.has_value()) {
-                    return std::nullopt;
+                    return converted.value();
                 }
+            }
 
-                return converted.value();
-            } else {
-                return std::nullopt;
+            if constexpr (std::is_same_v<T, bool>) {
+                if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
+                    return value.GetBoolean();
+                }
+            }
+
+            if constexpr (std::is_same_v<T, double>) {
+                if (value && value.ValueType() == winrt::JsonValueType::Number) {
+                    return value.GetNumber();
+                }
             }
         }
 
-        if constexpr (std::is_same_v<T, bool>) {
-            if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
-                return value.GetBoolean();
-            } else {
-                return std::nullopt;
-            }
-        }
-
-        if constexpr (std::is_same_v<T, double>) {
-            if (value && value.ValueType() == winrt::JsonValueType::Number) {
-                return value.GetNumber();
-            } else {
-                return std::nullopt;
-            }
-        }
+        return std::nullopt;
     }
 
     auto serialize(const winrt::JsonObject& input) -> std::optional<std::u8string>;
