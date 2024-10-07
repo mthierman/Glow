@@ -43,7 +43,7 @@ auto Config::save() -> void {
     file.write(serialized.c_str(), serialized.size());
 }
 
-auto Config::load() -> void {
+auto Config::load() -> bool {
     std::basic_ifstream<char8_t> file(
         paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
@@ -56,9 +56,13 @@ auto Config::load() -> void {
         file.seekg(0, std::basic_ios<char8_t>::beg);
         file.read(buffer.data(), buffer.size());
 
-        deserialize(buffer);
+        if (deserialize(buffer).has_value()) {
+            return true;
+        } else {
+            return false;
+        }
     } else {
-        throw std::runtime_error("Config file open failure");
+        return false;
     }
 }
 }; // namespace glow::config

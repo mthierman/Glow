@@ -82,7 +82,7 @@ struct Config final {
     auto deserialize(std::u8string_view jsonString) -> std::optional<winrt::JsonObject>;
 
     auto save() -> void;
-    auto load() -> void;
+    auto load() -> bool;
 
 protected:
     struct Paths {
