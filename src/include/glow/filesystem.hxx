@@ -11,7 +11,7 @@
 #include <ShlObj.h>
 
 #include <filesystem>
-#include <format>
+// #include <format>
 #include <initializer_list>
 #include <optional>
 #include <string>
@@ -21,24 +21,22 @@
 namespace glow::filesystem {
 auto create_directory(const std::filesystem::path& path,
                       const std::filesystem::path& templatePath = "") -> bool;
-auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
-                  std::initializer_list<std::u8string_view> subfolders = {})
+auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData)
     -> std::optional<std::filesystem::path>;
-auto temp_folder(std::initializer_list<std::u8string_view> subfolders = {})
-    -> std::optional<std::filesystem::path>;
+auto temp_folder() -> std::optional<std::filesystem::path>;
 }; // namespace glow::filesystem
 
-namespace std {
-template <> struct formatter<std::filesystem::path> : formatter<string_view> {
-    auto format(const std::filesystem::path& path, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::text::to_string(path.u8string()), context);
-    }
-};
+// namespace std {
+// template <> struct formatter<std::filesystem::path> : formatter<string_view> {
+//     auto format(const std::filesystem::path& path, format_context& context) const noexcept {
+//         return formatter<string_view>::format(glow::text::to_string(path.u8string()), context);
+//     }
+// };
 
-template <> struct formatter<std::filesystem::path, wchar_t> : formatter<wstring_view, wchar_t> {
-    auto format(const std::filesystem::path& path, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(path.u8string()),
-                                                        context);
-    }
-};
-} // namespace std
+// template <> struct formatter<std::filesystem::path, wchar_t> : formatter<wstring_view, wchar_t> {
+//     auto format(const std::filesystem::path& path, wformat_context& context) const noexcept {
+//         return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(path.u8string()),
+//                                                         context);
+//     }
+// };
+// } // namespace std

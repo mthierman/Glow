@@ -28,25 +28,17 @@ auto create_directory(const std::filesystem::path& path, const std::filesystem::
     }
 }
 
-auto known_folder(::KNOWNFOLDERID folderId, std::initializer_list<std::u8string_view> subfolders)
-    -> std::optional<std::filesystem::path> {
+auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
     wil::unique_cotaskmem_string buffer;
 
     if (::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) != S_OK) {
         return std::nullopt;
     }
 
-    auto knownFolder { std::filesystem::path(buffer.get()) };
-
-    for (auto subfolder : subfolders) {
-        knownFolder /= glow::text::to_wstring(subfolder);
-    }
-
-    return knownFolder;
+    return std::filesystem::path(buffer.get());
 }
 
-auto temp_folder(std::initializer_list<std::u8string_view> subfolders)
-    -> std::optional<std::filesystem::path> {
+auto temp_folder() -> std::optional<std::filesystem::path> {
     std::wstring buffer;
     auto length { ::GetTempPathW(0, buffer.data()) };
     buffer.resize(length);
@@ -57,12 +49,6 @@ auto temp_folder(std::initializer_list<std::u8string_view> subfolders)
 
     buffer.resize(length - 2);
 
-    auto tempFolder { std::filesystem::path(buffer) };
-
-    for (auto subfolder : subfolders) {
-        tempFolder /= glow::text::to_wstring(subfolder);
-    }
-
-    return tempFolder;
+    return std::filesystem::path(buffer);
 }
 }; // namespace glow::filesystem

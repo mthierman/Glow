@@ -41,9 +41,9 @@ struct Config final {
             }
 
             json.SetNamedValue(
-                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
+                { convertedKey.value().begin(), convertedKey.value().end() },
                 winrt::JsonValue::CreateStringValue(
-                    winrt::hstring(convertedValue.value().end(), convertedValue.value().end())));
+                    { convertedValue.value().begin(), convertedValue.value().end() }));
         }
 
         if constexpr (std::is_same_v<T, bool>) {
@@ -53,9 +53,8 @@ struct Config final {
                 return false;
             }
 
-            json.SetNamedValue(
-                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
-                winrt::JsonValue::CreateBooleanValue(value));
+            json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                               winrt::JsonValue::CreateBooleanValue(value));
         }
 
         if constexpr (std::is_same_v<T, double>) {
@@ -65,9 +64,8 @@ struct Config final {
                 return false;
             }
 
-            json.SetNamedValue(
-                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
-                winrt::JsonValue::CreateNumberValue(value));
+            json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                               winrt::JsonValue::CreateNumberValue(value));
         }
     }
 
@@ -79,11 +77,17 @@ struct Config final {
         }
 
         auto value { json.GetNamedValue(
-            winrt::hstring(convertedKey.value().end(), convertedKey.value().end()), nullptr) };
+            { convertedKey.value().begin(), convertedKey.value().end() }, nullptr) };
 
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
-                return glow::text::to_u8string(value.GetString());
+                auto stringValue { value.GetString() };
+                auto converted { glow::text::convert(stringValue.begin(), stringValue.end()) };
+                if (!converted.has_value()) {
+                    return std::nullopt;
+                }
+
+                return converted.value();
             } else {
                 return std::nullopt;
             }

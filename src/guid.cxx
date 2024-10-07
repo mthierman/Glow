@@ -19,11 +19,17 @@ auto create() -> ::GUID {
     return guid;
 }
 
-auto u8string(const ::GUID& guid) -> std::u8string {
+auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
     ::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
 
-    return glow::text::to_u8string(buffer);
+    auto converted { glow::text::convert(std::u16string(buffer.begin(), buffer.end())) };
+
+    if (!converted.has_value()) {
+        return std::nullopt;
+    }
+
+    return converted.value();
 }
 }; // namespace glow::guid

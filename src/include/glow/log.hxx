@@ -23,50 +23,50 @@ auto error(std::u8string_view message) -> void;
 auto format_message(::HRESULT errorCode) -> std::u8string;
 auto get_last_error() -> std::u8string;
 
-template <typename... Args>
-auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringW(
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str());
-    ::OutputDebugStringW(L"\n");
-}
+// template <typename... Args>
+// auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
+//     ::OutputDebugStringW(
+//         glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str());
+//     ::OutputDebugStringW(L"\n");
+// }
 
-template <typename... Args>
-auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
-    ::OutputDebugStringW(L"\n");
-}
+// template <typename... Args>
+// auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+//     ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
+//     ::OutputDebugStringW(L"\n");
+// }
 
-template <typename... Args>
-auto message(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(
-        nullptr,
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
-        nullptr,
-        MB_OK | MB_ICONASTERISK);
-}
+// template <typename... Args>
+// auto message(const std::format_string<Args...> fmt, Args&&... args) -> void {
+//     ::MessageBoxW(
+//         nullptr,
+//         glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
+//         nullptr,
+//         MB_OK | MB_ICONASTERISK);
+// }
 
-template <typename... Args>
-auto message(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(nullptr,
-                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONASTERISK);
-}
+// template <typename... Args>
+// auto message(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+//     ::MessageBoxW(nullptr,
+//                   std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
+//                   nullptr,
+//                   MB_OK | MB_ICONASTERISK);
+// }
 
-template <typename... Args>
-auto error(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(
-        nullptr,
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
-        nullptr,
-        MB_OK | MB_ICONHAND);
-}
+// template <typename... Args>
+// auto error(const std::format_string<Args...> fmt, Args&&... args) -> void {
+//     ::MessageBoxW(
+//         nullptr,
+//         glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
+//         nullptr,
+//         MB_OK | MB_ICONHAND);
+// }
 
-template <typename... Args>
-auto error(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(nullptr,
-                  std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
-                  nullptr,
-                  MB_OK | MB_ICONHAND);
-}
+// template <typename... Args>
+// auto error(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+//     ::MessageBoxW(nullptr,
+//                   std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str(),
+//                   nullptr,
+//                   MB_OK | MB_ICONHAND);
+// }
 }; // namespace glow::log

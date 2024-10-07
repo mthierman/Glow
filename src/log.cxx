@@ -8,22 +8,43 @@
 
 namespace glow::log {
 auto log(std::u8string_view message) -> void {
-    ::OutputDebugStringW(glow::text::to_wstring(message).c_str());
-    ::OutputDebugStringW(L"\n");
+    auto converted { glow::text::convert(message) };
+
+    if (converted.has_value()) {
+        ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
+        ::OutputDebugStringW(L"\n");
+    }
 }
 
 auto log(::HRESULT errorCode) -> void {
-    ::OutputDebugStringW(glow::text::to_wstring(format_message(errorCode)).c_str());
-    ::OutputDebugStringW(L"\n");
+    auto converted { glow::text::convert(format_message(errorCode)) };
+
+    if (converted.has_value()) {
+        ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
+        ::OutputDebugStringW(L"\n");
+    }
 }
 
 auto message(std::u8string_view message) -> void {
-    ::MessageBoxW(
-        nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONASTERISK);
+    auto converted { glow::text::convert(message) };
+
+    if (converted.has_value()) {
+        ::MessageBoxW(nullptr,
+                      reinterpret_cast<wchar_t*>(converted.value().data()),
+                      nullptr,
+                      MB_OK | MB_ICONASTERISK);
+    }
 }
 
 auto error(std::u8string_view message) -> void {
-    ::MessageBoxW(nullptr, glow::text::to_wstring(message).c_str(), nullptr, MB_OK | MB_ICONHAND);
+    auto converted { glow::text::convert(message) };
+
+    if (converted.has_value()) {
+        ::MessageBoxW(nullptr,
+                      reinterpret_cast<wchar_t*>(converted.value().data()),
+                      nullptr,
+                      MB_OK | MB_ICONHAND);
+    }
 }
 
 auto format_message(::HRESULT errorCode) -> std::u8string {
@@ -38,7 +59,9 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      0,
                      nullptr);
 
-    return glow::text::to_u8string(buffer.get());
+    auto converted { glow::text::convert(reinterpret_cast<char16_t*>(buffer.get())) };
+
+    // return glow::text::to_u8string(buffer.get());
 }
 
 auto get_last_error() -> std::u8string { return format_message(::GetLastError()); }
