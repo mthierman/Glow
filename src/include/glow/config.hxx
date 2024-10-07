@@ -70,13 +70,11 @@ struct Config final {
             return std::nullopt;
         }
 
-        auto value { json.GetNamedValue(
-            { convertedKey.value().begin(), convertedKey.value().end() }, nullptr) };
+        auto value { json.GetNamedValue(glow::text::c_str(convertedKey.value()), nullptr) };
 
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
-                auto stringValue { value.GetString() };
-                auto converted { glow::text::u16string(stringValue.begin(), stringValue.end()) };
+                auto converted { glow::text::u8string(value.GetString()) };
                 if (!converted.has_value()) {
                     return std::nullopt;
                 }
