@@ -16,16 +16,14 @@ auto create_directory(const std::filesystem::path& path, const std::filesystem::
     if (templatePath.empty()) {
         if (::CreateDirectoryW(path.c_str(), nullptr) != 0) {
             return true;
-        } else {
-            return false;
         }
     } else {
         if (::CreateDirectoryExW(templatePath.c_str(), path.c_str(), nullptr) != 0) {
             return true;
-        } else {
-            return false;
         }
     }
+
+    return false;
 }
 
 auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
