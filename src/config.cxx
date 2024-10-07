@@ -65,7 +65,9 @@ auto Config::load() -> bool {
         file.clear();
         file.seekg(0, std::basic_ios<char8_t>::beg);
         if (file.read(buffer.data(), buffer.size())) {
-            if (deserialize(buffer).has_value()) {
+            if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
+                json = deserialized.value();
+
                 return true;
             }
         }
