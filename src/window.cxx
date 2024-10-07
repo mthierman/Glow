@@ -768,32 +768,33 @@ auto WebView::create_webview(Callback&& callback) -> void {
         createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
     }
 
-    auto environmentResult { ::CreateCoreWebView2EnvironmentWithOptions(
+    auto environmentResult [[maybe_unused]] { ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
         config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
-                ::HRESULT errorCode, ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
+                ::HRESULT errorCode [[maybe_unused]],
+                ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
         if (createdEnvironment) {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                               .try_query<ICoreWebView2Environment13>();
         } else {
-            glow::log::log(glow::log::format_message<std::string>(errorCode));
+            // glow::log::log("{}", glow::log::format_message(errorCode));
         }
 
         if (environment) {
-            auto controllerResult { environment->CreateCoreWebView2Controller(
+            auto controllerResult [[maybe_unused]] { environment->CreateCoreWebView2Controller(
                 hwnd.get(),
                 wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                     [this, callback { std::move(callback) }](
-                        ::HRESULT errorCode,
+                        ::HRESULT errorCode [[maybe_unused]],
                         ICoreWebView2Controller* createdController) -> ::HRESULT {
                 if (createdController) {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                                      .try_query<ICoreWebView2Controller4>();
                 } else {
-                    glow::log::log(glow::log::format_message<std::string>(errorCode));
+                    // glow::log::log("{}", glow::log::format_message(errorCode));
                 }
 
                 if (controller) {
@@ -861,19 +862,19 @@ auto WebView::create_webview(Callback&& callback) -> void {
                 return S_OK;
             }).Get()) };
 
-            if (controllerResult != S_OK) {
-                glow::log::log("CreateCoreWebView2Controller: {}",
-                               glow::log::format_message<std::string>(controllerResult));
-            }
+            // if (controllerResult != S_OK) {
+            //     glow::log::log("CreateCoreWebView2Controller: {}",
+            //                    glow::log::format_message<std::string>(controllerResult));
+            // }
         }
 
         return S_OK;
     }).Get()) };
 
-    if (environmentResult != S_OK) {
-        glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
-                       glow::log::format_message<std::string>(environmentResult));
-    }
+    // if (environmentResult != S_OK) {
+    //     glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
+    //                    glow::log::format_message<std::string>(environmentResult));
+    // }
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
@@ -961,7 +962,7 @@ auto WebView::suspend(Callback callback) -> void {
                 })) };
 
                 if (result != S_OK) {
-                    glow::log::log(glow::log::format_message<std::string>(result));
+                    // glow::log::log(glow::log::format_message<std::string>(result));
                 }
             }
         }
@@ -975,7 +976,7 @@ auto WebView::is_suspended() -> bool {
         auto result { core->get_IsSuspended(&isSuspended) };
 
         if (result != S_OK) {
-            glow::log::log(glow::log::format_message<std::string>(result));
+            // glow::log::log(glow::log::format_message<std::string>(result));
         }
     }
 

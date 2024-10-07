@@ -39,9 +39,9 @@ auto convert(std::u8string_view input) -> std::optional<std::u16string> {
             != 0) {
             return output;
         }
-    } else {
-        return std::nullopt;
     }
+
+    return std::nullopt;
 }
 
 auto convert(std::u16string_view input) -> std::optional<std::u8string> {
@@ -69,30 +69,9 @@ auto convert(std::u16string_view input) -> std::optional<std::u8string> {
             != 0) {
             return output;
         }
-    } else {
-        return std::nullopt;
-    }
-}
-
-auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
-    std::string output;
-
-    if (length > 0) {
-        int inputLength { glow::math::check_safe_size<int>(length) };
-
-        auto outputLength { ::WideCharToMultiByte(
-            CP_UTF8, 0, input, inputLength, nullptr, 0, nullptr, nullptr) };
-
-        output.resize(outputLength);
-
-        if (::WideCharToMultiByte(
-                CP_UTF8, 0, input, inputLength, output.data(), outputLength, nullptr, nullptr)
-            == 0) {
-            throw std::runtime_error(glow::text::to_string(glow::log::get_last_error()));
-        }
     }
 
-    return output;
+    return std::nullopt;
 }
 
 auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
