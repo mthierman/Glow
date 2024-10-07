@@ -10,9 +10,7 @@
 
 auto main(/* int argc, char* argv[] */) -> int {
     if (glow::filesystem::known_folder().has_value()) {
-        auto filePath { glow::filesystem::known_folder().value()
-                        / glow::text::String(u8"ini").wstring()
-                        / glow::text::String(u8"ini.json").wstring() };
+        auto filePath { glow::filesystem::known_folder().value() / u"ini" / u"ini.json" };
 
         auto config { glow::config::Config(filePath) };
 
@@ -20,10 +18,10 @@ auto main(/* int argc, char* argv[] */) -> int {
         config.set<bool>(u8"bool", true);
         config.set<double>(u8"number", 24);
 
-        glow::log::log("{}, {}, {}",
-                       config.get<std::u8string>(u8"u8string"),
-                       config.get<bool>(u8"bool"),
-                       config.get<double>(u8"number"));
+        // glow::log::log("{}, {}, {}",
+        //                config.get<std::u8string>(u8"u8string"),
+        //                config.get<bool>(u8"bool"),
+        //                config.get<double>(u8"number"));
 
         config.save();
 

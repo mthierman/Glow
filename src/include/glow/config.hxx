@@ -36,36 +36,30 @@ struct Config final {
             auto convertedKey { glow::text::convert(key) };
             auto convertedValue { glow::text::convert(value) };
 
-            if (!convertedKey.has_value() || !convertedValue.has_value()) {
-                return false;
+            if (convertedKey.has_value() && convertedValue.has_value()) {
+                json.SetNamedValue(
+                    { convertedKey.value().begin(), convertedKey.value().end() },
+                    winrt::JsonValue::CreateStringValue(
+                        { convertedValue.value().begin(), convertedValue.value().end() }));
             }
-
-            json.SetNamedValue(
-                { convertedKey.value().begin(), convertedKey.value().end() },
-                winrt::JsonValue::CreateStringValue(
-                    { convertedValue.value().begin(), convertedValue.value().end() }));
         }
 
         if constexpr (std::is_same_v<T, bool>) {
             auto convertedKey { glow::text::convert(key) };
 
-            if (!convertedKey.has_value()) {
-                return false;
+            if (convertedKey.has_value()) {
+                json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                                   winrt::JsonValue::CreateBooleanValue(value));
             }
-
-            json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
-                               winrt::JsonValue::CreateBooleanValue(value));
         }
 
         if constexpr (std::is_same_v<T, double>) {
             auto convertedKey { glow::text::convert(key) };
 
-            if (!convertedKey.has_value()) {
-                return false;
+            if (convertedKey.has_value()) {
+                json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
+                                   winrt::JsonValue::CreateNumberValue(value));
             }
-
-            json.SetNamedValue({ convertedKey.value().begin(), convertedKey.value().end() },
-                               winrt::JsonValue::CreateNumberValue(value));
         }
     }
 

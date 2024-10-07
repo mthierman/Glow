@@ -14,9 +14,9 @@ auto main(/* int argc, char* argv[] */) -> int {
     std::u16string u16 { u"ᚠᛇᚻ᛫ᛒᛦᚦ᛫ᚠᚱᚩᚠᚢᚱ᛫ᚠᛁᚱᚪ᛫ᚷᛖᚻᚹᛦᛚᚳᚢᛗ" };
 
     std::println("{}", string);
-    std::println("{}", glow::text::to_string(wstring));
-    std::println("{}", u8);
-    std::println("{}", u16);
+    // std::println("{}", glow::text::to_string(wstring));
+    // std::println("{}", u8);
+    // std::println("{}", u16);
 
     return EXIT_SUCCESS;
 }
