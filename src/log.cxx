@@ -7,13 +7,8 @@
 #include <glow/log.hxx>
 
 namespace glow::log {
-auto log(const std::string& message) -> void {
+auto log(std::u8string_view message) -> void {
     ::OutputDebugStringW(glow::text::to_wstring(message).c_str());
-    ::OutputDebugStringW(L"\n");
-}
-
-auto log(const std::wstring& message) -> void {
-    ::OutputDebugStringW(message.c_str());
     ::OutputDebugStringW(L"\n");
 }
 

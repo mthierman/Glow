@@ -16,8 +16,7 @@
 #include <glow/text.hxx>
 
 namespace glow::log {
-auto log(const std::string& message) -> void;
-auto log(const std::wstring& message) -> void;
+auto log(std::u8string_view message) -> void;
 auto log(::HRESULT errorCode) -> void;
 
 auto msg(const std::string& message) -> void;
