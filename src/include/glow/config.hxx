@@ -33,8 +33,8 @@ struct Config final {
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
-            auto convertedKey { glow::text::convert(key) };
-            auto convertedValue { glow::text::convert(value) };
+            auto convertedKey { glow::text::u16string(key) };
+            auto convertedValue { glow::text::u16string(value) };
 
             if (convertedKey.has_value() && convertedValue.has_value()) {
                 json.SetNamedValue(
@@ -45,7 +45,7 @@ struct Config final {
         }
 
         if constexpr (std::is_same_v<T, bool>) {
-            auto convertedKey { glow::text::convert(key) };
+            auto convertedKey { glow::text::u16string(key) };
 
             if (convertedKey.has_value()) {
                 json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
@@ -54,7 +54,7 @@ struct Config final {
         }
 
         if constexpr (std::is_same_v<T, double>) {
-            auto convertedKey { glow::text::convert(key) };
+            auto convertedKey { glow::text::u16string(key) };
 
             if (convertedKey.has_value()) {
                 json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
@@ -64,7 +64,7 @@ struct Config final {
     }
 
     template <typename T> auto get(std::u8string_view key) -> std::optional<T> {
-        auto convertedKey { glow::text::convert(key) };
+        auto convertedKey { glow::text::u16string(key) };
 
         if (!convertedKey.has_value()) {
             return std::nullopt;
@@ -76,7 +76,7 @@ struct Config final {
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
                 auto stringValue { value.GetString() };
-                auto converted { glow::text::convert(stringValue.begin(), stringValue.end()) };
+                auto converted { glow::text::u16string(stringValue.begin(), stringValue.end()) };
                 if (!converted.has_value()) {
                     return std::nullopt;
                 }

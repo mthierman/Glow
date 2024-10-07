@@ -8,7 +8,7 @@
 
 namespace glow::log {
 auto log(std::u8string_view message) -> void {
-    auto converted { glow::text::convert(message) };
+    auto converted { glow::text::u16string(message) };
 
     if (converted.has_value()) {
         ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
@@ -17,7 +17,7 @@ auto log(std::u8string_view message) -> void {
 }
 
 auto log(::HRESULT errorCode) -> void {
-    auto converted { glow::text::convert(format_message(errorCode)) };
+    auto converted { glow::text::u16string(format_message(errorCode)) };
 
     if (converted.has_value()) {
         ::OutputDebugStringW(reinterpret_cast<const wchar_t*>(converted.value().data()));
@@ -26,7 +26,7 @@ auto log(::HRESULT errorCode) -> void {
 }
 
 auto message(std::u8string_view message) -> void {
-    auto converted { glow::text::convert(message) };
+    auto converted { glow::text::u16string(message) };
 
     if (converted.has_value()) {
         ::MessageBoxW(nullptr,
@@ -37,7 +37,7 @@ auto message(std::u8string_view message) -> void {
 }
 
 auto error(std::u8string_view message) -> void {
-    auto converted { glow::text::convert(message) };
+    auto converted { glow::text::u16string(message) };
 
     if (converted.has_value()) {
         ::MessageBoxW(nullptr,
@@ -59,7 +59,7 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      0,
                      nullptr);
 
-    if (auto converted { glow::text::convert(reinterpret_cast<char16_t*>(buffer.get())) };
+    if (auto converted { glow::text::u8string(reinterpret_cast<char16_t*>(buffer.get())) };
         converted.has_value()) {
         return converted.value();
     }

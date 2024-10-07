@@ -12,8 +12,10 @@
 #include <string>
 
 namespace glow::text {
-auto convert(std::u8string_view input) -> std::optional<std::u16string>;
-auto convert(std::u16string_view input) -> std::optional<std::u8string>;
+auto u16string(std::u8string_view input) -> std::optional<std::u16string>;
+auto u8string(std::u16string_view input) -> std::optional<std::u8string>;
+auto c_str(std::u8string_view input) -> const char*;
+auto c_str(std::u16string_view input) -> const wchar_t*;
 }; // namespace glow::text
 
 // namespace std {

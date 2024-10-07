@@ -9,7 +9,7 @@
 #include <Windows.h>
 
 namespace glow::text {
-auto convert(std::u8string_view input) -> std::optional<std::u16string> {
+auto u16string(std::u8string_view input) -> std::optional<std::u16string> {
     auto buffer { std::string(input.begin(), input.end()) };
 
     if (auto length { buffer.length() }; length > 0) {
@@ -37,7 +37,7 @@ auto convert(std::u8string_view input) -> std::optional<std::u16string> {
     return std::nullopt;
 }
 
-auto convert(std::u16string_view input) -> std::optional<std::u8string> {
+auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
     auto buffer { std::wstring(input.begin(), input.end()) };
 
     if (auto length { buffer.length() }; length > 0) {
@@ -65,5 +65,13 @@ auto convert(std::u16string_view input) -> std::optional<std::u8string> {
     }
 
     return std::nullopt;
+}
+
+auto c_str(std::u8string_view input) -> const char* {
+    return reinterpret_cast<const char*>(input.data());
+}
+
+auto c_str(std::u16string_view input) -> const wchar_t* {
+    return reinterpret_cast<const wchar_t*>(input.data());
 }
 }; // namespace glow::text

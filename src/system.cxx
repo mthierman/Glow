@@ -32,7 +32,7 @@ auto create_process(const std::filesystem::path& path, std::u8string_view comman
     pi.hProcess = hProcess.get();
     pi.hThread = hThread.get();
 
-    auto converted { glow::text::convert(commandLine) };
+    auto converted { glow::text::u16string(commandLine) };
 
     if (converted.has_value()) {
         ::CreateProcessW(path.c_str(),
@@ -96,7 +96,7 @@ auto args() -> std::vector<std::u8string> {
     std::vector<std::u8string> args;
 
     for (int i = 0; i < argc; i++) {
-        auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(argv[i])) };
+        auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(argv[i])) };
 
         if (converted.has_value()) {
             args.emplace_back(converted.value());
@@ -132,7 +132,7 @@ auto Event::create(std::u8string_view eventName, std::function<void()>&& callbac
 
     bool exists { false };
 
-    auto converted { glow::text::convert(eventName) };
+    auto converted { glow::text::u16string(eventName) };
 
     if (converted.has_value()) {
         event.try_create(wil::EventOptions::None,

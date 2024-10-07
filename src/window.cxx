@@ -440,7 +440,7 @@ auto Window::is_visible() -> bool { return ::IsWindowVisible(hwnd.get()); }
 auto Window::is_maximized() -> bool { return ::IsZoomed(hwnd.get()); }
 
 auto Window::set_title(std::u8string_view title) -> void {
-    auto converted { glow::text::convert(title) };
+    auto converted { glow::text::u16string(title) };
 
     if (converted.has_value()) {
         ::SetWindowTextW(hwnd.get(), reinterpret_cast<const wchar_t*>(converted.value().c_str()));
@@ -720,7 +720,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
     if (createdEnvironmentOptions) {
         if (!config.environmentOptions.AdditionalBrowserArguments.empty()) {
             if (auto converted {
-                    glow::text::convert(config.environmentOptions.AdditionalBrowserArguments) };
+                    glow::text::u16string(config.environmentOptions.AdditionalBrowserArguments) };
                 converted.has_value()) {
                 createdEnvironmentOptions->put_AdditionalBrowserArguments(
                     reinterpret_cast<const wchar_t*>(converted.value().c_str()));
@@ -731,7 +731,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
             config.environmentOptions.AllowSingleSignOnUsingOSPrimaryAccount);
 
         if (!config.environmentOptions.Language.empty()) {
-            if (auto converted { glow::text::convert(config.environmentOptions.Language) };
+            if (auto converted { glow::text::u16string(config.environmentOptions.Language) };
                 converted.has_value()) {
                 createdEnvironmentOptions->put_Language(
                     reinterpret_cast<const wchar_t*>(converted.value().c_str()));
@@ -739,8 +739,8 @@ auto WebView::create_webview(Callback&& callback) -> void {
         }
 
         if (!config.environmentOptions.TargetCompatibleBrowserVersion.empty()) {
-            if (auto converted {
-                    glow::text::convert(config.environmentOptions.TargetCompatibleBrowserVersion) };
+            if (auto converted { glow::text::u16string(
+                    config.environmentOptions.TargetCompatibleBrowserVersion) };
                 converted.has_value()) {
                 createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
                     reinterpret_cast<const wchar_t*>(converted.value().c_str()));
@@ -916,7 +916,7 @@ auto WebView::document_title() -> std::optional<std::u8string> {
     wil::unique_cotaskmem_string buffer;
     core->get_DocumentTitle(&buffer);
 
-    auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(buffer.get())) };
+    auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) };
 
     if (!converted.has_value()) {
         return std::nullopt;
@@ -933,7 +933,7 @@ auto WebView::source() -> std::optional<std::u8string> {
     wil::unique_cotaskmem_string buffer;
     core->get_Source(&buffer);
 
-    auto converted { glow::text::convert(reinterpret_cast<const char16_t*>(buffer.get())) };
+    auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) };
 
     if (!converted.has_value()) {
         return std::nullopt;
@@ -947,7 +947,7 @@ auto WebView::navigate(std::u8string_view url) -> bool {
         return false;
     }
 
-    auto converted { glow::text::convert(url) };
+    auto converted { glow::text::u16string(url) };
 
     if (!converted.has_value()) {
         return false;
@@ -965,7 +965,7 @@ auto WebView::navigate_to_string(std::u8string_view url) -> bool {
         return false;
     }
 
-    auto converted { glow::text::convert(url) };
+    auto converted { glow::text::u16string(url) };
 
     if (!converted.has_value()) {
         return false;
@@ -986,7 +986,7 @@ auto WebView::virtual_host(std::u8string_view hostName,
         return false;
     }
 
-    auto converted { glow::text::convert(hostName) };
+    auto converted { glow::text::u16string(hostName) };
 
     if (!converted.has_value()) {
         return false;
@@ -1006,7 +1006,7 @@ auto WebView::clear_virtual_host(std::u8string_view hostName) -> bool {
         return false;
     }
 
-    auto converted { glow::text::convert(hostName) };
+    auto converted { glow::text::u16string(hostName) };
 
     if (!converted.has_value()) {
         return false;

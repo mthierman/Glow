@@ -24,7 +24,7 @@ auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
     buffer.resize(wil::guid_string_buffer_length);
     ::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
 
-    auto converted { glow::text::convert(std::u16string(buffer.begin(), buffer.end())) };
+    auto converted { glow::text::u8string(std::u16string(buffer.begin(), buffer.end())) };
 
     if (!converted.has_value()) {
         return std::nullopt;
