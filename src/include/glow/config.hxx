@@ -33,31 +33,26 @@ struct Config final {
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
-            auto convertedKey { glow::text::u16string(key) };
-            auto convertedValue { glow::text::u16string(value) };
-
-            if (convertedKey.has_value() && convertedValue.has_value()) {
-                json.SetNamedValue(
-                    reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
-                    winrt::JsonValue::CreateStringValue(
-                        reinterpret_cast<const wchar_t*>(convertedValue.value().data())));
+            if (auto convertedKey { glow::text::u16string(key) }; convertedKey.has_value()) {
+                if (auto convertedValue { glow::text::u16string(value) };
+                    convertedValue.has_value()) {
+                    json.SetNamedValue(
+                        glow::text::c_str(convertedKey.value()),
+                        winrt::JsonValue::CreateStringValue(glow::text::c_str(convertedValue.value()));
+                }
             }
         }
 
         if constexpr (std::is_same_v<T, bool>) {
-            auto convertedKey { glow::text::u16string(key) };
-
-            if (convertedKey.has_value()) {
-                json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
+            if (auto convertedKey { glow::text::u16string(key) }; convertedKey.has_value()) {
+                json.SetNamedValue(glow::text::c_str(convertedKey.value()),
                                    winrt::JsonValue::CreateBooleanValue(value));
             }
         }
 
         if constexpr (std::is_same_v<T, double>) {
-            auto convertedKey { glow::text::u16string(key) };
-
-            if (convertedKey.has_value()) {
-                json.SetNamedValue(reinterpret_cast<const wchar_t*>(convertedKey.value().data()),
+            if (auto convertedKey { glow::text::u16string(key) }; convertedKey.has_value()) {
+                json.SetNamedValue(glow::text::c_str(convertedKey.value()),
                                    winrt::JsonValue::CreateNumberValue(value));
             }
         }
