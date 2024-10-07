@@ -91,10 +91,6 @@ auto parse_args() -> std::vector<std::u8string> {
     wil::unique_hlocal_ptr<wchar_t*[]> argv;
     argv.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
 
-    if (!argv) {
-        glow::log::log(glow::log::get_last_error<std::string>());
-    }
-
     std::vector<std::u8string> args;
 
     for (int i = 0; i < argc; i++) {
