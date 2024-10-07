@@ -116,7 +116,7 @@ public:
     auto frame_refresh() -> void;
     auto window_refresh() -> void;
     auto dpi_refresh() -> void;
-    auto paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void;
+    auto paint_background(::HDC hdc, ::HBRUSH brush) -> void;
     auto caption_color(const glow::color::Color& color) -> void;
     auto text_color(const glow::color::Color& color) -> void;
     auto border_color(const glow::color::Color& color) -> void;

@@ -113,14 +113,15 @@ Window::Window() {
 
         switch (background.style) {
             case Transparent: {
-                paint_background(hdc, background.brush.transparent);
+                paint_background(hdc, background.brush.transparent.get());
             } break;
             case System: {
                 paint_background(hdc,
-                                 state.darkMode ? background.brush.dark : background.brush.light);
+                                 state.darkMode ? background.brush.dark.get()
+                                                : background.brush.light.get());
             } break;
             case Custom: {
-                paint_background(hdc, background.brush.custom);
+                paint_background(hdc, background.brush.custom.get());
             } break;
         }
 
@@ -216,11 +217,11 @@ auto Window::dpi_refresh() -> void {
     scale = (static_cast<double>(dpi) / static_cast<double>(USER_DEFAULT_SCREEN_DPI));
 }
 
-auto Window::paint_background(::HDC hdc, const wil::unique_hbrush& brush) -> void {
+auto Window::paint_background(::HDC hdc, ::HBRUSH brush) -> void {
     if (brush) {
         ::RECT rect;
         ::GetClientRect(hwnd.get(), &rect);
-        ::FillRect(hdc, &rect, brush.get());
+        ::FillRect(hdc, &rect, brush);
     }
 }
 
