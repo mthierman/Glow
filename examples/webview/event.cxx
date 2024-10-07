@@ -22,7 +22,7 @@ struct WebView final : glow::window::WebView {
                     event.token("DocumentTitleChanged"));
             }
 
-            navigate("http://localhost:5173/");
+            navigate(u8"http://localhost:5173/");
         });
     }
 };

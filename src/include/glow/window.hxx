@@ -312,7 +312,7 @@ struct WebView : Window {
 
         EnvironmentOptions environmentOptions;
         Settings settings;
-        std::string homePage { "about:blank" };
+        std::u8string homePage { u8"about:blank" };
         std::filesystem::path browserExecutableFolder;
         std::filesystem::path userDataFolder;
     };
@@ -359,10 +359,8 @@ public:
 
     auto get_document_title() -> std::string;
 
-    auto navigate(const std::string& url) -> void;
-    auto navigate(const std::wstring& url) -> void;
-    auto navigate_to_string(const std::string& url) -> void;
-    auto navigate_to_string(const std::wstring& url) -> void;
+    auto navigate(std::u8string_view url) -> void;
+    auto navigate_to_string(std::u8string_view url) -> void;
     auto virtual_host_name_mapping(
         const std::string& hostName,
         const std::filesystem::path& folder,

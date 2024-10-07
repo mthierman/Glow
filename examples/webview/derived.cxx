@@ -8,7 +8,7 @@ struct WebView final : glow::window::WebView {
             return 0;
         });
 
-        create([this]() { navigate("http://localhost:5173/"); });
+        create([this]() { navigate(u8"http://localhost:5173/"); });
     }
 };
 

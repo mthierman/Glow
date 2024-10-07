@@ -906,27 +906,15 @@ auto WebView::get_document_title() -> std::string {
     }
 }
 
-auto WebView::navigate(const std::string& url) -> void {
+auto WebView::navigate(std::u8string_view url) -> void {
     if (core) {
         core->Navigate(glow::text::to_wstring(url).c_str());
     }
 }
 
-auto WebView::navigate(const std::wstring& url) -> void {
-    if (core) {
-        core->Navigate(url.c_str());
-    }
-}
-
-auto WebView::navigate_to_string(const std::string& url) -> void {
+auto WebView::navigate_to_string(std::u8string_view url) -> void {
     if (core) {
         core->NavigateToString(glow::text::to_wstring(url).c_str());
-    }
-}
-
-auto WebView::navigate_to_string(const std::wstring& url) -> void {
-    if (core) {
-        core->NavigateToString(url.c_str());
     }
 }
 

@@ -9,7 +9,7 @@ auto main() -> int {
         return 0;
     });
 
-    webView.create([]() { webView.navigate("http://localhost:5173/"); });
+    webView.create([]() { webView.navigate(u8"http://localhost:5173/"); });
 
     return glow::message::run_loop();
 }
