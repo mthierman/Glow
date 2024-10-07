@@ -47,6 +47,32 @@ auto create_process(const std::filesystem::path& path, std::string commandLine) 
     return 0;
 }
 
+auto create_process(const std::filesystem::path& path, std::wstring_view commandLine) -> int {
+    ::STARTUPINFOW si {};
+    si.cb = sizeof(::STARTUPINFOW);
+
+    ::PROCESS_INFORMATION pi {};
+    wil::unique_handle hProcess;
+    wil::unique_handle hThread;
+
+    pi.hProcess = hProcess.get();
+    pi.hThread = hThread.get();
+
+    ::CreateProcessW(path.c_str(),
+                     glow::text::to_wstring(commandLine).data(),
+                     nullptr,
+                     nullptr,
+                     FALSE,
+                     0,
+                     nullptr,
+                     nullptr,
+                     &si,
+                     &pi);
+    ::WaitForSingleObject(pi.hProcess, INFINITE);
+
+    return 0;
+}
+
 auto instance() -> ::HMODULE {
     ::HMODULE module;
     ::GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT
