@@ -21,33 +21,7 @@ auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
-auto create_process(const std::filesystem::path& path, std::string commandLine) -> int {
-    ::STARTUPINFOW si {};
-    si.cb = sizeof(::STARTUPINFOW);
-
-    ::PROCESS_INFORMATION pi {};
-    wil::unique_handle hProcess;
-    wil::unique_handle hThread;
-
-    pi.hProcess = hProcess.get();
-    pi.hThread = hThread.get();
-
-    ::CreateProcessW(path.c_str(),
-                     glow::text::to_wstring(commandLine).data(),
-                     nullptr,
-                     nullptr,
-                     FALSE,
-                     0,
-                     nullptr,
-                     nullptr,
-                     &si,
-                     &pi);
-    ::WaitForSingleObject(pi.hProcess, INFINITE);
-
-    return 0;
-}
-
-auto create_process(const std::filesystem::path& path, std::wstring_view commandLine) -> int {
+auto create_process(const std::filesystem::path& path, std::string_view commandLine) -> int {
     ::STARTUPINFOW si {};
     si.cb = sizeof(::STARTUPINFOW);
 
