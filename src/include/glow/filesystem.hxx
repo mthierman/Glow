@@ -10,10 +10,10 @@
 
 #include <ShlObj.h>
 
-#include <expected>
 #include <filesystem>
 #include <format>
 #include <initializer_list>
+#include <optional>
 #include <string>
 
 #include <glow/text.hxx>
@@ -23,9 +23,9 @@ auto create_directory(const std::filesystem::path& path,
                       const std::filesystem::path& templatePath = "") -> bool;
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData,
                   std::initializer_list<std::u8string_view> subfolders = {})
-    -> std::filesystem::path;
+    -> std::optional<std::filesystem::path>;
 auto temp_folder(std::initializer_list<std::u8string_view> subfolders = {})
-    -> std::filesystem::path;
+    -> std::optional<std::filesystem::path>;
 }; // namespace glow::filesystem
 
 namespace std {

@@ -29,11 +29,11 @@ auto create_directory(const std::filesystem::path& path, const std::filesystem::
 }
 
 auto known_folder(::KNOWNFOLDERID folderId, std::initializer_list<std::u8string_view> subfolders)
-    -> std::filesystem::path {
+    -> std::optional<std::filesystem::path> {
     wil::unique_cotaskmem_string buffer;
 
-    if (auto hr { ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) }; hr != S_OK) {
-        throw std::runtime_error(glow::log::format_message<std::string>(hr));
+    if (::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) != S_OK) {
+        return std::nullopt;
     }
 
     auto knownFolder { std::filesystem::path(buffer.get()) };
@@ -45,13 +45,14 @@ auto known_folder(::KNOWNFOLDERID folderId, std::initializer_list<std::u8string_
     return knownFolder;
 }
 
-auto temp_folder(std::initializer_list<std::u8string_view> subfolders) -> std::filesystem::path {
+auto temp_folder(std::initializer_list<std::u8string_view> subfolders)
+    -> std::optional<std::filesystem::path> {
     std::wstring buffer;
     auto length { ::GetTempPathW(0, buffer.data()) };
     buffer.resize(length);
 
     if (::GetTempPathW(length, buffer.data()) == 0) {
-        throw std::runtime_error(glow::log::get_last_error<std::string>());
+        return std::nullopt;
     }
 
     buffer.resize(length - 2);
