@@ -13,10 +13,11 @@
 #include <format>
 #include <string>
 
+#include <glow/text.hxx>
+
 namespace glow::guid {
 auto create() -> ::GUID;
-auto to_string(const ::GUID& guid) -> std::string;
-auto to_wstring(const ::GUID& guid) -> std::wstring;
+auto u8string(const ::GUID& guid) -> std::u8string;
 }; // namespace glow::guid
 
 namespace std {
@@ -38,13 +39,15 @@ template <> struct less<::GUID> {
 
 template <> struct formatter<::GUID> : formatter<string_view> {
     auto format(const ::GUID& guid, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::guid::to_string(guid), context);
+        return formatter<string_view>::format(glow::text::to_string(glow::guid::u8string(guid)),
+                                              context);
     }
 };
 
 template <> struct formatter<::GUID, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const ::GUID& guid, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::guid::to_wstring(guid), context);
+        return formatter<wstring_view, wchar_t>::format(
+            glow::text::to_wstring(glow::guid::u8string(guid)), context);
     }
 };
 } // namespace std
