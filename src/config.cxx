@@ -17,11 +17,9 @@
 // https://devblogs.microsoft.com/oldnewthing/20230102-00/?p=107632
 
 namespace glow::config {
-Config::Config(const std::filesystem::path& path) { file_path(path); }
-
-auto Config::file_path(const std::filesystem::path& path) -> void {
-    paths.file = path;
-    paths.root = path.parent_path();
+Config::Config(const std::filesystem::path& path)
+    : path { path } {
+    std::filesystem::create_directories(path.parent_path());
 }
 
 auto Config::serialize() -> std::u8string { return glow::text::to_u8string(json.Stringify()); }
@@ -38,13 +36,13 @@ auto Config::save() -> void {
     auto serialized { serialize() };
 
     std::basic_ofstream<char8_t> file(
-        paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
+        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
     file.write(serialized.c_str(), serialized.size());
 }
 
 auto Config::load() -> bool {
     std::basic_ifstream<char8_t> file(
-        paths.file.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
+        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
     if (file.is_open()) {
         std::u8string buffer;

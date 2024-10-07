@@ -20,9 +20,9 @@ using namespace winrt::Windows::Data::Json;
 }; // namespace winrt
 
 namespace glow::config {
-struct Config final {
-    Config() = default;
-    ~Config() = default;
+struct Config {
+    Config() = delete;
+    virtual ~Config() = default;
     Config(const Config& config) = default;
     Config(Config&& config) = default;
 
@@ -30,8 +30,6 @@ struct Config final {
 
     auto operator=(const Config& config) -> Config& = default;
     auto operator=(Config&& config) -> Config& = default;
-
-    auto file_path(const std::filesystem::path& path) -> void;
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
@@ -85,12 +83,7 @@ struct Config final {
     auto load() -> bool;
 
 protected:
-    struct Paths {
-        std::filesystem::path root;
-        std::filesystem::path file;
-    };
-    Paths paths;
-
+    std::filesystem::path path;
     winrt::JsonObject json;
 };
 }; // namespace glow::config
