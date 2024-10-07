@@ -894,13 +894,14 @@ auto WebView::hide_controller() -> void {
     }
 }
 
-auto WebView::get_document_title() -> std::string {
+auto WebView::get_document_title() -> std::optional<std::u8string> {
     if (core) {
         wil::unique_cotaskmem_string buffer;
         core->get_DocumentTitle(&buffer);
-        return glow::text::to_string(buffer.get());
+
+        return glow::text::to_u8string(buffer.get());
     } else {
-        return {};
+        return std::nullopt;
     }
 }
 
