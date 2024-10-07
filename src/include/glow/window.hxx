@@ -361,20 +361,13 @@ public:
 
     auto navigate(std::u8string_view url) -> void;
     auto navigate_to_string(std::u8string_view url) -> void;
-    auto virtual_host_name_mapping(
-        const std::string& hostName,
+    auto virtual_host(
+        std::u8string_view hostName,
         const std::filesystem::path& folder,
         COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
         = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
         -> void;
-    auto virtual_host_name_mapping(
-        const std::wstring& hostName,
-        const std::filesystem::path& folder,
-        COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND accessKind
-        = COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND::COREWEBVIEW2_HOST_RESOURCE_ACCESS_KIND_DENY)
-        -> void;
-    auto clear_virtual_host_name_mapping(const std::string& hostName) -> void;
-    auto clear_virtual_host_name_mapping(const std::wstring& hostName) -> void;
+    auto clear_virtual_host(std::u8string_view hostName) -> void;
 
     auto suspend(Callback callback = 0) -> void;
     auto is_suspended() -> bool;
