@@ -12,8 +12,8 @@ struct WebView final : glow::window::WebView {
             if (core) {
                 core->add_SourceChanged(
                     event.make<ICoreWebView2SourceChangedEventHandler>(
-                        [this](ICoreWebView2* sender [[maybe_unused]],
-                               ICoreWebView2SourceChangedEventArgs* args [[maybe_unused]]) {
+                        [this]([[maybe_unused]] ICoreWebView2* sender,
+                               [[maybe_unused]] ICoreWebView2SourceChangedEventArgs* args) {
                     if (source().has_value()) {
                         set_title(source().value());
                     }

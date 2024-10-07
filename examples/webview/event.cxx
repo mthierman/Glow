@@ -12,8 +12,8 @@ struct WebView final : glow::window::WebView {
             if (core) {
                 core->add_DocumentTitleChanged(
                     event.make<ICoreWebView2DocumentTitleChangedEventHandler>(
-                        [this](ICoreWebView2* sender [[maybe_unused]],
-                               IUnknown* args [[maybe_unused]]) {
+                        [this]([[maybe_unused]] ICoreWebView2* sender,
+                               [[maybe_unused]] IUnknown* args) {
                     if (document_title().has_value()) {
                         set_title(document_title().value());
                     }

@@ -781,13 +781,13 @@ auto WebView::create_webview(Callback&& callback) -> void {
         createdEnvironmentOptions8->put_ScrollBarStyle(config.environmentOptions.ScrollBarStyle);
     }
 
-    auto environmentResult [[maybe_unused]] { ::CreateCoreWebView2EnvironmentWithOptions(
+    [[maybe_unused]] auto environmentResult { ::CreateCoreWebView2EnvironmentWithOptions(
         config.browserExecutableFolder.c_str(),
         config.userDataFolder.c_str(),
         createdEnvironmentOptions.get(),
         wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
             [this, callback { std::move(callback) }](
-                ::HRESULT errorCode [[maybe_unused]],
+                [[maybe_unused]] ::HRESULT errorCode,
                 ICoreWebView2Environment* createdEnvironment) -> ::HRESULT {
         if (createdEnvironment) {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
@@ -797,11 +797,11 @@ auto WebView::create_webview(Callback&& callback) -> void {
         }
 
         if (environment) {
-            auto controllerResult [[maybe_unused]] { environment->CreateCoreWebView2Controller(
+            [[maybe_unused]] auto controllerResult { environment->CreateCoreWebView2Controller(
                 hwnd.get(),
                 wil::MakeAgileCallback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
                     [this, callback { std::move(callback) }](
-                        ::HRESULT errorCode [[maybe_unused]],
+                        [[maybe_unused]] ::HRESULT errorCode,
                         ICoreWebView2Controller* createdController) -> ::HRESULT {
                 if (createdController) {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
@@ -1029,8 +1029,8 @@ auto WebView::suspend(Callback callback) -> void {
         if (!isVisible) {
             if (core) {
                 auto result { core->TrySuspend(event.make<ICoreWebView2TrySuspendCompletedHandler>(
-                    [callback { std::move(callback) }](::HRESULT errorCode [[maybe_unused]],
-                                                       BOOL result [[maybe_unused]]) {
+                    [callback { std::move(callback) }]([[maybe_unused]] ::HRESULT errorCode,
+                                                       [[maybe_unused]] BOOL result) {
                     if (callback) {
                         callback();
                     }
