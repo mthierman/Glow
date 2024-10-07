@@ -79,7 +79,7 @@ struct Config final {
     }
 
     auto serialize() -> std::u8string;
-    auto deserialize(std::u8string_view jsonString) -> std::optional<winrt::JsonObject>;
+    auto deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject>;
 
     auto save() -> void;
     auto load() -> bool;
