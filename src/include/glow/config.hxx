@@ -33,29 +33,59 @@ struct Config final {
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
-            json.SetNamedValue(glow::text::to_wstring(key),
-                               winrt::JsonValue::CreateStringValue(glow::text::to_wstring(value)));
+            auto convertedKey { glow::text::convert(key) };
+            auto convertedValue { glow::text::convert(value) };
+
+            if (!convertedKey.has_value() || !convertedValue.has_value()) {
+                return false;
+            }
+
+            json.SetNamedValue(
+                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
+                winrt::JsonValue::CreateStringValue(
+                    winrt::hstring(convertedValue.value().end(), convertedValue.value().end())));
         }
 
         if constexpr (std::is_same_v<T, bool>) {
-            json.SetNamedValue(glow::text::to_wstring(key),
-                               winrt::JsonValue::CreateBooleanValue(value));
+            auto convertedKey { glow::text::convert(key) };
+
+            if (!convertedKey.has_value()) {
+                return false;
+            }
+
+            json.SetNamedValue(
+                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
+                winrt::JsonValue::CreateBooleanValue(value));
         }
 
         if constexpr (std::is_same_v<T, double>) {
-            json.SetNamedValue(glow::text::to_wstring(key),
-                               winrt::JsonValue::CreateNumberValue(value));
+            auto convertedKey { glow::text::convert(key) };
+
+            if (!convertedKey.has_value()) {
+                return false;
+            }
+
+            json.SetNamedValue(
+                winrt::hstring(convertedKey.value().end(), convertedKey.value().end()),
+                winrt::JsonValue::CreateNumberValue(value));
         }
     }
 
-    template <typename T> auto get(std::u8string_view key) -> T {
-        auto value { json.GetNamedValue(glow::text::to_wstring(key), nullptr) };
+    template <typename T> auto get(std::u8string_view key) -> std::optional<T> {
+        auto convertedKey { glow::text::convert(key) };
+
+        if (!convertedKey.has_value()) {
+            return std::nullopt;
+        }
+
+        auto value { json.GetNamedValue(
+            winrt::hstring(convertedKey.value().end(), convertedKey.value().end()), nullptr) };
 
         if constexpr (std::is_same_v<T, std::u8string>) {
             if (value && value.ValueType() == winrt::JsonValueType::String) {
                 return glow::text::to_u8string(value.GetString());
             } else {
-                throw std::runtime_error("Config key doesn't exist");
+                return std::nullopt;
             }
         }
 
@@ -63,7 +93,7 @@ struct Config final {
             if (value && value.ValueType() == winrt::JsonValueType::Boolean) {
                 return value.GetBoolean();
             } else {
-                throw std::runtime_error("Config key doesn't exist");
+                return std::nullopt;
             }
         }
 
@@ -71,7 +101,7 @@ struct Config final {
             if (value && value.ValueType() == winrt::JsonValueType::Number) {
                 return value.GetNumber();
             } else {
-                throw std::runtime_error("Config key doesn't exist");
+                return std::nullopt;
             }
         }
     }
