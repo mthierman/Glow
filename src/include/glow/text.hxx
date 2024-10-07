@@ -8,9 +8,12 @@
 
 #include <filesystem>
 #include <format>
+#include <optional>
 #include <string>
 
 namespace glow::text {
+auto convert(std::u8string_view input) -> std::optional<std::u16string>;
+
 auto wchar_to_string(const wchar_t* input, size_t length) -> std::string;
 auto wchar_to_u8string(const wchar_t* input, size_t length) -> std::u8string;
 auto char_to_wstring(const char* input, size_t length) -> std::wstring;

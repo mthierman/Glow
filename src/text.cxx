@@ -16,6 +16,57 @@
 #include <glow/math.hxx>
 
 namespace glow::text {
+auto convert(std::u8string_view input) -> std::optional<std::u16string> {
+    auto buffer { std::string(input.begin(), input.end()) };
+
+    if (auto length { buffer.length() }; length > 0) {
+        if (length > std::numeric_limits<int>::max()) {
+            return std::nullopt;
+        }
+
+        auto outputLength { ::MultiByteToWideChar(
+            CP_UTF8, 0, buffer.c_str(), static_cast<int>(length), nullptr, 0) };
+
+        std::u16string output;
+        output.resize(outputLength);
+
+        if (::MultiByteToWideChar(CP_UTF8,
+                                  0,
+                                  buffer.c_str(),
+                                  static_cast<int>(length),
+                                  reinterpret_cast<wchar_t*>(output.data()),
+                                  outputLength)
+            != 0) {
+            return output;
+        } else {
+            return std::nullopt;
+        }
+    } else {
+        return std::nullopt;
+    }
+}
+
+auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
+    std::string output;
+
+    if (length > 0) {
+        int inputLength { glow::math::check_safe_size<int>(length) };
+
+        auto outputLength { ::WideCharToMultiByte(
+            CP_UTF8, 0, input, inputLength, nullptr, 0, nullptr, nullptr) };
+
+        output.resize(outputLength);
+
+        if (::WideCharToMultiByte(
+                CP_UTF8, 0, input, inputLength, output.data(), outputLength, nullptr, nullptr)
+            == 0) {
+            throw std::runtime_error(glow::log::get_last_error<std::string>());
+        }
+    }
+
+    return output;
+}
+
 auto wchar_to_string(const wchar_t* input, size_t length) -> std::string {
     std::string output;
 
