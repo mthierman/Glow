@@ -16,10 +16,7 @@
 namespace glow::guid {
 auto create() -> ::GUID {
     ::GUID guid;
-
-    if (auto hr { ::CoCreateGuid(&guid) }; hr != S_OK) {
-        throw std::runtime_error(glow::log::format_message<std::string>(hr));
-    }
+    ::CoCreateGuid(&guid);
 
     return guid;
 }
