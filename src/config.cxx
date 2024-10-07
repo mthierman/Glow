@@ -54,24 +54,34 @@ auto Config::save() -> bool {
 }
 
 auto Config::load() -> bool {
-    std::basic_ifstream<char8_t> file(
-        path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
+    if (path.empty()) {
+        return false;
+    } else {
+        std::basic_ifstream<char8_t> file(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in);
 
-    if (file.is_open()) {
-        std::u8string buffer;
+        if (!file.is_open()) {
+            return false;
+        }
 
         file.ignore(std::numeric_limits<std::streamsize>::max());
+
+        std::u8string buffer;
         buffer.resize(file.gcount());
+
         file.clear();
         file.seekg(0, std::basic_ios<char8_t>::beg);
-        if (file.read(buffer.data(), buffer.size())) {
-            if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
-                json = deserialized.value();
 
-                return true;
-            }
+        if (!file.read(buffer.data(), buffer.size())) {
+            return false;
         }
-    } else {
+
+        if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
+            json = deserialized.value();
+
+            return true;
+        }
+
         return false;
     }
 }
