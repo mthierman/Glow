@@ -41,17 +41,19 @@ auto create_process(const std::filesystem::path& path) -> int {
                         .hStdOutput { nullptr },
                         .hStdError { nullptr } };
 
-    ::PROCESS_INFORMATION pi {
-        .hProcess { nullptr }, .hThread { nullptr }, .dwProcessId { 0 }, .dwThreadId { 0 }
-    };
+    wil::unique_handle hProcess;
+    wil::unique_handle hThread;
+
+    ::PROCESS_INFORMATION pi { .hProcess { hProcess.get() },
+                               .hThread { hThread.get() },
+                               .dwProcessId { 0 },
+                               .dwThreadId { 0 } };
 
     auto process { path.wstring() };
     auto pProcess { process.data() };
 
     ::CreateProcessW(pProcess, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
     ::WaitForSingleObject(pi.hProcess, INFINITE);
-    ::CloseHandle(pi.hProcess);
-    ::CloseHandle(pi.hThread);
 
     return 0;
 }
