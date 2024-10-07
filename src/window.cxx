@@ -564,7 +564,7 @@ auto Window::window_position() -> Position {
 
 auto Window::device_context() -> ::HDC { return ::GetDC(hwnd.get()); }
 
-auto Window::notify_app(glow::message::Code code, std::string_view message, ::HWND receiverHwnd)
+auto Window::notify_app(glow::message::Code code, std::u8string_view message, ::HWND receiverHwnd)
     -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }
@@ -1034,7 +1034,7 @@ auto Message::create() -> void {
 
 auto Message::operator()() -> int { return glow::message::run_loop(); }
 
-auto Message::notify_app(glow::message::Code code, std::string_view message, ::HWND receiverHwnd)
+auto Message::notify_app(glow::message::Code code, std::u8string_view message, ::HWND receiverHwnd)
     -> void {
     messages.notify(code, message, hwnd.get(), id, receiverHwnd);
 }

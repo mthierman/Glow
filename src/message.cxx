@@ -31,7 +31,7 @@ auto Manager::invoke(glow::message::Message message) -> ::LRESULT {
 }
 
 auto Manager::notify(Code code,
-                     std::string_view message,
+                     std::u8string_view message,
                      ::HWND senderHwnd,
                      uintptr_t senderId,
                      ::HWND receiverHwnd) -> void {

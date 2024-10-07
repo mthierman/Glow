@@ -26,7 +26,7 @@ enum struct Code : ::UINT;
 struct Notification {
     ::NMHDR nmhdr;
     Code code;
-    std::string_view message;
+    std::u8string message;
 };
 
 struct Manager {
@@ -50,7 +50,7 @@ struct Manager {
     }
 
     auto notify(Code code,
-                std::string_view message,
+                std::u8string_view message,
                 ::HWND senderHwnd,
                 uintptr_t senderId,
                 ::HWND receiverHwnd) -> void;

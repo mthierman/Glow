@@ -189,7 +189,7 @@ public:
     auto window_position() -> Position;
     auto device_context() -> ::HDC;
     auto notify_app(glow::message::Code code,
-                    std::string_view message = "",
+                    std::u8string_view message = u8"",
                     ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"MessageWindow", nullptr)) -> void;
 
@@ -414,7 +414,7 @@ public:
     auto operator()() -> int;
 
     auto notify_app(glow::message::Code code,
-                    std::string_view message = "",
+                    std::u8string_view message = u8"",
                     ::HWND receiverHwnd
                     = ::FindWindowExW(HWND_MESSAGE, nullptr, L"MessageWindow", nullptr)) -> void;
 
