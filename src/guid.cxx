@@ -24,12 +24,10 @@ auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
     buffer.resize(wil::guid_string_buffer_length);
     ::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length);
 
-    auto converted { glow::text::u8string(std::u16string(buffer.begin(), buffer.end())) };
-
-    if (!converted.has_value()) {
-        return std::nullopt;
+    if (auto stringified { glow::text::u8string(buffer) }; stringified.has_value()) {
+        return stringified.value();
     }
 
-    return converted.value();
+    return std::nullopt;
 }
 }; // namespace glow::guid
