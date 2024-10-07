@@ -66,7 +66,7 @@ struct Config final {
                 if (value && value.ValueType() == winrt::JsonValueType::String) {
                     if (auto convertedValue { glow::text::u8string(value.GetString()) };
                         convertedValue.has_value()) {
-                        return convertedValue.value()
+                        return convertedValue.value();
                     }
                 }
             }
