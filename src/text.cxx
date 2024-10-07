@@ -87,11 +87,11 @@ auto u8string(std::wstring_view input) -> std::optional<std::u8string> {
     return converted.value();
 }
 
-auto c_str(std::u8string_view input) -> const char* {
-    return reinterpret_cast<const char*>(input.data());
+auto c_str(const std::u8string& input) -> const char* {
+    return reinterpret_cast<const char*>(input.c_str());
 }
 
-auto c_str(std::u16string_view input) -> const wchar_t* {
-    return reinterpret_cast<const wchar_t*>(input.data());
+auto c_str(const std::u16string& input) -> const wchar_t* {
+    return reinterpret_cast<const wchar_t*>(input.c_str());
 }
 }; // namespace glow::text

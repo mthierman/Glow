@@ -17,8 +17,8 @@ auto u8string(std::u16string_view input) -> std::optional<std::u8string>;
 auto u16string(std::string_view input) -> std::optional<std::u16string>;
 auto u8string(std::wstring_view input) -> std::optional<std::u8string>;
 
-auto c_str(std::u8string_view input) -> const char*;
-auto c_str(std::u16string_view input) -> const wchar_t*;
+auto c_str(const std::u8string& input) -> const char*;
+auto c_str(const std::u16string& input) -> const wchar_t*;
 }; // namespace glow::text
 
 // namespace std {
