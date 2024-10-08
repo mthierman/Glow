@@ -128,9 +128,7 @@ auto Event::create(std::u8string_view eventName, std::function<void()>&& callbac
 
     bool exists { false };
 
-    auto converted { glow::text::u16string(eventName) };
-
-    if (converted.has_value()) {
+    if (auto converted { glow::text::u16string(eventName) }; converted.has_value()) {
         event.try_create(wil::EventOptions::None,
                          reinterpret_cast<const wchar_t*>(converted.value().data()),
                          nullptr,
