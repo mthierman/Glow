@@ -59,7 +59,13 @@ Color::Color(const COREWEBVIEW2_COLOR& coreWebView2Color)
 
 auto Color::brush() const -> ::HBRUSH { return ::CreateSolidBrush(RGB(r, g, b)); }
 
-auto Color::hex() const -> std::u8string {
+auto Color::u8hex() const -> std::u8string {
+    auto hex { std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", r, g, b, a) };
+
+    return { hex.begin(), hex.end() };
+}
+
+auto Color::u16hex() const -> std::u16string {
     auto hex { std::format("#{:0>2x}{:0>2x}{:0>2x}{:0>2x}", r, g, b, a) };
 
     return { hex.begin(), hex.end() };

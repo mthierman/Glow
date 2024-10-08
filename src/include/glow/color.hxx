@@ -10,7 +10,7 @@
 
 #include <combaseapi.h>
 
-// #include <format>
+#include <format>
 #include <string>
 
 #include <winrt/Windows.Foundation.h>
@@ -51,7 +51,8 @@ struct Color final {
     uint8_t a { 0 };
 
     auto brush() const -> ::HBRUSH;
-    auto hex() const -> std::u8string;
+    auto u8hex() const -> std::u8string;
+    auto u16hex() const -> std::u16string;
     auto colorref() const -> ::COLORREF;
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
@@ -62,17 +63,16 @@ protected:
 };
 }; // namespace glow::color
 
-// namespace std {
-// template <> struct formatter<glow::color::Color> : formatter<string_view> {
-//     auto format(const glow::color::Color& color, format_context& context) const noexcept {
-//         return formatter<string_view>::format(glow::text::to_string(color.hex()), context);
-//     }
-// };
+namespace std {
+template <> struct formatter<glow::color::Color> : formatter<string_view> {
+    auto format(const glow::color::Color& color, format_context& context) const noexcept {
+        return formatter<string_view>::format(glow::text::c_str(color.u8hex()), context);
+    }
+};
 
-// template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
-//     auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
-//         return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(color.hex()),
-//                                                         context);
-//     }
-// };
-// } // namespace std
+template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
+        return formatter<wstring_view, wchar_t>::format(glow::text::c_str(color.u16hex()), context);
+    }
+};
+} // namespace std
