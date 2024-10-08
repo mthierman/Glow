@@ -33,8 +33,12 @@ auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
         ::OutputDebugStringW(L": ");
     }
 
-    ::OutputDebugStringW(glow::text::c_str(
-        glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...)))));
+    if (auto converted {
+            glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...))) };
+        converted.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(converted.value()));
+    }
+
     ::OutputDebugStringW(L"\n");
 }
 
