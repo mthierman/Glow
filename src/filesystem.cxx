@@ -35,6 +35,14 @@ auto copy_file(const std::filesystem::path& origin, const std::filesystem::path&
     return false;
 }
 
+auto delete_file(const std::filesystem::path& path) -> bool {
+    if (::DeleteFileW(path.c_str()) != 0) {
+        return true;
+    }
+
+    return false;
+}
+
 auto create_symlink(const std::filesystem::path& target, const std::filesystem::path& destination)
     -> bool {
     ::DWORD flags { std::filesystem::is_directory(target)
