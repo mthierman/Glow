@@ -19,7 +19,7 @@ auto create() -> ::GUID {
     return guid;
 }
 
-auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
+auto u8string(const ::GUID& guid) -> std::u8string {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
 
@@ -29,6 +29,17 @@ auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
         }
     }
 
-    return std::nullopt;
+    return {};
+}
+
+auto u16string(const ::GUID& guid) -> std::u16string {
+    std::wstring buffer;
+    buffer.resize(wil::guid_string_buffer_length);
+
+    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) != 0) {
+        return reinterpret_cast<char16_t*>(buffer.data());
+    }
+
+    return {};
 }
 }; // namespace glow::guid
