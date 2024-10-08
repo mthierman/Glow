@@ -103,14 +103,16 @@ auto c_str(const std::u16string& input) -> const wchar_t* {
 
 auto upper(std::u8string_view input) -> std::optional<std::u8string> {
     if (auto converted { u16string(input) }; converted.has_value()) {
-        auto errorCode { U_ZERO_ERROR };
-        auto length { u_strToUpper(nullptr, 0, converted.value().c_str(), -1, 0, &errorCode) };
-
         std::u16string buffer;
-        buffer.resize(length);
-        errorCode = U_ZERO_ERROR;
+        buffer.resize(input.length());
 
-        u_strToUpper(buffer.data(), length, converted.value().c_str(), -1, 0, &errorCode);
+        auto errorCode { U_ZERO_ERROR };
+        u_strToUpper(buffer.data(),
+                     static_cast<int32_t>(buffer.length()),
+                     converted.value().c_str(),
+                     static_cast<int32_t>(converted.value().length()),
+                     0,
+                     &errorCode);
 
         if (auto output { u8string(buffer) }; output.has_value()) {
             return output.value();
