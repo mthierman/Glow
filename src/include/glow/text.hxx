@@ -6,8 +6,7 @@
 
 #pragma once
 
-// #include <filesystem>
-// #include <format>
+#include <format>
 #include <optional>
 #include <string>
 
@@ -23,30 +22,37 @@ auto c_str(std::u16string& input) -> wchar_t*;
 auto c_str(const std::u16string& input) -> const wchar_t*;
 }; // namespace glow::text
 
-// namespace std {
-// template <> struct formatter<std::u8string> : formatter<string_view> {
-//     auto format(const std::u8string& u8string, format_context& context) const noexcept {
-//         return formatter<string_view>::format(glow::text::to_string(u8string), context);
-//     }
-// };
+namespace std {
+template <> struct formatter<std::u8string> : formatter<string_view> {
+    auto format(const std::u8string& u8string, format_context& context) const noexcept {
+        return formatter<string_view>::format(glow::text::c_str(u8string), context);
+    }
+};
 
-// template <> struct formatter<std::u8string, wchar_t> : formatter<wstring_view, wchar_t> {
-//     auto format(const std::u8string& u8string, wformat_context& context) const noexcept {
-//         return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(u8string),
-//         context);
-//     }
-// };
+template <> struct formatter<std::u16string, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const std::u16string& u16string, wformat_context& context) const noexcept {
+        return formatter<wstring_view, wchar_t>::format(glow::text::c_str(u16string), context);
+    }
+};
 
-// template <> struct formatter<std::u16string> : formatter<string_view> {
-//     auto format(const std::u16string& u16string, format_context& context) const noexcept {
-//         return formatter<string_view>::format(glow::text::to_string(u16string), context);
-//     }
-// };
+template <> struct formatter<std::u8string, wchar_t> : formatter<wstring_view, wchar_t> {
+    auto format(const std::u8string& u8string, wformat_context& context) const noexcept {
+        if (auto converted { glow::text::u16string(u8string) }; converted.has_value()) {
+            return formatter<wstring_view, wchar_t>::format(glow::text::c_str(converted.value()),
+                                                            context);
+        }
 
-// template <> struct formatter<std::u16string, wchar_t> : formatter<wstring_view, wchar_t> {
-//     auto format(const std::u16string& u16string, wformat_context& context) const noexcept {
-//         return formatter<wstring_view, wchar_t>::format(glow::text::to_wstring(u16string),
-//         context);
-//     }
-// };
-// } // namespace std
+        return formatter<wstring_view, wchar_t>::format({}, context);
+    }
+};
+
+template <> struct formatter<std::u16string> : formatter<string_view> {
+    auto format(const std::u16string& u16string, format_context& context) const noexcept {
+        if (auto converted { glow::text::u8string(u16string) }; converted.has_value()) {
+            return formatter<string_view>::format(glow::text::c_str(converted.value()), context);
+        }
+
+        return formatter<string_view>::format({}, context);
+    }
+};
+} // namespace std
