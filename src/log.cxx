@@ -14,9 +14,8 @@ auto log(std::u8string_view message) -> void {
             glow::text::u16string(std::source_location::current().function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
+        ::OutputDebugStringW(L": ");
     }
-
-    ::OutputDebugStringW(L": ");
 
     if (auto convertedMessage { glow::text::u16string(message) }; convertedMessage.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(convertedMessage.value()));
@@ -30,9 +29,8 @@ auto log(::HRESULT errorCode) -> void {
             glow::text::u16string(std::source_location::current().function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
+        ::OutputDebugStringW(L": ");
     }
-
-    ::OutputDebugStringW(L": ");
 
     if (auto formattedMessage { glow::text::u16string(format_message(errorCode)) };
         formattedMessage.has_value()) {

@@ -25,6 +25,13 @@ auto get_last_error() -> std::u8string;
 
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
+    if (auto functionName {
+            glow::text::u16string(std::source_location::current().function_name()) };
+        functionName.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
+        ::OutputDebugStringW(L": ");
+    }
+
     ::OutputDebugStringW(
         glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str());
     ::OutputDebugStringW(L"\n");
@@ -32,6 +39,13 @@ auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
+    if (auto functionName {
+            glow::text::u16string(std::source_location::current().function_name()) };
+        functionName.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
+        ::OutputDebugStringW(L": ");
+    }
+
     ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
     ::OutputDebugStringW(L"\n");
 }
