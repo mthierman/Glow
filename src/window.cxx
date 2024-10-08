@@ -875,8 +875,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
             }).Get()) };
 
             if (controllerResult != S_OK) {
-                glow::log::log("CreateCoreWebView2Controller: {}",
-                               glow::log::format_message(controllerResult));
+                glow::log::log(controllerResult);
             }
         }
 
@@ -884,8 +883,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
     }).Get()) };
 
     if (environmentResult != S_OK) {
-        glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
-                       glow::log::format_message(environmentResult));
+        glow::log::log(environmentResult);
     }
 }
 
