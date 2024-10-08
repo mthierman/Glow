@@ -792,7 +792,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                               .try_query<ICoreWebView2Environment13>();
         } else {
-            glow::log::log("{}", glow::log::format_message(errorCode));
+            glow::log::log(errorCode);
         }
 
         if (environment) {
@@ -806,7 +806,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                                      .try_query<ICoreWebView2Controller4>();
                 } else {
-                    glow::log::log("{}", glow::log::format_message(errorCode));
+                    glow::log::log(errorCode);
                 }
 
                 if (controller) {
@@ -1038,7 +1038,7 @@ auto WebView::suspend(Callback callback) -> void {
                 })) };
 
                 if (result != S_OK) {
-                    glow::log::log(glow::log::format_message(result));
+                    glow::log::log(result);
                 }
             }
         }
@@ -1052,7 +1052,7 @@ auto WebView::is_suspended() -> bool {
         auto result { core->get_IsSuspended(&isSuspended) };
 
         if (result != S_OK) {
-            glow::log::log(glow::log::format_message(result));
+            glow::log::log(result);
         }
     }
 
