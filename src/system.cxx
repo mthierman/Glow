@@ -32,11 +32,11 @@ auto create_process(const std::filesystem::path& path, std::u8string_view comman
     pi.hProcess = hProcess.get();
     pi.hThread = hThread.get();
 
-    auto converted { glow::text::u16string(commandLine) };
+    if (auto converted { glow::text::u16string(commandLine) }; converted.has_value()) {
+        auto lpCommandLine = std::wstring(converted.value().begin(), converted.value().end());
 
-    if (converted.has_value()) {
         ::CreateProcessW(path.c_str(),
-                         reinterpret_cast<wchar_t*>(converted.value().data()),
+                         lpCommandLine.data(),
                          nullptr,
                          nullptr,
                          FALSE,
