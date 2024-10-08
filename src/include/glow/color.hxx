@@ -51,8 +51,7 @@ struct Color final {
     uint8_t a { 0 };
 
     auto brush() const -> ::HBRUSH;
-    auto u8string() const -> std::u8string;
-    auto u16string() const -> std::u16string;
+    auto hex() const -> std::u8string;
     auto colorref() const -> ::COLORREF;
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
@@ -66,14 +65,17 @@ protected:
 namespace std {
 template <> struct formatter<glow::color::Color> : formatter<string_view> {
     auto format(const glow::color::Color& color, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::text::c_str(color.u8string()), context);
+        return formatter<string_view>::format(glow::text::c_str(color.hex()), context);
     }
 };
 
 template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(glow::text::c_str(color.u16string()),
-                                                        context);
+        if (auto converted { glow::text::u16string(color.hex()) }; converted.has_value()) {
+            return formatter<wstring_view, wchar_t>::format(glow::text::c_str(converted.value()), context);
+        }
+
+        return formatter<wstring_view, wchar_t>::format({}, context);
     }
 };
 } // namespace std
