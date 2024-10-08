@@ -98,6 +98,7 @@ target_link_libraries(
            WindowsApp.lib
            dwmapi.lib
            gdiplus.lib
+           icu.lib
     )
 
 if(PROJECT_IS_TOP_LEVEL)
