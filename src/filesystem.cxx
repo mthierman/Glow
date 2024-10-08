@@ -26,6 +26,15 @@ auto create_directory(const std::filesystem::path& path, const std::filesystem::
     return false;
 }
 
+auto copy_file(const std::filesystem::path& origin, const std::filesystem::path& destination)
+    -> bool {
+    if (::CopyFile2(origin.c_str(), destination.c_str(), nullptr) == S_OK) {
+        return true;
+    }
+
+    return false;
+}
+
 auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
     wil::unique_cotaskmem_string buffer;
 

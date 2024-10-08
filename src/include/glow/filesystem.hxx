@@ -21,6 +21,7 @@
 namespace glow::filesystem {
 auto create_directory(const std::filesystem::path& path,
                       const std::filesystem::path& templatePath = "") -> bool;
+auto copy_file(const std::filesystem::path& origin, const std::filesystem::path& destination) -> bool;
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData)
     -> std::optional<std::filesystem::path>;
 auto temp_folder() -> std::optional<std::filesystem::path>;
