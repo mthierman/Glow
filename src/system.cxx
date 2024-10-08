@@ -94,9 +94,7 @@ auto args() -> std::vector<std::u8string> {
     std::vector<std::u8string> args;
 
     for (int i = 0; i < argc; i++) {
-        auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(argv[i])) };
-
-        if (converted.has_value()) {
+        if (auto converted { glow::text::u8string(argv[i]) }; converted.has_value()) {
             args.emplace_back(converted.value());
         }
     }
