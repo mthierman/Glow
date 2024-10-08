@@ -9,21 +9,20 @@
 #include <icu.h>
 
 auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
-    auto text { std::u16string(u"test") };
+    auto text { std::u8string(u8"test") };
     // std::println("text - length: {} size: {} string: {}", text.length(), text.size(), text);
 
-    auto view = std::u16string_view(text);
+    // auto view = std::u16string_view(text);
     // std::println("view - length: {} size: {}", view.length(), view.size());
 
-    std::u16string buffer;
-    UErrorCode errorCode { U_ZERO_ERROR };
-    buffer.resize(
-        u_strToUpper(nullptr, 0, view.data(), static_cast<int32_t>(view.length()), 0, &errorCode));
+    // glow::text::upper(text);
 
-    errorCode = U_ZERO_ERROR;
-    u_strToUpper(buffer.data(), 4, view.data(), static_cast<int32_t>(view.length()), 0, &errorCode);
+    if (auto converted { glow::text::upper(text) }; converted.has_value()) {
+        std::println(
+            "{}, {}, {}", converted.value(), converted.value().length(), converted.value().size());
+    }
 
-    std::println("{}", buffer);
+    // std::println("{}", );
 
     return EXIT_SUCCESS;
 }

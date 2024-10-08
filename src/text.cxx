@@ -107,10 +107,10 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
         auto length { u_strToUpper(nullptr, 0, converted.value().c_str(), -1, 0, &errorCode) };
 
         std::u16string buffer;
-        buffer.resize(length + 1);
+        buffer.resize(length);
         errorCode = U_ZERO_ERROR;
 
-        u_strToUpper(buffer.data(), length + 1, converted.value().c_str(), -1, 0, &errorCode);
+        u_strToUpper(buffer.data(), length, converted.value().c_str(), -1, 0, &errorCode);
 
         if (auto output { u8string(buffer) }; output.has_value()) {
             return output.value();
