@@ -8,6 +8,12 @@
 
 namespace glow::log {
 auto log(std::u8string_view message, const std::source_location& location) -> void {
+    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) };
+        lineNumber.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(lineNumber.value()));
+        ::OutputDebugStringW(L" - ");
+    }
+
     if (auto functionName { glow::text::u16string(location.function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
@@ -22,6 +28,12 @@ auto log(std::u8string_view message, const std::source_location& location) -> vo
 }
 
 auto log(::HRESULT errorCode, const std::source_location& location) -> void {
+    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) };
+        lineNumber.has_value()) {
+        ::OutputDebugStringW(glow::text::c_str(lineNumber.value()));
+        ::OutputDebugStringW(L" - ");
+    }
+
     if (auto functionName { glow::text::u16string(location.function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
