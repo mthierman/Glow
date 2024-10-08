@@ -8,6 +8,8 @@
 
 #include <Windows.h>
 
+#include <icu.h>
+
 namespace glow::text {
 auto u16string(std::u8string_view input) -> std::optional<std::u16string> {
     auto buffer { std::string(input.begin(), input.end()) };
@@ -98,4 +100,25 @@ auto c_str(std::u16string& input) -> wchar_t* { return reinterpret_cast<wchar_t*
 auto c_str(const std::u16string& input) -> const wchar_t* {
     return reinterpret_cast<const wchar_t*>(input.data());
 }
+
+auto upper(std::u8string_view input) -> std::optional<std::u8string> {
+    if (auto converted { u16string(input) }; converted.has_value()) {
+        auto errorCode { U_ZERO_ERROR };
+        auto length { u_strToUpper(nullptr, 0, converted.value().c_str(), -1, 0, &errorCode) };
+
+        std::u16string buffer;
+        buffer.resize(length + 1);
+        errorCode = U_ZERO_ERROR;
+
+        u_strToUpper(buffer.data(), length + 1, converted.value().c_str(), -1, 0, &errorCode);
+
+        if (auto output { u8string(buffer) }; output.has_value()) {
+            return output.value();
+        }
+    }
+
+    return std::nullopt;
+}
+
+// auto lower(std::u8string_view input) -> std::u8string { }
 }; // namespace glow::text
