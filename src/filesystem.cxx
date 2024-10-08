@@ -77,12 +77,12 @@ auto delete_file(const std::filesystem::path& path) -> bool {
 
 auto create_symlink(const std::filesystem::path& target, const std::filesystem::path& destination)
     -> bool {
-    ::DWORD flags { std::filesystem::is_directory(target)
-                        ? SYMBOLIC_LINK_FLAG_DIRECTORY
-                            | SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
-                        : SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE };
+    auto flags { std::filesystem::is_directory(target)
+                     ? SYMBOLIC_LINK_FLAG_DIRECTORY | SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+                     : SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE };
 
-    if (::CreateSymbolicLinkW(destination.c_str(), target.c_str(), flags) != 0) {
+    if (::CreateSymbolicLinkW(destination.c_str(), target.c_str(), static_cast<::DWORD>(flags))
+        != 0) {
         return true;
     }
 

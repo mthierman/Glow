@@ -1,5 +1,7 @@
 #include <glow/glow.hxx>
 
+#include <iostream>
+
 glow::window::Overlapped window;
 
 auto WinMain([[maybe_unused]] ::HINSTANCE instance,
@@ -13,6 +15,10 @@ auto WinMain([[maybe_unused]] ::HINSTANCE instance,
     });
 
     window.create();
+
+    glow::system::attach_console();
+
+    std::cout << "TEST" << std::endl;
 
     return glow::message::run_loop();
 }

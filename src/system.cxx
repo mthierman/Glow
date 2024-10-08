@@ -8,7 +8,7 @@
 
 #include <shellapi.h>
 
-#include <stdexcept>
+#include <iostream>
 
 #include <wil/win32_helpers.h>
 
@@ -20,6 +20,23 @@ namespace glow::system {
 auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
+
+auto attach_console() -> void {
+    ::AllocConsole();
+
+    wil::unique_file file;
+
+    ::freopen_s(file.addressof(), "CONIN$", "r", stdin);
+    ::freopen_s(file.addressof(), "CONOUT$", "w", stdout);
+    ::freopen_s(file.addressof(), "CONIN$", "w", stderr);
+
+    std::cin.clear();
+    std::cout.clear();
+    std::cerr.clear();
+    std::clog.clear();
+}
+
+auto detach_console() -> void { ::FreeConsole(); }
 
 auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> void {
     ::STARTUPINFOW si {};
