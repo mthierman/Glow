@@ -6,8 +6,6 @@
 
 #include <glow/log.hxx>
 
-#include <source_location>
-
 namespace glow::log {
 auto log(std::u8string_view message) -> void {
     if (auto functionName {

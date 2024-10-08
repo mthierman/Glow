@@ -9,6 +9,7 @@
 #include <Windows.h>
 
 #include <format>
+#include <source_location>
 #include <string>
 
 #include <wil/resource.h>
@@ -32,8 +33,8 @@ auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
         ::OutputDebugStringW(L": ");
     }
 
-    ::OutputDebugStringW(
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str());
+    ::OutputDebugStringW(glow::text::c_str(
+        glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...)))));
     ::OutputDebugStringW(L"\n");
 }
 
@@ -52,11 +53,11 @@ auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto message(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(
-        nullptr,
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
-        nullptr,
-        MB_OK | MB_ICONASTERISK);
+    ::MessageBoxW(nullptr,
+                  glow::text::c_str(glow::text::u16string(
+                      std::vformat(fmt.get(), std::make_format_args(args...)))),
+                  nullptr,
+                  MB_OK | MB_ICONASTERISK);
 }
 
 template <typename... Args>
@@ -69,11 +70,11 @@ auto message(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto error(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    ::MessageBoxW(
-        nullptr,
-        glow::text::to_wstring(std::vformat(fmt.get(), std::make_format_args(args...))).c_str(),
-        nullptr,
-        MB_OK | MB_ICONHAND);
+    ::MessageBoxW(nullptr,
+                  glow::text::c_str(glow::text::u16string(
+                      std::vformat(fmt.get(), std::make_format_args(args...)))),
+                  nullptr,
+                  MB_OK | MB_ICONHAND);
 }
 
 template <typename... Args>
