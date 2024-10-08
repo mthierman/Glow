@@ -35,6 +35,20 @@ auto copy_file(const std::filesystem::path& origin, const std::filesystem::path&
     return false;
 }
 
+auto create_symlink(const std::filesystem::path& target, const std::filesystem::path& destination)
+    -> bool {
+    ::DWORD flags { std::filesystem::is_directory(target)
+                        ? SYMBOLIC_LINK_FLAG_DIRECTORY
+                            | SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+                        : SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE };
+
+    if (::CreateSymbolicLinkW(destination.c_str(), target.c_str(), flags) != 0) {
+        return true;
+    }
+
+    return false;
+}
+
 auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
     wil::unique_cotaskmem_string buffer;
 
