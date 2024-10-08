@@ -7,9 +7,8 @@
 #include <glow/log.hxx>
 
 namespace glow::log {
-auto log(std::u8string_view message) -> void {
-    if (auto functionName {
-            glow::text::u16string(std::source_location::current().function_name()) };
+auto log(std::u8string_view message, const std::source_location& location) -> void {
+    if (auto functionName { glow::text::u16string(location.function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");
@@ -22,9 +21,8 @@ auto log(std::u8string_view message) -> void {
     ::OutputDebugStringW(L"\n");
 }
 
-auto log(::HRESULT errorCode) -> void {
-    if (auto functionName {
-            glow::text::u16string(std::source_location::current().function_name()) };
+auto log(::HRESULT errorCode, const std::source_location& location) -> void {
+    if (auto functionName { glow::text::u16string(location.function_name()) };
         functionName.has_value()) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");

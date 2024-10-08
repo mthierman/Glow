@@ -17,8 +17,10 @@
 #include <glow/text.hxx>
 
 namespace glow::log {
-auto log(std::u8string_view message) -> void;
-auto log(::HRESULT errorCode) -> void;
+auto log(std::u8string_view message,
+         const std::source_location& location = std::source_location::current()) -> void;
+auto log(::HRESULT errorCode,
+         const std::source_location& location = std::source_location::current()) -> void;
 auto message(std::u8string_view message) -> void;
 auto error(std::u8string_view message) -> void;
 auto format_message(::HRESULT errorCode) -> std::u8string;
