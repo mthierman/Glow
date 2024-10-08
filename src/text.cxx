@@ -111,7 +111,7 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
                      static_cast<int32_t>(buffer.length()),
                      converted.value().c_str(),
                      static_cast<int32_t>(converted.value().length()),
-                     0,
+                     nullptr,
                      &errorCode);
 
         if (auto output { u8string(buffer) }; output.has_value()) {
@@ -122,5 +122,24 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
     return std::nullopt;
 }
 
-// auto lower(std::u8string_view input) -> std::u8string { }
+auto lower(std::u8string_view input) -> std::optional<std::u8string> {
+    if (auto converted { u16string(input) }; converted.has_value()) {
+        std::u16string buffer;
+        buffer.resize(input.length());
+
+        auto errorCode { U_ZERO_ERROR };
+        u_strToLower(buffer.data(),
+                     static_cast<int32_t>(buffer.length()),
+                     converted.value().c_str(),
+                     static_cast<int32_t>(converted.value().length()),
+                     nullptr,
+                     &errorCode);
+
+        if (auto output { u8string(buffer) }; output.has_value()) {
+            return output.value();
+        }
+    }
+
+    return std::nullopt;
+}
 }; // namespace glow::text
