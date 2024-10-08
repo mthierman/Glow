@@ -723,7 +723,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     glow::text::u16string(config.environmentOptions.AdditionalBrowserArguments) };
                 converted.has_value()) {
                 createdEnvironmentOptions->put_AdditionalBrowserArguments(
-                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+                    glow::text::c_str(converted.value()));
             }
         }
 
@@ -733,8 +733,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
         if (!config.environmentOptions.Language.empty()) {
             if (auto converted { glow::text::u16string(config.environmentOptions.Language) };
                 converted.has_value()) {
-                createdEnvironmentOptions->put_Language(
-                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+                createdEnvironmentOptions->put_Language(glow::text::c_str(converted.value()));
             }
         }
 
@@ -743,7 +742,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     config.environmentOptions.TargetCompatibleBrowserVersion) };
                 converted.has_value()) {
                 createdEnvironmentOptions->put_TargetCompatibleBrowserVersion(
-                    reinterpret_cast<const wchar_t*>(converted.value().c_str()));
+                    glow::text::c_str(converted.value()));
             }
         }
     }
@@ -793,7 +792,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
             environment = wil::com_ptr<ICoreWebView2Environment>(createdEnvironment)
                               .try_query<ICoreWebView2Environment13>();
         } else {
-            // glow::log::log("{}", glow::log::format_message(errorCode));
+            glow::log::log("{}", glow::log::format_message(errorCode));
         }
 
         if (environment) {
@@ -807,7 +806,7 @@ auto WebView::create_webview(Callback&& callback) -> void {
                     controller = wil::com_ptr<ICoreWebView2Controller>(createdController)
                                      .try_query<ICoreWebView2Controller4>();
                 } else {
-                    // glow::log::log("{}", glow::log::format_message(errorCode));
+                    glow::log::log("{}", glow::log::format_message(errorCode));
                 }
 
                 if (controller) {
@@ -875,19 +874,19 @@ auto WebView::create_webview(Callback&& callback) -> void {
                 return S_OK;
             }).Get()) };
 
-            // if (controllerResult != S_OK) {
-            //     glow::log::log("CreateCoreWebView2Controller: {}",
-            //                    glow::log::format_message<std::string>(controllerResult));
-            // }
+            if (controllerResult != S_OK) {
+                glow::log::log("CreateCoreWebView2Controller: {}",
+                               glow::log::format_message(controllerResult));
+            }
         }
 
         return S_OK;
     }).Get()) };
 
-    // if (environmentResult != S_OK) {
-    //     glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
-    //                    glow::log::format_message<std::string>(environmentResult));
-    // }
+    if (environmentResult != S_OK) {
+        glow::log::log("CreateCoreWebView2EnvironmentWithOptions: {}",
+                       glow::log::format_message(environmentResult));
+    }
 }
 
 auto WebView::put_bounds(const Position& position) -> void {
@@ -1039,7 +1038,7 @@ auto WebView::suspend(Callback callback) -> void {
                 })) };
 
                 if (result != S_OK) {
-                    // glow::log::log(glow::log::format_message<std::string>(result));
+                    glow::log::log(glow::log::format_message(result));
                 }
             }
         }
@@ -1053,7 +1052,7 @@ auto WebView::is_suspended() -> bool {
         auto result { core->get_IsSuspended(&isSuspended) };
 
         if (result != S_OK) {
-            // glow::log::log(glow::log::format_message<std::string>(result));
+            glow::log::log(glow::log::format_message(result));
         }
     }
 
