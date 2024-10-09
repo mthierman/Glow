@@ -25,15 +25,11 @@ auto u16string(std::u8string_view input) -> std::optional<std::u16string> {
                   static_cast<int32_t>(input.length()),
                   &errorCode);
 
-    switch (errorCode) {
-        case U_STRING_NOT_TERMINATED_WARNING:
-        case U_ZERO_ERROR: {
-            return buffer;
-        }
-        default: {
-            return std::nullopt;
-        }
+    if (U_SUCCESS(errorCode)) {
+        return buffer;
     }
+
+    return std::nullopt;
 }
 
 auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
@@ -48,15 +44,11 @@ auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
                 static_cast<int32_t>(input.length()),
                 &errorCode);
 
-    switch (errorCode) {
-        case U_STRING_NOT_TERMINATED_WARNING:
-        case U_ZERO_ERROR: {
-            return buffer;
-        }
-        default: {
-            return std::nullopt;
-        }
+    if (U_SUCCESS(errorCode)) {
+        return buffer;
     }
+
+    return std::nullopt;
 }
 
 auto u16string(std::string_view input) -> std::optional<std::u16string> {
