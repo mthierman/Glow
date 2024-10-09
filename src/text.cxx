@@ -83,8 +83,8 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
     if (auto converted { u16string(input) }; converted) {
         std::u16string buffer;
         buffer.resize(input.length());
-
         auto errorCode { U_ZERO_ERROR };
+
         u_strToUpper(buffer.data(),
                      static_cast<int32_t>(buffer.length()),
                      converted.value().c_str(),
@@ -92,8 +92,8 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
                      nullptr,
                      &errorCode);
 
-        if (auto output { u8string(buffer) }; output) {
-            return output.value();
+        if (auto output { u8string(buffer) }) {
+            return *output;
         }
     }
 
@@ -104,8 +104,8 @@ auto lower(std::u8string_view input) -> std::optional<std::u8string> {
     if (auto converted { u16string(input) }; converted) {
         std::u16string buffer;
         buffer.resize(input.length());
-
         auto errorCode { U_ZERO_ERROR };
+
         u_strToLower(buffer.data(),
                      static_cast<int32_t>(buffer.length()),
                      converted.value().c_str(),
@@ -113,8 +113,8 @@ auto lower(std::u8string_view input) -> std::optional<std::u8string> {
                      nullptr,
                      &errorCode);
 
-        if (auto output { u8string(buffer) }; output) {
-            return output.value();
+        if (auto output { u8string(buffer) }) {
+            return *output;
         }
     }
 
