@@ -49,7 +49,7 @@ auto create_process(const std::filesystem::path& path, std::u8string_view comman
     pi.hProcess = hProcess.get();
     pi.hThread = hThread.get();
 
-    if (auto converted { glow::text::u16string(commandLine) }; converted.has_value()) {
+    if (auto converted { glow::text::u16string(commandLine) }; converted) {
         ::CreateProcessW(path.c_str(),
                          glow::text::c_str(converted.value()),
                          nullptr,
@@ -145,7 +145,7 @@ auto Event::create(std::u8string_view eventName, std::function<void()>&& callbac
 
     bool exists { false };
 
-    if (auto converted { glow::text::u16string(eventName) }; converted.has_value()) {
+    if (auto converted { glow::text::u16string(eventName) }; converted) {
         event.try_create(wil::EventOptions::None,
                          reinterpret_cast<const wchar_t*>(converted.value().data()),
                          nullptr,

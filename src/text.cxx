@@ -72,7 +72,7 @@ auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
 auto u16string(std::string_view input) -> std::optional<std::u16string> {
     auto converted { u16string(reinterpret_cast<const char8_t*>(input.data())) };
 
-    if (!converted.has_value()) {
+    if (!converted) {
         return std::nullopt;
     }
 
@@ -82,7 +82,7 @@ auto u16string(std::string_view input) -> std::optional<std::u16string> {
 auto u8string(std::wstring_view input) -> std::optional<std::u8string> {
     auto converted { u8string(reinterpret_cast<const char16_t*>(input.data())) };
 
-    if (!converted.has_value()) {
+    if (!converted) {
         return std::nullopt;
     }
 
@@ -102,7 +102,7 @@ auto c_str(const std::u16string& input) -> const wchar_t* {
 }
 
 auto upper(std::u8string_view input) -> std::optional<std::u8string> {
-    if (auto converted { u16string(input) }; converted.has_value()) {
+    if (auto converted { u16string(input) }; converted) {
         std::u16string buffer;
         buffer.resize(input.length());
 
@@ -114,7 +114,7 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
                      nullptr,
                      &errorCode);
 
-        if (auto output { u8string(buffer) }; output.has_value()) {
+        if (auto output { u8string(buffer) }; output) {
             return output.value();
         }
     }
@@ -123,7 +123,7 @@ auto upper(std::u8string_view input) -> std::optional<std::u8string> {
 }
 
 auto lower(std::u8string_view input) -> std::optional<std::u8string> {
-    if (auto converted { u16string(input) }; converted.has_value()) {
+    if (auto converted { u16string(input) }; converted) {
         std::u16string buffer;
         buffer.resize(input.length());
 
@@ -135,7 +135,7 @@ auto lower(std::u8string_view input) -> std::optional<std::u8string> {
                      nullptr,
                      &errorCode);
 
-        if (auto output { u8string(buffer) }; output.has_value()) {
+        if (auto output { u8string(buffer) }; output) {
             return output.value();
         }
     }

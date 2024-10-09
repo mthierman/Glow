@@ -24,7 +24,7 @@ auto u8string(const ::GUID& guid) -> std::u8string {
     buffer.resize(wil::guid_string_buffer_length);
 
     if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) != 0) {
-        if (auto stringified { glow::text::u8string(buffer) }; stringified.has_value()) {
+        if (auto stringified { glow::text::u8string(buffer) }; stringified) {
             return stringified.value();
         }
     }

@@ -17,7 +17,7 @@ auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
 
     // glow::text::upper(text);
 
-    if (auto converted { glow::text::upper(text) }; converted.has_value()) {
+    if (auto converted { glow::text::upper(text) }; converted) {
         std::println(
             "{}, {}, {}", converted.value(), converted.value().length(), converted.value().size());
     }

@@ -30,14 +30,14 @@ template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
     if (auto functionName {
             glow::text::u16string(std::source_location::current().function_name()) };
-        functionName.has_value()) {
+        functionName) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");
     }
 
     if (auto converted {
             glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...))) };
-        converted.has_value()) {
+        converted) {
         ::OutputDebugStringW(glow::text::c_str(converted.value()));
     }
 
@@ -48,7 +48,7 @@ template <typename... Args>
 auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
     if (auto functionName {
             glow::text::u16string(std::source_location::current().function_name()) };
-        functionName.has_value()) {
+        functionName) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");
     }

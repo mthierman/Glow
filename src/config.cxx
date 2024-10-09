@@ -23,7 +23,7 @@ Config::Config(const std::filesystem::path& path)
 }
 
 auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8string> {
-    if (auto converted { glow::text::u8string(input.Stringify()) }; converted.has_value()) {
+    if (auto converted { glow::text::u8string(input.Stringify()) }; converted) {
         return converted.value();
     }
 
@@ -33,7 +33,7 @@ auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8s
 auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject> {
     winrt::JsonObject output;
 
-    if (auto converted { glow::text::u16string(input) }; converted.has_value()) {
+    if (auto converted { glow::text::u16string(input) }; converted) {
         if (output.TryParse(glow::text::c_str(converted.value()), output)) {
             return output;
         }
@@ -43,7 +43,7 @@ auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonO
 }
 
 auto Config::save() -> bool {
-    if (auto serialized { serialize(json) }; !path.empty() && serialized.has_value()) {
+    if (auto serialized { serialize(json) }; !path.empty() && serialized) {
         std::basic_ofstream<char8_t> file(
             path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
 
@@ -68,7 +68,7 @@ auto Config::load() -> bool {
         file.seekg(0, std::basic_ios<char8_t>::beg);
 
         if (file.read(buffer.data(), buffer.size())) {
-            if (auto deserialized { deserialize(buffer) }; deserialized.has_value()) {
+            if (auto deserialized { deserialize(buffer) }; deserialized) {
                 json = deserialized.value();
 
                 return true;

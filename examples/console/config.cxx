@@ -9,7 +9,7 @@
 #include <glow/glow.hxx>
 
 auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
-    if (glow::filesystem::known_folder().has_value()) {
+    if (glow::filesystem::known_folder()) {
         auto filePath { glow::filesystem::known_folder().value() / u"ini" / u"ini.json" };
 
         auto config { glow::config::Config(filePath) };
@@ -18,15 +18,15 @@ auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
         config.set<bool>(u8"bool", true);
         config.set<double>(u8"number", 24);
 
-        if (auto result { config.get<std::u8string>(u8"u8string") }; result.has_value()) {
+        if (auto result { config.get<std::u8string>(u8"u8string") }; result) {
             glow::log::log(result.value());
         }
 
-        if (auto result { config.get<bool>(u8"bool") }; result.has_value()) {
+        if (auto result { config.get<bool>(u8"bool") }; result) {
             glow::log::log(result.value());
         }
 
-        if (auto result { config.get<double>(u8"number") }; result.has_value()) {
+        if (auto result { config.get<double>(u8"number") }; result) {
             auto fmt { std::format("{}", result.value()) };
             glow::log::log(std::u8string(fmt.begin(), fmt.end()));
         }

@@ -8,19 +8,17 @@
 
 namespace glow::log {
 auto log(std::u8string_view message, const std::source_location& location) -> void {
-    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) };
-        lineNumber.has_value()) {
+    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) }; lineNumber) {
         ::OutputDebugStringW(glow::text::c_str(lineNumber.value()));
         ::OutputDebugStringW(L" - ");
     }
 
-    if (auto functionName { glow::text::u16string(location.function_name()) };
-        functionName.has_value()) {
+    if (auto functionName { glow::text::u16string(location.function_name()) }; functionName) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");
     }
 
-    if (auto convertedMessage { glow::text::u16string(message) }; convertedMessage.has_value()) {
+    if (auto convertedMessage { glow::text::u16string(message) }; convertedMessage) {
         ::OutputDebugStringW(glow::text::c_str(convertedMessage.value()));
     }
 
@@ -28,20 +26,18 @@ auto log(std::u8string_view message, const std::source_location& location) -> vo
 }
 
 auto log(::HRESULT errorCode, const std::source_location& location) -> void {
-    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) };
-        lineNumber.has_value()) {
+    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) }; lineNumber) {
         ::OutputDebugStringW(glow::text::c_str(lineNumber.value()));
         ::OutputDebugStringW(L" - ");
     }
 
-    if (auto functionName { glow::text::u16string(location.function_name()) };
-        functionName.has_value()) {
+    if (auto functionName { glow::text::u16string(location.function_name()) }; functionName) {
         ::OutputDebugStringW(glow::text::c_str(functionName.value()));
         ::OutputDebugStringW(L": ");
     }
 
     if (auto formattedMessage { glow::text::u16string(format_message(errorCode)) };
-        formattedMessage.has_value()) {
+        formattedMessage) {
         ::OutputDebugStringW(glow::text::c_str(formattedMessage.value()));
     }
 
@@ -49,14 +45,14 @@ auto log(::HRESULT errorCode, const std::source_location& location) -> void {
 }
 
 auto message(std::u8string_view message) -> void {
-    if (auto converted { glow::text::u16string(message) }; converted.has_value()) {
+    if (auto converted { glow::text::u16string(message) }; converted) {
         ::MessageBoxW(
             nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONASTERISK);
     }
 }
 
 auto error(std::u8string_view message) -> void {
-    if (auto converted { glow::text::u16string(message) }; converted.has_value()) {
+    if (auto converted { glow::text::u16string(message) }; converted) {
         ::MessageBoxW(nullptr, glow::text::c_str(converted.value()), nullptr, MB_OK | MB_ICONHAND);
     }
 }
@@ -73,7 +69,7 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      0,
                      nullptr);
 
-    if (auto converted { glow::text::u8string(buffer.get()) }; converted.has_value()) {
+    if (auto converted { glow::text::u8string(buffer.get()) }; converted) {
         return converted.value();
     }
 

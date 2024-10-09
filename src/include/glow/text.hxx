@@ -40,7 +40,7 @@ template <> struct formatter<std::u16string, wchar_t> : formatter<wstring_view, 
 
 template <> struct formatter<std::u8string, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const std::u8string& u8string, wformat_context& context) const noexcept {
-        if (auto converted { glow::text::u16string(u8string) }; converted.has_value()) {
+        if (auto converted { glow::text::u16string(u8string) }; converted) {
             return formatter<wstring_view, wchar_t>::format(glow::text::c_str(converted.value()),
                                                             context);
         }
@@ -51,7 +51,7 @@ template <> struct formatter<std::u8string, wchar_t> : formatter<wstring_view, w
 
 template <> struct formatter<std::u16string> : formatter<string_view> {
     auto format(const std::u16string& u16string, format_context& context) const noexcept {
-        if (auto converted { glow::text::u8string(u16string) }; converted.has_value()) {
+        if (auto converted { glow::text::u8string(u16string) }; converted) {
             return formatter<string_view>::format(glow::text::c_str(converted.value()), context);
         }
 
