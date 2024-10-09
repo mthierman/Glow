@@ -11,17 +11,17 @@
 #include <glow/log.hxx>
 
 namespace glow::filesystem {
-auto known_folder(::KNOWNFOLDERID folderId) -> std::optional<std::filesystem::path> {
+auto known_folder(::KNOWNFOLDERID folderId) -> std::expected<std::filesystem::path, std::u8string> {
     wil::unique_cotaskmem_string buffer;
 
-    if (::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) == S_OK) {
+    if (auto hr { ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) }; hr == S_OK) {
         return buffer.get();
+    } else {
+        return std::unexpected(glow::log::format_message(hr));
     }
-
-    return std::nullopt;
 }
 
-auto temp_folder() -> std::optional<std::filesystem::path> {
+auto temp_folder() -> std::expected<std::filesystem::path, std::u8string> {
     std::wstring buffer;
     buffer.resize(::GetTempPathW(0, buffer.data()));
 
@@ -29,9 +29,9 @@ auto temp_folder() -> std::optional<std::filesystem::path> {
         buffer.resize(buffer.size() - 2);
 
         return buffer;
+    } else {
+        return std::unexpected(glow::log::get_last_error());
     }
-
-    return std::nullopt;
 }
 
 auto create_directory(const std::filesystem::path& path, const std::filesystem::path& templatePath)
