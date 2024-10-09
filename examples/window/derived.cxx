@@ -12,10 +12,10 @@ struct Window final : glow::window::Overlapped {
     }
 };
 
-auto WinMain([[maybe_unused]] ::HINSTANCE instance,
-             [[maybe_unused]] ::HINSTANCE prevInstance,
-             [[maybe_unused]] ::LPSTR cmdLine,
-             [[maybe_unused]] int cmdShow) -> int {
+auto wWinMain([[maybe_unused]] ::HINSTANCE instance,
+              [[maybe_unused]] ::HINSTANCE prevInstance,
+              [[maybe_unused]] wchar_t* cmdLine,
+              [[maybe_unused]] int cmdShow) -> int {
     Window window;
 
     return glow::message::run_loop();

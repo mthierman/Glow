@@ -104,10 +104,10 @@ struct App final : glow::window::Message {
     std::unordered_map<char, bool> keys { { 'N', false }, { 'W', false } };
 };
 
-auto WinMain([[maybe_unused]] ::HINSTANCE instance,
-             [[maybe_unused]] ::HINSTANCE prevInstance,
-             [[maybe_unused]] ::LPSTR cmdLine,
-             [[maybe_unused]] int cmdShow) -> int {
+auto wWinMain([[maybe_unused]] ::HINSTANCE instance,
+              [[maybe_unused]] ::HINSTANCE prevInstance,
+              [[maybe_unused]] wchar_t* cmdLine,
+              [[maybe_unused]] int cmdShow) -> int {
     auto coInit { glow::system::co_initialize() };
 
     glow::system::Event singleInstance;
