@@ -17,14 +17,16 @@
 // https://devblogs.microsoft.com/oldnewthing/20230102-00/?p=107632
 
 namespace glow::config {
-Config::Config(const std::filesystem::path& path)
+Config::Config(std::optional<std::filesystem::path> path)
     : path { path } {
-    std::filesystem::create_directories(path.parent_path());
+    if (path) {
+        std::filesystem::create_directories(path->parent_path());
+    }
 }
 
 auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8string> {
-    if (auto converted { glow::text::u8string(input.Stringify()) }; converted) {
-        return converted.value();
+    if (auto converted { glow::text::u8string(input.Stringify()) }) {
+        return *converted;
     }
 
     return std::nullopt;
@@ -33,8 +35,8 @@ auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8s
 auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject> {
     winrt::JsonObject output;
 
-    if (auto converted { glow::text::u16string(input) }; converted) {
-        if (output.TryParse(glow::text::c_str(converted.value()), output)) {
+    if (auto converted { glow::text::u16string(input) }) {
+        if (output.TryParse(glow::text::c_str(*converted), output)) {
             return output;
         }
     }
@@ -43,12 +45,18 @@ auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonO
 }
 
 auto Config::save() -> bool {
-    if (auto serialized { serialize(json) }; !path.empty() && serialized) {
-        std::basic_ofstream<char8_t> file(
-            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
+    if (path->empty()) {
+        return false;
+    }
 
-        if (file.write(serialized.value().c_str(), serialized.value().size())) {
-            return true;
+    if (path) {
+        if (auto serialized { serialize(json) }) {
+            std::basic_ofstream<char8_t> file(
+                path->c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
+
+            if (file.write(serialized->c_str(), serialized->size())) {
+                return true;
+            }
         }
     }
 

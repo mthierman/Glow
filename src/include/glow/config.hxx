@@ -20,16 +20,23 @@ using namespace winrt::Windows::Data::Json;
 }; // namespace winrt
 
 namespace glow::config {
-struct Config final {
+struct Config {
     Config() = delete;
-    ~Config() = default;
+    virtual ~Config() = default;
+
     Config(const Config& config) = default;
-    Config(Config&& config) = default;
-
-    explicit Config(const std::filesystem::path& path);
-
     auto operator=(const Config& config) -> Config& = default;
+
+    Config(Config&& config) = default;
     auto operator=(Config&& config) -> Config& = default;
+
+    explicit Config(std::optional<std::filesystem::path> path = std::nullopt);
+
+    auto serialize(const winrt::JsonObject& input) -> std::optional<std::u8string>;
+    auto deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject>;
+
+    auto save() -> bool;
+    auto load() -> bool;
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
@@ -86,14 +93,7 @@ struct Config final {
         return std::nullopt;
     }
 
-    auto serialize(const winrt::JsonObject& input) -> std::optional<std::u8string>;
-    auto deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject>;
-
-    auto save() -> bool;
-    auto load() -> bool;
-
-protected:
-    std::filesystem::path path;
+    std::optional<std::filesystem::path> path;
     winrt::JsonObject json;
 };
 }; // namespace glow::config
