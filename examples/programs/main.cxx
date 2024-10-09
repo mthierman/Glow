@@ -2,27 +2,20 @@
 
 #include <stdlib.h>
 
-#include <glow/glow.hxx>
-
+#include <optional>
 #include <print>
 
-#include <icu.h>
+#include <glow/glow.hxx>
 
 auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
-    auto text { std::u8string(u8"test") };
-    // std::println("text - length: {} size: {} string: {}", text.length(), text.size(), text);
+    std::optional<int> opt;
 
-    // auto view = std::u16string_view(text);
-    // std::println("view - length: {} size: {}", view.length(), view.size());
+    opt = 32;
 
-    // glow::text::upper(text);
-
-    if (auto converted { glow::text::upper(text) }; converted) {
-        std::println(
-            "{}, {}, {}", converted.value(), converted.value().length(), converted.value().size());
-    }
-
-    // std::println("{}", );
+    if (opt)
+        std::println("{}", *opt);
+    else
+        std::println("FAIL!");
 
     return EXIT_SUCCESS;
 }
