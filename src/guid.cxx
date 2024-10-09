@@ -26,23 +26,25 @@ auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
 
-    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) != 0) {
-        if (auto converted { glow::text::u8string(buffer) }) {
-            return *converted;
-        }
+    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0) {
+        return std::nullopt;
     }
 
-    return std::nullopt;
+    if (auto converted { glow::text::u8string(buffer) }) {
+        return *converted;
+    } else {
+        return std::nullopt;
+    }
 }
 
 auto u16string(const ::GUID& guid) -> std::optional<std::u16string> {
     std::wstring buffer;
     buffer.resize(wil::guid_string_buffer_length);
 
-    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) != 0) {
-        return reinterpret_cast<char16_t*>(buffer.data());
+    if (::StringFromGUID2(guid, buffer.data(), wil::guid_string_buffer_length) == 0) {
+        return std::nullopt;
     }
 
-    return std::nullopt;
+    return reinterpret_cast<char16_t*>(buffer.data());
 }
 }; // namespace glow::guid
