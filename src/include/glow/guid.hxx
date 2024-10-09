@@ -10,13 +10,14 @@
 
 #include <rpc.h>
 
+#include <expected>
 #include <format>
 #include <string>
 
 #include <glow/text.hxx>
 
 namespace glow::guid {
-auto create() -> ::GUID;
+auto create() -> std::expected<::GUID, std::u8string>;
 auto u8string(const ::GUID& guid) -> std::u8string;
 auto u16string(const ::GUID& guid) -> std::u16string;
 }; // namespace glow::guid

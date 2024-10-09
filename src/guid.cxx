@@ -12,11 +12,14 @@
 #include <glow/text.hxx>
 
 namespace glow::guid {
-auto create() -> ::GUID {
+auto create() -> std::expected<::GUID, std::u8string> {
     ::GUID guid;
-    ::CoCreateGuid(&guid);
 
-    return guid;
+    if (auto hr { ::CoCreateGuid(&guid) }; hr == S_OK) {
+        return guid;
+    } else {
+        return std::unexpected(glow::log::format_message(hr));
+    }
 }
 
 auto u8string(const ::GUID& guid) -> std::u8string {
