@@ -46,17 +46,17 @@ struct Color final {
     explicit Color(const ::COLORREF& colorRef);
     explicit Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
 
-    uint8_t r { 0 };
-    uint8_t g { 0 };
-    uint8_t b { 0 };
-    uint8_t a { 0 };
-
     auto brush() const -> ::HBRUSH;
     auto hex() const -> std::u8string;
     auto colorref() const -> ::COLORREF;
     auto winrt_color() const -> winrt::Color;
     auto webview2_color() const -> COREWEBVIEW2_COLOR;
     auto is_dark() const -> bool;
+
+    uint8_t r { 0 };
+    uint8_t g { 0 };
+    uint8_t b { 0 };
+    uint8_t a { 0 };
 
 protected:
     winrt::UISettings uiSettings { glow::system::ui_settings() };
