@@ -18,8 +18,8 @@
 
 namespace glow::guid {
 auto create() -> std::expected<::GUID, std::u8string>;
-auto u8string(const ::GUID& guid) -> std::u8string;
-auto u16string(const ::GUID& guid) -> std::u16string;
+auto u8string(const ::GUID& guid) -> std::optional<std::u8string>;
+auto u16string(const ::GUID& guid) -> std::optional<std::u16string>;
 }; // namespace glow::guid
 
 namespace std {
@@ -43,15 +43,21 @@ template <> struct less<::GUID> {
 namespace std {
 template <> struct formatter<::GUID> : formatter<string_view> {
     auto format(const ::GUID& guid, format_context& context) const noexcept {
-        return formatter<string_view>::format(glow::text::c_str(glow::guid::u8string(guid)),
-                                              context);
+        if (auto converted { glow::guid::u8string(guid) }) {
+            return formatter<string_view>::format(glow::text::c_str(*converted), context);
+        } else {
+            return formatter<string_view>::format({}, context);
+        }
     }
 };
 
 template <> struct formatter<::GUID, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const ::GUID& guid, wformat_context& context) const noexcept {
-        return formatter<wstring_view, wchar_t>::format(
-            glow::text::c_str(glow::guid::u16string(guid)), context);
+        if (auto converted { glow::guid::u16string(guid) }) {
+            return formatter<wstring_view, wchar_t>::format(glow::text::c_str(*converted), context);
+        } else {
+            return formatter<wstring_view, wchar_t>::format({}, context);
+        }
     }
 };
 } // namespace std
