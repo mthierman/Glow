@@ -25,18 +25,15 @@ auto u16string(std::u8string_view input) -> std::optional<std::u16string> {
                   static_cast<int32_t>(input.length()),
                   &errorCode);
 
-    // if (errorCode != U_STRING_NOT_TERMINATED_WARNING || errorCode != U_ZERO_ERROR) {
-    //     return std::nullopt;
-    // }
-
-    if (errorCode == U_STRING_NOT_TERMINATED_WARNING) {
-        ::OutputDebugStringA("STRING NOT TERMINATED!!");
+    switch (errorCode) {
+        case U_STRING_NOT_TERMINATED_WARNING:
+        case U_ZERO_ERROR: {
+            return buffer;
+        }
+        default: {
+            return std::nullopt;
+        }
     }
-
-    // glow::log::log("{}", u_errorName(errorCode));
-    ::OutputDebugStringA(u_errorName(errorCode));
-
-    return buffer;
 }
 
 auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
@@ -51,10 +48,15 @@ auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
                 static_cast<int32_t>(input.length()),
                 &errorCode);
 
-    // glow::log::log("{}", u_errorName(errorCode));
-    ::OutputDebugStringA(u_errorName(errorCode));
-
-    return buffer;
+    switch (errorCode) {
+        case U_STRING_NOT_TERMINATED_WARNING:
+        case U_ZERO_ERROR: {
+            return buffer;
+        }
+        default: {
+            return std::nullopt;
+        }
+    }
 }
 
 auto u16string(std::string_view input) -> std::optional<std::u16string> {
