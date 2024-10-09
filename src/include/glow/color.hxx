@@ -31,8 +31,12 @@ namespace glow::color {
 struct Color final {
     Color() = default;
     ~Color() = default;
+
     Color(const Color& color) = default;
+    auto operator=(const Color& color) -> Color& = default;
+
     Color(Color&& color) = default;
+    auto operator=(Color&& color) -> Color& = default;
 
     explicit Color(uint8_t r, uint8_t g, uint8_t b);
     explicit Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
@@ -41,9 +45,6 @@ struct Color final {
     explicit Color(const winrt::Color& color);
     explicit Color(const ::COLORREF& colorRef);
     explicit Color(const COREWEBVIEW2_COLOR& coreWebView2Color);
-
-    auto operator=(const Color& color) -> Color& = default;
-    auto operator=(Color&& color) -> Color& = default;
 
     uint8_t r { 0 };
     uint8_t g { 0 };
