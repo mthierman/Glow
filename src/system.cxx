@@ -103,20 +103,20 @@ auto is_dark() -> bool {
     return (((5 * bg.g) + (2 * bg.r) + bg.b) < (8 * 128)) ? true : false;
 }
 
-auto args() -> std::vector<std::u8string> {
+auto argv() -> std::pair<int, std::vector<std::u8string>> {
     int argc { 0 };
-    wil::unique_hlocal_ptr<wchar_t*[]> argv;
-    argv.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
+    wil::unique_hlocal_ptr<wchar_t*[]> buffer;
+    buffer.reset(::CommandLineToArgvW(::GetCommandLineW(), &argc));
 
-    std::vector<std::u8string> args;
+    std::vector<std::u8string> argv;
 
     for (int i = 0; i < argc; i++) {
-        if (auto converted { glow::text::u8string(argv[i]) }; converted.has_value()) {
-            args.emplace_back(converted.value());
+        if (auto converted { glow::text::u8string(buffer[i]) }; converted.has_value()) {
+            argv.emplace_back(converted.value());
         }
     }
 
-    return args;
+    return { argc, argv };
 }
 
 CoInit::CoInit(::COINIT coInit)
