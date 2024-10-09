@@ -25,19 +25,17 @@ auto log(std::u8string_view message, const std::source_location& location) -> vo
 }
 
 auto log(::HRESULT errorCode, const std::source_location& location) -> void {
-    if (auto lineNumber { glow::text::u16string(std::format("{}", location.line())) }; lineNumber) {
-        ::OutputDebugStringW(glow::text::c_str(lineNumber.value()));
-        ::OutputDebugStringW(L" - ");
+    if (auto line { glow::text::u16string(std::format("[{}] ", location.line())) }) {
+        ::OutputDebugStringW(glow::text::c_str(*line));
     }
 
-    if (auto functionName { glow::text::u16string(location.function_name()) }; functionName) {
-        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
+    if (auto functionName { glow::text::u16string(location.function_name()) }) {
+        ::OutputDebugStringW(glow::text::c_str(*functionName));
         ::OutputDebugStringW(L": ");
     }
 
-    if (auto formattedMessage { glow::text::u16string(format_message(errorCode)) };
-        formattedMessage) {
-        ::OutputDebugStringW(glow::text::c_str(formattedMessage.value()));
+    if (auto converted { glow::text::u16string(format_message(errorCode)) }) {
+        ::OutputDebugStringW(glow::text::c_str(*converted));
     }
 
     ::OutputDebugStringW(L"\n");
