@@ -64,22 +64,28 @@ auto Config::save() -> bool {
 }
 
 auto Config::load() -> bool {
-    if (auto file { std::basic_ifstream<char8_t>(
-            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in) };
-        !path.empty() && file.is_open()) {
-        file.ignore(std::numeric_limits<std::streamsize>::max());
+    if (path->empty()) {
+        return false;
+    }
 
-        std::u8string buffer;
-        buffer.resize(file.gcount());
+    if (path) {
+        if (auto file { std::basic_ifstream<char8_t>(
+                path->c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in) };
+            file.is_open()) {
+            file.ignore(std::numeric_limits<std::streamsize>::max());
 
-        file.clear();
-        file.seekg(0, std::basic_ios<char8_t>::beg);
+            std::u8string buffer;
+            buffer.resize(file.gcount());
 
-        if (file.read(buffer.data(), buffer.size())) {
-            if (auto deserialized { deserialize(buffer) }; deserialized) {
-                json = deserialized.value();
+            file.clear();
+            file.seekg(0, std::basic_ios<char8_t>::beg);
 
-                return true;
+            if (file.read(buffer.data(), buffer.size())) {
+                if (auto deserialized { deserialize(buffer) }) {
+                    json = *deserialized;
+
+                    return true;
+                }
             }
         }
     }
