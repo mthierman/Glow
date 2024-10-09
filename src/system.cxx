@@ -119,6 +119,27 @@ auto argv() -> std::pair<int, std::vector<std::u8string>> {
     return { argc, argv };
 }
 
+auto format_message(::HRESULT errorCode) -> std::u8string {
+    wil::unique_hlocal_string buffer;
+
+    ::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM
+                         | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                     nullptr,
+                     errorCode,
+                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                     wil::out_param_ptr<wchar_t*>(buffer),
+                     0,
+                     nullptr);
+
+    if (auto converted { glow::text::u8string(buffer.get()) }) {
+        return *converted;
+    }
+
+    return {};
+}
+
+auto get_last_error() -> std::u8string { return format_message(::GetLastError()); }
+
 CoInit::CoInit(::COINIT coInit)
     : result { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) } { }
 

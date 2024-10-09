@@ -23,8 +23,6 @@ auto log(::HRESULT errorCode,
          const std::source_location& location = std::source_location::current()) -> void;
 auto message(std::u8string_view message) -> void;
 auto error(std::u8string_view message) -> void;
-auto format_message(::HRESULT errorCode) -> std::u8string;
-auto get_last_error() -> std::u8string;
 
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {

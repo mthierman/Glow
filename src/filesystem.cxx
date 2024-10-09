@@ -8,7 +8,7 @@
 
 #include <wil/win32_helpers.h>
 
-#include <glow/log.hxx>
+#include <glow/system.hxx>
 
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId) -> std::expected<std::filesystem::path, std::u8string> {
@@ -17,7 +17,7 @@ auto known_folder(::KNOWNFOLDERID folderId) -> std::expected<std::filesystem::pa
     if (auto hr { ::SHGetKnownFolderPath(folderId, 0, nullptr, &buffer) }; hr == S_OK) {
         return buffer.get();
     } else {
-        return std::unexpected(glow::log::format_message(hr));
+        return std::unexpected(glow::system::format_message(hr));
     }
 }
 
@@ -30,7 +30,7 @@ auto temp_folder() -> std::expected<std::filesystem::path, std::u8string> {
 
         return buffer;
     } else {
-        return std::unexpected(glow::log::get_last_error());
+        return std::unexpected(glow::system::get_last_error());
     }
 }
 

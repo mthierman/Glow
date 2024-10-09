@@ -8,7 +8,7 @@
 
 #include <wil/win32_helpers.h>
 
-#include <glow/log.hxx>
+#include <glow/system.hxx>
 #include <glow/text.hxx>
 
 namespace glow::guid {
@@ -18,7 +18,7 @@ auto create() -> std::expected<::GUID, std::u8string> {
     if (auto hr { ::CoCreateGuid(&guid) }; hr == S_OK) {
         return guid;
     } else {
-        return std::unexpected(glow::log::format_message(hr));
+        return std::unexpected(glow::system::format_message(hr));
     }
 }
 
