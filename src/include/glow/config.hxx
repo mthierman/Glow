@@ -20,7 +20,7 @@ using namespace winrt::Windows::Data::Json;
 }; // namespace winrt
 
 namespace glow::config {
-struct Config {
+struct Config final {
     Config() = delete;
     virtual ~Config() = default;
 
@@ -30,10 +30,7 @@ struct Config {
     Config(Config&& config) = default;
     auto operator=(Config&& config) -> Config& = default;
 
-    explicit Config(std::optional<std::filesystem::path> path = std::nullopt);
-
-    auto serialize(const winrt::JsonObject& input) -> std::optional<std::u8string>;
-    auto deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject>;
+    explicit Config(std::filesystem::path path);
 
     auto save() -> bool;
     auto load() -> bool;
@@ -93,7 +90,7 @@ struct Config {
         return std::nullopt;
     }
 
-    std::optional<std::filesystem::path> path;
+    std::filesystem::path path;
     winrt::JsonObject json;
 };
 }; // namespace glow::config

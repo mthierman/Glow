@@ -17,46 +17,18 @@
 // https://devblogs.microsoft.com/oldnewthing/20230102-00/?p=107632
 
 namespace glow::config {
-Config::Config(std::optional<std::filesystem::path> path)
-    : path { path } {
-    if (path) {
-        std::filesystem::create_directories(path->parent_path());
-    }
-}
-
-auto Config::serialize(const winrt::JsonObject& input) -> std::optional<std::u8string> {
-    if (auto converted { glow::text::u8string(input.Stringify()) }) {
-        return *converted;
-    }
-
-    return std::nullopt;
-}
-
-auto Config::deserialize(std::u8string_view input) -> std::optional<winrt::JsonObject> {
-    winrt::JsonObject output;
-
-    if (auto converted { glow::text::u16string(input) }) {
-        if (output.TryParse(glow::text::c_str(*converted), output)) {
-            return output;
-        }
-    }
-
-    return std::nullopt;
+Config::Config(std::filesystem::path path)
+    : path { std::move(path) } {
+    std::filesystem::create_directories(this->path.parent_path());
 }
 
 auto Config::save() -> bool {
-    if (path->empty()) {
-        return false;
-    }
+    if (auto converted { glow::text::u8string(json.Stringify()) }) {
+        std::basic_ofstream<char8_t> file(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
 
-    if (path) {
-        if (auto serialized { serialize(json) }) {
-            std::basic_ofstream<char8_t> file(
-                path->c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
-
-            if (file.write(serialized->c_str(), serialized->size())) {
-                return true;
-            }
+        if (file.write(converted->c_str(), converted->size())) {
+            return true;
         }
     }
 
@@ -64,26 +36,20 @@ auto Config::save() -> bool {
 }
 
 auto Config::load() -> bool {
-    if (path->empty()) {
-        return false;
-    }
+    if (auto file { std::basic_ifstream<char8_t>(
+            path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in) };
+        file.is_open()) {
+        file.ignore(std::numeric_limits<std::streamsize>::max());
 
-    if (path) {
-        if (auto file { std::basic_ifstream<char8_t>(
-                path->c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::in) };
-            file.is_open()) {
-            file.ignore(std::numeric_limits<std::streamsize>::max());
+        std::u8string buffer;
+        buffer.resize(file.gcount());
 
-            std::u8string buffer;
-            buffer.resize(file.gcount());
+        file.clear();
+        file.seekg(0, std::basic_ios<char8_t>::beg);
 
-            file.clear();
-            file.seekg(0, std::basic_ios<char8_t>::beg);
-
-            if (file.read(buffer.data(), buffer.size())) {
-                if (auto deserialized { deserialize(buffer) }) {
-                    json = *deserialized;
-
+        if (file.read(buffer.data(), buffer.size())) {
+            if (auto converted { glow::text::u16string(buffer) }) {
+                if (json.TryParse(glow::text::c_str(*converted), json)) {
                     return true;
                 }
             }
