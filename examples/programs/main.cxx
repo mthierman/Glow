@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 
-#include <optional>
 #include <print>
 
 #include <glow/glow.hxx>
