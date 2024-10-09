@@ -21,23 +21,17 @@
 namespace glow::filesystem {
 auto known_folder(::KNOWNFOLDERID folderId = FOLDERID_LocalAppData)
     -> std::expected<std::filesystem::path, std::u8string>;
-
 auto temp_folder() -> std::expected<std::filesystem::path, std::u8string>;
 
 auto create_directory(const std::filesystem::path& path,
                       const std::filesystem::path& templatePath = "") -> bool;
-
 auto move_file(const std::filesystem::path& origin, const std::filesystem::path& destination)
     -> bool;
-
 auto copy_file(const std::filesystem::path& origin, const std::filesystem::path& destination)
     -> bool;
-
 auto delete_file(const std::filesystem::path& path) -> bool;
-
 auto create_symlink(const std::filesystem::path& target, const std::filesystem::path& destination)
     -> bool;
-
 }; // namespace glow::filesystem
 
 namespace std {
