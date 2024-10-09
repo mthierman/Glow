@@ -140,6 +140,10 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
 
 auto get_last_error() -> std::u8string { return format_message(::GetLastError()); }
 
+Console::Console() { attach_console(); }
+
+Console::~Console() { detach_console(); }
+
 CoInit::CoInit(::COINIT coInit)
     : result { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) } { }
 

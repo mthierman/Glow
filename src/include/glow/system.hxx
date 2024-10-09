@@ -48,6 +48,11 @@ auto argv() -> std::pair<int, std::vector<std::u8string>>;
 auto format_message(::HRESULT errorCode) -> std::u8string;
 auto get_last_error() -> std::u8string;
 
+struct Console final {
+    Console();
+    ~Console();
+};
+
 struct CoInit final {
     CoInit(::COINIT coInit = ::COINIT::COINIT_APARTMENTTHREADED);
     ~CoInit();
