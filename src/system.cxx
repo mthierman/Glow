@@ -111,7 +111,7 @@ auto argv() -> std::pair<int, std::vector<std::u8string>> {
     std::vector<std::u8string> argv;
 
     for (int i = 0; i < argc; i++) {
-        if (auto converted { glow::text::u8string(buffer[i]) }; converted.has_value()) {
+        if (auto converted { glow::text::u8string(buffer[i]) }; converted) {
             argv.emplace_back(converted.value());
         }
     }
