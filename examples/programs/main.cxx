@@ -12,7 +12,7 @@ auto wmain([[maybe_unused]] int argc, [[maybe_unused]] wchar_t* argv[]) -> int {
 
     opt = 32;
 
-    if (opt)
+    if (auto test { opt })
         std::println("{}", *opt);
     else
         std::println("FAIL!");
