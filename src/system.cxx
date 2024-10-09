@@ -21,23 +21,6 @@ auto co_initialize(::COINIT coInit) -> wil::unique_couninitialize_call {
     return wil::CoInitializeEx(coInit | ::COINIT::COINIT_DISABLE_OLE1DDE);
 }
 
-auto attach_console() -> void {
-    ::AllocConsole();
-
-    wil::unique_file file;
-
-    ::freopen_s(file.addressof(), "CONIN$", "r", stdin);
-    ::freopen_s(file.addressof(), "CONOUT$", "w", stdout);
-    ::freopen_s(file.addressof(), "CONIN$", "w", stderr);
-
-    std::cin.clear();
-    std::cout.clear();
-    std::cerr.clear();
-    std::clog.clear();
-}
-
-auto detach_console() -> void { ::FreeConsole(); }
-
 auto create_process(const std::filesystem::path& path, std::u8string_view commandLine) -> void {
     ::STARTUPINFOW si {};
     si.cb = sizeof(::STARTUPINFOW);
@@ -140,9 +123,20 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
 
 auto get_last_error() -> std::u8string { return format_message(::GetLastError()); }
 
-Console::Console() { attach_console(); }
+Console::Console() {
+    ::AllocConsole();
 
-Console::~Console() { detach_console(); }
+    ::freopen_s(file.addressof(), "CONIN$", "r", stdin);
+    ::freopen_s(file.addressof(), "CONOUT$", "w", stdout);
+    ::freopen_s(file.addressof(), "CONIN$", "w", stderr);
+
+    std::cin.clear();
+    std::cout.clear();
+    std::cerr.clear();
+    std::clog.clear();
+}
+
+Console::~Console() { ::FreeConsole(); }
 
 CoInit::CoInit(::COINIT coInit)
     : result { ::CoInitializeEx(nullptr, coInit | ::COINIT::COINIT_DISABLE_OLE1DDE) } { }
