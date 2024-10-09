@@ -71,8 +71,8 @@ template <> struct formatter<glow::color::Color> : formatter<string_view> {
 
 template <> struct formatter<glow::color::Color, wchar_t> : formatter<wstring_view, wchar_t> {
     auto format(const glow::color::Color& color, wformat_context& context) const noexcept {
-        if (auto converted { glow::text::u16string(color.hex()) }; converted) {
-            return formatter<wstring_view, wchar_t>::format(glow::text::c_str(converted.value()), context);
+        if (auto converted { glow::text::u16string(color.hex()) }) {
+            return formatter<wstring_view, wchar_t>::format(glow::text::c_str(*converted), context);
         }
 
         return formatter<wstring_view, wchar_t>::format({}, context);
