@@ -26,17 +26,9 @@ auto error(std::u8string_view message) -> void;
 
 template <typename... Args>
 auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
-    if (auto functionName {
-            glow::text::u16string(std::source_location::current().function_name()) };
-        functionName) {
-        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
-        ::OutputDebugStringW(L": ");
-    }
-
     if (auto converted {
-            glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...))) };
-        converted) {
-        ::OutputDebugStringW(glow::text::c_str(converted.value()));
+            glow::text::u16string(std::vformat(fmt.get(), std::make_format_args(args...))) }) {
+        ::OutputDebugStringW(glow::text::c_str(*converted));
     }
 
     ::OutputDebugStringW(L"\n");
@@ -44,13 +36,6 @@ auto log(const std::format_string<Args...> fmt, Args&&... args) -> void {
 
 template <typename... Args>
 auto log(const std::wformat_string<Args...> fmt, Args&&... args) -> void {
-    if (auto functionName {
-            glow::text::u16string(std::source_location::current().function_name()) };
-        functionName) {
-        ::OutputDebugStringW(glow::text::c_str(functionName.value()));
-        ::OutputDebugStringW(L": ");
-    }
-
     ::OutputDebugStringW(std::vformat(fmt.get(), std::make_wformat_args(args...)).c_str());
     ::OutputDebugStringW(L"\n");
 }
