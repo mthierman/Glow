@@ -12,13 +12,13 @@ auto log(std::u8string_view message, const std::source_location& location) -> vo
         ::OutputDebugStringW(glow::text::c_str(*line));
     }
 
-    if (auto function { glow::text::u16string(location.function_name()) }) {
-        ::OutputDebugStringW(glow::text::c_str(*function));
+    if (auto functionName { glow::text::u16string(location.function_name()) }) {
+        ::OutputDebugStringW(glow::text::c_str(*functionName));
         ::OutputDebugStringW(L": ");
     }
 
-    if (auto msg { glow::text::u16string(message) }) {
-        ::OutputDebugStringW(glow::text::c_str(*msg));
+    if (auto converted { glow::text::u16string(message) }) {
+        ::OutputDebugStringW(glow::text::c_str(*converted));
     }
 
     ::OutputDebugStringW(L"\n");
