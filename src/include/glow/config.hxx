@@ -22,7 +22,7 @@ using namespace winrt::Windows::Data::Json;
 namespace glow::config {
 struct Config final {
     Config() = delete;
-    virtual ~Config() = default;
+    ~Config() = default;
 
     Config(const Config& config) = default;
     auto operator=(const Config& config) -> Config& = default;
