@@ -10,83 +10,67 @@
 
 #include <icu.h>
 
+#include <glow/log.hxx>
+
 namespace glow::text {
 auto u16string(std::u8string_view input) -> std::optional<std::u16string> {
-    auto buffer { std::string(input.begin(), input.end()) };
+    std::u16string buffer;
+    buffer.resize(input.length());
+    auto errorCode { U_ZERO_ERROR };
 
-    if (auto length { buffer.length() }; length > 0) {
-        if (length > std::numeric_limits<int>::max()) {
-            return std::nullopt;
-        }
+    u_strFromUTF8(buffer.data(),
+                  static_cast<int32_t>(buffer.length()),
+                  nullptr,
+                  reinterpret_cast<const char*>(input.data()),
+                  static_cast<int32_t>(input.length()),
+                  &errorCode);
 
-        auto outputLength { ::MultiByteToWideChar(
-            CP_UTF8, 0, buffer.c_str(), static_cast<int>(length), nullptr, 0) };
+    // if (errorCode != U_STRING_NOT_TERMINATED_WARNING || errorCode != U_ZERO_ERROR) {
+    //     return std::nullopt;
+    // }
 
-        std::u16string output;
-        output.resize(outputLength);
-
-        if (::MultiByteToWideChar(CP_UTF8,
-                                  0,
-                                  buffer.c_str(),
-                                  static_cast<int>(length),
-                                  reinterpret_cast<wchar_t*>(output.data()),
-                                  outputLength)
-            != 0) {
-            return output;
-        }
+    if (errorCode == U_STRING_NOT_TERMINATED_WARNING) {
+        ::OutputDebugStringA("STRING NOT TERMINATED!!");
     }
 
-    return std::nullopt;
+    // glow::log::log("{}", u_errorName(errorCode));
+    ::OutputDebugStringA(u_errorName(errorCode));
+
+    return buffer;
 }
 
 auto u8string(std::u16string_view input) -> std::optional<std::u8string> {
-    auto buffer { std::wstring(input.begin(), input.end()) };
+    std::u8string buffer;
+    buffer.resize(input.length());
+    auto errorCode { U_ZERO_ERROR };
 
-    if (auto length { buffer.length() }; length > 0) {
-        if (length > std::numeric_limits<int>::max()) {
-            return std::nullopt;
-        }
+    u_strToUTF8(reinterpret_cast<char*>(buffer.data()),
+                static_cast<int32_t>(buffer.length()),
+                nullptr,
+                input.data(),
+                static_cast<int32_t>(input.length()),
+                &errorCode);
 
-        auto outputLength { ::WideCharToMultiByte(
-            CP_UTF8, 0, buffer.c_str(), static_cast<int>(length), nullptr, 0, nullptr, nullptr) };
+    // glow::log::log("{}", u_errorName(errorCode));
+    ::OutputDebugStringA(u_errorName(errorCode));
 
-        std::u8string output;
-        output.resize(outputLength);
+    return buffer;
+}
 
-        if (::WideCharToMultiByte(CP_UTF8,
-                                  0,
-                                  buffer.c_str(),
-                                  static_cast<int>(length),
-                                  reinterpret_cast<char*>(output.data()),
-                                  outputLength,
-                                  nullptr,
-                                  nullptr)
-            != 0) {
-            return output;
-        }
+auto u16string(std::string_view input) -> std::optional<std::u16string> {
+    if (auto converted { u16string(reinterpret_cast<const char8_t*>(input.data())) }) {
+        return *converted;
     }
 
     return std::nullopt;
 }
 
-auto u16string(std::string_view input) -> std::optional<std::u16string> {
-    auto converted { u16string(reinterpret_cast<const char8_t*>(input.data())) };
-
-    if (!converted) {
-        return std::nullopt;
-    }
-
-    return converted.value();
-}
-
 auto u8string(std::wstring_view input) -> std::optional<std::u8string> {
-    auto converted { u8string(reinterpret_cast<const char16_t*>(input.data())) };
-
-    if (!converted) {
-        return std::nullopt;
+    if (auto converted { u8string(reinterpret_cast<const char16_t*>(input.data())) }) {
+        return *converted;
     }
 
-    return converted.value();
+    return std::nullopt;
 }
 
 auto c_str(std::u8string& input) -> char* { return reinterpret_cast<char*>(input.data()); }
