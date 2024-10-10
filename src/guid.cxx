@@ -15,7 +15,7 @@ namespace glow::guid {
 auto create() -> std::expected<::GUID, std::u8string> {
     ::GUID guid;
 
-    if (auto errorCode { ::CoCreateGuid(&guid) }; hr == S_OK) {
+    if (auto errorCode { ::CoCreateGuid(&guid) }; errorCode == S_OK) {
         return guid;
     } else {
         return std::unexpected(glow::system::format_message(errorCode));
