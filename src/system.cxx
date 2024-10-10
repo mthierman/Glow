@@ -32,9 +32,9 @@ auto create_process(const std::filesystem::path& path, std::u8string_view comman
     pi.hProcess = hProcess.get();
     pi.hThread = hThread.get();
 
-    if (auto converted { glow::text::u16string(commandLine) }; converted) {
+    if (auto u16commandLine { glow::text::u16string(commandLine) }) {
         ::CreateProcessW(path.c_str(),
-                         glow::text::c_str(converted.value()),
+                         glow::text::c_str(*u16commandLine),
                          nullptr,
                          nullptr,
                          FALSE,
@@ -94,8 +94,8 @@ auto argv() -> std::pair<int, std::vector<std::u8string>> {
     std::vector<std::u8string> argv;
 
     for (int i = 0; i < argc; i++) {
-        if (auto converted { glow::text::u8string(buffer[i]) }; converted) {
-            argv.emplace_back(converted.value());
+        if (auto u8buffer { glow::text::u8string(buffer[i]) }) {
+            argv.emplace_back(*u8buffer);
         }
     }
 
@@ -114,8 +114,8 @@ auto format_message(::HRESULT errorCode) -> std::u8string {
                      0,
                      nullptr);
 
-    if (auto converted { glow::text::u8string(buffer.get()) }) {
-        return *converted;
+    if (auto u8buffer { glow::text::u8string(buffer.get()) }) {
+        return *u8buffer;
     }
 
     return {};
