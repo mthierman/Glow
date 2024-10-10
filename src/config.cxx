@@ -23,11 +23,11 @@ Config::Config(std::filesystem::path path)
 }
 
 auto Config::save() -> bool {
-    if (auto converted { glow::text::u8string(json.Stringify()) }) {
+    if (auto u8stringify { glow::text::u8string(json.Stringify()) }) {
         std::basic_ofstream<char8_t> file(
             path.c_str(), std::basic_ios<char8_t>::binary | std::basic_ios<char8_t>::out);
 
-        if (file.write(converted->c_str(), converted->size())) {
+        if (file.write(u8stringify->c_str(), u8stringify->size())) {
             return true;
         }
     }
@@ -48,8 +48,8 @@ auto Config::load() -> bool {
         file.seekg(0, std::basic_ios<char8_t>::beg);
 
         if (file.read(buffer.data(), buffer.size())) {
-            if (auto converted { glow::text::u16string(buffer) }) {
-                if (json.TryParse(glow::text::c_str(*converted), json)) {
+            if (auto u16buffer { glow::text::u16string(buffer) }) {
+                if (json.TryParse(glow::text::c_str(*u16buffer), json)) {
                     return true;
                 }
             }
