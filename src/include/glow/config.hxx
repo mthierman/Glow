@@ -37,38 +37,38 @@ struct Config final {
 
     template <typename T, typename U> auto set(std::u8string_view key, U value) -> void {
         if constexpr (std::is_same_v<T, std::u8string>) {
-            if (auto convertedKey { glow::text::u16string(key) }) {
-                if (auto convertedValue { glow::text::u16string(value) }) {
+            if (auto u16key { glow::text::u16string(key) }) {
+                if (auto u16value { glow::text::u16string(value) }) {
                     json.SetNamedValue(
-                        glow::text::c_str(*convertedKey),
-                        winrt::JsonValue::CreateStringValue(glow::text::c_str(*convertedValue)));
+                        glow::text::c_str(*u16key),
+                        winrt::JsonValue::CreateStringValue(glow::text::c_str(*u16value)));
                 }
             }
         }
 
         if constexpr (std::is_same_v<T, bool>) {
-            if (auto convertedKey { glow::text::u16string(key) }) {
-                json.SetNamedValue(glow::text::c_str(*convertedKey),
+            if (auto u16key { glow::text::u16string(key) }) {
+                json.SetNamedValue(glow::text::c_str(*u16key),
                                    winrt::JsonValue::CreateBooleanValue(value));
             }
         }
 
         if constexpr (std::is_same_v<T, double>) {
-            if (auto convertedKey { glow::text::u16string(key) }) {
-                json.SetNamedValue(glow::text::c_str(*convertedKey),
+            if (auto u16key { glow::text::u16string(key) }) {
+                json.SetNamedValue(glow::text::c_str(*u16key),
                                    winrt::JsonValue::CreateNumberValue(value));
             }
         }
     }
 
     template <typename T> auto get(std::u8string_view key) -> std::optional<T> {
-        if (auto convertedKey { glow::text::u16string(key) }) {
-            auto value { json.GetNamedValue(glow::text::c_str(*convertedKey), nullptr) };
+        if (auto u16key { glow::text::u16string(key) }) {
+            auto value { json.GetNamedValue(glow::text::c_str(*u16key), nullptr) };
 
             if constexpr (std::is_same_v<T, std::u8string>) {
                 if (value && value.ValueType() == winrt::JsonValueType::String) {
-                    if (auto convertedValue { glow::text::u8string(value.GetString()) }) {
-                        return *convertedValue;
+                    if (auto u8value { glow::text::u8string(value.GetString()) }) {
+                        return *u8value;
                     }
                 }
             }
