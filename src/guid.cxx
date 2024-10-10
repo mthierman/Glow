@@ -15,10 +15,10 @@ namespace glow::guid {
 auto create() -> std::expected<::GUID, std::u8string> {
     ::GUID guid;
 
-    if (auto hr { ::CoCreateGuid(&guid) }; hr == S_OK) {
+    if (auto errorCode { ::CoCreateGuid(&guid) }; hr == S_OK) {
         return guid;
     } else {
-        return std::unexpected(glow::system::format_message(hr));
+        return std::unexpected(glow::system::format_message(errorCode));
     }
 }
 
@@ -30,8 +30,8 @@ auto u8string(const ::GUID& guid) -> std::optional<std::u8string> {
         return std::nullopt;
     }
 
-    if (auto converted { glow::text::u8string(buffer) }) {
-        return *converted;
+    if (auto u8buffer { glow::text::u8string(buffer) }) {
+        return *u8buffer;
     } else {
         return std::nullopt;
     }
