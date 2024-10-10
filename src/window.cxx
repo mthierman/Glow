@@ -913,13 +913,11 @@ auto WebView::document_title() -> std::optional<std::u8string> {
     wil::unique_cotaskmem_string buffer;
     core->get_DocumentTitle(&buffer);
 
-    auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) };
-
-    if (!converted) {
+    if (auto u8buffer { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) }) {
+        return *u8buffer;
+    } else {
         return std::nullopt;
     }
-
-    return converted.value();
 }
 
 auto WebView::source() -> std::optional<std::u8string> {
@@ -930,13 +928,11 @@ auto WebView::source() -> std::optional<std::u8string> {
     wil::unique_cotaskmem_string buffer;
     core->get_Source(&buffer);
 
-    auto converted { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) };
-
-    if (!converted) {
+    if (auto u8buffer { glow::text::u8string(reinterpret_cast<const char16_t*>(buffer.get())) }) {
+        return *u8buffer;
+    } else {
         return std::nullopt;
     }
-
-    return converted.value();
 }
 
 auto WebView::navigate(std::u8string_view url) -> bool {
