@@ -2,5 +2,6 @@
 .wix
 build
 node_modules
+vcpkg_installed
 
 CMakeUserPresets.json
