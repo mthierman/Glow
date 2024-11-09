@@ -8,6 +8,7 @@
 #include <glow/log.hxx>
 #include <glow/math.hxx>
 #include <glow/message.hxx>
+#include <glow/network.hxx>
 #include <glow/system.hxx>
 #include <glow/text.hxx>
 #include <glow/window.hxx>

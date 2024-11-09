@@ -32,6 +32,7 @@ target_sources(
             "src/log.cxx"
             "src/math.cxx"
             "src/message.cxx"
+            "src/network.cxx"
             "src/system.cxx"
             "src/text.cxx"
             "src/window.cxx"
