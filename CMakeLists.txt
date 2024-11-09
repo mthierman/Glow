@@ -99,6 +99,7 @@ target_link_libraries(
            WindowsApp.lib
            dwmapi.lib
            gdiplus.lib
+           Urlmon.Lib
            icu.lib
     )
 

@@ -6,6 +6,9 @@
 
 #pragma once
 
-namespace glow::network { 
-    
+#include <filesystem>
+#include <string>
+
+namespace glow::network {
+auto download_file(std::string_view url, const std::filesystem::path& path) -> bool;
 };
