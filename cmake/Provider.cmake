@@ -1,13 +1,11 @@
 set(FETCHCONTENT_SOURCE_DIR_ADA-URL.ADA "$ENV{LIBS}/ada-url/ada/singleheader")
 
-set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WEB.WEBVIEW2
-    "$ENV{LIBS}/Nuget/Microsoft.Web.WebView2.1.0.2903.40"
-    )
+set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WEB.WEBVIEW2 "$ENV{LIBS}/Nuget/Microsoft.Web.WebView2")
 
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WINDOWS.CPPWINRT
-    "$ENV{LIBS}/Nuget/Microsoft.Windows.CppWinRT.2.0.240405.15"
+    "$ENV{LIBS}/Nuget/Microsoft.Windows.CppWinRT"
     )
 
 set(FETCHCONTENT_SOURCE_DIR_MICROSOFT.WINDOWS.IMPLEMENTATIONLIBRARY
-    "$ENV{LIBS}/Nuget/Microsoft.Windows.ImplementationLibrary.1.0.240803.1"
+    "$ENV{LIBS}/Nuget/Microsoft.Windows.ImplementationLibrary"
     )
